@@ -1,0 +1,531 @@
+﻿<Page
+    x:Class="YouTube.Search"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:YouTube"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="#0F0F0F"
+    mc:Ignorable="d">
+
+    <Grid Background="#0F0F0F">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="52" />
+        </Grid.RowDefinitions>
+
+        <!--  Search Bar at the top  -->
+        <Grid
+            Grid.Row="0"
+            Height="64"
+            Padding="12,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+    
+
+            <Grid
+                Grid.Column="1"
+                Margin="8,0"
+                VerticalAlignment="Center"
+                Tapped="SearchBox_Tapped">
+                <Border
+                    Height="40"
+                    Background="#222222"
+                    CornerRadius="20" />
+
+                <TextBlock
+                    x:Name="SearchInput"
+                    Margin="16,0,40,0"
+                    VerticalAlignment="Center"
+                    FontFamily="Roboto"
+                    FontSize="16"
+                    Foreground="White"
+                    Text="Search YouTube"
+                    TextTrimming="CharacterEllipsis"
+                    Tapped="SearchInput_Tapped" />
+
+                <Button
+                    x:Name="ClearButton"
+                    Width="40"
+                    Height="40"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    Content="&#xE106;"
+                    FontFamily="Segoe MDL2 Assets"
+                    Foreground="#AAAAAA"
+                    Visibility="Collapsed" />
+            </Grid>
+
+            <Button
+                x:Name="VoiceButton"
+                Grid.Column="2"
+                Width="48"
+                Height="48"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                BorderThickness="0"
+                Foreground="#666666"
+
+                IsHitTestVisible="False"
+                Opacity="0.45">
+                <Image
+                    Width="24"
+                    Height="24"
+                    Source="Assets/microphone.png"
+                    Stretch="Uniform" />
+            </Button>
+
+            <Button
+                x:Name="MoreButton"
+                Grid.Column="3"
+                Width="44"
+                Height="48"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                BorderThickness="0"
+                Click="MoreButton_Click"
+                Foreground="White">
+                <Image
+                    Width="24"
+                    Height="24"
+                    Source="Assets/more.png"
+                    Stretch="Uniform" />
+            </Button>
+        </Grid>
+
+        <!--  Main content with ScrollViewer  -->
+        <ScrollViewer
+            Grid.Row="1"
+            Background="#0F0F0F"
+            HorizontalScrollBarVisibility="Disabled"
+            HorizontalScrollMode="Disabled"
+            VerticalScrollBarVisibility="Auto"
+            ViewChanged="ScrollViewer_ViewChanged"
+            ZoomMode="Disabled">
+
+            <StackPanel Background="#0F0F0F">
+
+                <ItemsControl
+                    x:Name="SearchResultsList"
+                    Padding="8,0,8,16"
+                    HorizontalAlignment="Stretch"
+                    Background="#0F0F0F"
+                    SizeChanged="CardsItemsControl_SizeChanged">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid
+                                HorizontalAlignment="Center"
+                                ItemWidth="360"
+                                MaximumRowsOrColumns="3"
+                                Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button
+                                Margin="0,0,0,16"
+                                Padding="0"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                Tag="ResponsiveCard"
+                                Loaded="ResponsiveCard_Loaded"
+                                SizeChanged="ResponsiveCard_SizeChanged"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Click="VideoCard_Click">
+                                <Grid HorizontalAlignment="Stretch" Background="#0F0F0F">
+                                    <!--  Video / playlist card  -->
+                                    <StackPanel
+                                        HorizontalAlignment="Stretch"
+                                        Background="#0F0F0F"
+                                        Orientation="Vertical"
+                                        Visibility="{Binding MediaCardVisibility}">
+                                        <Grid SizeChanged="VideoThumbnailHost_SizeChanged">
+                                            <Border Background="#1A1A1A" />
+                                            <Image
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Stretch"
+                                                Source="{Binding Thumbnail}"
+                                                Stretch="Uniform" />
+                                            <Border
+                                                Margin="0,0,8,8"
+                                                Padding="6,2"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Bottom"
+                                                Visibility="{Binding DurationVisibility}">
+                                                <Border.Background>
+                                                    <SolidColorBrush Opacity="0.8" Color="Black" />
+                                                </Border.Background>
+                                                <TextBlock
+                                                    FontSize="12"
+                                                    FontWeight="Medium"
+                                                    Foreground="White"
+                                                    Text="{Binding Duration}" />
+                                            </Border>
+                                        </Grid>
+
+                                        <StackPanel Margin="12,12,12,0">
+                                            <TextBlock
+                                                FontFamily="Roboto"
+                                                FontSize="14"
+                                                FontWeight="Medium"
+                                                Foreground="White"
+                                                Text="{Binding Title}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="NoWrap" />
+                                            <TextBlock
+                                                Margin="0,4,0,0"
+                                                FontFamily="Roboto"
+                                                FontSize="12"
+                                                Foreground="Gray"
+                                                Text="{Binding Author}" />
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <!--  Compact channel result. Click anywhere to open Channel.  -->
+                                    <Grid
+                                        MinHeight="78"
+                                        Padding="14,8,14,8"
+                                        HorizontalAlignment="Stretch"
+                                        Background="#0F0F0F"
+                                        Visibility="{Binding ChannelCardVisibility}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid
+                                            Grid.Column="0"
+                                            Width="54"
+                                            Height="54"
+                                            VerticalAlignment="Center">
+                                            <Ellipse Fill="#333333" />
+                                            <Ellipse>
+                                                <Ellipse.Fill>
+                                                    <ImageBrush ImageSource="{Binding ChannelAvatarSource}" Stretch="UniformToFill" />
+                                                </Ellipse.Fill>
+                                            </Ellipse>
+                                        </Grid>
+
+                                        <StackPanel
+                                            Grid.Column="1"
+                                            Margin="12,0,0,0"
+                                            VerticalAlignment="Center">
+                                            <TextBlock
+                                                FontFamily="Roboto"
+                                                FontSize="17"
+                                                FontWeight="SemiBold"
+                                                Foreground="White"
+                                                Text="{Binding Title}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="NoWrap"
+                                                Visibility="{Binding TitleVisibility}" />
+                                            <TextBlock
+                                                Margin="0,2,0,0"
+                                                FontFamily="Roboto"
+                                                FontSize="13"
+                                                Foreground="#AAAAAA"
+                                                Text="{Binding Author}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="NoWrap" />
+                                            <TextBlock
+                                                Margin="0,2,0,0"
+                                                FontFamily="Roboto"
+                                                FontSize="13"
+                                                Foreground="#AAAAAA"
+                                                Text="{Binding Views}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="NoWrap" />
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!--  Loading Indicator  -->
+                <StackPanel
+                    x:Name="LoadingPanel"
+                    Margin="0,20,0,40"
+                    HorizontalAlignment="Center"
+                    Visibility="Collapsed">
+                    <local:AndroidLoadingRing
+                        x:Name="LoadingRing"
+                        Width="42"
+                        Height="42"
+                        IsActive="False" />
+                    <TextBlock
+                        Margin="0,8,0,0"
+                        HorizontalAlignment="Center"
+                        FontSize="14"
+                        Foreground="Gray"
+                        Text="Searching..." />
+                </StackPanel>
+
+                <!--  Bottom Loading Indicator for infinite scroll  -->
+                <StackPanel
+                    x:Name="BottomLoadingPanel"
+                    Margin="0,20,0,40"
+                    HorizontalAlignment="Center"
+                    Visibility="Collapsed">
+                    <local:AndroidLoadingRing
+                        x:Name="BottomLoadingRing"
+                        Width="30"
+                        Height="30"
+                        IsActive="False" />
+                    <TextBlock
+                        Margin="0,8,0,0"
+                        HorizontalAlignment="Center"
+                        FontSize="14"
+                        Foreground="Gray"
+                        Text="Loading more results..." />
+                </StackPanel>
+
+                <!--  Error Text  -->
+                <TextBlock
+                    x:Name="ErrorText"
+                    Margin="0,20,0,0"
+                    HorizontalAlignment="Center"
+                    FontSize="14"
+                    Foreground="Red"
+                    TextWrapping="Wrap"
+                    Visibility="Collapsed" />
+            </StackPanel>
+        </ScrollViewer>
+
+        <!--  Tabbar at the bottom  -->
+        <local:Tabbar x:Name="tabbar" Grid.Row="2" />
+
+        <!--  Skeleton Loading Screen  -->
+        <Grid
+            x:Name="SkeletonLoader"
+            Grid.Row="1"
+            Background="#0F0F0F"
+            Visibility="Collapsed">
+            <ScrollViewer VerticalScrollBarVisibility="Hidden">
+                <ItemsControl
+                    x:Name="SkeletonCardsList"
+                    Padding="8,0,8,16"
+                    HorizontalAlignment="Stretch"
+                    Background="#0F0F0F"
+                    SizeChanged="CardsItemsControl_SizeChanged">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid
+                                HorizontalAlignment="Center"
+                                ItemWidth="360"
+                                MaximumRowsOrColumns="3"
+                                Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid
+                                Margin="0,0,0,16"
+                                HorizontalAlignment="Stretch"
+                                Tag="ResponsiveCard"
+                                Loaded="ResponsiveCard_Loaded"
+                                SizeChanged="PlaceholderCardHost_SizeChanged">
+                                <Image
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    ImageOpened="PlaceholderCard_ImageOpened"
+                                    Source="Assets/yt_skeleton/video.png"
+                                    Stretch="Uniform" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+
+        <!--  Center Loading Screen for channel search  -->
+        <Grid
+            x:Name="SearchLoadingGrid"
+            Grid.Row="1"
+            Background="#0F0F0F"
+            Visibility="Collapsed">
+            <local:AndroidLoadingRing
+                x:Name="SearchLoadingRing"
+                Width="42"
+                Height="42"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                IsActive="False" />
+        </Grid>
+
+        <!--  Type selection bottom sheet  -->
+        <Grid
+            x:Name="TypeOverlayGrid"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Background="#80000000"
+            Visibility="Collapsed"
+            Tapped="TypeOverlayGrid_Tapped" />
+
+        <Border
+            x:Name="TypeBottomSheetPanel"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Height="315"
+            Margin="10,0,10,10"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Bottom"
+            Background="#1A1A1A"
+            CornerRadius="15"
+            Visibility="Collapsed">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="TypeBottomSheetTransform" Y="330" />
+            </Border.RenderTransform>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid
+                    x:Name="TypeDragArea"
+                    Grid.Row="0"
+                    Height="40"
+                    Background="Transparent"
+                    Tapped="TypeDragArea_Tapped"
+                    PointerPressed="TypeDragArea_PointerPressed"
+                    PointerMoved="TypeDragArea_PointerMoved"
+                    PointerReleased="TypeDragArea_PointerReleased"
+                    PointerCaptureLost="TypeDragArea_PointerReleased">
+                    <Rectangle
+                        Width="40"
+                        Height="4"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Fill="Gray"
+                        RadiusX="2"
+                        RadiusY="2" />
+                </Grid>
+
+                <StackPanel Grid.Row="1" Margin="20,0,20,20">
+                    <TextBlock
+                        Margin="0,0,0,16"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Foreground="White"
+                        Text="Type" />
+
+                    <Button
+                        x:Name="VideosTypeButton"
+                        Height="56"
+                        Padding="0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="VideosTypeButton_Click">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Foreground="White"
+                                Text="Videos" />
+                            <FontIcon
+                                x:Name="VideosTypeCheck"
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="18"
+                                Foreground="White"
+                                Glyph="&#xE73E;" />
+                        </Grid>
+                    </Button>
+
+                    <Border Height="1" Background="#2A2A2A" />
+
+                    <Button
+                        x:Name="PlaylistsTypeButton"
+                        Height="56"
+                        Padding="0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="PlaylistsTypeButton_Click">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Foreground="White"
+                                Text="Playlists" />
+                            <FontIcon
+                                x:Name="PlaylistsTypeCheck"
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="18"
+                                Foreground="White"
+                                Glyph="&#xE73E;" />
+                        </Grid>
+                    </Button>
+
+                    <Border Height="1" Background="#2A2A2A" />
+
+                    <Button
+                        x:Name="ChannelsTypeButton"
+                        Height="56"
+                        Padding="0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="ChannelsTypeButton_Click">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="16"
+                                Foreground="White"
+                                Text="Channels" />
+                            <FontIcon
+                                x:Name="ChannelsTypeCheck"
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="18"
+                                Foreground="White"
+                                Glyph="&#xE73E;" />
+                        </Grid>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Page>

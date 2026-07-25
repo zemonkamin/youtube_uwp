@@ -1,0 +1,146 @@
+<Page
+    x:Class="YouTube.History"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:YouTube"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#0F0F0F">
+
+    <Grid Background="#0F0F0F">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <ScrollViewer x:Name="HistoryScroll"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          ViewChanged="HistoryScroll_ViewChanged">
+                <StackPanel Padding="16,16,16,20">
+                    <TextBlock Text="History"
+                               Foreground="White"
+                               FontSize="28"
+                               FontWeight="SemiBold"
+                               Margin="0,12,0,16"/>
+
+                    <ItemsControl x:Name="HistoryGroupsList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,0,12">
+                                    <TextBlock Text="{Binding DateTitle}"
+                                               Foreground="White"
+                                               FontSize="18"
+                                               FontWeight="SemiBold"
+                                               Margin="0,0,0,10"/>
+
+                                    <ItemsControl ItemsSource="{Binding Videos}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Padding="0"
+                                                        HorizontalContentAlignment="Stretch"
+                                                        Margin="0,0,0,12"
+                                                        Click="VideoCard_Click">
+                                                    <Grid HorizontalAlignment="Stretch">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="160"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <Grid Grid.Column="0"
+                                                              Width="160"
+                                                              Height="90">
+                                                            <Border CornerRadius="8">
+                                                                <Border.Background>
+                                                                    <ImageBrush ImageSource="{Binding ThumbnailUrl}"
+                                                                                Stretch="UniformToFill"/>
+                                                                </Border.Background>
+                                                            </Border>
+
+                                                            <Border HorizontalAlignment="Right"
+                                                                    VerticalAlignment="Bottom"
+                                                                    Margin="0,0,5,5"
+                                                                    Padding="4,1"
+                                                                    CornerRadius="2">
+                                                                <Border.Background>
+                                                                    <SolidColorBrush Color="Black" Opacity="0.82"/>
+                                                                </Border.Background>
+                                                                <TextBlock Text="{Binding Duration}"
+                                                                           Foreground="White"
+                                                                           FontSize="10"
+                                                                           FontWeight="SemiBold"/>
+                                                            </Border>
+                                                        </Grid>
+
+                                                        <StackPanel Grid.Column="1"
+                                                                    Margin="12,0,0,0"
+                                                                    VerticalAlignment="Top">
+                                                            <TextBlock Text="{Binding Title}"
+                                                                       Foreground="White"
+                                                                       FontSize="14"
+                                                                       FontWeight="Normal"
+                                                                       TextWrapping="Wrap"
+                                                                       TextTrimming="CharacterEllipsis"
+                                                                       MaxLines="3"/>
+                                                            <TextBlock Text="{Binding ChannelTitle}"
+                                                                       Foreground="#A8A8A8"
+                                                                       FontSize="12"
+                                                                       TextWrapping="NoWrap"
+                                                                       TextTrimming="CharacterEllipsis"
+                                                                       Margin="0,4,0,0"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <StackPanel x:Name="BottomLoadingPanel"
+                                Visibility="Collapsed"
+                                HorizontalAlignment="Center"
+                                Margin="0,8,0,26">
+                        <local:AndroidLoadingRing x:Name="BottomLoadingRing"
+                                                  Width="34"
+                                                  Height="34"
+                                                  IsActive="False"/>
+                        <TextBlock Text="Loading more history..."
+                                   Foreground="#AAAAAA"
+                                   FontSize="14"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,8,0,0"/>
+                    </StackPanel>
+
+                    <TextBlock x:Name="EmptyText"
+                               Text="No history yet"
+                               Foreground="#AAAAAA"
+                               FontSize="16"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               Visibility="Collapsed"
+                               Margin="0,36,0,0"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Grid x:Name="LoadingOverlay"
+                  Background="#0F0F0F"
+                  Visibility="Collapsed">
+                <local:AndroidLoadingRing x:Name="LoadingRing"
+                                          Width="48"
+                                          Height="48"
+                                          IsActive="False"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+            </Grid>
+        </Grid>
+
+        <local:Tabbar x:Name="tabbar" Grid.Row="1"/>
+    </Grid>
+</Page>

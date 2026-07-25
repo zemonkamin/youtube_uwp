@@ -1,0 +1,27 @@
+<UserControl
+    x:Class="YouTube.AndroidLoadingRing"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    MinWidth="16"
+    MinHeight="16"
+    d:DesignWidth="32"
+    d:DesignHeight="32"
+    mc:Ignorable="d">
+
+    <Grid
+        x:Name="RootGrid"
+        Background="Transparent"
+        HorizontalAlignment="Stretch"
+        VerticalAlignment="Stretch">
+        <Path
+            x:Name="SpinnerPath"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Stroke="White"
+            StrokeThickness="2.5"
+            StrokeStartLineCap="Round"
+            StrokeEndLineCap="Round" />
+    </Grid>
+</UserControl>

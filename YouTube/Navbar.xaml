@@ -1,0 +1,193 @@
+<Page
+    x:Class="YouTube.Navbar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:YouTube"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="#0F0F0F">
+        <!-- Vertical Layout (Default) -->
+        <Grid x:Name="VerticalLayout" Visibility="Visible">
+            <!-- TopBar: YouTube logo and search icon -->
+            <Grid x:Name="TopBar" Background="#0F0F0F" Height="56" VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Image x:Name="YouTubeLogo" Source="Assets/ytlogo.png" Height="32" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                <StackPanel Grid.Column="2"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            Margin="0,0,16,0">
+                    <Button x:Name="NotificationsButtonVertical"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="NotificationsButton_Click"
+                            VerticalAlignment="Center"
+                            Padding="8"
+                            Margin="0,0,4,0"
+                            Visibility="Collapsed">
+                        <Image Source="Assets/notifications.png" Width="24" Height="24"/>
+                    </Button>
+                    <Button x:Name="ShowSearchButton" Background="Transparent" BorderThickness="0" Click="ShowSearchButton_Click" VerticalAlignment="Center" Padding="8">
+                        <Image Source="Assets/search.png" Width="24" Height="24"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <!-- Horizontal Layout -->
+        <Grid x:Name="HorizontalLayout" Visibility="Collapsed" Height="56" VerticalAlignment="Top" Background="#0F0F0F">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- YouTube Logo -->
+            <Image Source="Assets/ytlogo.png" Height="32" Margin="16,0,0,0" VerticalAlignment="Center" Grid.Column="0"/>
+
+            <!-- Centered Search Input -->
+            <Border Grid.Column="1" Grid.ColumnSpan="2" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Width="400"
+                    Background="#FF222222" 
+                    CornerRadius="5">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="SearchInputHorizontal"
+                             Grid.Column="0"
+                             PlaceholderText="Search"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             FontFamily="Roboto"
+                             FontSize="14"
+                             Foreground="White"
+                             Padding="12,0"
+                             VerticalAlignment="Center"
+                             KeyUp="SearchInputHorizontal_KeyUp"
+                             TextChanged="SearchInputHorizontal_TextChanged"
+                             GotFocus="SearchInputHorizontal_GotFocus"/>
+                    <Button x:Name="SearchButtonHorizontal" 
+                            Grid.Column="1"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Click="SearchButtonHorizontal_Click"
+                            VerticalAlignment="Stretch"
+                            Width="60">
+                        <Image Source="Assets/search.png" Width="20" Height="20"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Search Suggestions -->
+            <Border Grid.Column="1" 
+                    Grid.ColumnSpan="2"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Margin="0,56,0,0"
+                    Width="400"
+                    Background="#FF1A1A1A">
+                <Grid>
+                    <!-- Search History -->
+                    <ListView x:Name="HistoryList"
+                          Background="Transparent"
+                          Visibility="Collapsed"
+                          MaxHeight="300"
+                          SelectionMode="None">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="0"/>
+                                <Setter Property="Margin" Value="0"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Margin="12,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <FontIcon Glyph="&#xE81C;"
+                                         FontFamily="Segoe MDL2 Assets"
+                                         FontSize="16"
+                                         Foreground="#AAAAAA"
+                                         VerticalAlignment="Center"/>
+
+                                    <Button Grid.Column="1"
+                                       Content="{Binding SearchText}"
+                                       Foreground="White"
+                                       FontFamily="Roboto"
+                                       FontSize="13"
+                                       Margin="12,0,12,0"
+                                       VerticalAlignment="Center"
+                                       Background="Transparent"
+                                       BorderThickness="0"
+                                       HorizontalAlignment="Left"
+                                       HorizontalContentAlignment="Left"
+                                       Click="HistoryItem_Click"/>
+
+                                    <Button Grid.Column="2"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Click="RemoveHistoryItem_Click"
+                                        Padding="8">
+                                        <FontIcon Glyph="&#xE711;"
+                                             FontFamily="Segoe MDL2 Assets"
+                                             FontSize="16"
+                                             Foreground="#AAAAAA"/>
+                                    </Button>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+
+                    <!-- Search Suggestions -->
+                    <ListView x:Name="SuggestionsList"
+                         Background="Transparent"
+                         Visibility="Collapsed"
+                         SelectionMode="None">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Button Background="Transparent"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    Padding="12,8"
+                                    Click="SuggestionItem_Click">
+                                    <TextBlock Text="{Binding}"
+                                         Foreground="White"
+                                         FontFamily="Roboto"
+                                         FontSize="13"/>
+                                </Button>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </Border>
+
+            <!-- Right side icons -->
+            <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0">
+                <Button x:Name="NotificationsButtonHorizontal"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="NotificationsButton_Click"
+                        Padding="8"
+                        Visibility="Collapsed">
+                    <Image Source="Assets/notifications.png" Width="24" Height="24"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Page>

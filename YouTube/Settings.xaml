@@ -1,0 +1,460 @@
+﻿<Page
+    x:Class="YouTube.Settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:YouTube"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#0F0F0F">
+
+    <Page.Resources>
+        <Style x:Key="SettingsIconButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="#0F0F0F">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="56" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="52" />
+        </Grid.RowDefinitions>
+
+        <local:Navbar x:Name="navbar" Grid.Row="0" />
+
+        <Grid Grid.Row="1" Background="#0F0F0F">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          ZoomMode="Disabled">
+                <StackPanel Padding="0,12,0,82">
+                    <TextBlock Text="Settings"
+                               Foreground="White"
+                               FontSize="22"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               Margin="18,0,18,22" />
+
+                    <TextBlock Text="Account"
+                               Foreground="White"
+                               FontSize="17"
+                               FontWeight="Bold"
+                               Margin="18,0,18,10" />
+
+                    <Button Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="52"
+                            HorizontalAlignment="Stretch"
+                            Click="LogoutButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   Source="Assets/log_out.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="Log out"
+                                       Foreground="White"
+                                       FontSize="16"
+                                       VerticalAlignment="Center"
+                                       Margin="18,0,0,0" />
+                        </Grid>
+                    </Button>
+
+                    <TextBlock Text="Video"
+                               Foreground="White"
+                               FontSize="17"
+                               FontWeight="Bold"
+                               Margin="18,22,18,10" />
+
+                    <Button Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="52"
+                            HorizontalAlignment="Stretch"
+                            Click="PreferredQualityButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   Source="Assets/player/quality.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="Preferred video quality"
+                                       Foreground="White"
+                                       FontSize="16"
+                                       VerticalAlignment="Center"
+                                       Margin="18,0,0,0" />
+                            <StackPanel Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="8,0,0,0">
+                                <TextBlock x:Name="PreferredQualityValueText"
+                                           Text="Auto"
+                                           Foreground="#AAAAAA"
+                                           FontSize="13"
+                                           VerticalAlignment="Center" />
+                                <Image Source="Assets/player/skip.png"
+                                       Width="14"
+                                       Height="14"
+                                       Stretch="Uniform"
+                                       Opacity="0.6"
+                                       VerticalAlignment="Center"
+                                       Margin="6,0,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <Button Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="52"
+                            HorizontalAlignment="Stretch"
+                            Click="PreferredShortsQualityButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   Source="Assets/player/quality.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="Preferred Shorts quality"
+                                       Foreground="White"
+                                       FontSize="16"
+                                       VerticalAlignment="Center"
+                                       Margin="18,0,0,0" />
+                            <StackPanel Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="8,0,0,0">
+                                <TextBlock x:Name="PreferredShortsQualityValueText"
+                                           Text="Auto"
+                                           Foreground="#AAAAAA"
+                                           FontSize="13"
+                                           VerticalAlignment="Center" />
+                                <Image Source="Assets/player/skip.png"
+                                       Width="14"
+                                       Height="14"
+                                       Stretch="Uniform"
+                                       Opacity="0.6"
+                                       VerticalAlignment="Center"
+                                       Margin="6,0,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+
+
+                    <TextBlock Text="Notifications"
+                               Foreground="White"
+                               FontSize="17"
+                               FontWeight="Bold"
+                               Margin="18,22,18,10" />
+
+                    <Button Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="52"
+                            HorizontalAlignment="Stretch"
+                            Click="NotificationsButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   Source="Assets/notifications.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="Notifications"
+                                       Foreground="White"
+                                       FontSize="16"
+                                       VerticalAlignment="Center"
+                                       Margin="18,0,0,0" />
+                            <StackPanel Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="8,0,0,0">
+                                <TextBlock x:Name="NotificationFrequencyValueText"
+                                           Text="Every hour"
+                                           Foreground="#AAAAAA"
+                                           FontSize="13"
+                                           VerticalAlignment="Center" />
+                                <Image Source="Assets/player/skip.png"
+                                       Width="14"
+                                       Height="14"
+                                       Stretch="Uniform"
+                                       Opacity="0.6"
+                                       VerticalAlignment="Center"
+                                       Margin="6,0,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <TextBlock Text="About"
+                               Foreground="White"
+                               FontSize="17"
+                               FontWeight="Bold"
+                               Margin="18,22,18,10" />
+
+                    <Button Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="52"
+                            HorizontalAlignment="Stretch"
+                            Click="AboutButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   Source="Assets/info.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <TextBlock Grid.Column="1"
+                                       Text="Information"
+                                       Foreground="White"
+                                       FontSize="16"
+                                       VerticalAlignment="Center"
+                                       Margin="18,0,0,0" />
+                            <Image Grid.Column="2"
+                                   Source="Assets/player/skip.png"
+                                   Width="14"
+                                   Height="14"
+                                   Stretch="Uniform"
+                                   Opacity="0.6"
+                                   VerticalAlignment="Center"
+                                   Margin="6,0,0,0" />
+                        </Grid>
+                    </Button>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Grid x:Name="OverlayGrid"
+                  Background="#80000000"
+                  Visibility="Collapsed"
+                  Tapped="OverlayGrid_Tapped" />
+
+            <Border x:Name="QualityBottomSheetPanel"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Stretch"
+                    Background="#222222"
+                    CornerRadius="15"
+                    Height="330"
+                    Margin="10,0,10,10"
+                    Visibility="Collapsed">
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="QualityBottomSheetTransform" Y="340" />
+                </Border.RenderTransform>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0"
+                          Height="34"
+                          Background="Transparent"
+                          Tapped="QualityDragArea_Tapped"
+                          PointerPressed="QualityDragArea_PointerPressed"
+                          PointerMoved="QualityDragArea_PointerMoved"
+                          PointerReleased="QualityDragArea_PointerReleased"
+                          PointerCaptureLost="QualityDragArea_PointerReleased">
+                        <Rectangle Width="38"
+                                   Height="4"
+                                   Fill="Gray"
+                                   RadiusX="2"
+                                   RadiusY="2"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="16,0,16,16">
+                        <StackPanel>
+                            <TextBlock Text="Preferred video quality"
+                                       Foreground="White"
+                                       FontWeight="SemiBold"
+                                       FontSize="15"
+                                       Margin="0,0,0,12" />
+                            <StackPanel x:Name="QualityOptionsPanel" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+
+
+            <Border x:Name="NotificationsBottomSheetPanel"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Stretch"
+                    Background="#222222"
+                    CornerRadius="15"
+                    Height="370"
+                    Margin="10,0,10,10"
+                    Visibility="Collapsed">
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="NotificationsBottomSheetTransform" Y="380" />
+                </Border.RenderTransform>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0"
+                          Height="34"
+                          Background="Transparent"
+                          Tapped="NotificationsDragArea_Tapped"
+                          PointerPressed="NotificationsDragArea_PointerPressed"
+                          PointerMoved="NotificationsDragArea_PointerMoved"
+                          PointerReleased="NotificationsDragArea_PointerReleased"
+                          PointerCaptureLost="NotificationsDragArea_PointerReleased">
+                        <Rectangle Width="38"
+                                   Height="4"
+                                   Fill="Gray"
+                                   RadiusX="2"
+                                   RadiusY="2"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="16,0,16,16">
+                        <StackPanel>
+                            <TextBlock Text="Notifications"
+                                       Foreground="White"
+                                       FontWeight="SemiBold"
+                                       FontSize="15"
+                                       Margin="0,0,0,12" />
+
+                            <Grid Height="48" Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Text="Send notifications"
+                                               Foreground="White"
+                                               FontSize="14" />
+                                    <TextBlock Text="Background toasts from YouTube notifications"
+                                               Foreground="#AAAAAA"
+                                               FontSize="12"
+                                               Margin="0,2,0,0" />
+                                </StackPanel>
+                                <Button x:Name="NotificationsToggleButton"
+                                        Grid.Column="1"
+                                        Style="{StaticResource SettingsIconButtonStyle}"
+                                        Width="56"
+                                        Height="32"
+                                        Click="NotificationsToggleButton_Click">
+                                    <Grid Width="56" Height="32">
+                                        <Border x:Name="NotificationsToggleTrack"
+                                                Width="56"
+                                                Height="32"
+                                                Background="#FFFFFF"
+                                                CornerRadius="16" />
+                                        <Ellipse x:Name="NotificationsToggleThumb"
+                                                 Width="24"
+                                                 Height="24"
+                                                 Fill="#202124"
+                                                 HorizontalAlignment="Left"
+                                                 Margin="4,4,0,4">
+                                            <Ellipse.RenderTransform>
+                                                <TranslateTransform x:Name="NotificationsToggleThumbTransform" X="24" />
+                                            </Ellipse.RenderTransform>
+                                        </Ellipse>
+                                    </Grid>
+                                </Button>
+                            </Grid>
+
+                            <TextBlock Text="Frequency"
+                                       Foreground="#AAAAAA"
+                                       FontSize="12"
+                                       Margin="0,0,0,8" />
+                            <StackPanel x:Name="NotificationFrequencyOptionsPanel" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border x:Name="AboutBottomSheetPanel"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Stretch"
+                    Background="#1A1A1A"
+                    CornerRadius="15"
+                    Height="250"
+                    Margin="10,0,10,10"
+                    Visibility="Collapsed">
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="AboutBottomSheetTransform" Y="260" />
+                </Border.RenderTransform>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0"
+                          Height="34"
+                          Background="Transparent"
+                          Tapped="AboutDragArea_Tapped"
+                          PointerPressed="AboutDragArea_PointerPressed"
+                          PointerMoved="AboutDragArea_PointerMoved"
+                          PointerReleased="AboutDragArea_PointerReleased"
+                          PointerCaptureLost="AboutDragArea_PointerReleased">
+                        <Rectangle Width="38"
+                                   Height="4"
+                                   Fill="Gray"
+                                   RadiusX="2"
+                                   RadiusY="2"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="16,0,16,16">
+                        <StackPanel>
+                            <TextBlock Text="Information"
+                                       Foreground="White"
+                                       FontSize="16"
+                                       FontWeight="SemiBold"
+                                       Margin="0,0,0,12" />
+                            <TextBlock x:Name="AboutText"
+                                       Foreground="White"
+                                       FontSize="13"
+                                       TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <local:Tabbar x:Name="tabbar" Grid.Row="2" />
+    </Grid>
+</Page>

@@ -1,0 +1,289 @@
+<Page
+    x:Class="YouTube.Me"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:YouTube"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#0F0F0F">
+
+    <Grid Background="#0F0F0F" x:Name="mainGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Padding="0,10,0,24">
+                    <!-- Top bar: no Accounts button, no notifications bell -->
+                    <Grid Height="44" Margin="16,0,16,4">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center">
+                            <Button x:Name="SearchButton"
+                                    Width="38"
+                                    Height="38"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Padding="8"
+                                    Click="SearchButton_Click">
+                                <Image Source="Assets/search.png"
+                                       Width="22"
+                                       Height="22"
+                                       Stretch="Uniform"/>
+                            </Button>
+
+                            <Button x:Name="SettingsButton"
+                                    Width="38"
+                                    Height="38"
+                                    Margin="6,0,0,0"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Padding="6"
+                                    Click="SettingsButton_Click">
+                                <Image Source="Assets/player/settings.png"
+                                       Width="24"
+                                       Height="24"
+                                       Stretch="Uniform"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Profile -->
+                    <Grid Margin="16,6,16,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Ellipse Grid.Column="0"
+                                 Width="60"
+                                 Height="60"
+                                 VerticalAlignment="Center">
+                            <Ellipse.Fill>
+                                <ImageBrush x:Name="ProfileImageBrush"
+                                            Stretch="UniformToFill"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+
+                        <StackPanel Grid.Column="1"
+                                    Margin="12,0,0,0"
+                                    VerticalAlignment="Center">
+                            <TextBlock x:Name="DisplayNameText"
+                                       Text="Loading..."
+                                       Foreground="White"
+                                       FontSize="20"
+                                       FontWeight="SemiBold"
+                                       TextWrapping="NoWrap"
+                                       TextTrimming="CharacterEllipsis"/>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,3,0,0">
+                                <TextBlock x:Name="ChannelHandleText"
+                                           Text=""
+                                           Foreground="#B8B8B8"
+                                           FontSize="12"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock x:Name="ProfileMetaSeparator"
+                                           Text="  •  "
+                                           Foreground="#888888"
+                                           FontSize="12"
+                                           VerticalAlignment="Center"/>
+                                <Button x:Name="GoToChannelButton"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Padding="0"
+                                        Click="GoToChannelButton_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="View channel"
+                                                   Foreground="#B8B8B8"
+                                                   FontSize="12"
+                                                   VerticalAlignment="Center"/>
+                                        <TextBlock Text=" &#x203A;"
+                                                   Foreground="#B8B8B8"
+                                                   FontSize="18"
+                                                   Margin="2,-2,0,0"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- History -->
+                    <Button Background="Transparent"
+                            BorderThickness="0"
+                            Padding="0"
+                            HorizontalContentAlignment="Stretch"
+                            Margin="16,0,16,8"
+                            Click="HistoryHeader_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="History"
+                                       Foreground="White"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center"/>
+                            <TextBlock Text=" &#x203A;"
+                                       Foreground="#B8B8B8"
+                                       FontSize="24"
+                                       Margin="3,-3,0,0"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+                                  VerticalScrollBarVisibility="Disabled"
+                                  HorizontalScrollMode="Enabled"
+                                  VerticalScrollMode="Disabled"
+                                  ZoomMode="Disabled"
+                                  Margin="0,0,0,20">
+                        <ItemsControl x:Name="HistoryList"
+                                      Margin="16,0,0,0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Width="160"
+                                            Margin="0,0,16,0"
+                                            Padding="0"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            HorizontalContentAlignment="Stretch"
+                                            Click="VideoCard_Click">
+                                        <StackPanel>
+                                            <Grid Width="160" Height="90">
+                                                <Border CornerRadius="8">
+                                                    <Border.Background>
+                                                        <ImageBrush ImageSource="{Binding ThumbnailUrl}"
+                                                                    Stretch="UniformToFill"/>
+                                                    </Border.Background>
+                                                </Border>
+                                                <Border HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        Margin="0,0,4,4"
+                                                        Padding="4,1"
+                                                        CornerRadius="2">
+                                                    <Border.Background>
+                                                        <SolidColorBrush Color="Black" Opacity="0.82"/>
+                                                    </Border.Background>
+                                                    <TextBlock Text="{Binding Duration}"
+                                                               Foreground="White"
+                                                               FontSize="10"
+                                                               FontWeight="SemiBold"/>
+                                                </Border>
+                                            </Grid>
+                                            <TextBlock Text="{Binding Title}"
+                                                       Foreground="White"
+                                                       FontSize="13"
+                                                       TextWrapping="Wrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       MaxLines="2"
+                                                       Margin="0,6,0,0"/>
+                                            <TextBlock Text="{Binding ChannelTitle}"
+                                                       Foreground="#AAAAAA"
+                                                       FontSize="11"
+                                                       TextWrapping="NoWrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="0,3,0,0"/>
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- Playlists -->
+                    <Grid Margin="16,0,16,8">
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="Playlists"
+                                       Foreground="White"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center"/>
+
+                        </StackPanel>
+                    </Grid>
+
+                    <ScrollViewer HorizontalScrollBarVisibility="Hidden"
+                                  VerticalScrollBarVisibility="Disabled"
+                                  HorizontalScrollMode="Enabled"
+                                  VerticalScrollMode="Disabled"
+                                  ZoomMode="Disabled">
+                        <ItemsControl x:Name="PlaylistsList"
+                                      Margin="16,0,0,0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Width="160"
+                                            Margin="0,0,16,0"
+                                            Padding="0"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            HorizontalContentAlignment="Stretch"
+                                            Click="PlaylistCard_Click">
+                                        <StackPanel>
+                                            <Grid Width="160" Height="90">
+                                                <Border CornerRadius="8">
+                                                    <Border.Background>
+                                                        <ImageBrush ImageSource="{Binding ThumbnailUrl}"
+                                                                    Stretch="UniformToFill"/>
+                                                    </Border.Background>
+                                                </Border>
+                                            </Grid>
+                                            <TextBlock Text="{Binding Title}"
+                                                       Foreground="White"
+                                                       FontSize="13"
+                                                       TextWrapping="Wrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       MaxLines="2"
+                                                       Margin="0,6,0,0"/>
+                                            <TextBlock Text="{Binding PrivacyText}"
+                                                       Foreground="#AAAAAA"
+                                                       FontSize="11"
+                                                       TextWrapping="NoWrap"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Margin="0,3,0,0"/>
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <TextBlock x:Name="EmptyText"
+                               Visibility="Collapsed"
+                               Text="No data"
+                               Foreground="#AAAAAA"
+                               FontSize="16"
+                               HorizontalAlignment="Center"
+                               Margin="22,40,22,0"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Grid x:Name="LoadingOverlay"
+                  Background="#0F0F0F"
+                  Visibility="Collapsed">
+                <local:AndroidLoadingRing x:Name="LoadingRing"
+                                          Width="48"
+                                          Height="48"
+                                          IsActive="False"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+            </Grid>
+        </Grid>
+
+        <local:Tabbar x:Name="tabbar" Grid.Row="1"/>
+    </Grid>
+</Page>

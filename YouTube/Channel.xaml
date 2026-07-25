@@ -1,0 +1,523 @@
+﻿<Page
+    x:Class="YouTube.Channel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:YouTube"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="#0F0F0F">
+
+    <Page.Resources>
+        <Style x:Key="PlainVideoButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        </Style>
+
+        <Style x:Key="SubscriptionIconButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Pressed" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Grid Background="#0F0F0F">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="56" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="52" />
+        </Grid.RowDefinitions>
+
+        <local:Navbar x:Name="navbar" Grid.Row="0" />
+
+        <Grid x:Name="LoadingGrid" Grid.Row="1" Background="#0F0F0F" Visibility="Visible">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <local:AndroidLoadingRing x:Name="LoadingRing" Width="42" Height="42" IsActive="True" />
+                <TextBlock Text="Loading channel..." Foreground="#AAAAAA" FontSize="14" Margin="0,12,0,0" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+
+        <Grid x:Name="ErrorPanel" Grid.Row="1" Background="#0F0F0F" Visibility="Collapsed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24">
+                <FontIcon Glyph="&#xE783;" FontFamily="Segoe MDL2 Assets" Foreground="#AAAAAA" FontSize="42" />
+                <TextBlock x:Name="ErrorText" Text="Could not load channel" Foreground="White" FontSize="18" FontWeight="SemiBold" TextAlignment="Center" Margin="0,16,0,8" />
+                <TextBlock Text="Check your connection and try again" Foreground="#AAAAAA" FontSize="14" TextAlignment="Center" Margin="0,0,0,20" />
+                <Button Content="Retry" Click="RetryButton_Click" Background="White" Foreground="#0F0F0F" BorderThickness="0" Padding="24,10" />
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer x:Name="MainContent"
+                      Grid.Row="1"
+                      Background="#0F0F0F"
+                      Visibility="Collapsed"
+                      ZoomMode="Disabled"
+                      HorizontalScrollMode="Disabled"
+                      HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Background="#0F0F0F" Padding="0,8,0,24">
+
+                <!--  Collapsed when the channel has no banner art, so no empty box is shown.  -->
+                <Grid x:Name="ChannelBannerSection" Margin="12,0,12,0" Visibility="Collapsed">
+                    <Border Height="110" CornerRadius="10" Background="#1F1F1F" />
+                    <Border Height="110" CornerRadius="10">
+                        <Border.Background>
+                            <ImageBrush x:Name="ChannelBannerBrush" Stretch="UniformToFill" />
+                        </Border.Background>
+                    </Border>
+                </Grid>
+
+                <Grid Margin="12,12,12,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Width="64" Height="64" VerticalAlignment="Top">
+                        <Ellipse Fill="#2A2A2A" />
+                        <Ellipse>
+                            <Ellipse.Fill>
+                                <ImageBrush x:Name="ChannelIconBrush" Stretch="UniformToFill" />
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Grid>
+
+                    <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                        <TextBlock x:Name="ChannelTitle" Text="Channel" Foreground="White" FontSize="20" FontWeight="SemiBold" TextWrapping="WrapWholeWords" MaxLines="2" />
+                        <TextBlock x:Name="ChannelHandle" Foreground="#DDDDDD" FontSize="11" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" />
+                        <TextBlock x:Name="ChannelStats" Foreground="#AAAAAA" FontSize="11" Margin="0,3,0,0" Text="0 subscribers • 0 videos" />
+                    </StackPanel>
+                </Grid>
+
+                <Button x:Name="DescriptionButton"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="0"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Left"
+                        Margin="12,12,12,0"
+                        Click="DescriptionButton_Click">
+                    <StackPanel>
+                        <TextBlock x:Name="ChannelDescription"
+                                   Text=""
+                                   Foreground="#CCCCCC"
+                                   FontSize="11"
+                                   TextWrapping="Wrap"
+                                   TextTrimming="WordEllipsis"
+                                   MaxLines="2" />
+                        <TextBlock x:Name="DescriptionMoreText"
+                                   Text="...more"
+                                   Foreground="White"
+                                   FontSize="11"
+                                   FontWeight="SemiBold"
+                                   Margin="0,3,0,0" />
+                    </StackPanel>
+                </Button>
+
+                <Border x:Name="SubscribeButtonContainer"
+                        Margin="12,12,12,12"
+                        Background="#F1F1F1"
+                        BorderBrush="#F1F1F1"
+                        BorderThickness="1"
+                        CornerRadius="20"
+                        Height="40"
+                        HorizontalAlignment="Stretch">
+                    <Button x:Name="SubscribeButton"
+                            Style="{StaticResource SubscriptionIconButtonStyle}"
+                            Background="Transparent"
+                            Foreground="#0F0F0F"
+                            BorderThickness="0"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Height="40"
+                            Padding="0"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Click="SubscribeButton_Click">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock x:Name="SubscribeButtonText"
+                                       Text="Subscribe"
+                                       Foreground="#0F0F0F"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center" />
+                            <StackPanel x:Name="SubscribeSubscribedIconsPanel"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Visibility="Collapsed">
+                                <Image x:Name="SubscribeNotificationIcon"
+                                       Width="22"
+                                       Height="22"
+                                       Stretch="Uniform"
+                                       Source="Assets/notifications.png"
+                                       VerticalAlignment="Center" />
+                                <Image x:Name="SubscribeDownArrowIcon"
+                                       Width="16"
+                                       Height="16"
+                                       Margin="6,0,10,0"
+                                       Stretch="Uniform"
+                                       Source="Assets/down_arrow.png"
+                                       VerticalAlignment="Center" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Button>
+                </Border>
+
+                <!-- Playlists shelf (channel Playlists tab), horizontally scrollable -->
+                <StackPanel x:Name="ChannelPlaylistsSection" Visibility="Collapsed" Margin="0,4,0,0">
+                    <TextBlock Text="Playlists"
+                               Foreground="White"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               Margin="12,8,12,8" />
+                    <ScrollViewer HorizontalScrollMode="Auto"
+                                  HorizontalScrollBarVisibility="Hidden"
+                                  VerticalScrollMode="Disabled"
+                                  VerticalScrollBarVisibility="Disabled">
+                        <ItemsControl x:Name="ChannelPlaylistsItemsControl" Padding="8,0,8,12">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Width="168"
+                                            Margin="4,0"
+                                            Padding="0"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            HorizontalContentAlignment="Stretch"
+                                            Click="ChannelPlaylistCard_Click">
+                                        <StackPanel>
+                                            <Grid Height="94" Background="Black" CornerRadius="8">
+                                                <Border CornerRadius="8">
+                                                    <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill" />
+                                                </Border>
+                                                <Border Background="#CC000000"
+                                                        Padding="6,2"
+                                                        Margin="4"
+                                                        HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom">
+                                                    <TextBlock Text="{Binding VideoCountText}"
+                                                               Foreground="White"
+                                                               FontSize="11" />
+                                                </Border>
+                                            </Grid>
+                                            <TextBlock Text="{Binding Title}"
+                                                       Foreground="White"
+                                                       FontSize="13"
+                                                       MaxLines="2"
+                                                       TextWrapping="Wrap"
+                                                       Margin="0,6,0,0" />
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </StackPanel>
+
+                <!-- Video cards: same layout as Home.xaml -->
+                <ItemsControl x:Name="VideosItemsControl"
+                              Background="#0F0F0F"
+                              HorizontalAlignment="Stretch"
+                              Padding="8,8,8,16">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid Orientation="Horizontal"
+                                           ItemWidth="360"
+                                           MaximumRowsOrColumns="3"
+                                           HorizontalAlignment="Center" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Background="Transparent"
+                                    BorderThickness="0"
+                                    Padding="0"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Stretch"
+                                    Tag="ResponsiveCard"
+                                    Loaded="ResponsiveCard_Loaded"
+                                    SizeChanged="ResponsiveCard_SizeChanged"
+                                    Margin="0,0,0,16"
+                                    Click="VideoCard_Click">
+                                <StackPanel Orientation="Vertical"
+                                            Background="#0F0F0F"
+                                            HorizontalAlignment="Stretch">
+                                    <!-- Video Thumbnail -->
+                                    <Grid SizeChanged="VideoThumbnailHost_SizeChanged">
+                                        <Border CornerRadius="8" Background="#1A1A1A" />
+                                        <Border CornerRadius="8">
+                                            <Image DataContextChanged="CardThumbnail_DataContextChanged"
+                                                   Stretch="UniformToFill" />
+                                        </Border>
+                                        <!-- Duration overlay -->
+                                        <Border HorizontalAlignment="Right"
+                                                VerticalAlignment="Bottom"
+                                                Margin="0,0,8,8"
+                                                Padding="6,2">
+                                            <Border.Background>
+                                                <SolidColorBrush Color="Black" Opacity="0.8" />
+                                            </Border.Background>
+                                            <TextBlock Text="{Binding Duration}"
+                                                       Foreground="White"
+                                                       FontSize="12"
+                                                       FontWeight="Medium" />
+                                        </Border>
+                                    </Grid>
+
+                                    <!-- Title and Channel -->
+                                    <StackPanel Margin="12,12,12,0">
+                                        <TextBlock Text="{Binding Title}"
+                                                   TextWrapping="NoWrap"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="White"
+                                                   FontFamily="Roboto"
+                                                   FontSize="14"
+                                                   FontWeight="Medium" />
+                                        <TextBlock Text="{Binding StatsLine}"
+                                                   TextWrapping="NoWrap"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   Foreground="Gray"
+                                                   FontFamily="Roboto"
+                                                   FontSize="12"
+                                                   Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Grid x:Name="OverlayGrid"
+              Grid.Row="1"
+              Background="#80000000"
+              Visibility="Collapsed"
+              Tapped="OverlayGrid_Tapped" />
+
+        <Border x:Name="DescriptionBottomSheetPanel"
+                Grid.Row="1"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Stretch"
+                Background="#1A1A1A"
+                CornerRadius="15"
+                Height="400"
+                Margin="10,0,10,10"
+                Visibility="Collapsed">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="DescriptionBottomSheetTransform" Y="410" />
+            </Border.RenderTransform>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid x:Name="DescriptionDragArea"
+                      Grid.Row="0"
+                      Background="Transparent"
+                      Height="40"
+                      Tapped="DescriptionDragArea_Tapped"
+                      PointerPressed="DescriptionDragArea_PointerPressed"
+                      PointerMoved="DescriptionDragArea_PointerMoved"
+                      PointerReleased="DescriptionDragArea_PointerReleased"
+                      PointerCaptureLost="DescriptionDragArea_PointerReleased">
+                    <Rectangle Width="40"
+                               Height="4"
+                               Fill="Gray"
+                               RadiusX="2"
+                               RadiusY="2"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="20,0,20,20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                               Text="Description"
+                               Foreground="White"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,16"
+                               FontSize="18" />
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <TextBlock x:Name="FullDescriptionText"
+                                   Foreground="White"
+                                   FontSize="14"
+                                   TextWrapping="Wrap" />
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <Border x:Name="SubscriptionMenuBottomSheetPanel"
+                Grid.Row="1"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Stretch"
+                Background="#222222"
+                CornerRadius="15"
+                Height="300"
+                Margin="10,0,10,10"
+                Visibility="Collapsed">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="SubscriptionMenuBottomSheetTransform" Y="280" />
+            </Border.RenderTransform>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <Grid x:Name="SubscriptionMenuDragArea"
+                      Grid.Row="0"
+                      Background="Transparent"
+                      Height="40"
+                      Tapped="SubscriptionMenuDragArea_Tapped"
+                      PointerPressed="SubscriptionMenuDragArea_PointerPressed"
+                      PointerMoved="SubscriptionMenuDragArea_PointerMoved"
+                      PointerReleased="SubscriptionMenuDragArea_PointerReleased"
+                      PointerCaptureLost="SubscriptionMenuDragArea_PointerReleased">
+                    <Rectangle Width="40"
+                               Height="4"
+                               Fill="Gray"
+                               RadiusX="2"
+                               RadiusY="2"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Grid>
+
+                <Grid Grid.Row="1" Margin="20,0,20,20">
+                    <StackPanel>
+                        <TextBlock Text="Notifications"
+                                   Foreground="White"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,16"
+                                   FontSize="16" />
+
+                        <Button x:Name="NotificationAllOptionButton"
+                                Background="Transparent"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                Padding="0,4,0,4"
+                                Height="Auto"
+                                MinHeight="44"
+                                Margin="0,0,0,4"
+                                Click="NotificationAllOptionButton_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="Assets/all_notifications.png" Width="24" Height="24" Margin="0,0,16,0" />
+                                <TextBlock Grid.Column="1" Text="All" Foreground="White" VerticalAlignment="Center" FontSize="16" />
+                                <FontIcon x:Name="NotificationAllCheckmark" Grid.Column="2" Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="White" Margin="16,0,0,0" VerticalAlignment="Center" Visibility="Collapsed" />
+                            </Grid>
+                        </Button>
+
+                        <Button x:Name="NotificationPersonalizedOptionButton"
+                                Background="Transparent"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                Padding="0,4,0,4"
+                                Height="Auto"
+                                MinHeight="44"
+                                Margin="0,0,0,4"
+                                Click="NotificationPersonalizedOptionButton_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="Assets/notifications.png" Width="24" Height="24" Margin="0,0,16,0" />
+                                <TextBlock Grid.Column="1" Text="Personalized" Foreground="White" VerticalAlignment="Center" FontSize="16" />
+                                <FontIcon x:Name="NotificationPersonalizedCheckmark" Grid.Column="2" Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="White" Margin="16,0,0,0" VerticalAlignment="Center" Visibility="Collapsed" />
+                            </Grid>
+                        </Button>
+
+                        <Button x:Name="NotificationNoneOptionButton"
+                                Background="Transparent"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                Padding="0,4,0,4"
+                                Height="Auto"
+                                MinHeight="44"
+                                Margin="0,0,0,4"
+                                Click="NotificationNoneOptionButton_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="Assets/none_notifications.png" Width="24" Height="24" Margin="0,0,16,0" />
+                                <TextBlock Grid.Column="1" Text="None" Foreground="White" VerticalAlignment="Center" FontSize="16" />
+                                <FontIcon x:Name="NotificationNoneCheckmark" Grid.Column="2" Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="White" Margin="16,0,0,0" VerticalAlignment="Center" Visibility="Collapsed" />
+                            </Grid>
+                        </Button>
+
+                        <Button x:Name="NotificationUnsubscribeOptionButton"
+                                Background="Transparent"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                Padding="0,4,0,4"
+                                Height="Auto"
+                                MinHeight="44"
+                                Margin="0,0,0,4"
+                                Click="NotificationUnsubscribeOptionButton_Click">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="Assets/unsubscribe.png" Width="24" Height="24" Margin="0,0,16,0" />
+                                <TextBlock Grid.Column="1" Text="Unsubscribe" Foreground="White" VerticalAlignment="Center" FontSize="16" />
+                            </Grid>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+
+        <local:Tabbar x:Name="tabbar" Grid.Row="2" />
+    </Grid>
+</Page>
