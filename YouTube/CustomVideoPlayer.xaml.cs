@@ -386,6 +386,56 @@ namespace YouTube
             return string.Equals(_currentQuality, label.Replace("p", ""), StringComparison.Ordinal);
         }
 
+        // Fullscreen settings uses the same check-column option style as the Video page sheet.
+        private Button MakeFullscreenCheckableOptionButton(string label, bool isCurrent, Action onClick)
+        {
+            var button = new Button
+            {
+                Background = new SolidColorBrush(Colors.Transparent),
+                Foreground = new SolidColorBrush(Colors.White),
+                FontWeight = isCurrent ? Windows.UI.Text.FontWeights.SemiBold : Windows.UI.Text.FontWeights.Normal,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                Padding = new Thickness(16, 12, 16, 12),
+                Margin = new Thickness(0, 0, 0, 4),
+                FontSize = 14
+            };
+
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(28) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+
+            var check = new FontIcon
+            {
+                Glyph = "\uE73E",
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                FontSize = 16,
+                Foreground = new SolidColorBrush(Colors.White),
+                Visibility = isCurrent ? Visibility.Visible : Visibility.Collapsed,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            Grid.SetColumn(check, 0);
+            grid.Children.Add(check);
+
+            var labelText = new TextBlock
+            {
+                Text = label,
+                Foreground = new SolidColorBrush(Colors.White),
+                FontWeight = isCurrent ? Windows.UI.Text.FontWeights.SemiBold : Windows.UI.Text.FontWeights.Normal,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            Grid.SetColumn(labelText, 1);
+            grid.Children.Add(labelText);
+
+            button.Content = grid;
+            if (onClick != null)
+            {
+                button.Click += (s, e) => onClick();
+            }
+            return button;
+        }
+
         private void PopulateFullscreenQualityOptions(StackPanel qualityOptionsPanel)
         {
             if (qualityOptionsPanel == null)
@@ -400,64 +450,40 @@ namespace YouTube
             {
                 var quality = qualityOptions[i];
                 var isCurrent = IsCurrentQualityLabel(quality);
+                string selectedQuality = quality;
 
-                var qualityOptionButton = new Button();
-                qualityOptionButton.Background = isCurrent
-                    ? new SolidColorBrush(Windows.UI.Color.FromArgb(38, 255, 255, 255))
-                    : new SolidColorBrush(Colors.Transparent);
-                qualityOptionButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-                qualityOptionButton.HorizontalContentAlignment = HorizontalAlignment.Left;
-                qualityOptionButton.Padding = new Thickness(16, 8, 16, 8);
-                qualityOptionButton.Height = 48;
-                qualityOptionButton.Margin = new Thickness(0, 0, 0, 4);
-                qualityOptionButton.Content = isCurrent ? (quality + "   ✓") : quality;
-                qualityOptionButton.Foreground = new SolidColorBrush(Colors.White);
-                qualityOptionButton.FontWeight = isCurrent
-                    ? Windows.UI.Text.FontWeights.SemiBold
-                    : Windows.UI.Text.FontWeights.Normal;
-                qualityOptionButton.Tag = quality;
-                qualityOptionButton.Click += (s, e) => {
-                    var button = s as Button;
-                    var qualityValue = button?.Tag as string;
-                    if (qualityValue != null)
+                var qualityOptionButton = MakeFullscreenCheckableOptionButton(quality, isCurrent, () =>
+                {
+                    string newQuality = null;
+                    if (!string.Equals(selectedQuality, "Auto", StringComparison.OrdinalIgnoreCase))
                     {
-                        // Apply the quality change
-                        string newQuality = null;
-                        if (qualityValue != "Auto")
-                        {
-                            newQuality = qualityValue.Replace("p", ""); // Remove 'p' suffix
-                        }
+                        newQuality = selectedQuality.Replace("p", "");
+                    }
 
-                        System.Diagnostics.Debug.WriteLine(string.Format("Quality selected: {0}, internal quality: {1}", qualityValue, newQuality ?? "auto"));
+                    System.Diagnostics.Debug.WriteLine(string.Format(
+                        "Quality selected: {0}, internal quality: {1}",
+                        selectedQuality,
+                        newQuality ?? "auto"));
 
-                        // Store current playback state before the parent reloads the stream.
-                        // Without this, quality switching replaces MediaPlayer.Source, SetSource()
-                        // resets _isPlaying to false, and the new quality stays paused.
-                        var resumePosition = GetCurrentPlaybackPositionSafe();
-                        // User-selected quality change must resume playback automatically.
-                        // Older Windows 10 Mobile MediaPlayer can report Paused/Opening during
-                        // the switch even when video was playing, so do not rely only on
-                        // PlaybackState here.
-                        var shouldAutoPlayAfterQualityChange = true;
-                        _resumePlaybackAfterQualityChange = shouldAutoPlayAfterQualityChange;
-                        _resumePositionAfterQualityChange = resumePosition;
+                    var resumePosition = GetCurrentPlaybackPositionSafe();
+                    _resumePlaybackAfterQualityChange = true;
+                    _resumePositionAfterQualityChange = resumePosition;
+                    _currentQuality = newQuality;
 
-                        // Store the selected quality
-                        _currentQuality = newQuality;
-
-                        // Notify parent to reload the video with the new quality
-                        RefreshRequested?.Invoke(this, new QualityChangeRefreshRequest
+                    if (RefreshRequested != null)
+                    {
+                        RefreshRequested(this, new QualityChangeRefreshRequest
                         {
                             QualityTag = newQuality,
-                            ShouldAutoPlay = shouldAutoPlayAfterQualityChange,
+                            ShouldAutoPlay = true,
                             Position = resumePosition
                         });
-
-                        // Close settings panel
-                        _isSettingsPanelOpen = false;
-                        AnimateFullscreenSettingsPanel(false);
                     }
-                };
+
+                    _isSettingsPanelOpen = false;
+                    AnimateFullscreenSettingsPanel(false);
+                });
+
                 qualityOptionsPanel.Children.Add(qualityOptionButton);
             }
         }
@@ -1882,7 +1908,7 @@ namespace YouTube
             _fullscreenSettingsPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
             _fullscreenSettingsPanel.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 26, 26, 26)); // Darker background #1A1A1A
             _fullscreenSettingsPanel.CornerRadius = new CornerRadius(15); // Rounded corners on all sides
-            _fullscreenSettingsPanel.Height = 300;
+            _fullscreenSettingsPanel.Height = 205;
             _fullscreenSettingsPanel.Margin = new Thickness(10, 0, 10, 10); // Smaller equal margins on all sides
 
             // Variables for drag functionality
@@ -2176,39 +2202,36 @@ namespace YouTube
             for (int i = 0; i < speedOptions.Count; i++)
             {
                 var speed = speedOptions[i];
-                var speedOptionButton = new Button();
-                speedOptionButton.Background = new SolidColorBrush(Colors.Transparent);
-                speedOptionButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-                speedOptionButton.HorizontalContentAlignment = HorizontalAlignment.Left;
-                speedOptionButton.Padding = new Thickness(16, 8, 16, 8);
-                speedOptionButton.Height = 48;
-                speedOptionButton.Margin = new Thickness(0, 0, 0, 4);
-                speedOptionButton.Content = speed;
-                speedOptionButton.Foreground = new SolidColorBrush(Colors.White);
-                speedOptionButton.Tag = speed;
-                speedOptionButton.Click += (s, e) => {
-                    var button = s as Button;
-                    var speedValue = button?.Tag as string;
-                    if (speedValue != null)
+                var rateString = speed.Replace("x", "");
+                double optionRate;
+                var parsed = double.TryParse(
+                    rateString,
+                    System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    out optionRate);
+                var isCurrent = parsed && Math.Abs(optionRate - _desiredPlaybackRate) < 0.001;
+                string selectedSpeed = speed;
+
+                var speedOptionButton = MakeFullscreenCheckableOptionButton(speed, isCurrent, () =>
+                {
+                    try
                     {
-                        // Apply the speed change
-                        try
+                        var selectedRateString = selectedSpeed.Replace("x", "");
+                        double selectedRate;
+                        if (double.TryParse(
+                            selectedRateString,
+                            System.Globalization.NumberStyles.Any,
+                            System.Globalization.CultureInfo.InvariantCulture,
+                            out selectedRate))
                         {
-                            if (MediaPlayer?.MediaPlayer?.PlaybackSession == null) return;
-                            var rateString = speedValue.Replace("x", "");
-                            double rate;
-                            if (double.TryParse(rateString, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out rate))
-                            {
-                                SetPlaybackRate(rate);
-                            }
+                            SetPlaybackRate(selectedRate);
                         }
-                        catch { }
-                        
-                        // Close settings panel
-                        _isSettingsPanelOpen = false;
-                        AnimateFullscreenSettingsPanel(false);
                     }
-                };
+                    catch { }
+
+                    _isSettingsPanelOpen = false;
+                    AnimateFullscreenSettingsPanel(false);
+                });
                 speedOptionsPanel.Children.Add(speedOptionButton);
             }
 
@@ -2224,6 +2247,7 @@ namespace YouTube
             qualityButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
             qualityButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
             qualityButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            qualityButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
             var qualityIcon = new Image();
             qualityIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/quality.png"));
             qualityIcon.Width = 24;
@@ -2238,12 +2262,20 @@ namespace YouTube
             qualityText.FontSize = 16;
             Grid.SetColumn(qualityText, 1);
             qualityButtonGrid.Children.Add(qualityText);
+            var qualityValueText = new TextBlock();
+            qualityValueText.Text = string.IsNullOrWhiteSpace(_currentQuality) ? "Auto" : _currentQuality + "p";
+            qualityValueText.Foreground = new SolidColorBrush(Color.FromArgb(180, 255, 255, 255));
+            qualityValueText.VerticalAlignment = VerticalAlignment.Center;
+            qualityValueText.FontSize = 14;
+            qualityValueText.Margin = new Thickness(12, 0, 8, 0);
+            Grid.SetColumn(qualityValueText, 2);
+            qualityButtonGrid.Children.Add(qualityValueText);
             var qualitySkipIcon = new Image();
             qualitySkipIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/skip.png"));
             qualitySkipIcon.Width = 24;
             qualitySkipIcon.Height = 24;
             qualitySkipIcon.Margin = new Thickness(16, 0, 0, 0);
-            Grid.SetColumn(qualitySkipIcon, 2);
+            Grid.SetColumn(qualitySkipIcon, 3);
             qualityButtonGrid.Children.Add(qualitySkipIcon);
             qualityButton.Content = qualityButtonGrid;
             qualityButton.Click += (s, e) => {
@@ -2268,6 +2300,7 @@ namespace YouTube
             speedButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
             speedButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
             speedButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            speedButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
             var speedIcon = new Image();
             speedIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/speed.png"));
             speedIcon.Width = 24;
@@ -2282,12 +2315,20 @@ namespace YouTube
             speedText.FontSize = 16;
             Grid.SetColumn(speedText, 1);
             speedButtonGrid.Children.Add(speedText);
+            var speedValueText = new TextBlock();
+            speedValueText.Text = _desiredPlaybackRate.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "x";
+            speedValueText.Foreground = new SolidColorBrush(Color.FromArgb(180, 255, 255, 255));
+            speedValueText.VerticalAlignment = VerticalAlignment.Center;
+            speedValueText.FontSize = 14;
+            speedValueText.Margin = new Thickness(12, 0, 8, 0);
+            Grid.SetColumn(speedValueText, 2);
+            speedButtonGrid.Children.Add(speedValueText);
             var speedSkipIcon = new Image();
             speedSkipIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/skip.png"));
             speedSkipIcon.Width = 24;
             speedSkipIcon.Height = 24;
             speedSkipIcon.Margin = new Thickness(16, 0, 0, 0);
-            Grid.SetColumn(speedSkipIcon, 2);
+            Grid.SetColumn(speedSkipIcon, 3);
             speedButtonGrid.Children.Add(speedSkipIcon);
             speedButton.Content = speedButtonGrid;
             speedButton.Click += (s, e) => {
@@ -2340,50 +2381,6 @@ namespace YouTube
             };
             mainSettingsPanel.Children.Add(subtitlesButton);
 
-            // Reload Button
-            var reloadButton = new Button();
-            reloadButton.Background = new SolidColorBrush(Colors.Transparent);
-            reloadButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-            reloadButton.HorizontalContentAlignment = HorizontalAlignment.Stretch;
-            reloadButton.Padding = new Thickness(0);
-            reloadButton.Height = 60;
-            reloadButton.Margin = new Thickness(0, 0, 0, 8);
-            var reloadButtonGrid = new Grid();
-            reloadButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            reloadButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-            var reloadIcon = new Image();
-            reloadIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/reload.png"));
-            reloadIcon.Width = 24;
-            reloadIcon.Height = 24;
-            reloadIcon.Margin = new Thickness(0, 0, 16, 0);
-            Grid.SetColumn(reloadIcon, 0);
-            reloadButtonGrid.Children.Add(reloadIcon);
-            var reloadText = new TextBlock();
-            reloadText.Text = "Reload video";
-            reloadText.Foreground = new SolidColorBrush(Colors.White);
-            reloadText.VerticalAlignment = VerticalAlignment.Center;
-            reloadText.FontSize = 16;
-            Grid.SetColumn(reloadText, 1);
-            reloadButtonGrid.Children.Add(reloadText);
-            reloadButton.Content = reloadButtonGrid;
-            reloadButton.Click += (s, e) => {
-                // Close settings panel
-                _isSettingsPanelOpen = false;
-                AnimateFullscreenSettingsPanel(false);
-                
-                // Reload the video
-                try
-                {
-                    // Notify the parent page to reload the video
-                    RefreshRequested?.Invoke(this, null);
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("Error in reload button: " + ex.Message);
-                }
-            };
-            mainSettingsPanel.Children.Add(reloadButton);
-
             // Add panels to settings content grid
             settingsContentGrid.Children.Add(mainSettingsPanel);
             settingsContentGrid.Children.Add(qualitySettingsPanel);
@@ -2398,7 +2395,7 @@ namespace YouTube
 
             // Create a translate transform for animation
             var settingsTransform = new TranslateTransform();
-            settingsTransform.Y = 310; // Start hidden (below screen)
+            settingsTransform.Y = 205; // Match Video settings bottom-sheet height
             _fullscreenSettingsPanel.RenderTransform = settingsTransform;
 
             // Add overlay to fullscreen grid first (so it's behind the settings panel)
@@ -2435,7 +2432,7 @@ namespace YouTube
             }
             else
             {
-                animation.To = 310; // Move down below screen (height + margin)
+                animation.To = 205; // Match Video settings bottom-sheet height
             }
 
             Storyboard.SetTarget(animation, animateTransform);
@@ -3055,6 +3052,7 @@ namespace YouTube
 
         // Storyboard scrub preview -------------------------------------------------------------
 
+        private const string ScrubPreviewEnabledSettingKey = "ScrubPreviewEnabled";
         private StoryboardSpec _storyboard;
         private readonly Dictionary<string, BitmapImage> _scrubSheetCache = new Dictionary<string, BitmapImage>();
         private string _scrubSheetUrl = string.Empty;
@@ -3062,6 +3060,31 @@ namespace YouTube
         // Guards against the tap double-seek (pointer path + Tapped both fire for one tap).
         private TimeSpan _lastAppliedSeekPosition = TimeSpan.FromSeconds(-100);
         private long _lastAppliedSeekTicks;
+
+        private static bool IsScrubPreviewEnabled()
+        {
+            try
+            {
+                var values = ApplicationData.Current.LocalSettings.Values;
+                object raw;
+                if (!values.TryGetValue(ScrubPreviewEnabledSettingKey, out raw) || raw == null)
+                {
+                    return false;
+                }
+
+                if (raw is bool)
+                {
+                    return (bool)raw;
+                }
+
+                bool parsed;
+                return bool.TryParse(raw.ToString(), out parsed) && parsed;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
         public void SetStoryboardSpec(string spec)
         {
@@ -3078,7 +3101,7 @@ namespace YouTube
             // (the platform's own image loader) rather than a parallel HttpClient download — the
             // latter, running alongside the 1080p60 demux, crashed the native pipeline. Capped and
             // small (a handful of ~45 KB sheets), so the decoded memory is negligible.
-            if (_storyboard != null && _storyboard.HasFrames)
+            if (IsScrubPreviewEnabled() && _storyboard != null && _storyboard.HasFrames)
             {
                 try
                 {
@@ -3101,6 +3124,12 @@ namespace YouTube
 
         private void ShowScrubPreview(double seconds, double pointerX)
         {
+            if (!IsScrubPreviewEnabled())
+            {
+                HideScrubPreview();
+                return;
+            }
+
             if (ScrubPreviewPanel == null || _storyboard == null || !_storyboard.HasFrames)
             {
                 return;
@@ -3159,14 +3188,30 @@ namespace YouTube
                     ScrubPreviewTime.Text = FormatTimeSpan(TimeSpan.FromSeconds(seconds));
                 }
 
-                // Centre the panel over the finger, clamped to the player width. The seek bar sits
-                // 16px in from the player edge, so the pointer's absolute X is that plus pointerX.
-                var panelWidth = frame.ThumbWidth + 6;
-                var absoluteX = 16 + pointerX;
+                // Centre the preview over the actual seek point. Do not assume a fixed 16 px
+                // timeline offset, because fullscreen/phone layouts use different margins.
+                var panelWidth = DisplayWidth + 6.0;
+                var absoluteX = pointerX;
+
+                if (ProgressSliderHitArea != null && PlayerGrid != null)
+                {
+                    try
+                    {
+                        var transform = ProgressSliderHitArea.TransformToVisual(PlayerGrid);
+                        absoluteX = transform.TransformPoint(new Point(pointerX, 0)).X;
+                    }
+                    catch
+                    {
+                    }
+                }
+
                 var playerWidth = PlayerGrid != null ? PlayerGrid.ActualWidth : ActualWidth;
                 var left = absoluteX - panelWidth / 2.0;
+
                 if (left < 4) left = 4;
-                if (playerWidth > 0 && left > playerWidth - panelWidth - 4) left = playerWidth - panelWidth - 4;
+                if (playerWidth > 0 && left > playerWidth - panelWidth - 4)
+                    left = playerWidth - panelWidth - 4;
+
                 ScrubPreviewTransform.X = left;
 
                 ScrubPreviewPanel.Visibility = Visibility.Visible;
@@ -3825,29 +3870,16 @@ namespace YouTube
 
         private void AddFullscreenSubtitleOption(StackPanel panel, string label, bool isActive, Action onClick)
         {
-            var button = new Button
-            {
-                Content = label,
-                Background = new SolidColorBrush(Colors.Transparent),
-                Foreground = new SolidColorBrush(isActive
-                    ? Color.FromArgb(255, 255, 0, 51)
-                    : Colors.White),
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                HorizontalContentAlignment = HorizontalAlignment.Left,
-                Padding = new Thickness(16, 8, 16, 8),
-                Height = 48,
-                Margin = new Thickness(0, 0, 0, 4)
-            };
-
+            Button button;
             if (onClick == null)
             {
-                // A plain caption row, not a choice.
+                button = MakeFullscreenCheckableOptionButton(label, false, null);
                 button.IsHitTestVisible = false;
                 button.Opacity = 0.7;
             }
             else
             {
-                button.Click += (s, e) => onClick();
+                button = MakeFullscreenCheckableOptionButton(label, isActive, onClick);
             }
 
             panel.Children.Add(button);

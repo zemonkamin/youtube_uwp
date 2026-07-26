@@ -32,6 +32,9 @@ namespace YouTube
         private const double VideoThumbnailAspectRatio = 16.0 / 9.0;
         private const string ResponsiveCardTag = "ResponsiveCard";
         private static readonly Thickness PortraitCardMargin = new Thickness(0, 0, 0, 16);
+        // Shorts in portrait intentionally have more breathing room than normal video cards:
+        // a visible gutter between the two posters and a little more vertical separation.
+        private static readonly Thickness PortraitShortsCardMargin = new Thickness(6, 0, 6, 22);
         private static readonly Thickness LandscapeCardMargin = new Thickness(8, 0, 8, 16);
         private const double PlaceholderFallbackAspect = 0.82;
 
@@ -186,8 +189,6 @@ namespace YouTube
 
         private async Task PerformSearchAsync(string query)
         {
-            bool useChannelLoading = currentSearchType == SearchContentType.Channels;
-
             try
             {
                 ErrorText.Visibility = Visibility.Collapsed;
@@ -199,46 +200,25 @@ namespace YouTube
                     SearchResultsList.ItemsSource = searchResults;
                 }
 
-                if (useChannelLoading)
+                // Use the same smooth centered AndroidLoadingRing for every result type.
+                // Previously only Channels used it while videos/shorts/playlists flashed skeletons.
+                searchResults.Clear();
+                LoadingPanel.Visibility = Visibility.Collapsed;
+                LoadingRing.IsActive = false;
+
+                if (SkeletonLoader != null)
                 {
-                    searchResults.Clear();
-                    LoadingPanel.Visibility = Visibility.Collapsed;
-                    LoadingRing.IsActive = false;
-
-                    if (SkeletonLoader != null)
-                    {
-                        SkeletonLoader.Visibility = Visibility.Collapsed;
-                    }
-
-                    if (SearchLoadingGrid != null)
-                    {
-                        SearchLoadingGrid.Visibility = Visibility.Visible;
-                    }
-
-                    if (SearchLoadingRing != null)
-                    {
-                        SearchLoadingRing.IsActive = true;
-                    }
+                    SkeletonLoader.Visibility = Visibility.Collapsed;
                 }
-                else
+
+                if (SearchLoadingGrid != null)
                 {
-                    LoadingPanel.Visibility = Visibility.Visible;
-                    LoadingRing.IsActive = true;
+                    SearchLoadingGrid.Visibility = Visibility.Visible;
+                }
 
-                    if (SearchLoadingGrid != null)
-                    {
-                        SearchLoadingGrid.Visibility = Visibility.Collapsed;
-                    }
-
-                    if (SearchLoadingRing != null)
-                    {
-                        SearchLoadingRing.IsActive = false;
-                    }
-
-                    if (SkeletonLoader != null)
-                    {
-                        SkeletonLoader.Visibility = Visibility.Visible;
-                    }
+                if (SearchLoadingRing != null)
+                {
+                    SearchLoadingRing.IsActive = true;
                 }
 
                 var page = await SearchInnertubeAsync(query, 30, currentSearchType, null);
@@ -355,7 +335,9 @@ namespace YouTube
             else
             {
                 var searchParams = GetSearchParams(type);
-                payload = "{\"context\":" + context + ",\"query\":\"" + JsonEscape(query) + "\",\"params\":\"" + searchParams + "\"}";
+                payload = string.IsNullOrWhiteSpace(searchParams)
+                    ? "{\"context\":" + context + ",\"query\":\"" + JsonEscape(query) + "\"}"
+                    : "{\"context\":" + context + ",\"query\":\"" + JsonEscape(query) + "\",\"params\":\"" + searchParams + "\"}";
             }
 
             var url = "https://www.youtube.com/youtubei/v1/search?key=" + InnertubeApiKey;
@@ -387,6 +369,14 @@ namespace YouTube
                 return "EgIQAg==";
             }
 
+            // YouTube now exposes Shorts as a dedicated result type. Using no type token lets
+            // the search response include the Shorts shelf / shortsLockupViewModel entries;
+            // ParseShortResults below then keeps only genuine Shorts renderers.
+            if (type == SearchContentType.Shorts)
+            {
+                return string.Empty;
+            }
+
             return "EgIQAQ==";
         }
 
@@ -414,6 +404,10 @@ namespace YouTube
                 else if (type == SearchContentType.Channels)
                 {
                     page.Items = ParseChannelResults(root, maxCount);
+                }
+                else if (type == SearchContentType.Shorts)
+                {
+                    page.Items = ParseShortResults(root, maxCount);
                 }
                 else
                 {
@@ -457,6 +451,84 @@ namespace YouTube
                     Views = SimplifyText(renderer, "viewCountText", string.Empty),
                     Duration = SimplifyText(renderer, "lengthText", string.Empty),
                     Thumbnail = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg"
+                });
+            }
+
+            return result;
+        }
+
+        private static List<SearchVideoItem> ParseShortResults(IJsonValue root, int maxCount)
+        {
+            var result = new List<SearchVideoItem>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var reelRenderers = new List<JsonObject>();
+            var lockupViewModels = new List<JsonObject>();
+
+            FindObjectsByKey(root, "reelItemRenderer", reelRenderers);
+            FindObjectsByKey(root, "shortsLockupViewModel", lockupViewModels);
+
+            for (int i = 0; i < reelRenderers.Count && result.Count < maxCount; i++)
+            {
+                var renderer = reelRenderers[i];
+                var videoId = FirstNonEmpty(
+                    GetJsonString(renderer, "videoId"),
+                    FindStringByKey(renderer, "videoId"));
+
+                if (string.IsNullOrWhiteSpace(videoId) || seen.Contains(videoId))
+                {
+                    continue;
+                }
+
+                seen.Add(videoId);
+                result.Add(new SearchVideoItem
+                {
+                    ResultType = "Short",
+                    VideoId = videoId,
+                    Title = FirstNonEmpty(
+                        SimplifyText(renderer, "headline", string.Empty),
+                        SimplifyText(renderer, "title", string.Empty),
+                        "Shorts"),
+                    Author = string.Empty,
+                    Views = string.Empty,
+                    Duration = string.Empty,
+                    Thumbnail = FirstNonEmpty(
+                        ExtractThumbnailUrl(renderer),
+                        "https://i.ytimg.com/vi/" + videoId + "/oardefault.jpg",
+                        "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg")
+                });
+            }
+
+            for (int i = 0; i < lockupViewModels.Count && result.Count < maxCount; i++)
+            {
+                var renderer = lockupViewModels[i];
+                var videoId = FindStringByKey(renderer, "videoId");
+                if (string.IsNullOrWhiteSpace(videoId) || seen.Contains(videoId))
+                {
+                    continue;
+                }
+
+                // shortsLockupViewModel has overlayMetadata.primaryText.content on current WEB
+                // responses. Fall back to the generic lockup title extractor for older shapes.
+                var overlayMetadata = GetObject(renderer, "overlayMetadata");
+                var primaryText = GetObject(overlayMetadata, "primaryText");
+                var title = FirstNonEmpty(
+                    ExtractText(primaryText),
+                    ExtractLockupTitle(renderer),
+                    "Shorts");
+
+                seen.Add(videoId);
+                result.Add(new SearchVideoItem
+                {
+                    ResultType = "Short",
+                    VideoId = videoId,
+                    Title = title,
+                    Author = string.Empty,
+                    Views = string.Empty,
+                    Duration = string.Empty,
+                    Thumbnail = FirstNonEmpty(
+                        ExtractThumbnailUrl(renderer),
+                        "https://i.ytimg.com/vi/" + videoId + "/oardefault.jpg",
+                        "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg")
                 });
             }
 
@@ -1456,7 +1528,9 @@ namespace YouTube
             }
 
             var targetMargin = IsPortraitOrientation()
-                ? PortraitCardMargin
+                ? (currentSearchType == SearchContentType.Shorts
+                    ? PortraitShortsCardMargin
+                    : PortraitCardMargin)
                 : LandscapeCardMargin;
 
             if (Math.Abs(element.Margin.Left - targetMargin.Left) > 0.5 ||
@@ -1522,20 +1596,54 @@ namespace YouTube
                     SearchResultsList.Padding = channelPadding;
                 }
             }
+            else if (currentSearchType == SearchContentType.Shorts && isPortrait)
+            {
+                // Keep the two-column Shorts grid away from the screen edges.
+                if (SearchResultsList != null)
+                {
+                    SearchResultsList.Padding = new Thickness(20, 0, 20, 20);
+                }
+            }
             else
             {
                 SetItemsControlPadding(SearchResultsList, isPortrait, new Thickness(8, 0, 8, 16));
             }
 
-            SetItemsControlPadding(SkeletonCardsList, isPortrait, new Thickness(8, 0, 8, 16));
+            if (currentSearchType == SearchContentType.Shorts && isPortrait)
+            {
+                if (SkeletonCardsList != null)
+                {
+                    SkeletonCardsList.Padding = new Thickness(20, 0, 20, 20);
+                }
+            }
+            else
+            {
+                SetItemsControlPadding(SkeletonCardsList, isPortrait, new Thickness(8, 0, 8, 16));
+            }
 
             double availableWidth = GetItemsControlContentWidth(SearchResultsList, Window.Current.Bounds.Width);
-            var itemWidth = currentSearchType == SearchContentType.Channels
-                ? Math.Max(0, availableWidth)
-                : (isPortrait ? Math.Max(0, availableWidth) : DefaultCardWidth);
-            var maxColumns = currentSearchType == SearchContentType.Channels
-                ? 1
-                : (isPortrait ? 1 : 3);
+            double itemWidth;
+            int maxColumns;
+
+            if (currentSearchType == SearchContentType.Channels)
+            {
+                itemWidth = Math.Max(0, availableWidth);
+                maxColumns = 1;
+            }
+            else if (currentSearchType == SearchContentType.Shorts)
+            {
+                // Portrait: exactly two posters per row. Landscape: fixed poster width so as many
+                // columns as fit are shown automatically.
+                itemWidth = isPortrait
+                    ? Math.Max(112, (availableWidth - 20) / 2.0)
+                    : 190.0;
+                maxColumns = isPortrait ? 2 : 8;
+            }
+            else
+            {
+                itemWidth = isPortrait ? Math.Max(0, availableWidth) : DefaultCardWidth;
+                maxColumns = isPortrait ? 1 : 3;
+            }
 
             UpdateItemsWrapGrid(SearchResultsList, itemWidth, maxColumns);
             UpdateItemsWrapGrid(SkeletonCardsList, itemWidth, maxColumns);
@@ -1606,6 +1714,18 @@ namespace YouTube
             return null;
         }
 
+        private void ShortThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var host = sender as FrameworkElement;
+            if (host == null || e.NewSize.Width <= 0)
+            {
+                return;
+            }
+
+            // Native Shorts/search cards are portrait. Keep the visual at 9:16 for every width.
+            host.Height = Math.Round(e.NewSize.Width * 16.0 / 9.0);
+        }
+
         private void VideoCard_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -1631,6 +1751,13 @@ namespace YouTube
             }
 
             if (string.IsNullOrWhiteSpace(item.VideoId)) return;
+
+            if (item.IsShort)
+            {
+                // Shorts accepts a raw 11-character video id as its navigation parameter.
+                Frame.Navigate(typeof(Shorts), item.VideoId);
+                return;
+            }
 
             // Navigate to Video page
             Frame.Navigate(typeof(Video), item.VideoId);
@@ -1671,6 +1798,11 @@ namespace YouTube
             await SetSearchContentTypeAsync(SearchContentType.Videos);
         }
 
+        private async void ShortsTypeButton_Click(object sender, RoutedEventArgs e)
+        {
+            await SetSearchContentTypeAsync(SearchContentType.Shorts);
+        }
+
         private async void PlaylistsTypeButton_Click(object sender, RoutedEventArgs e)
         {
             await SetSearchContentTypeAsync(SearchContentType.Playlists);
@@ -1708,6 +1840,11 @@ namespace YouTube
                 VideosTypeCheck.Visibility = currentSearchType == SearchContentType.Videos ? Visibility.Visible : Visibility.Collapsed;
             }
 
+            if (ShortsTypeCheck != null)
+            {
+                ShortsTypeCheck.Visibility = currentSearchType == SearchContentType.Shorts ? Visibility.Visible : Visibility.Collapsed;
+            }
+
             if (PlaylistsTypeCheck != null)
             {
                 PlaylistsTypeCheck.Visibility = currentSearchType == SearchContentType.Playlists ? Visibility.Visible : Visibility.Collapsed;
@@ -1728,7 +1865,7 @@ namespace YouTube
             var animation = new DoubleAnimation
             {
                 From = TypeBottomSheetTransform.Y,
-                To = show ? 0 : 330,
+                To = show ? 0 : 365,
                 Duration = new Duration(TimeSpan.FromMilliseconds(220)),
                 EnableDependentAnimation = true
             };
@@ -1807,6 +1944,7 @@ namespace YouTube
         private enum SearchContentType
         {
             Videos,
+            Shorts,
             Playlists,
             Channels
         }
@@ -1876,9 +2014,19 @@ namespace YouTube
             get { return string.Equals(ResultType, "Channel", StringComparison.OrdinalIgnoreCase); }
         }
 
+        public bool IsShort
+        {
+            get { return string.Equals(ResultType, "Short", StringComparison.OrdinalIgnoreCase); }
+        }
+
         public Visibility MediaCardVisibility
         {
-            get { return IsChannel ? Visibility.Collapsed : Visibility.Visible; }
+            get { return (IsChannel || IsShort) ? Visibility.Collapsed : Visibility.Visible; }
+        }
+
+        public Visibility ShortsCardVisibility
+        {
+            get { return IsShort ? Visibility.Visible : Visibility.Collapsed; }
         }
 
         public Visibility ChannelCardVisibility
@@ -1896,6 +2044,9 @@ namespace YouTube
                 if (IsPlaylist)
                     return "playlist:" + (PlaylistId ?? string.Empty);
 
+                if (IsShort)
+                    return "short:" + (VideoId ?? string.Empty);
+
                 return "video:" + (VideoId ?? string.Empty);
             }
         }
@@ -1903,6 +2054,27 @@ namespace YouTube
         public Visibility TitleVisibility
         {
             get { return string.IsNullOrWhiteSpace(Title) ? Visibility.Collapsed : Visibility.Visible; }
+        }
+
+        public string MetadataLine
+        {
+            get
+            {
+                var author = (Author ?? string.Empty).Trim();
+                var views = (Views ?? string.Empty).Trim();
+
+                if (string.IsNullOrWhiteSpace(author))
+                {
+                    return views;
+                }
+
+                if (string.IsNullOrWhiteSpace(views))
+                {
+                    return author;
+                }
+
+                return author + " • " + views;
+            }
         }
 
         public Visibility DurationVisibility

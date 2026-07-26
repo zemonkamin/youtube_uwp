@@ -71,6 +71,11 @@ namespace YouTube
         private Storyboard _shareToggleStoryboard;
         private MediaPlayerElement _cachedShortsMediaPlayerElement;
 
+        // Shorts settings-sheet drag state. Matches the Video page bottom-sheet gesture.
+        private double _shortsSettingsInitialY;
+        private double _shortsSettingsInitialTransformY;
+        private bool _shortsSettingsIsDragging;
+
         private const double SwipeThreshold = 80.0;
         private const double SwipeStartThreshold = 8.0;
         private const string InnertubeApiKey = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
@@ -153,14 +158,9 @@ namespace YouTube
                 ShowMessage(string.Empty);
                 SetLoading(true);
 
-                Config.LoadUserToken();
-                if (string.IsNullOrWhiteSpace(Config.UserToken))
-                {
-                    SetLoading(false);
-                    ShowMessage("Sign in to watch Shorts.");
-                    return;
-                }
-
+                // A direct navigation from Search passes the Short's raw video id. Handle
+                // that seed before requiring a signed-in Shorts feed: the requested Short itself
+                // can be opened by id even when there is no account feed available.
                 initialShortVideoId = NormalizeInitialShortVideoId(initialShortVideoId);
                 if (!string.IsNullOrWhiteSpace(initialShortVideoId))
                 {
@@ -168,18 +168,75 @@ namespace YouTube
                     {
                         VideoId = initialShortVideoId,
                         Title = "Shorts",
-                        ChannelName = "YouTube",
+                        ChannelName = string.Empty,
+                        ChannelThumbnailUrl = string.Empty,
+                        ThumbnailUrl = "https://i.ytimg.com/vi/" + initialShortVideoId + "/oardefault.jpg",
                         LikeCount = "Like",
                         CommentCount = "Comments",
                         RatingState = "none"
                     };
+
+                    // A direct-id Short does not come from the Shorts feed, so resolve its
+                    // identity from /player first. Unlike the generic /next walker, videoDetails
+                    // is scoped to this exact video id and cannot accidentally pick text from a
+                    // recommendation, engagement panel or another renderer.
+                    try
+                    {
+                        var directMetadata = await LoadDirectShortMetadataAsync(initialShortVideoId);
+                        if (directMetadata != null)
+                        {
+                            if (!string.IsNullOrWhiteSpace(directMetadata.Title))
+                            {
+                                seedShort.Title = directMetadata.Title;
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(directMetadata.ChannelName))
+                            {
+                                seedShort.ChannelName = directMetadata.ChannelName;
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(directMetadata.ThumbnailUrl))
+                            {
+                                seedShort.ThumbnailUrl = directMetadata.ThumbnailUrl;
+                            }
+
+                            if (!string.IsNullOrWhiteSpace(directMetadata.ChannelThumbnailUrl))
+                            {
+                                seedShort.ChannelThumbnailUrl = directMetadata.ChannelThumbnailUrl;
+                            }
+
+                            System.Diagnostics.Debug.WriteLine(
+                                "[Shorts] Direct-id exact metadata: title=" + seedShort.Title
+                                + ", channel=" + seedShort.ChannelName
+                                + ", avatar=" + (!string.IsNullOrWhiteSpace(seedShort.ChannelThumbnailUrl)));
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Metadata is supplementary. Playback by id must still work.
+                        System.Diagnostics.Debug.WriteLine(
+                            "[Shorts] Direct-id exact metadata load failed: " + ex.Message);
+                    }
 
                     _seenVideoIds.Add(seedShort.VideoId);
                     _shorts.Add(seedShort);
                     await ShowShortAsync(0, 0);
 
                     // Fill the rest of the Shorts feed in the background so swiping still works.
-                    var ignored = LoadMoreShortsAsync();
+                    // Only try to extend the feed when an account token is available.
+                    Config.LoadUserToken();
+                    if (!string.IsNullOrWhiteSpace(Config.UserToken))
+                    {
+                        var ignored = LoadMoreShortsAsync();
+                    }
+                    return;
+                }
+
+                Config.LoadUserToken();
+                if (string.IsNullOrWhiteSpace(Config.UserToken))
+                {
+                    SetLoading(false);
+                    ShowMessage("Sign in to watch Shorts.");
                     return;
                 }
 
@@ -1684,14 +1741,13 @@ namespace YouTube
             {
                 _settingsForShortId = item.VideoId;
                 _shortHeightsCache = new List<int>();
-                _shortSubtitlesCache = null;
 
+                // The Shorts settings menu intentionally has no subtitles row, so opening it
+                // should not waste a network request on caption tracks.
                 var heights = await Config.GetShortAvailableHeightsAsync(item.VideoId);
-                var subs = await Config.GetShortSubtitleTracksAsync(item.VideoId);
                 if (string.Equals(CurrentShort != null ? CurrentShort.VideoId : null, item.VideoId, StringComparison.Ordinal))
                 {
                     _shortHeightsCache = heights;
-                    _shortSubtitlesCache = subs;
                     UpdateShortsSettingsRowValues();
                 }
             }
@@ -1707,25 +1763,32 @@ namespace YouTube
 
             UpdateShortsSettingsRowValues();
 
-            ShortsSettingsOverlay.Visibility = Visibility.Visible;
-            ShortsSettingsSheet.Visibility = Visibility.Visible;
             AnimateShortsSettingsSheet(true);
         }
 
         private void CloseShortsSettingsSheet()
         {
             AnimateShortsSettingsSheet(false);
-            ShortsSettingsOverlay.Visibility = Visibility.Collapsed;
-            ShortsSettingsSheet.Visibility = Visibility.Collapsed;
         }
 
         private void AnimateShortsSettingsSheet(bool show)
         {
+            if (ShortsSettingsSheetTransform == null)
+            {
+                return;
+            }
+
+            if (show)
+            {
+                ShortsSettingsOverlay.Visibility = Visibility.Visible;
+                ShortsSettingsSheet.Visibility = Visibility.Visible;
+            }
+
             var storyboard = new Windows.UI.Xaml.Media.Animation.Storyboard();
             var slide = new Windows.UI.Xaml.Media.Animation.DoubleAnimation
             {
-                To = show ? 0 : 360,
-                Duration = TimeSpan.FromMilliseconds(200),
+                To = show ? 0 : 270,
+                Duration = TimeSpan.FromMilliseconds(220),
                 EasingFunction = new Windows.UI.Xaml.Media.Animation.CubicEase
                 {
                     EasingMode = show
@@ -1733,6 +1796,19 @@ namespace YouTube
                         : Windows.UI.Xaml.Media.Animation.EasingMode.EaseIn
                 }
             };
+
+            if (!show)
+            {
+                slide.Completed += (s, e) =>
+                {
+                    if (!_shortsSettingsIsDragging)
+                    {
+                        ShortsSettingsOverlay.Visibility = Visibility.Collapsed;
+                        ShortsSettingsSheet.Visibility = Visibility.Collapsed;
+                    }
+                };
+            }
+
             Windows.UI.Xaml.Media.Animation.Storyboard.SetTarget(slide, ShortsSettingsSheetTransform);
             Windows.UI.Xaml.Media.Animation.Storyboard.SetTargetProperty(slide, "Y");
             storyboard.Children.Add(slide);
@@ -1748,6 +1824,87 @@ namespace YouTube
         private void ShortsSettingsDragArea_Tapped(object sender, TappedRoutedEventArgs e)
         {
             CloseShortsSettingsSheet();
+            e.Handled = true;
+        }
+
+        private void ShortsSettingsDragArea_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            var element = sender as UIElement;
+            if (element == null || ShortsSettingsSheetTransform == null)
+            {
+                return;
+            }
+
+            if (element.CapturePointer(e.Pointer))
+            {
+                _shortsSettingsInitialY = e.GetCurrentPoint(element).Position.Y;
+                _shortsSettingsInitialTransformY = ShortsSettingsSheetTransform.Y;
+                _shortsSettingsIsDragging = true;
+                e.Handled = true;
+            }
+        }
+
+        private void ShortsSettingsDragArea_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_shortsSettingsIsDragging || ShortsSettingsSheetTransform == null)
+            {
+                return;
+            }
+
+            var element = sender as UIElement;
+            if (element == null)
+            {
+                return;
+            }
+
+            var dragOffset = e.GetCurrentPoint(element).Position.Y - _shortsSettingsInitialY;
+            var newY = _shortsSettingsInitialTransformY + dragOffset;
+
+            // Drag only downward, exactly like the Video settings sheet.
+            if (newY < 0)
+            {
+                newY = 0;
+            }
+            else if (newY > 270)
+            {
+                newY = 270;
+            }
+
+            ShortsSettingsSheetTransform.Y = newY;
+            e.Handled = true;
+        }
+
+        private void ShortsSettingsDragArea_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_shortsSettingsIsDragging)
+            {
+                return;
+            }
+
+            _shortsSettingsIsDragging = false;
+
+            var element = sender as UIElement;
+            if (element != null)
+            {
+                try
+                {
+                    element.ReleasePointerCapture(e.Pointer);
+                }
+                catch
+                {
+                }
+            }
+
+            if (ShortsSettingsSheetTransform != null && ShortsSettingsSheetTransform.Y > 90)
+            {
+                AnimateShortsSettingsSheet(false);
+            }
+            else
+            {
+                AnimateShortsSettingsSheet(true);
+            }
+
+            e.Handled = true;
         }
 
         // Fills the right-edge current-value labels on the main rows.
@@ -1766,13 +1923,6 @@ namespace YouTube
                     System.Globalization.CultureInfo.InvariantCulture) + "x";
             }
 
-            if (ShortsSubtitlesValueText != null)
-            {
-                ShortsSubtitlesValueText.Text = _shortsSubtitleTrack == null
-                    ? "Off"
-                    : _shortsSubtitleTrack.DisplayName;
-            }
-
             // Language choice only exists when the short actually carries several audio tracks.
             var hasAudioChoice = _currentShortAudioTracks != null && _currentShortAudioTracks.Count > 1;
             if (ShortsAudioTrackButton != null)
@@ -1784,13 +1934,6 @@ namespace YouTube
                 ShortsAudioValueText.Text = CurrentAudioTrackName();
             }
 
-            // Captions are unavailable until the track list has been fetched (or if there are none).
-            if (ShortsSubtitlesButton != null)
-            {
-                var hasSubs = _shortSubtitlesCache != null && _shortSubtitlesCache.HasAny;
-                ShortsSubtitlesButton.IsEnabled = hasSubs;
-                ShortsSubtitlesButton.Opacity = hasSubs ? 1.0 : 0.4;
-            }
         }
 
         private string CurrentAudioTrackName()
@@ -2245,6 +2388,173 @@ namespace YouTube
             {
                 System.Diagnostics.Debug.WriteLine("[Shorts] /next rating load error: " + ex.Message);
                 return null;
+            }
+        }
+
+        private sealed class DirectShortMetadata
+        {
+            public string Title { get; set; }
+            public string ChannelName { get; set; }
+            public string ThumbnailUrl { get; set; }
+            public string ChannelThumbnailUrl { get; set; }
+        }
+
+        private async Task<DirectShortMetadata> LoadDirectShortMetadataAsync(string videoId)
+        {
+            if (string.IsNullOrWhiteSpace(videoId))
+            {
+                return null;
+            }
+
+            var metadata = new DirectShortMetadata();
+            string playerJson = string.Empty;
+
+            // First source of truth: /player.videoDetails. title + author belong to the exact
+            // requested id and are much safer than recursively walking /next.
+            try
+            {
+                var payload = BuildPlayerPayload(videoId);
+                var accessToken = await GetTvAccessTokenAsync(false);
+
+                playerJson = await LoadDirectShortPlayerJsonAsync(payload, accessToken);
+                if (string.IsNullOrWhiteSpace(playerJson))
+                {
+                    playerJson = await LoadDirectShortPlayerJsonAsync(payload, string.Empty);
+                }
+
+                if (!string.IsNullOrWhiteSpace(playerJson))
+                {
+                    var root = JsonObject.Parse(playerJson);
+                    if (root.ContainsKey("videoDetails"))
+                    {
+                        var details = root.GetNamedObject("videoDetails");
+
+                        metadata.Title = details.GetNamedString("title", string.Empty).Trim();
+                        metadata.ChannelName = details.GetNamedString("author", string.Empty).Trim();
+
+                        if (details.ContainsKey("thumbnail"))
+                        {
+                            metadata.ThumbnailUrl = ExtractLargestThumbnailUrl(details.GetNamedObject("thumbnail"));
+                        }
+
+                        System.Diagnostics.Debug.WriteLine(
+                            "[Shorts] /player metadata for " + videoId
+                            + ": title='" + metadata.Title
+                            + "', author='" + metadata.ChannelName + "'");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Shorts] /player metadata parse failed: " + ex.Message);
+            }
+
+            // Channel avatars normally are not present in /player.videoDetails. Use the existing
+            // exact-video /next request only for the avatar, never for title/author.
+            try
+            {
+                var details = await Config.GetVideoDetailsAsync(videoId);
+                if (details != null && !string.IsNullOrWhiteSpace(details.ChannelThumbnail))
+                {
+                    metadata.ChannelThumbnailUrl = details.ChannelThumbnail.Trim();
+                }
+
+                // Only use these as emergency fallbacks if /player itself omitted them.
+                if (details != null
+                    && string.IsNullOrWhiteSpace(metadata.Title)
+                    && !string.IsNullOrWhiteSpace(details.Title))
+                {
+                    metadata.Title = details.Title.Trim();
+                }
+
+                if (details != null
+                    && string.IsNullOrWhiteSpace(metadata.ChannelName)
+                    && !string.IsNullOrWhiteSpace(details.ChannelName))
+                {
+                    metadata.ChannelName = details.ChannelName.Trim();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Shorts] Direct-id avatar fallback failed: " + ex.Message);
+            }
+
+            return metadata;
+        }
+
+        private async Task<string> LoadDirectShortPlayerJsonAsync(string payload, string accessToken)
+        {
+            try
+            {
+                using (var request = new HttpRequestMessage(HttpMethod.Post, BuildInnertubeUrl("player")))
+                {
+                    request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+                    AddInnertubeAuthHeadersForClient(
+                        request,
+                        accessToken,
+                        InnertubeWebClientHeaderName,
+                        InnertubeWebClientVersion,
+                        InnertubeWebUserAgent);
+
+                    using (var response = await _httpClient.SendAsync(request))
+                    {
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            System.Diagnostics.Debug.WriteLine(
+                                "[Shorts] Direct-id /player metadata failed: "
+                                + (int)response.StatusCode + " " + response.ReasonPhrase);
+                            return string.Empty;
+                        }
+
+                        return await response.Content.ReadAsStringAsync();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Shorts] Direct-id /player request failed: " + ex.Message);
+                return string.Empty;
+            }
+        }
+
+        private static string ExtractLargestThumbnailUrl(JsonObject thumbnailObject)
+        {
+            try
+            {
+                if (thumbnailObject == null || !thumbnailObject.ContainsKey("thumbnails"))
+                {
+                    return string.Empty;
+                }
+
+                var thumbnails = thumbnailObject.GetNamedArray("thumbnails");
+                string bestUrl = string.Empty;
+                double bestArea = -1;
+
+                for (int i = 0; i < (int)thumbnails.Count; i++)
+                {
+                    if (thumbnails[i].ValueType != JsonValueType.Object)
+                    {
+                        continue;
+                    }
+
+                    var thumb = thumbnails[i].GetObject();
+                    var url = thumb.GetNamedString("url", string.Empty);
+                    var width = thumb.GetNamedNumber("width", 0);
+                    var height = thumb.GetNamedNumber("height", 0);
+                    var area = width * height;
+
+                    if (!string.IsNullOrWhiteSpace(url) && area >= bestArea)
+                    {
+                        bestUrl = url;
+                        bestArea = area;
+                    }
+                }
+
+                return bestUrl;
+            }
+            catch
+            {
+                return string.Empty;
             }
         }
 

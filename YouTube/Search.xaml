@@ -153,13 +153,16 @@
                                         Background="#0F0F0F"
                                         Orientation="Vertical"
                                         Visibility="{Binding MediaCardVisibility}">
-                                        <Grid SizeChanged="VideoThumbnailHost_SizeChanged">
-                                            <Border Background="#1A1A1A" />
-                                            <Image
-                                                HorizontalAlignment="Stretch"
-                                                VerticalAlignment="Stretch"
-                                                Source="{Binding Thumbnail}"
-                                                Stretch="Uniform" />
+                                        <Grid SizeChanged="VideoThumbnailHost_SizeChanged"
+                                              CornerRadius="8">
+                                            <Border Background="#1A1A1A" CornerRadius="8" />
+                                            <Border CornerRadius="8">
+                                                <Image
+                                                    HorizontalAlignment="Stretch"
+                                                    VerticalAlignment="Stretch"
+                                                    Source="{Binding Thumbnail}"
+                                                    Stretch="UniformToFill" />
+                                            </Border>
                                             <Border
                                                 Margin="0,0,8,8"
                                                 Padding="6,2"
@@ -191,9 +194,55 @@
                                                 FontFamily="Roboto"
                                                 FontSize="12"
                                                 Foreground="Gray"
-                                                Text="{Binding Author}" />
+                                                Text="{Binding MetadataLine}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="NoWrap" />
                                         </StackPanel>
                                     </StackPanel>
+
+                                    <!--  Shorts card: vertical poster with a two-line title overlay.  -->
+                                    <Grid
+                                        HorizontalAlignment="Stretch"
+                                        Visibility="{Binding ShortsCardVisibility}">
+                                        <Grid
+                                            x:Name="ShortThumbnailHost"
+                                            HorizontalAlignment="Stretch"
+                                            SizeChanged="ShortThumbnailHost_SizeChanged">
+                                            <Border CornerRadius="10">
+                                                <Border.Background>
+                                                    <ImageBrush
+                                                        ImageSource="{Binding Thumbnail}"
+                                                        Stretch="UniformToFill" />
+                                                </Border.Background>
+                                            </Border>
+
+                                            <!--  Bottom readability fade, like the native Shorts grid.  -->
+                                            <Border
+                                                Height="112"
+                                                HorizontalAlignment="Stretch"
+                                                VerticalAlignment="Bottom"
+                                                CornerRadius="0,0,10,10">
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                        <GradientStop Offset="0" Color="#00000000" />
+                                                        <GradientStop Offset="1" Color="#D9000000" />
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                            </Border>
+
+                                            <TextBlock
+                                                Margin="12,0,12,12"
+                                                MaxLines="2"
+                                                VerticalAlignment="Bottom"
+                                                FontFamily="Roboto"
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Foreground="White"
+                                                Text="{Binding Title}"
+                                                TextTrimming="CharacterEllipsis"
+                                                TextWrapping="WrapWholeWords" />
+                                        </Grid>
+                                    </Grid>
 
                                     <!--  Compact channel result. Click anywhere to open Channel.  -->
                                     <Grid
@@ -386,7 +435,7 @@
             x:Name="TypeBottomSheetPanel"
             Grid.Row="0"
             Grid.RowSpan="3"
-            Height="315"
+            Height="350"
             Margin="10,0,10,10"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Bottom"
@@ -394,12 +443,12 @@
             CornerRadius="15"
             Visibility="Collapsed">
             <Border.RenderTransform>
-                <TranslateTransform x:Name="TypeBottomSheetTransform" Y="330" />
+                <TranslateTransform x:Name="TypeBottomSheetTransform" Y="365" />
             </Border.RenderTransform>
 
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="40" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
@@ -423,9 +472,9 @@
                         RadiusY="2" />
                 </Grid>
 
-                <StackPanel Grid.Row="1" Margin="20,0,20,20">
+                <StackPanel Grid.Row="1" Margin="4,0,4,12">
                     <TextBlock
-                        Margin="0,0,0,16"
+                        Margin="16,0,16,8"
                         FontSize="18"
                         FontWeight="SemiBold"
                         Foreground="White"
@@ -433,95 +482,133 @@
 
                     <Button
                         x:Name="VideosTypeButton"
-                        Height="56"
-                        Padding="0"
+                        Padding="16,12,16,12"
+                        Margin="0,0,0,4"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Stretch"
                         Background="Transparent"
                         BorderThickness="0"
-                        Click="VideosTypeButton_Click">
+                        Click="VideosTypeButton_Click"
+                        FontSize="14">
                         <Grid>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="28" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                Foreground="White"
-                                Text="Videos" />
                             <FontIcon
                                 x:Name="VideosTypeCheck"
-                                Grid.Column="1"
+                                Grid.Column="0"
+                                HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 FontFamily="Segoe MDL2 Assets"
-                                FontSize="18"
+                                FontSize="16"
                                 Foreground="White"
                                 Glyph="&#xE73E;" />
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Foreground="White"
+                                Text="Videos" />
                         </Grid>
                     </Button>
 
-                    <Border Height="1" Background="#2A2A2A" />
+                    <Button
+                        x:Name="ShortsTypeButton"
+                        Padding="16,12,16,12"
+                        Margin="0,0,0,4"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Click="ShortsTypeButton_Click"
+                        FontSize="14">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="28" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <FontIcon
+                                x:Name="ShortsTypeCheck"
+                                Grid.Column="0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="16"
+                                Foreground="White"
+                                Glyph="&#xE73E;" />
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Foreground="White"
+                                Text="Shorts" />
+                        </Grid>
+                    </Button>
 
                     <Button
                         x:Name="PlaylistsTypeButton"
-                        Height="56"
-                        Padding="0"
+                        Padding="16,12,16,12"
+                        Margin="0,0,0,4"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Stretch"
                         Background="Transparent"
                         BorderThickness="0"
-                        Click="PlaylistsTypeButton_Click">
+                        Click="PlaylistsTypeButton_Click"
+                        FontSize="14">
                         <Grid>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="28" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                Foreground="White"
-                                Text="Playlists" />
                             <FontIcon
                                 x:Name="PlaylistsTypeCheck"
-                                Grid.Column="1"
+                                Grid.Column="0"
+                                HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 FontFamily="Segoe MDL2 Assets"
-                                FontSize="18"
+                                FontSize="16"
                                 Foreground="White"
                                 Glyph="&#xE73E;" />
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Foreground="White"
+                                Text="Playlists" />
                         </Grid>
                     </Button>
 
-                    <Border Height="1" Background="#2A2A2A" />
-
                     <Button
                         x:Name="ChannelsTypeButton"
-                        Height="56"
-                        Padding="0"
+                        Padding="16,12,16,12"
+                        Margin="0,0,0,4"
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Stretch"
                         Background="Transparent"
                         BorderThickness="0"
-                        Click="ChannelsTypeButton_Click">
+                        Click="ChannelsTypeButton_Click"
+                        FontSize="14">
                         <Grid>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="28" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                FontSize="16"
-                                Foreground="White"
-                                Text="Channels" />
                             <FontIcon
                                 x:Name="ChannelsTypeCheck"
-                                Grid.Column="1"
+                                Grid.Column="0"
+                                HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 FontFamily="Segoe MDL2 Assets"
-                                FontSize="18"
+                                FontSize="16"
                                 Foreground="White"
                                 Glyph="&#xE73E;" />
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Foreground="White"
+                                Text="Channels" />
                         </Grid>
                     </Button>
                 </StackPanel>

@@ -79,7 +79,8 @@
                       ZoomMode="Disabled"
                       HorizontalScrollMode="Disabled"
                       HorizontalScrollBarVisibility="Disabled"
-                      VerticalScrollBarVisibility="Auto">
+                      VerticalScrollBarVisibility="Auto"
+                      ViewChanged="MainContent_ViewChanged">
             <StackPanel Background="#0F0F0F" Padding="0,8,0,24">
 
                 <!--  Collapsed when the channel has no banner art, so no empty box is shown.  -->
@@ -190,62 +191,83 @@
                     </Button>
                 </Border>
 
-                <!-- Playlists shelf (channel Playlists tab), horizontally scrollable -->
-                <StackPanel x:Name="ChannelPlaylistsSection" Visibility="Collapsed" Margin="0,4,0,0">
-                    <TextBlock Text="Playlists"
-                               Foreground="White"
-                               FontSize="16"
-                               FontWeight="SemiBold"
-                               Margin="12,8,12,8" />
-                    <ScrollViewer HorizontalScrollMode="Auto"
-                                  HorizontalScrollBarVisibility="Hidden"
-                                  VerticalScrollMode="Disabled"
-                                  VerticalScrollBarVisibility="Disabled">
-                        <ItemsControl x:Name="ChannelPlaylistsItemsControl" Padding="8,0,8,12">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Width="168"
-                                            Margin="4,0"
-                                            Padding="0"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                            HorizontalContentAlignment="Stretch"
-                                            Click="ChannelPlaylistCard_Click">
-                                        <StackPanel>
-                                            <Grid Height="94" Background="Black" CornerRadius="8">
-                                                <Border CornerRadius="8">
-                                                    <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill" />
-                                                </Border>
-                                                <Border Background="#CC000000"
-                                                        Padding="6,2"
-                                                        Margin="4"
-                                                        HorizontalAlignment="Right"
-                                                        VerticalAlignment="Bottom">
-                                                    <TextBlock Text="{Binding VideoCountText}"
-                                                               Foreground="White"
-                                                               FontSize="11" />
-                                                </Border>
-                                            </Grid>
-                                            <TextBlock Text="{Binding Title}"
-                                                       Foreground="White"
-                                                       FontSize="13"
-                                                       MaxLines="2"
-                                                       TextWrapping="Wrap"
-                                                       Margin="0,6,0,0" />
-                                        </StackPanel>
-                                    </Button>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
+                <!-- Compact channel tabs: left aligned, no Button pressed animation. -->
+                <Grid Margin="18,2,12,8" Height="48" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Stretch">
+                        <Grid Width="Auto" MinWidth="58" Margin="0,0,16,0"
+                              Background="Transparent" Tapped="VideosTab_Tapped">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="2" />
+                            </Grid.RowDefinitions>
+                            <TextBlock x:Name="VideosTabText" Grid.Row="0"
+                                       Text="Videos" Foreground="White" FontSize="15"
+                                       FontWeight="SemiBold" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                            <Border x:Name="VideosTabIndicator" Grid.Row="1"
+                                    Height="2" Background="White"
+                                    HorizontalAlignment="Stretch" />
+                        </Grid>
+
+                        <Grid Width="Auto" MinWidth="58" Margin="0,0,16,0"
+                              Background="Transparent" Tapped="ShortsTab_Tapped">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="2" />
+                            </Grid.RowDefinitions>
+                            <TextBlock x:Name="ShortsTabText" Grid.Row="0"
+                                       Text="Shorts" Foreground="#AAAAAA" FontSize="15"
+                                       FontWeight="SemiBold" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                            <Border x:Name="ShortsTabIndicator" Grid.Row="1"
+                                    Height="2" Background="White" Opacity="0"
+                                    HorizontalAlignment="Stretch" />
+                        </Grid>
+
+                        <Grid Width="Auto" MinWidth="72" Margin="0,0,16,0"
+                              Background="Transparent" Tapped="PlaylistsTab_Tapped">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="2" />
+                            </Grid.RowDefinitions>
+                            <TextBlock x:Name="PlaylistsTabText" Grid.Row="0"
+                                       Text="Playlists" Foreground="#AAAAAA" FontSize="15"
+                                       FontWeight="SemiBold" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                            <Border x:Name="PlaylistsTabIndicator" Grid.Row="1"
+                                    Height="2" Background="White" Opacity="0"
+                                    HorizontalAlignment="Stretch" />
+                        </Grid>
+
+                        <Grid Width="Auto" MinWidth="52"
+                              Background="Transparent" Tapped="PostsTab_Tapped">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="2" />
+                            </Grid.RowDefinitions>
+                            <TextBlock x:Name="PostsTabText" Grid.Row="0"
+                                       Text="Posts" Foreground="#AAAAAA" FontSize="15"
+                                       FontWeight="SemiBold" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center" />
+                            <Border x:Name="PostsTabIndicator" Grid.Row="1"
+                                    Height="2" Background="White" Opacity="0"
+                                    HorizontalAlignment="Stretch" />
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Centered loading animation used when a tab is opened for the first time. -->
+                <StackPanel x:Name="ChannelTabLoadingPanel"
+                            HorizontalAlignment="Center"
+                            Margin="0,28,0,34"
+                            Visibility="Collapsed">
+                    <local:AndroidLoadingRing x:Name="ChannelTabLoadingRing"
+                                              Width="42" Height="42" IsActive="False" />
                 </StackPanel>
 
-                <!-- Video cards: same layout as Home.xaml -->
+                <!-- Videos -->
                 <ItemsControl x:Name="VideosItemsControl"
                               Background="#0F0F0F"
                               HorizontalAlignment="Stretch"
@@ -258,7 +280,6 @@
                                            HorizontalAlignment="Center" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
-
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button Background="Transparent"
@@ -271,53 +292,221 @@
                                     SizeChanged="ResponsiveCard_SizeChanged"
                                     Margin="0,0,0,16"
                                     Click="VideoCard_Click">
-                                <StackPanel Orientation="Vertical"
-                                            Background="#0F0F0F"
+                                <StackPanel Orientation="Vertical" Background="#0F0F0F"
                                             HorizontalAlignment="Stretch">
-                                    <!-- Video Thumbnail -->
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged">
                                         <Border CornerRadius="8" Background="#1A1A1A" />
                                         <Border CornerRadius="8">
                                             <Image DataContextChanged="CardThumbnail_DataContextChanged"
                                                    Stretch="UniformToFill" />
                                         </Border>
-                                        <!-- Duration overlay -->
-                                        <Border HorizontalAlignment="Right"
-                                                VerticalAlignment="Bottom"
-                                                Margin="0,0,8,8"
-                                                Padding="6,2">
+                                        <Border HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                                Margin="0,0,8,8" Padding="6,2">
                                             <Border.Background>
                                                 <SolidColorBrush Color="Black" Opacity="0.8" />
                                             </Border.Background>
-                                            <TextBlock Text="{Binding Duration}"
-                                                       Foreground="White"
-                                                       FontSize="12"
-                                                       FontWeight="Medium" />
+                                            <TextBlock Text="{Binding Duration}" Foreground="White"
+                                                       FontSize="12" FontWeight="Medium" />
                                         </Border>
                                     </Grid>
-
-                                    <!-- Title and Channel -->
                                     <StackPanel Margin="12,12,12,0">
-                                        <TextBlock Text="{Binding Title}"
-                                                   TextWrapping="NoWrap"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   Foreground="White"
-                                                   FontFamily="Roboto"
-                                                   FontSize="14"
-                                                   FontWeight="Medium" />
-                                        <TextBlock Text="{Binding StatsLine}"
-                                                   TextWrapping="NoWrap"
-                                                   TextTrimming="CharacterEllipsis"
-                                                   Foreground="Gray"
-                                                   FontFamily="Roboto"
-                                                   FontSize="12"
-                                                   Margin="0,4,0,0" />
+                                        <TextBlock Text="{Binding Title}" TextWrapping="NoWrap"
+                                                   TextTrimming="CharacterEllipsis" Foreground="White"
+                                                   FontFamily="Roboto" FontSize="14" FontWeight="Medium" />
+                                        <TextBlock Text="{Binding StatsLine}" TextWrapping="NoWrap"
+                                                   TextTrimming="CharacterEllipsis" Foreground="Gray"
+                                                   FontFamily="Roboto" FontSize="12" Margin="0,4,0,0" />
                                     </StackPanel>
                                 </StackPanel>
                             </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
+                <!-- Shorts: same 9:16 two-column portrait cards as Search. -->
+                <ItemsControl x:Name="ShortsItemsControl"
+                              Background="#0F0F0F"
+                              HorizontalAlignment="Stretch"
+                              Padding="20,8,20,20"
+                              Visibility="Collapsed">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid Orientation="Horizontal"
+                                           ItemWidth="170"
+                                           MaximumRowsOrColumns="2"
+                                           HorizontalAlignment="Center" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Background="Transparent" BorderThickness="0" Padding="0"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                                    Margin="6,0,6,22" Click="ShortCard_Click">
+                                <Grid SizeChanged="ShortThumbnailHost_SizeChanged">
+                                    <Border CornerRadius="10">
+                                        <Border.Background>
+                                            <ImageBrush
+                                                ImageSource="{Binding ThumbnailUrl}"
+                                                Stretch="UniformToFill" />
+                                        </Border.Background>
+                                    </Border>
+                                    <Border Height="112" HorizontalAlignment="Stretch"
+                                            VerticalAlignment="Bottom" CornerRadius="0,0,10,10">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                <GradientStop Offset="0" Color="#00000000" />
+                                                <GradientStop Offset="1" Color="#D9000000" />
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                    </Border>
+                                    <TextBlock Margin="12,0,12,12" MaxLines="2"
+                                               VerticalAlignment="Bottom" FontFamily="Roboto"
+                                               FontSize="16" FontWeight="SemiBold" Foreground="White"
+                                               Text="{Binding Title}" TextTrimming="CharacterEllipsis"
+                                               TextWrapping="WrapWholeWords" />
+                                </Grid>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Playlists: same full-width / responsive cards used in Search. -->
+                <ItemsControl x:Name="PlaylistsItemsControl"
+                              Background="#0F0F0F"
+                              HorizontalAlignment="Stretch"
+                              Padding="8,8,8,16"
+                              Visibility="Collapsed">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsWrapGrid Orientation="Horizontal" ItemWidth="360"
+                                           MaximumRowsOrColumns="3"
+                                           HorizontalAlignment="Center" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Background="Transparent" BorderThickness="0" Padding="0"
+                                    HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                                    Tag="ResponsiveCard" Loaded="ResponsiveCard_Loaded"
+                                    SizeChanged="ResponsiveCard_SizeChanged" Margin="0,0,0,16"
+                                    Click="ChannelPlaylistCard_Click">
+                                <StackPanel>
+                                    <Grid SizeChanged="VideoThumbnailHost_SizeChanged">
+                                        <Border CornerRadius="8" Background="#1A1A1A" />
+                                        <Border CornerRadius="8">
+                                            <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill" />
+                                        </Border>
+                                    </Grid>
+                                    <StackPanel Margin="12,12,12,0">
+                                        <TextBlock Text="{Binding Title}" Foreground="White"
+                                                   FontFamily="Roboto" FontSize="14" FontWeight="Medium"
+                                                   MaxLines="2" TextWrapping="WrapWholeWords"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="Playlist" Foreground="Gray"
+                                                   FontFamily="Roboto" FontSize="12" Margin="0,4,0,0" />
+                                    </StackPanel>
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Community posts: compact YouTube-style card with author row and large media. -->
+                <ItemsControl x:Name="PostsItemsControl"
+                              Background="#0F0F0F"
+                              HorizontalAlignment="Stretch"
+                              HorizontalContentAlignment="Stretch"
+                              Padding="12,8,12,20"
+                              Visibility="Collapsed">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="0,0,0,16"
+                                    Padding="16"
+                                    HorizontalAlignment="Stretch"
+                                    Background="#101010"
+                                    BorderBrush="#404040"
+                                    BorderThickness="1"
+                                    CornerRadius="14">
+                                <StackPanel>
+                                    <!-- Author / time -->
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="44" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Border Width="36" Height="36"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Top"
+                                                CornerRadius="18"
+                                                Background="#242424">
+                                            <Image Stretch="UniformToFill"
+                                                   DataContextChanged="PostAvatar_DataContextChanged" />
+                                        </Border>
+
+                                        <StackPanel Grid.Column="1"
+                                                    Orientation="Horizontal"
+                                                    VerticalAlignment="Center"
+                                                    Margin="4,0,0,0">
+                                            <TextBlock Text="{Binding Author}"
+                                                       Foreground="White"
+                                                       FontFamily="Roboto"
+                                                       FontWeight="SemiBold"
+                                                       FontSize="14"
+                                                       VerticalAlignment="Center" />
+                                            <TextBlock Text="{Binding PublishedText}"
+                                                       Foreground="#AAAAAA"
+                                                       FontFamily="Roboto"
+                                                       FontSize="13"
+                                                       Margin="9,0,0,0"
+                                                       VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Post text -->
+                                    <TextBlock Text="{Binding Text}"
+                                               Foreground="White"
+                                               FontFamily="Roboto"
+                                               FontSize="17"
+                                               Margin="44,8,4,0"
+                                               TextWrapping="WrapWholeWords" />
+
+                                    <!-- First attached photo. Multi-image posts still show their
+                                         first full-resolution image instead of an empty placeholder. -->
+                                    <Border Margin="44,14,4,0"
+                                            Background="#0A0A0A"
+                                            BorderBrush="#303030"
+                                            BorderThickness="1"
+                                            CornerRadius="12"
+                                            Visibility="{Binding ImageVisibility}">
+                                        <Image HorizontalAlignment="Stretch"
+                                               VerticalAlignment="Top"
+                                               Stretch="Uniform"
+                                               MaxHeight="720"
+                                               Source="{Binding ImageSource}" />
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Same loading animation while fetching the next continuation page. -->
+                <StackPanel x:Name="ChannelBottomLoadingPanel"
+                            HorizontalAlignment="Center"
+                            Margin="0,18,0,34"
+                            Visibility="Collapsed">
+                    <local:AndroidLoadingRing x:Name="ChannelBottomLoadingRing"
+                                              Width="30" Height="30" IsActive="False" />
+                    <TextBlock Text="Loading more..." Foreground="#888888"
+                               FontSize="12" Margin="0,7,0,0"
+                               HorizontalAlignment="Center" />
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
 

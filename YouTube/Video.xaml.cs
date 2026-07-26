@@ -98,6 +98,11 @@ namespace YouTube
         private bool _manualDecodeFailureStopScheduled;
         private bool _playbackErrorDialogOpen;
         private bool _wasPortrait = true;
+        // Windows Phone raises several SizeChanged events while rotating. Reparenting the player
+        // into its fullscreen Popup on the first intermediate size is unreliable, so only the
+        // latest rotation event is allowed to change fullscreen state after a short settle delay.
+        private const string AutoFullscreenLandscapeSettingKey = "AutoFullscreenLandscape";
+        private int _orientationFullscreenGeneration;
         private string _currentVideoDescription = string.Empty;
         private const double RelatedThumbnailAspectRatio = 16.0 / 9.0;
         private const double DefaultVideoPlayerAspectRatio = 16.0 / 9.0;
@@ -287,22 +292,9 @@ namespace YouTube
                 return;
             }
 
-            // In Auto, a genuine failure should not just surface an error — try the best quality
-            // the video actually offers before giving up. Auto normally plays the safe 360p
-            // progressive; when even that fails (or the chosen source is unplayable) the highest
-            // available stream is often a different itag that does work. One attempt per video so
-            // a truly dead video cannot loop.
-            if (!_autoQualityFallbackAttempted
-                && string.IsNullOrWhiteSpace(GetEffectiveVideoQualityTag()))
-            {
-                _autoQualityFallbackAttempted = true;
-                e.Handled = true;
-
-                var ignored = Dispatcher.RunAsync(
-                    Windows.UI.Core.CoreDispatcherPriority.Normal,
-                    async () => { await TryFallbackToMaxQualityAsync(); });
-                return;
-            }
+            // Never silently change the user's configured quality after a playback error.
+            // In particular, Auto must not jump to the highest available stream (often 1080p).
+            // A failure is surfaced normally; quality changes happen only by explicit user choice.
 
             // Show error to user
             var playbackError = e.Error;
@@ -341,41 +333,6 @@ namespace YouTube
             );
         }
 
-        // Reloads at the highest quality the video advertises. Used as the Auto failure fallback.
-        private async Task TryFallbackToMaxQualityAsync()
-        {
-            try
-            {
-                var heights = await GetAvailableQualityTagsAsync(currentVideoId);
-                if (heights == null || heights.Count == 0)
-                {
-                    System.Diagnostics.Debug.WriteLine("[Video] Auto fallback: no alternative qualities; showing error");
-                    ShowMediaErrorDialog("This video could not be played.", "AUTO_FALLBACK_NONE");
-                    return;
-                }
-
-                // GetAvailableQualityTagsAsync returns ascending heights; the last is the max.
-                var maxTag = heights[heights.Count - 1];
-                System.Diagnostics.Debug.WriteLine("[Video] Auto fallback: retrying at max available quality " + maxTag + "p");
-
-                currentQualityTag = NormalizeQualityTag(maxTag);
-                if (CustomVideoPlayer != null)
-                {
-                    CustomVideoPlayer.CurrentQuality = currentQualityTag;
-                    CustomVideoPlayer.BeginSourceLoading();
-                }
-
-                await ReloadPlayerOnlyAsync(true);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("[Video] Auto fallback failed: " + ex.Message);
-                if (CustomVideoPlayer != null)
-                {
-                    CustomVideoPlayer.EndSourceLoading();
-                }
-            }
-        }
 
         private void ShowMediaErrorDialog(string message, string code)
         {
@@ -641,9 +598,106 @@ namespace YouTube
             ReleaseDisplayRequest();
         }
 
-        private void Window_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
+        private static bool IsAutoFullscreenLandscapeEnabled()
         {
+            try
+            {
+                var values = ApplicationData.Current.LocalSettings.Values;
+                object raw;
+                if (!values.TryGetValue(AutoFullscreenLandscapeSettingKey, out raw) || raw == null)
+                {
+                    // Auto fullscreen is enabled by default.
+                    values[AutoFullscreenLandscapeSettingKey] = true;
+                    return true;
+                }
+
+                if (raw is bool)
+                {
+                    return (bool)raw;
+                }
+
+                bool parsed;
+                return !bool.TryParse(raw.ToString(), out parsed) || parsed;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
+        private async void Window_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
+        {
+            if (_minimizedToMiniPlayer)
+            {
+                return;
+            }
+
+            var boundsAtEvent = Window.Current.Bounds;
+            var isPortraitAtEvent = boundsAtEvent.Height > boundsAtEvent.Width;
+
+            // IMPORTANT: decide whether this is a real orientation transition BEFORE
+            // UpdateVideoPlayerLayout() updates _wasPortrait. Ordinary SizeChanged events in
+            // landscape (fullscreen exit, system bars, popup/layout changes, etc.) must not
+            // trigger auto-fullscreen again.
+            var orientationChanged = isPortraitAtEvent != _wasPortrait;
+            var wasPortraitBeforeChange = _wasPortrait;
+
             UpdateVideoPlayerLayout();
+
+            if (!orientationChanged)
+            {
+                return;
+            }
+
+            var generation = ++_orientationFullscreenGeneration;
+
+            // WP10M emits a few intermediate sizes while physically rotating. Act only after the
+            // final orientation has settled, and only for the transition captured above.
+            await Task.Delay(180);
+
+            if (generation != _orientationFullscreenGeneration
+                || _minimizedToMiniPlayer
+                || CustomVideoPlayer == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var bounds = Window.Current.Bounds;
+                var isPortraitNow = bounds.Height > bounds.Width;
+
+                // Ignore a stale transition if the phone rotated back during the delay.
+                if (isPortraitNow != isPortraitAtEvent)
+                {
+                    return;
+                }
+
+                if (wasPortraitBeforeChange
+                    && !isPortraitNow
+                    && IsAutoFullscreenLandscapeEnabled()
+                    && !CustomVideoPlayer.IsFullscreen)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Video] Portrait -> landscape: entering fullscreen once");
+                    CustomVideoPlayer.ToggleFullscreen();
+                }
+                else if (!wasPortraitBeforeChange
+                    && isPortraitNow
+                    && CustomVideoPlayer.IsFullscreen)
+                {
+                    // Landscape -> portrait closes fullscreen only at the orientation transition.
+                    // A manual fullscreen exit while still landscape is left alone.
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Video] Landscape -> portrait: leaving fullscreen once");
+                    CustomVideoPlayer.ToggleFullscreen();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Video] Orientation fullscreen transition failed: " + ex.Message);
+            }
         }
 
         private void VideoPlayerContainer_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1073,33 +1127,8 @@ namespace YouTube
 
             UpdateTitleDescriptionSkeletonLayout(isPortrait);
 
-            // Check if orientation has changed
-            bool orientationChanged = (isPortrait != _wasPortrait);
-
             if (isPortrait)
             {
-                // Portrait mode - exit fullscreen if needed
-                if (
-                    orientationChanged
-                    && CustomVideoPlayer != null
-                    && CustomVideoPlayer.IsFullscreen
-                )
-                {
-                    try
-                    {
-                        System.Diagnostics.Debug.WriteLine(
-                            "[Video] Portrait mode detected - exiting fullscreen"
-                        );
-                        CustomVideoPlayer.ToggleFullscreen();
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(
-                            $"[Video] Error exiting fullscreen: {ex.Message}"
-                        );
-                    }
-                }
-
                 // Portrait mode - player takes full width, related videos shown below
                 if (PlayerColumn != null)
                     PlayerColumn.Width = new GridLength(1, GridUnitType.Star);
@@ -1124,33 +1153,40 @@ namespace YouTube
             }
             else
             {
-                // Landscape mode - enter fullscreen automatically
-                if (
-                    orientationChanged
-                    && CustomVideoPlayer != null
-                    && !CustomVideoPlayer.IsFullscreen
-                )
+                // Landscape mode: keep the player as the dominant column.
+                //
+                // The old layout gave RelatedColumn a hard 400 px width. On small Windows Phone
+                // landscape widths that could make the recommendations wider than the whole video
+                // side. Use a responsive ratio instead and cap the related pane.
+                double relatedWidth;
+
+                if (windowWidth <= 700)
                 {
-                    try
-                    {
-                        System.Diagnostics.Debug.WriteLine(
-                            "[Video] Landscape mode detected - entering fullscreen"
-                        );
-                        CustomVideoPlayer.ToggleFullscreen();
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine(
-                            $"[Video] Error entering fullscreen: {ex.Message}"
-                        );
-                    }
+                    // Small phone landscape: roughly 70/30 in favour of the player.
+                    relatedWidth = Math.Max(220, Math.Min(280, windowWidth * 0.30));
+                }
+                else if (windowWidth <= 1000)
+                {
+                    // Medium landscape / Continuum.
+                    relatedWidth = Math.Max(260, Math.Min(340, windowWidth * 0.32));
+                }
+                else
+                {
+                    // Desktop/tablet can afford the wider recommendation rail.
+                    relatedWidth = Math.Max(320, Math.Min(400, windowWidth * 0.33));
                 }
 
-                // Landscape mode - related videos shown on the right side
+                // Never allow the right rail to consume half or more of the window.
+                var maximumRelatedWidth = Math.Max(200, (windowWidth * 0.45));
+                if (relatedWidth > maximumRelatedWidth)
+                {
+                    relatedWidth = maximumRelatedWidth;
+                }
+
                 if (PlayerColumn != null)
                     PlayerColumn.Width = new GridLength(1, GridUnitType.Star);
                 if (RelatedColumn != null)
-                    RelatedColumn.Width = new GridLength(400);
+                    RelatedColumn.Width = new GridLength(relatedWidth);
 
                 if (RelatedPanel != null)
                     RelatedPanel.Visibility = Visibility.Visible;
@@ -1509,6 +1545,13 @@ namespace YouTube
 
             _historyReportedVideoId = null;
             _autoQualityFallbackAttempted = false;
+
+            // Materialize the Settings default BEFORE any player/format request can choose a
+            // source. Fresh installs become explicit Auto immediately.
+            var configuredQuality = GetPreferredVideoQualitySetting();
+            System.Diagnostics.Debug.WriteLine(
+                "[Video] Opening video with configured quality: " + configuredQuality);
+
             // A freshly opened video follows the Settings default until the user overrides it.
             currentQualityTag = string.Empty;
             _qualityExplicitlyChosen = false;
@@ -4535,13 +4578,32 @@ namespace YouTube
                 return string.Empty;
             }
 
-            var preferredQuality = NormalizeQualityTag(GetPreferredVideoQualitySetting());
+            var preferredRaw = GetPreferredVideoQualitySetting();
+            if (string.Equals(preferredRaw, "Auto", StringComparison.OrdinalIgnoreCase))
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Video] Using preferred video quality from Settings: Auto");
+                return string.Empty;
+            }
+
+            var preferredQuality = NormalizeQualityTag(preferredRaw);
             if (!string.IsNullOrWhiteSpace(preferredQuality))
             {
-                System.Diagnostics.Debug.WriteLine("[Video] Using preferred video quality from Settings: " + preferredQuality + "p");
+                System.Diagnostics.Debug.WriteLine(
+                    "[Video] Using preferred video quality from Settings: "
+                    + preferredQuality + "p");
                 return preferredQuality;
             }
 
+            // Invalid/corrupt setting never means "pick maximum"; fall back deterministically.
+            try
+            {
+                ApplicationData.Current.LocalSettings.Values[
+                    PreferredVideoQualitySettingKey] = "Auto";
+            }
+            catch
+            {
+            }
             return string.Empty;
         }
 
@@ -4550,38 +4612,37 @@ namespace YouTube
             try
             {
                 var values = ApplicationData.Current.LocalSettings.Values;
-                var keys = new[]
-                {
-                    PreferredVideoQualitySettingKey,
-                    "PreferredQuality",
-                    "PreferredVideoQualityTag",
-                    "VideoPreferredQuality",
-                    "DefaultVideoQuality",
-                    "VideoQuality"
-                };
 
-                for (int i = 0; i < keys.Length; i++)
+                // There is exactly one source of truth for video quality. Older builds looked at
+                // several legacy keys; a stale "1080" in one of them could unexpectedly override
+                // what Settings actually showed.
+                if (!values.ContainsKey(PreferredVideoQualitySettingKey))
                 {
-                    var key = keys[i];
-                    if (!values.ContainsKey(key))
-                    {
-                        continue;
-                    }
-
-                    var raw = values[key];
-                    var value = raw != null ? raw.ToString() : string.Empty;
-                    if (!string.IsNullOrWhiteSpace(value) && !string.Equals(value, "Auto", StringComparison.OrdinalIgnoreCase))
-                    {
-                        System.Diagnostics.Debug.WriteLine("[Video] Preferred quality raw setting " + key + "=" + value);
-                        return value;
-                    }
+                    values[PreferredVideoQualitySettingKey] = "Auto";
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Video] Preferred video quality was unset; initialized to Auto");
+                    return "Auto";
                 }
-            }
-            catch
-            {
-            }
 
-            return string.Empty;
+                var raw = values[PreferredVideoQualitySettingKey];
+                var value = raw != null ? raw.ToString() : string.Empty;
+
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    values[PreferredVideoQualitySettingKey] = "Auto";
+                    return "Auto";
+                }
+
+                System.Diagnostics.Debug.WriteLine(
+                    "[Video] Preferred video quality: " + value);
+                return value;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Video] Preferred quality read failed; using Auto: " + ex.Message);
+                return "Auto";
+            }
         }
 
         private static PlayerFormatModel SelectPreferredAudioOnlyTrackFormat(
@@ -9630,52 +9691,20 @@ namespace YouTube
         // Playback cannot keep up with the current format — step down to the next lower height
         // this video offers (1080 -> 720 -> 480 -> 360). Mirrors what the official app does and,
         // more importantly, gets off a format the device is about to die on.
-        private async void CustomVideoPlayer_PlaybackStalling(object sender, object e)
+        private void CustomVideoPlayer_PlaybackStalling(object sender, object e)
         {
-            if (_qualityChangeInProgress || string.IsNullOrWhiteSpace(currentVideoId))
-            {
-                return;
-            }
-
-            try
-            {
-                var currentHeight = ParseInt(GetEffectiveVideoQualityTag());
-                var heights = await GetAvailableQualityTagsAsync(currentVideoId);
-                if (heights == null || heights.Count == 0)
-                {
-                    return;
-                }
-
-                // Auto (height 0) behaves as "whatever is playing now"; treat it as the top so a
-                // stall still steps down to a concrete lower rung.
-                if (currentHeight <= 0)
-                {
-                    currentHeight = int.MaxValue;
-                }
-
-                var target = 0;
-                for (int i = 0; i < heights.Count; i++)
-                {
-                    var h = ParseInt(heights[i]);
-                    if (h > 0 && h < currentHeight && h > target)
-                    {
-                        target = h;
-                    }
-                }
-
-                if (target <= 0)
-                {
-                    System.Diagnostics.Debug.WriteLine("[Video] Playback stalling but no lower quality available");
-                    return;
-                }
-
-                System.Diagnostics.Debug.WriteLine("[Video] Playback stalling; stepping down to " + target + "p");
-                ChangeQuality(target + "p");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("[Video] Quality step-down failed: " + ex.Message);
-            }
+            // Do NOT change quality automatically here.
+            //
+            // MediaPlaybackSession enters Buffering during ordinary seeks, especially when the
+            // user taps seek repeatedly. The player's buffering detector used to interpret three
+            // such transitions as a bandwidth problem and this handler then reloaded the source at
+            // a lower quality. Besides visibly changing the user's chosen quality, that source
+            // replacement could be initiated by a Media Foundation callback thread and race the
+            // seek that caused the buffering, producing RPC_E_WRONG_THREAD / native crashes.
+            //
+            // Manual quality selection and speed-driven source changes still use ChangeQualityAsync.
+            System.Diagnostics.Debug.WriteLine(
+                "[Video] PlaybackStalling ignored: automatic quality step-down is disabled");
         }
 
         // Records the video in the account's watch history once per opened video, shortly after
@@ -11938,10 +11967,40 @@ namespace YouTube
 
         private async void ChangeQuality(string quality)
         {
-            // A manual quality pick takes precedence over the speed-driven Auto switch, so the
-            // next drop to 1x must not undo it.
-            _speedForcedAuto = false;
-            await ChangeQualityAsync(quality);
+            // This is intentionally async void because it is used directly by UI handlers.
+            // Never let an exception escape it: on UWP that becomes an unhandled dispatcher
+            // exception and terminates the app.
+            try
+            {
+                // MediaPlaybackSession / MediaStreamSource callbacks are not guaranteed to run on
+                // the XAML UI thread. Quality changes touch CustomVideoPlayer and replace its
+                // MediaPlayer source, so marshal the whole operation to the owning dispatcher.
+                if (Dispatcher != null && !Dispatcher.HasThreadAccess)
+                {
+                    await Dispatcher.RunAsync(
+                        Windows.UI.Core.CoreDispatcherPriority.Normal,
+                        () => ChangeQuality(quality));
+                    return;
+                }
+
+                // A manual quality pick takes precedence over the speed-driven Auto switch, so the
+                // next drop to 1x must not undo it.
+                _speedForcedAuto = false;
+                await ChangeQualityAsync(quality);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Video] ChangeQuality failed safely for '" + quality + "': " + ex.Message);
+                try
+                {
+                    if (CustomVideoPlayer != null)
+                    {
+                        CustomVideoPlayer.EndSourceLoading();
+                    }
+                }
+                catch { }
+            }
         }
 
         private async Task ChangeQualityAsync(string quality)

@@ -321,9 +321,139 @@ public static class Config
         }
     }
 
-    public static Task<List<VideoCardItem>> GetRecommendationsAsync(string refreshToken, int count)
+    public sealed class HomeRecommendationsPage
     {
-        return GetBrowseVideosAsync(refreshToken, "FEwhat_to_watch", count);
+        public List<VideoCardItem> Videos { get; set; }
+        public string ContinuationToken { get; set; }
+
+        public HomeRecommendationsPage()
+        {
+            Videos = new List<VideoCardItem>();
+            ContinuationToken = string.Empty;
+        }
+    }
+
+    public static async Task<HomeRecommendationsPage> GetRecommendationsPageAsync(
+        string refreshToken,
+        string continuationToken,
+        int count)
+    {
+        var page = new HomeRecommendationsPage();
+
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            return page;
+        }
+
+        if (count <= 0)
+        {
+            count = 24;
+        }
+
+        var accessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(accessToken))
+        {
+            return page;
+        }
+
+        string json;
+        if (string.IsNullOrWhiteSpace(continuationToken))
+        {
+            // Initial Home request.
+            json = await PostTvBrowseAsync(
+                accessToken,
+                "FEwhat_to_watch",
+                null,
+                null).ConfigureAwait(false);
+        }
+        else
+        {
+            // True next page. Do not re-request FEwhat_to_watch with a larger count.
+            json = await PostTvBrowseAsync(
+                accessToken,
+                null,
+                null,
+                continuationToken).ConfigureAwait(false);
+        }
+
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return page;
+        }
+
+        page.Videos = ParseVideoCards(json, count);
+
+        try
+        {
+            var root = JsonValue.Parse(json);
+            page.ContinuationToken = ExtractHomeContinuationToken(root);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(
+                "[Home] Continuation parse failed: " + ex.Message);
+        }
+
+        System.Diagnostics.Debug.WriteLine(
+            "[Home] Page parsed: videos=" + page.Videos.Count
+            + ", continuation=" + (!string.IsNullOrWhiteSpace(page.ContinuationToken)));
+
+        return page;
+    }
+
+    private static string ExtractHomeContinuationToken(IJsonValue root)
+    {
+        if (root == null)
+        {
+            return string.Empty;
+        }
+
+        try
+        {
+            // Prefer the explicit tail continuation of the feed. This prevents picking tokens
+            // belonging to horizontal shelves or unrelated nested renderers.
+            foreach (var obj in EnumerateObjects(root, 10000))
+            {
+                var continuationItem = GetObjectFromJsonObject(obj, "continuationItemRenderer");
+                if (continuationItem == null)
+                {
+                    continue;
+                }
+
+                var token = ExtractContinuationTokenFromObject(continuationItem);
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    return token;
+                }
+            }
+
+            // Fallback for clients that expose nextContinuationData directly.
+            foreach (var obj in EnumerateObjects(root, 10000))
+            {
+                var next = GetObjectFromJsonObject(obj, "nextContinuationData");
+                if (next != null)
+                {
+                    var token = GetJsonString(next, "continuation");
+                    if (!string.IsNullOrWhiteSpace(token))
+                    {
+                        return token;
+                    }
+                }
+            }
+        }
+        catch
+        {
+        }
+
+        return string.Empty;
+    }
+
+    public static async Task<List<VideoCardItem>> GetRecommendationsAsync(string refreshToken, int count)
+    {
+        var page = await GetRecommendationsPageAsync(refreshToken, null, count).ConfigureAwait(false);
+        return page != null && page.Videos != null
+            ? page.Videos
+            : new List<VideoCardItem>();
     }
 
     public static Task<List<VideoCardItem>> GetSubscriptionsFeedVideosAsync(string refreshToken, int count)

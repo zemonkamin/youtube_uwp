@@ -19,6 +19,8 @@ namespace YouTube
     {
         private const string PreferredVideoQualitySettingKey = "PreferredVideoQuality";
         private const string PreferredShortsQualitySettingKey = "PreferredShortsQuality";
+        private const string ScrubPreviewEnabledSettingKey = "ScrubPreviewEnabled";
+        private const string AutoFullscreenLandscapeSettingKey = "AutoFullscreenLandscape";
         // The video and Shorts quality rows share one bottom sheet; this says which one opened it.
         private bool _editingShortsQuality;
         private bool _isQualitySheetOpen;
@@ -34,6 +36,8 @@ namespace YouTube
         private double _notificationsInitialTransformY;
         private bool _notificationsIsDragging;
         private Storyboard _notificationsToggleStoryboard;
+        private Storyboard _scrubPreviewToggleStoryboard;
+        private Storyboard _autoFullscreenLandscapeToggleStoryboard;
 
         public Settings()
         {
@@ -58,8 +62,13 @@ namespace YouTube
             {
             }
 
+            EnsurePreferredVideoQualityDefault();
             UpdatePreferredQualityText();
             BuildQualityOptions();
+            EnsureScrubPreviewDefault();
+            UpdateScrubPreviewToggleVisual(IsScrubPreviewEnabled(), false);
+            EnsureAutoFullscreenLandscapeDefault();
+            UpdateAutoFullscreenLandscapeToggleVisual(IsAutoFullscreenLandscapeEnabled(), false);
             UpdateNotificationFrequencyText();
             BuildNotificationOptions();
             UpdateNotificationToggleVisual(YouTubeNotificationService.AreNotificationsEnabled(), false);
@@ -129,6 +138,24 @@ namespace YouTube
             CoreApplication.Exit();
         }
 
+        private static void EnsurePreferredVideoQualityDefault()
+        {
+            try
+            {
+                var values = ApplicationData.Current.LocalSettings.Values;
+                if (!values.ContainsKey(PreferredVideoQualitySettingKey)
+                    || values[PreferredVideoQualitySettingKey] == null
+                    || string.IsNullOrWhiteSpace(
+                        values[PreferredVideoQualitySettingKey].ToString()))
+                {
+                    values[PreferredVideoQualitySettingKey] = "Auto";
+                }
+            }
+            catch
+            {
+            }
+        }
+
         private void PreferredQualityButton_Click(object sender, RoutedEventArgs e)
         {
             _editingShortsQuality = false;
@@ -144,6 +171,224 @@ namespace YouTube
         private string ActiveQualityKey
         {
             get { return _editingShortsQuality ? PreferredShortsQualitySettingKey : PreferredVideoQualitySettingKey; }
+        }
+
+        private static void EnsureScrubPreviewDefault()
+        {
+            try
+            {
+                var values = ApplicationData.Current.LocalSettings.Values;
+                if (!values.ContainsKey(ScrubPreviewEnabledSettingKey))
+                {
+                    values[ScrubPreviewEnabledSettingKey] = false;
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private static bool IsScrubPreviewEnabled()
+        {
+            try
+            {
+                var values = ApplicationData.Current.LocalSettings.Values;
+                object raw;
+                if (!values.TryGetValue(ScrubPreviewEnabledSettingKey, out raw) || raw == null)
+                {
+                    return false;
+                }
+
+                if (raw is bool)
+                {
+                    return (bool)raw;
+                }
+
+                bool parsed;
+                return bool.TryParse(raw.ToString(), out parsed) && parsed;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void ScrubPreviewToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var enabled = !IsScrubPreviewEnabled();
+
+            try
+            {
+                ApplicationData.Current.LocalSettings.Values[ScrubPreviewEnabledSettingKey] = enabled;
+            }
+            catch
+            {
+            }
+
+            UpdateScrubPreviewToggleVisual(enabled, true);
+        }
+
+        private void UpdateScrubPreviewToggleVisual(bool isOn, bool animate)
+        {
+            if (ScrubPreviewToggleTrack == null || ScrubPreviewToggleThumbTransform == null)
+            {
+                return;
+            }
+
+            if (_scrubPreviewToggleStoryboard != null)
+            {
+                _scrubPreviewToggleStoryboard.Stop();
+                _scrubPreviewToggleStoryboard = null;
+            }
+
+            var brush = ScrubPreviewToggleTrack.Background as SolidColorBrush;
+            if (brush == null)
+            {
+                brush = new SolidColorBrush(
+                    isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155));
+                ScrubPreviewToggleTrack.Background = brush;
+            }
+
+            const double OnOffset = 20.0;
+
+            if (!animate)
+            {
+                brush.Color = isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155);
+                ScrubPreviewToggleThumbTransform.X = isOn ? OnOffset : 0;
+                return;
+            }
+
+            var thumbAnimation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? OnOffset : 0,
+                EnableDependentAnimation = true
+            };
+            var colorAnimation = new ColorAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155)
+            };
+
+            Storyboard.SetTarget(thumbAnimation, ScrubPreviewToggleThumbTransform);
+            Storyboard.SetTargetProperty(thumbAnimation, "X");
+            Storyboard.SetTarget(colorAnimation, brush);
+            Storyboard.SetTargetProperty(colorAnimation, "Color");
+
+            _scrubPreviewToggleStoryboard = new Storyboard();
+            _scrubPreviewToggleStoryboard.Children.Add(thumbAnimation);
+            _scrubPreviewToggleStoryboard.Children.Add(colorAnimation);
+            _scrubPreviewToggleStoryboard.Begin();
+        }
+
+        private static void EnsureAutoFullscreenLandscapeDefault()
+        {
+            try
+            {
+                var values = ApplicationData.Current.LocalSettings.Values;
+                if (!values.ContainsKey(AutoFullscreenLandscapeSettingKey))
+                {
+                    values[AutoFullscreenLandscapeSettingKey] = true;
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private static bool IsAutoFullscreenLandscapeEnabled()
+        {
+            try
+            {
+                var values = ApplicationData.Current.LocalSettings.Values;
+                object raw;
+                if (!values.TryGetValue(AutoFullscreenLandscapeSettingKey, out raw) || raw == null)
+                {
+                    return true;
+                }
+
+                if (raw is bool)
+                {
+                    return (bool)raw;
+                }
+
+                bool parsed;
+                return !bool.TryParse(raw.ToString(), out parsed) || parsed;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
+        private void AutoFullscreenLandscapeToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var enabled = !IsAutoFullscreenLandscapeEnabled();
+
+            try
+            {
+                ApplicationData.Current.LocalSettings.Values[
+                    AutoFullscreenLandscapeSettingKey] = enabled;
+            }
+            catch
+            {
+            }
+
+            UpdateAutoFullscreenLandscapeToggleVisual(enabled, true);
+        }
+
+        private void UpdateAutoFullscreenLandscapeToggleVisual(bool isOn, bool animate)
+        {
+            if (AutoFullscreenLandscapeToggleTrack == null
+                || AutoFullscreenLandscapeToggleThumbTransform == null)
+            {
+                return;
+            }
+
+            if (_autoFullscreenLandscapeToggleStoryboard != null)
+            {
+                _autoFullscreenLandscapeToggleStoryboard.Stop();
+                _autoFullscreenLandscapeToggleStoryboard = null;
+            }
+
+            var brush = AutoFullscreenLandscapeToggleTrack.Background as SolidColorBrush;
+            if (brush == null)
+            {
+                brush = new SolidColorBrush(
+                    isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155));
+                AutoFullscreenLandscapeToggleTrack.Background = brush;
+            }
+
+            const double OnOffset = 20.0;
+
+            if (!animate)
+            {
+                brush.Color = isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155);
+                AutoFullscreenLandscapeToggleThumbTransform.X = isOn ? OnOffset : 0;
+                return;
+            }
+
+            var thumbAnimation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? OnOffset : 0,
+                EnableDependentAnimation = true
+            };
+            var colorAnimation = new ColorAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155)
+            };
+
+            Storyboard.SetTarget(thumbAnimation, AutoFullscreenLandscapeToggleThumbTransform);
+            Storyboard.SetTargetProperty(thumbAnimation, "X");
+            Storyboard.SetTarget(colorAnimation, brush);
+            Storyboard.SetTargetProperty(colorAnimation, "Color");
+
+            _autoFullscreenLandscapeToggleStoryboard = new Storyboard();
+            _autoFullscreenLandscapeToggleStoryboard.Children.Add(thumbAnimation);
+            _autoFullscreenLandscapeToggleStoryboard.Children.Add(colorAnimation);
+            _autoFullscreenLandscapeToggleStoryboard.Begin();
         }
 
         private void NotificationsButton_Click(object sender, RoutedEventArgs e)

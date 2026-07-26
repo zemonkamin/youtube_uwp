@@ -173,6 +173,99 @@
                     </Button>
 
 
+                    <Button x:Name="ScrubPreviewToggleButton"
+                            Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="58"
+                            HorizontalAlignment="Stretch"
+                            Click="ScrubPreviewToggleButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,12,0">
+                                <TextBlock Text="Seek preview"
+                                           Foreground="White"
+                                           FontSize="16" />
+                                <TextBlock Text="Show video thumbnail while seeking"
+                                           Foreground="#AAAAAA"
+                                           FontSize="12"
+                                           Margin="0,2,0,0" />
+                            </StackPanel>
+
+                            <Grid Grid.Column="1"
+                                  Width="46"
+                                  Height="26"
+                                  VerticalAlignment="Center">
+                                <Border x:Name="ScrubPreviewToggleTrack"
+                                        Width="46"
+                                        Height="26"
+                                        Background="#9B9B9B"
+                                        CornerRadius="13" />
+                                <Ellipse Width="20"
+                                         Height="20"
+                                         Fill="#202124"
+                                         HorizontalAlignment="Left"
+                                         Margin="3,3,0,3">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="ScrubPreviewToggleThumbTransform"
+                                                            X="0" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Grid>
+                        </Grid>
+                    </Button>
+
+                    <Button x:Name="AutoFullscreenLandscapeToggleButton"
+                            Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="58"
+                            HorizontalAlignment="Stretch"
+                            Click="AutoFullscreenLandscapeToggleButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,12,0">
+                                <TextBlock Text="Auto fullscreen in landscape"
+                                           Foreground="White"
+                                           FontSize="16" />
+                                <TextBlock Text="Expand the video when the phone rotates"
+                                           Foreground="#AAAAAA"
+                                           FontSize="12"
+                                           Margin="0,2,0,0" />
+                            </StackPanel>
+
+                            <Grid Grid.Column="1"
+                                  Width="46"
+                                  Height="26"
+                                  VerticalAlignment="Center">
+                                <Border x:Name="AutoFullscreenLandscapeToggleTrack"
+                                        Width="46"
+                                        Height="26"
+                                        Background="#FFFFFF"
+                                        CornerRadius="13" />
+                                <Ellipse Width="20"
+                                         Height="20"
+                                         Fill="#202124"
+                                         HorizontalAlignment="Left"
+                                         Margin="3,3,0,3">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="AutoFullscreenLandscapeToggleThumbTransform"
+                                                            X="20" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Grid>
+                        </Grid>
+                    </Button>
+
+
 
                     <TextBlock Text="Notifications"
                                Foreground="White"
@@ -380,7 +473,7 @@
                                         <Border x:Name="NotificationsToggleTrack"
                                                 Width="56"
                                                 Height="32"
-                                                Background="#FFFFFF"
+                                                Background="#9B9B9B"
                                                 CornerRadius="16" />
                                         <Ellipse x:Name="NotificationsToggleThumb"
                                                  Width="24"
@@ -389,7 +482,7 @@
                                                  HorizontalAlignment="Left"
                                                  Margin="4,4,0,4">
                                             <Ellipse.RenderTransform>
-                                                <TranslateTransform x:Name="NotificationsToggleThumbTransform" X="24" />
+                                                <TranslateTransform x:Name="NotificationsToggleThumbTransform" X="0" />
                                             </Ellipse.RenderTransform>
                                         </Ellipse>
                                     </Grid>

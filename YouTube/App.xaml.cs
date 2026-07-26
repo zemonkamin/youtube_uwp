@@ -595,6 +595,7 @@ namespace YouTube
         private const string LastToastCheckUtcKey = "yt_last_toast_check_utc";
         private const string FirstNotificationSeedDoneKey = "yt_first_notification_seed_done";
         public const string NotificationsEnabledSettingKey = "yt_notifications_enabled";
+        private const string NotificationsDefaultOffMigrationKey = "yt_notifications_default_off_v1";
         public const string NotificationsIntervalMinutesSettingKey = "yt_notifications_interval_minutes";
         private const int DefaultNotificationIntervalMinutes = 60;
         private const int MinNotificationIntervalMinutes = 15;
@@ -615,10 +616,21 @@ namespace YouTube
             try
             {
                 var values = ApplicationData.Current.LocalSettings.Values;
+
+                // One-time migration: older builds created the setting as true automatically.
+                // That makes Settings look enabled even though the new product default is OFF.
+                // Force it off once after upgrading; all later user choices are preserved.
+                if (!values.ContainsKey(NotificationsDefaultOffMigrationKey))
+                {
+                    values[NotificationsDefaultOffMigrationKey] = true;
+                    values[NotificationsEnabledSettingKey] = false;
+                    return false;
+                }
+
                 if (!values.ContainsKey(NotificationsEnabledSettingKey))
                 {
-                    values[NotificationsEnabledSettingKey] = true;
-                    return true;
+                    values[NotificationsEnabledSettingKey] = false;
+                    return false;
                 }
 
                 var value = values[NotificationsEnabledSettingKey];
@@ -628,16 +640,18 @@ namespace YouTube
                 }
 
                 bool parsed;
-                if (bool.TryParse(value == null ? string.Empty : value.ToString(), out parsed))
+                if (value != null && bool.TryParse(value.ToString(), out parsed))
                 {
                     return parsed;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine(
+                    "[ToastNotifications] Read enabled setting failed: " + ex.Message);
             }
 
-            return true;
+            return false;
         }
 
         public static void SetNotificationsEnabled(bool enabled)
@@ -754,12 +768,17 @@ namespace YouTube
         {
             try
             {
+                // Register the periodic notification mechanism, but do NOT start a network fetch
+                // here. App.OnLaunched starts this service at the same time Home is loading its
+                // recommendations; fetching subscriptions/notifications here competes with the
+                // first Home request and makes the feed appear much slower.
+                //
+                // Home triggers the first foreground fetch after its first recommendation page is
+                // already visible. Background/foreground timers continue to work normally.
                 await RegisterBackgroundTaskAsync();
 
-                // On app startup always try to fetch and send notifications once.
-                // This does not check "new/old" items; RefreshAndShowNewVideoNotificationsAsync
-                // sends the latest fetched notifications according to the current settings.
-                await RefreshAndShowNewVideoNotificationsAsync("app-startup");
+                System.Diagnostics.Debug.WriteLine(
+                    "[ToastNotifications] Service initialized; startup fetch deferred to Home");
             }
             catch (Exception ex)
             {

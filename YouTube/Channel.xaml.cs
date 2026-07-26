@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Data.Json;
+using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -21,6 +22,14 @@ namespace YouTube
 {
     public sealed partial class Channel : Page
     {
+        private enum ChannelContentTab
+        {
+            Videos,
+            Shorts,
+            Playlists,
+            Posts
+        }
+
         private enum ChannelSubscriptionState
         {
             Unknown,
@@ -40,6 +49,9 @@ namespace YouTube
         private const string WebClientVersion = "2.20260220.00.00";
         // Protobuf selector for a channel's "Videos" tab.
         private const string ChannelVideosTabParams = "EgZ2aWRlb3PyBgQKAjoA";
+        private const string ChannelShortsTabParams = "EgZzaG9ydHPyBgUKA5oBAA==";
+        private const string ChannelPlaylistsTabParams = "EglwbGF5bGlzdHPyBgQKAjoA";
+        private const string ChannelPostsTabParams = "Egljb21tdW5pdHnyBgQKAkoA";
         private const string TvClientName = "TVHTML5";
         private const string TvClientVersion = "7.20260429.11.00";
         private const string TvClientHeaderName = "85";
@@ -60,6 +72,30 @@ namespace YouTube
 
         private readonly HttpClient _httpClient = new HttpClient();
         private readonly ObservableCollection<VideoCardItem> _videos = new ObservableCollection<VideoCardItem>();
+        private readonly ObservableCollection<ShortsVideoItem> _shorts = new ObservableCollection<ShortsVideoItem>();
+        private readonly ObservableCollection<PlaylistItem> _playlists = new ObservableCollection<PlaylistItem>();
+        private readonly ObservableCollection<ChannelPostItem> _posts = new ObservableCollection<ChannelPostItem>();
+        private ChannelContentTab _activeTab = ChannelContentTab.Videos;
+        private readonly Dictionary<ChannelContentTab, string> _tabContinuations =
+            new Dictionary<ChannelContentTab, string>();
+
+        // Same strategy as YouTube.js Channel.getVideos/getShorts/getPlaylists/getCommunity:
+        // use the real browseEndpoint attached to the tab returned by YouTube instead of
+        // assuming a protobuf params value will remain stable.
+        private sealed class ChannelTabEndpoint
+        {
+            public string BrowseId;
+            public string Params;
+            public string Url;
+        }
+
+        private readonly Dictionary<ChannelContentTab, ChannelTabEndpoint> _tabEndpoints =
+            new Dictionary<ChannelContentTab, ChannelTabEndpoint>();
+
+        private readonly HashSet<ChannelContentTab> _loadedTabs = new HashSet<ChannelContentTab>();
+        private bool _isLoadingTab;
+        private bool _isLoadingMoreTab;
+        private string _channelAvatarUrl = string.Empty;
         private string _channelParameter = string.Empty;
         private string _currentChannelId = string.Empty;
         private string _fullDescription = string.Empty;
@@ -86,7 +122,12 @@ namespace YouTube
         {
             this.InitializeComponent();
             VideosItemsControl.ItemsSource = _videos;
+            ShortsItemsControl.ItemsSource = _shorts;
+            PlaylistsItemsControl.ItemsSource = _playlists;
+            PostsItemsControl.ItemsSource = _posts;
             VideosItemsControl.SizeChanged += VideosItemsControl_SizeChanged;
+            ShortsItemsControl.SizeChanged += VideosItemsControl_SizeChanged;
+            PlaylistsItemsControl.SizeChanged += VideosItemsControl_SizeChanged;
 
             this.Loaded += Channel_Loaded;
             this.Unloaded += Channel_Unloaded;
@@ -141,6 +182,13 @@ namespace YouTube
                 MainContent.Visibility = Visibility.Collapsed;
                 ErrorPanel.Visibility = Visibility.Collapsed;
                 _videos.Clear();
+                _shorts.Clear();
+                _playlists.Clear();
+                _posts.Clear();
+                _loadedTabs.Clear();
+                _tabContinuations.Clear();
+                _tabEndpoints.Clear();
+                _activeTab = ChannelContentTab.Videos;
                 ResetSubscriptionUi();
 
                 var data = await FetchChannelDataAsync(_channelParameter, InitialVideoCount);
@@ -159,6 +207,10 @@ namespace YouTube
                     _videos.Add(video);
                 }
 
+                _loadedTabs.Add(ChannelContentTab.Videos);
+                _tabContinuations[ChannelContentTab.Videos] = data.Continuation ?? string.Empty;
+                UpdateChannelTabVisuals();
+
                 LoadingGrid.Visibility = Visibility.Collapsed;
                 if (LoadingRing != null)
                 {
@@ -166,51 +218,11 @@ namespace YouTube
                 }
                 MainContent.Visibility = Visibility.Visible;
                 UpdateResponsiveCardLayouts();
-
-                // Playlists shelf fills in after the main content is already on screen.
-                await LoadChannelPlaylistsAsync(_currentChannelId);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[Channel] Load error: " + ex.Message);
                 ShowErrorPanel("Channel loading error");
-            }
-        }
-
-        private async Task LoadChannelPlaylistsAsync(string channelId)
-        {
-            if (ChannelPlaylistsSection == null || ChannelPlaylistsItemsControl == null)
-            {
-                return;
-            }
-
-            ChannelPlaylistsSection.Visibility = Visibility.Collapsed;
-
-            if (string.IsNullOrWhiteSpace(channelId))
-            {
-                return;
-            }
-
-            try
-            {
-                var playlists = await Config.GetChannelPlaylistsAsync(channelId, 25);
-                if (playlists == null || playlists.Count == 0)
-                {
-                    return;
-                }
-
-                // The channel may have changed while this was in flight.
-                if (!string.Equals(_currentChannelId, channelId, StringComparison.Ordinal))
-                {
-                    return;
-                }
-
-                ChannelPlaylistsItemsControl.ItemsSource = playlists;
-                ChannelPlaylistsSection.Visibility = Visibility.Visible;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("[Channel] Playlists load error: " + ex.Message);
             }
         }
 
@@ -239,6 +251,7 @@ namespace YouTube
             FullDescriptionText.Text = _fullDescription;
             DescriptionButton.Visibility = string.IsNullOrWhiteSpace(info.Description) ? Visibility.Collapsed : Visibility.Visible;
 
+            _channelAvatarUrl = info.ThumbnailUrl ?? string.Empty;
             SetImageBrushSource(ChannelIconBrush, info.ThumbnailUrl);
 
             // Many channels simply have no banner in the API response — show the strip only
@@ -300,9 +313,442 @@ namespace YouTube
             ErrorText.Text = errorMessage;
         }
 
+        private async void MainContent_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            if (_isLoadingMoreTab || _isLoadingTab)
+            {
+                return;
+            }
+
+            var scrollViewer = sender as ScrollViewer;
+            if (scrollViewer == null || scrollViewer.ScrollableHeight <= 0)
+            {
+                return;
+            }
+
+            if (scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 180)
+            {
+                await LoadMoreActiveTabAsync();
+            }
+        }
+
+        private async void VideosTab_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            await SwitchChannelTabAsync(ChannelContentTab.Videos);
+        }
+
+        private async void ShortsTab_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            await SwitchChannelTabAsync(ChannelContentTab.Shorts);
+        }
+
+        private async void PlaylistsTab_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            await SwitchChannelTabAsync(ChannelContentTab.Playlists);
+        }
+
+        private async void PostsTab_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            await SwitchChannelTabAsync(ChannelContentTab.Posts);
+        }
+
+        private async Task SwitchChannelTabAsync(ChannelContentTab tab)
+        {
+            if (_activeTab == tab && _loadedTabs.Contains(tab))
+            {
+                return;
+            }
+
+            _activeTab = tab;
+            UpdateChannelTabVisuals();
+
+            if (tab != ChannelContentTab.Videos)
+            {
+                // Refresh against the normal channel page before opening a sibling tab. This is
+                // the exact ordering used by YouTube.js TabbedFeed.getTabByURL().
+                await RefreshCanonicalChannelTabEndpointsAsync(_currentChannelId);
+            }
+
+            if (_loadedTabs.Contains(tab))
+            {
+                UpdateResponsiveCardLayouts();
+                return;
+            }
+
+            await LoadChannelTabFirstPageAsync(tab);
+        }
+
+        private async Task LoadChannelTabFirstPageAsync(ChannelContentTab tab)
+        {
+            if (_isLoadingTab || string.IsNullOrWhiteSpace(_currentChannelId))
+            {
+                return;
+            }
+
+            _isLoadingTab = true;
+            SetTabLoading(true);
+            try
+            {
+                var page = await FetchChannelTabPageAsync(tab, string.Empty);
+                ApplyTabPage(tab, page, true);
+                _loadedTabs.Add(tab);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Channel] Tab load failed (" + tab + "): " + ex.Message);
+            }
+            finally
+            {
+                _isLoadingTab = false;
+                SetTabLoading(false);
+                UpdateResponsiveCardLayouts();
+            }
+        }
+
+        private async Task LoadMoreActiveTabAsync()
+        {
+            string continuation;
+            if (_isLoadingMoreTab
+                || !_tabContinuations.TryGetValue(_activeTab, out continuation)
+                || string.IsNullOrWhiteSpace(continuation))
+            {
+                return;
+            }
+
+            _isLoadingMoreTab = true;
+            SetBottomLoading(true);
+            try
+            {
+                var page = await FetchChannelTabPageAsync(_activeTab, continuation);
+                ApplyTabPage(_activeTab, page, false);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Channel] Continuation failed (" + _activeTab + "): " + ex.Message);
+            }
+            finally
+            {
+                _isLoadingMoreTab = false;
+                SetBottomLoading(false);
+            }
+        }
+
+        private void SetTabLoading(bool loading)
+        {
+            if (ChannelTabLoadingPanel != null)
+            {
+                ChannelTabLoadingPanel.Visibility = loading ? Visibility.Visible : Visibility.Collapsed;
+            }
+            if (ChannelTabLoadingRing != null)
+            {
+                ChannelTabLoadingRing.IsActive = loading;
+            }
+        }
+
+        private void SetBottomLoading(bool loading)
+        {
+            if (ChannelBottomLoadingPanel != null)
+            {
+                ChannelBottomLoadingPanel.Visibility = loading ? Visibility.Visible : Visibility.Collapsed;
+            }
+            if (ChannelBottomLoadingRing != null)
+            {
+                ChannelBottomLoadingRing.IsActive = loading;
+            }
+        }
+
+        private void UpdateChannelTabVisuals()
+        {
+            if (VideosItemsControl != null)
+                VideosItemsControl.Visibility = _activeTab == ChannelContentTab.Videos ? Visibility.Visible : Visibility.Collapsed;
+            if (ShortsItemsControl != null)
+                ShortsItemsControl.Visibility = _activeTab == ChannelContentTab.Shorts ? Visibility.Visible : Visibility.Collapsed;
+            if (PlaylistsItemsControl != null)
+                PlaylistsItemsControl.Visibility = _activeTab == ChannelContentTab.Playlists ? Visibility.Visible : Visibility.Collapsed;
+            if (PostsItemsControl != null)
+                PostsItemsControl.Visibility = _activeTab == ChannelContentTab.Posts ? Visibility.Visible : Visibility.Collapsed;
+
+            SetTabIndicator(VideosTabIndicator, VideosTabText, _activeTab == ChannelContentTab.Videos);
+            SetTabIndicator(ShortsTabIndicator, ShortsTabText, _activeTab == ChannelContentTab.Shorts);
+            SetTabIndicator(PlaylistsTabIndicator, PlaylistsTabText, _activeTab == ChannelContentTab.Playlists);
+            SetTabIndicator(PostsTabIndicator, PostsTabText, _activeTab == ChannelContentTab.Posts);
+        }
+
+        private static void SetTabIndicator(Border indicator, TextBlock text, bool selected)
+        {
+            if (indicator != null)
+            {
+                // Keep the underline slot in layout and only fade the marker itself.
+                // This prevents the row height from changing when another tab is selected.
+                indicator.Visibility = Visibility.Visible;
+                indicator.Opacity = selected ? 1.0 : 0.0;
+            }
+
+            if (text != null)
+            {
+                text.Foreground = new SolidColorBrush(selected
+                    ? Windows.UI.Colors.White
+                    : Windows.UI.Color.FromArgb(255, 170, 170, 170));
+            }
+        }
+
         private async void RetryButton_Click(object sender, RoutedEventArgs e)
         {
             await LoadChannelDataAsync();
+        }
+
+        private async Task PreloadPostImagesAsync(List<ChannelPostItem> posts)
+        {
+            if (posts == null || posts.Count == 0)
+            {
+                return;
+            }
+
+            // Keep network fan-out modest for Windows 10 Mobile. Six simultaneous image requests
+            // are enough to make the first screen appear quickly without exhausting sockets/RAM.
+            const int BatchSize = 6;
+            for (int offset = 0; offset < posts.Count; offset += BatchSize)
+            {
+                var tasks = new List<Task>();
+                var end = Math.Min(posts.Count, offset + BatchSize);
+
+                for (int i = offset; i < end; i++)
+                {
+                    var item = posts[i];
+                    if (item == null || string.IsNullOrWhiteSpace(item.ImageUrl))
+                    {
+                        continue;
+                    }
+
+                    tasks.Add(PreloadPostImageAsync(item));
+                }
+
+                if (tasks.Count > 0)
+                {
+                    await Task.WhenAll(tasks);
+                }
+            }
+        }
+
+        private async Task PreloadPostImageAsync(ChannelPostItem item)
+        {
+            try
+            {
+                var bitmap = await LoadRemoteBitmapWithFallbackAsync(item.ImageUrl, 1200);
+                item.ImageSource = bitmap;
+
+                System.Diagnostics.Debug.WriteLine(
+                    "[Channel] Post image preload "
+                    + (bitmap != null ? "OK: " : "FAILED: ")
+                    + item.ImageUrl);
+            }
+            catch (Exception ex)
+            {
+                item.ImageSource = null;
+                System.Diagnostics.Debug.WriteLine(
+                    "[Channel] Post image preload exception for "
+                    + item.ImageUrl + ": " + ex.Message);
+            }
+        }
+
+        private async Task<BitmapImage> LoadRemoteBitmapWithFallbackAsync(
+            string rawUrl,
+            int decodePixelWidth)
+        {
+            var candidates = BuildCommunityImageCandidates(rawUrl);
+            Exception lastError = null;
+
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                try
+                {
+                    var bitmap = await LoadRemoteBitmapFromExactUrlAsync(
+                        candidates[i],
+                        decodePixelWidth);
+                    if (bitmap != null)
+                    {
+                        return bitmap;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    lastError = ex;
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Channel] Community image candidate failed: "
+                        + candidates[i] + " => " + ex.Message);
+                }
+            }
+
+            if (lastError != null)
+            {
+                throw lastError;
+            }
+
+            return null;
+        }
+
+        private static List<string> BuildCommunityImageCandidates(string rawUrl)
+        {
+            var result = new List<string>();
+            var original = NormalizeImageUrl(rawUrl);
+            if (string.IsNullOrWhiteSpace(original))
+            {
+                return result;
+            }
+
+            AddUniqueImageCandidate(result, original);
+
+            // ggpht community attachments often end in a WEBP-oriented transformation such as
+            // "=s640-c-fcrop64=...-rw-nd-v1". Old Win10 image codecs may reject that payload.
+            // Try plain size transforms as separate URLs, while retaining the original first.
+            if (original.IndexOf("ggpht", StringComparison.OrdinalIgnoreCase) >= 0
+                || original.IndexOf("googleusercontent", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                var equals = original.LastIndexOf('=');
+                if (equals > original.IndexOf("://", StringComparison.Ordinal) + 3)
+                {
+                    var baseUrl = original.Substring(0, equals);
+                    AddUniqueImageCandidate(result, baseUrl + "=s1200");
+                    AddUniqueImageCandidate(result, baseUrl + "=s800");
+                    AddUniqueImageCandidate(result, baseUrl + "=s640");
+                }
+            }
+
+            return result;
+        }
+
+        private static void AddUniqueImageCandidate(List<string> list, string value)
+        {
+            if (list == null || string.IsNullOrWhiteSpace(value))
+            {
+                return;
+            }
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (string.Equals(list[i], value, StringComparison.Ordinal))
+                {
+                    return;
+                }
+            }
+
+            list.Add(value);
+        }
+
+        private async Task<BitmapImage> LoadRemoteBitmapFromExactUrlAsync(
+            string url,
+            int decodePixelWidth)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+            {
+                request.Headers.TryAddWithoutValidation(
+                    "User-Agent",
+                    "Mozilla/5.0 (Windows NT 10.0; ARM; Touch) AppleWebKit/537.36 "
+                    + "(KHTML, like Gecko) Edge/15.15063");
+                request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/");
+                request.Headers.TryAddWithoutValidation(
+                    "Accept",
+                    "image/jpeg,image/png,image/*;q=0.8,*/*;q=0.5");
+
+                using (var response = await _httpClient.SendAsync(
+                    request,
+                    HttpCompletionOption.ResponseContentRead))
+                {
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw new Exception("HTTP " + (int)response.StatusCode);
+                    }
+
+                    var bytes = await response.Content.ReadAsByteArrayAsync();
+                    if (bytes == null || bytes.Length == 0)
+                    {
+                        throw new Exception("empty image response");
+                    }
+
+                    var contentType = response.Content.Headers.ContentType != null
+                        ? response.Content.Headers.ContentType.MediaType
+                        : string.Empty;
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Channel] Community image HTTP "
+                        + bytes.Length + " bytes, type=" + contentType);
+
+                    var stream = new InMemoryRandomAccessStream();
+                    using (var writer = new DataWriter(stream.GetOutputStreamAt(0)))
+                    {
+                        writer.WriteBytes(bytes);
+                        await writer.StoreAsync();
+                        await writer.FlushAsync();
+                    }
+
+                    stream.Seek(0);
+
+                    var bitmap = new BitmapImage();
+                    if (decodePixelWidth > 0)
+                    {
+                        bitmap.DecodePixelType = DecodePixelType.Logical;
+                        bitmap.DecodePixelWidth = decodePixelWidth;
+                    }
+
+                    await bitmap.SetSourceAsync(stream);
+                    return bitmap;
+                }
+            }
+        }
+
+
+        private async void PostAvatar_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var image = sender as Image;
+            var item = image != null ? image.DataContext as ChannelPostItem : null;
+            if (image == null || item == null || string.IsNullOrWhiteSpace(item.AuthorThumbnailUrl))
+            {
+                if (image != null) image.Source = null;
+                return;
+            }
+
+            var expectedItem = item;
+            try
+            {
+                var bitmap = await LoadRemoteBitmapWithFallbackAsync(item.AuthorThumbnailUrl, 96);
+                if (ReferenceEquals(image.DataContext, expectedItem))
+                {
+                    image.Source = bitmap;
+                }
+            }
+            catch
+            {
+                if (ReferenceEquals(image.DataContext, expectedItem))
+                {
+                    image.Source = null;
+                }
+            }
+        }
+
+        private void ShortThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var host = sender as FrameworkElement;
+            if (host == null || e.NewSize.Width <= 0)
+            {
+                return;
+            }
+
+            host.Height = Math.Round(e.NewSize.Width * 16.0 / 9.0);
+        }
+
+        private void ShortCard_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var item = button != null ? button.DataContext as ShortsVideoItem : null;
+            if (item == null || string.IsNullOrWhiteSpace(item.VideoId))
+            {
+                return;
+            }
+
+            Frame.Navigate(typeof(Shorts), item.VideoId);
         }
 
         private void VideoCard_Click(object sender, RoutedEventArgs e)
@@ -355,6 +801,16 @@ namespace YouTube
             }
 
             var root = JsonValue.Parse(json).GetObject();
+
+            // The Videos-tab response is useful for the initial video grid, but YouTube.js does
+            // not use it as the source of sibling tab endpoints. It first loads the ordinary
+            // channel page and then calls the endpoint attached to the requested Tab.
+            //
+            // Keep the endpoints from this response as a fallback, then refresh them from a
+            // canonical browse without params. This is important for Playlists on current WEB.
+            ExtractChannelTabEndpoints(root, channelId);
+            await RefreshCanonicalChannelTabEndpointsAsync(channelId);
+
             var info = ExtractChannelInfo(root, channelId);
             var subscriptionState = ExtractSubscriptionStateFromBrowse(root, "public /browse", channelId);
             var videosContent = FindVideosContent(root);
@@ -368,8 +824,1324 @@ namespace YouTube
             {
                 Info = info,
                 Videos = videos,
+                Continuation = ExtractContinuationToken(root),
                 SubscriptionState = subscriptionState
             };
+        }
+
+        private sealed class ChannelTabPage
+        {
+            public List<VideoCardItem> Videos { get; set; }
+            public List<ShortsVideoItem> Shorts { get; set; }
+            public List<PlaylistItem> Playlists { get; set; }
+            public List<ChannelPostItem> Posts { get; set; }
+            public string Continuation { get; set; }
+        }
+
+        private async Task<ChannelTabPage> FetchChannelTabPageAsync(ChannelContentTab tab, string continuation)
+        {
+            var payload = new JsonObject();
+            payload["context"] = BuildContext();
+
+            if (!string.IsNullOrWhiteSpace(continuation))
+            {
+                // Channel continuations are requested exactly as YouTube.js does: the token is
+                // the continuation payload; no tab params are mixed into a continuation call.
+                payload["continuation"] = JsonValue.CreateStringValue(continuation);
+            }
+            else
+            {
+                ChannelTabEndpoint endpoint;
+                if (_tabEndpoints.TryGetValue(tab, out endpoint) && endpoint != null)
+                {
+                    payload["browseId"] = JsonValue.CreateStringValue(
+                        string.IsNullOrWhiteSpace(endpoint.BrowseId)
+                            ? _currentChannelId
+                            : endpoint.BrowseId);
+
+                    if (!string.IsNullOrWhiteSpace(endpoint.Params))
+                    {
+                        payload["params"] = JsonValue.CreateStringValue(endpoint.Params);
+                    }
+
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Channel] Opening tab " + tab
+                        + " using page endpoint; browseId=" + endpoint.BrowseId
+                        + ", params=" + endpoint.Params);
+                }
+                else
+                {
+                    // Old/fallback path for unusual channel responses that omit the tab endpoint.
+                    payload["browseId"] = JsonValue.CreateStringValue(_currentChannelId);
+                    var fallbackParams = GetChannelTabParams(tab);
+                    if (!string.IsNullOrWhiteSpace(fallbackParams))
+                    {
+                        payload["params"] = JsonValue.CreateStringValue(fallbackParams);
+                    }
+
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Channel] No dynamic endpoint for " + tab + "; using fallback params");
+                }
+            }
+
+            var json = await PostInnertubeAsync("browse", payload.Stringify());
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return new ChannelTabPage();
+            }
+
+            var root = JsonValue.Parse(json).GetObject();
+            System.Diagnostics.Debug.WriteLine(
+                "[Channel] Tab response " + tab + ": bytes=" + json.Length
+                + ", continuationRequest=" + (!string.IsNullOrWhiteSpace(continuation)));
+
+            var page = new ChannelTabPage
+            {
+                Videos = new List<VideoCardItem>(),
+                Shorts = new List<ShortsVideoItem>(),
+                Playlists = new List<PlaylistItem>(),
+                Posts = new List<ChannelPostItem>(),
+                Continuation = ExtractContinuationToken(root)
+            };
+
+            if (tab == ChannelContentTab.Videos)
+            {
+                var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                var visited = 0;
+                ExtractVideosRecursively(root, page.Videos, ChannelTitle != null ? ChannelTitle.Text : string.Empty,
+                    seen, 60, ref visited);
+            }
+            else if (tab == ChannelContentTab.Shorts)
+            {
+                page.Shorts = ParseChannelShorts(root, 60);
+            }
+            else if (tab == ChannelContentTab.Playlists)
+            {
+                page.Playlists = ParseChannelPlaylists(root, 200);
+
+                // Some YouTube builds accept the tab endpoint but return a shell whose actual
+                // playlist data is hydrated only on the /playlists web route. YouTube.js follows
+                // the tab's navigation URL, so do the same as a second path instead of guessing
+                // another protobuf params value.
+                if ((page.Playlists == null || page.Playlists.Count == 0)
+                    && string.IsNullOrWhiteSpace(continuation))
+                {
+                    try
+                    {
+                        var htmlPage = await LoadPlaylistsFromChannelWebPageCoreAsync();
+                        if (htmlPage != null
+                            && htmlPage.Items != null
+                            && htmlPage.Items.Count > 0)
+                        {
+                            page.Playlists = htmlPage.Items;
+                            if (!string.IsNullOrWhiteSpace(htmlPage.Continuation))
+                            {
+                                page.Continuation = htmlPage.Continuation;
+                            }
+
+                            System.Diagnostics.Debug.WriteLine(
+                                "[Channel] /playlists HTML fallback loaded "
+                                + htmlPage.Items.Count + " item(s)");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(
+                            "[Channel] /playlists HTML fallback failed: " + ex.Message);
+                    }
+                }
+            }
+            else if (tab == ChannelContentTab.Posts)
+            {
+                page.Posts = ParseChannelPosts(root, 50, _channelAvatarUrl);
+
+                // Resolve community media before the models are added to ItemsControl.
+                // This avoids relying on Loaded/DataContextChanged from an initially collapsed
+                // DataTemplate, which is unreliable on older UWP builds.
+                await PreloadPostImagesAsync(page.Posts);
+            }
+
+            return page;
+        }
+
+        private sealed class PlaylistHtmlPage
+        {
+            public List<PlaylistItem> Items;
+            public string Continuation;
+        }
+
+        private async Task<PlaylistHtmlPage> LoadPlaylistsFromChannelWebPageCoreAsync()
+        {
+            var endpointUrl = string.Empty;
+            ChannelTabEndpoint endpoint;
+            if (_tabEndpoints.TryGetValue(ChannelContentTab.Playlists, out endpoint)
+                && endpoint != null)
+            {
+                endpointUrl = endpoint.Url;
+            }
+
+            if (string.IsNullOrWhiteSpace(endpointUrl))
+            {
+                endpointUrl = "/channel/" + _currentChannelId + "/playlists";
+            }
+
+            if (endpointUrl.StartsWith("/", StringComparison.Ordinal))
+            {
+                endpointUrl = "https://www.youtube.com" + endpointUrl;
+            }
+
+            using (var request = new HttpRequestMessage(HttpMethod.Get, endpointUrl))
+            {
+                request.Headers.TryAddWithoutValidation(
+                    "User-Agent",
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                    + "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36");
+                request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+
+                using (var response = await _httpClient.SendAsync(
+                    request,
+                    HttpCompletionOption.ResponseContentRead))
+                {
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        throw new Exception(
+                            "playlist page HTTP " + (int)response.StatusCode);
+                    }
+
+                    var html = await response.Content.ReadAsStringAsync();
+                    var initialDataJson = ExtractYtInitialDataJson(html);
+                    if (string.IsNullOrWhiteSpace(initialDataJson))
+                    {
+                        throw new Exception("ytInitialData not found in /playlists HTML");
+                    }
+
+                    var root = JsonValue.Parse(initialDataJson);
+                    return new PlaylistHtmlPage
+                    {
+                        Items = ParseChannelPlaylists(root, 200),
+                        Continuation = ExtractContinuationToken(root)
+                    };
+                }
+            }
+        }
+
+        private async Task<List<PlaylistItem>> LoadPlaylistsFromChannelWebPageAsync()
+        {
+            var page = await LoadPlaylistsFromChannelWebPageCoreAsync();
+            return page != null && page.Items != null
+                ? page.Items
+                : new List<PlaylistItem>();
+        }
+
+        private static string ExtractYtInitialDataJson(string html)
+        {
+            if (string.IsNullOrWhiteSpace(html))
+            {
+                return string.Empty;
+            }
+
+            var markers = new[]
+            {
+                "var ytInitialData =",
+                "window[\\\"ytInitialData\\\"] =",
+                "ytInitialData ="
+            };
+
+            for (int i = 0; i < markers.Length; i++)
+            {
+                var markerIndex = html.IndexOf(markers[i], StringComparison.Ordinal);
+                if (markerIndex < 0)
+                {
+                    continue;
+                }
+
+                var braceStart = html.IndexOf('{', markerIndex + markers[i].Length);
+                if (braceStart < 0)
+                {
+                    continue;
+                }
+
+                var json = ExtractBalancedJsonObject(html, braceStart);
+                if (!string.IsNullOrWhiteSpace(json))
+                {
+                    return json;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static string ExtractBalancedJsonObject(string text, int start)
+        {
+            if (string.IsNullOrEmpty(text)
+                || start < 0
+                || start >= text.Length
+                || text[start] != '{')
+            {
+                return string.Empty;
+            }
+
+            var depth = 0;
+            var inString = false;
+            var escaped = false;
+
+            for (int i = start; i < text.Length; i++)
+            {
+                var c = text[i];
+
+                if (inString)
+                {
+                    if (escaped)
+                    {
+                        escaped = false;
+                    }
+                    else if (c == '\\')
+                    {
+                        escaped = true;
+                    }
+                    else if (c == '"')
+                    {
+                        inString = false;
+                    }
+                    continue;
+                }
+
+                if (c == '"')
+                {
+                    inString = true;
+                    continue;
+                }
+
+                if (c == '{')
+                {
+                    depth++;
+                }
+                else if (c == '}')
+                {
+                    depth--;
+                    if (depth == 0)
+                    {
+                        return text.Substring(start, i - start + 1);
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private async Task RefreshCanonicalChannelTabEndpointsAsync(string channelId)
+        {
+            if (string.IsNullOrWhiteSpace(channelId))
+            {
+                return;
+            }
+
+            try
+            {
+                var payload = new JsonObject();
+                payload["context"] = BuildContext();
+                payload["browseId"] = JsonValue.CreateStringValue(channelId);
+
+                var json = await PostInnertubeAsync("browse", payload.Stringify());
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Channel] Canonical browse returned no data; keeping video-tab endpoints");
+                    return;
+                }
+
+                var root = JsonValue.Parse(json).GetObject();
+
+                // Do not lose a working fallback if YouTube gives us an incomplete tab list.
+                var oldEndpoints = new Dictionary<ChannelContentTab, ChannelTabEndpoint>(_tabEndpoints);
+                ExtractChannelTabEndpoints(root, channelId);
+
+                foreach (var pair in oldEndpoints)
+                {
+                    if (!_tabEndpoints.ContainsKey(pair.Key))
+                    {
+                        _tabEndpoints[pair.Key] = pair.Value;
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine(
+                    "[Channel] Canonical tab endpoints refreshed: " + _tabEndpoints.Count);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Channel] Canonical tab endpoint refresh failed: " + ex.Message);
+            }
+        }
+
+        private void ExtractChannelTabEndpoints(JsonObject root, string fallbackChannelId)
+        {
+            _tabEndpoints.Clear();
+
+            if (root == null)
+            {
+                return;
+            }
+
+            var tabRenderers = new List<JsonObject>();
+            FindObjectsByKey(root, "tabRenderer", tabRenderers, 0, 12);
+
+            for (int i = 0; i < tabRenderers.Count; i++)
+            {
+                var tabRenderer = tabRenderers[i];
+                if (tabRenderer == null)
+                {
+                    continue;
+                }
+
+                var endpoint = FirstObject(
+                    GetObject(tabRenderer, "endpoint"),
+                    GetObject(tabRenderer, "navigationEndpoint"));
+
+                var browse = GetObject(endpoint, "browseEndpoint");
+                if (browse == null)
+                {
+                    continue;
+                }
+
+                var browseId = FirstNonEmpty(
+                    GetString(browse, "browseId"),
+                    fallbackChannelId);
+                var browseParams = GetString(browse, "params");
+
+                var metadata = GetObject(GetObject(endpoint, "commandMetadata"), "webCommandMetadata");
+                var url = FirstNonEmpty(
+                    GetString(metadata, "url"),
+                    GetString(browse, "canonicalBaseUrl"));
+
+                var title = FirstNonEmpty(
+                    GetString(tabRenderer, "title"),
+                    ExtractText(GetObject(tabRenderer, "title")));
+
+                ChannelContentTab tab;
+                if (!TryMapChannelTab(title, url, out tab))
+                {
+                    continue;
+                }
+
+                _tabEndpoints[tab] = new ChannelTabEndpoint
+                {
+                    BrowseId = browseId,
+                    Params = browseParams,
+                    Url = url
+                };
+
+                System.Diagnostics.Debug.WriteLine(
+                    "[Channel] Captured tab endpoint " + tab
+                    + ": url=" + url
+                    + ", browseId=" + browseId
+                    + ", params=" + browseParams);
+            }
+
+            // The page was initially requested with Videos selected. Keep a reliable Videos
+            // fallback even if YouTube omitted endpoint data from the selected tab renderer.
+            if (!_tabEndpoints.ContainsKey(ChannelContentTab.Videos))
+            {
+                _tabEndpoints[ChannelContentTab.Videos] = new ChannelTabEndpoint
+                {
+                    BrowseId = fallbackChannelId,
+                    Params = ChannelVideosTabParams,
+                    Url = "/channel/" + fallbackChannelId + "/videos"
+                };
+            }
+        }
+
+        private static JsonObject FirstObject(params JsonObject[] objects)
+        {
+            if (objects == null)
+            {
+                return null;
+            }
+
+            for (int i = 0; i < objects.Length; i++)
+            {
+                if (objects[i] != null)
+                {
+                    return objects[i];
+                }
+            }
+
+            return null;
+        }
+
+        private static bool TryMapChannelTab(string title, string url, out ChannelContentTab tab)
+        {
+            var normalizedTitle = (title ?? string.Empty).Trim().ToLowerInvariant();
+            var normalizedUrl = (url ?? string.Empty).Trim().ToLowerInvariant();
+
+            if (normalizedUrl.EndsWith("/shorts", StringComparison.Ordinal)
+                || normalizedUrl.IndexOf("/shorts?", StringComparison.Ordinal) >= 0
+                || normalizedTitle == "shorts")
+            {
+                tab = ChannelContentTab.Shorts;
+                return true;
+            }
+
+            if (normalizedUrl.EndsWith("/playlists", StringComparison.Ordinal)
+                || normalizedUrl.IndexOf("/playlists?", StringComparison.Ordinal) >= 0
+                || normalizedTitle == "playlists")
+            {
+                tab = ChannelContentTab.Playlists;
+                return true;
+            }
+
+            if (normalizedUrl.EndsWith("/posts", StringComparison.Ordinal)
+                || normalizedUrl.IndexOf("/posts?", StringComparison.Ordinal) >= 0
+                || normalizedUrl.EndsWith("/community", StringComparison.Ordinal)
+                || normalizedTitle == "posts"
+                || normalizedTitle == "community")
+            {
+                tab = ChannelContentTab.Posts;
+                return true;
+            }
+
+            if (normalizedUrl.EndsWith("/videos", StringComparison.Ordinal)
+                || normalizedUrl.IndexOf("/videos?", StringComparison.Ordinal) >= 0
+                || normalizedTitle == "videos")
+            {
+                tab = ChannelContentTab.Videos;
+                return true;
+            }
+
+            tab = ChannelContentTab.Videos;
+            return false;
+        }
+
+        private static string GetChannelTabParams(ChannelContentTab tab)
+        {
+            if (tab == ChannelContentTab.Shorts) return ChannelShortsTabParams;
+            if (tab == ChannelContentTab.Playlists) return ChannelPlaylistsTabParams;
+            if (tab == ChannelContentTab.Posts) return ChannelPostsTabParams;
+            return ChannelVideosTabParams;
+        }
+
+        private void ApplyTabPage(ChannelContentTab tab, ChannelTabPage page, bool replace)
+        {
+            if (page == null)
+            {
+                _tabContinuations[tab] = string.Empty;
+                return;
+            }
+
+            _tabContinuations[tab] = page.Continuation ?? string.Empty;
+
+            if (tab == ChannelContentTab.Videos)
+            {
+                if (replace) _videos.Clear();
+                var seen = new HashSet<string>(_videos.Select(v => v.VideoId), StringComparer.OrdinalIgnoreCase);
+                if (page.Videos != null)
+                {
+                    foreach (var item in page.Videos)
+                    {
+                        if (item != null && !string.IsNullOrWhiteSpace(item.VideoId) && seen.Add(item.VideoId))
+                            _videos.Add(item);
+                    }
+                }
+            }
+            else if (tab == ChannelContentTab.Shorts)
+            {
+                if (replace) _shorts.Clear();
+                var seen = new HashSet<string>(_shorts.Select(v => v.VideoId), StringComparer.OrdinalIgnoreCase);
+                if (page.Shorts != null)
+                {
+                    foreach (var item in page.Shorts)
+                    {
+                        if (item != null && !string.IsNullOrWhiteSpace(item.VideoId) && seen.Add(item.VideoId))
+                            _shorts.Add(item);
+                    }
+                }
+            }
+            else if (tab == ChannelContentTab.Playlists)
+            {
+                if (replace) _playlists.Clear();
+                var seen = new HashSet<string>(_playlists.Select(v => v.PlaylistId), StringComparer.OrdinalIgnoreCase);
+                if (page.Playlists != null)
+                {
+                    foreach (var item in page.Playlists)
+                    {
+                        if (item != null && !string.IsNullOrWhiteSpace(item.PlaylistId) && seen.Add(item.PlaylistId))
+                            _playlists.Add(item);
+                    }
+                }
+            }
+            else
+            {
+                if (replace) _posts.Clear();
+                if (page.Posts != null)
+                {
+                    foreach (var item in page.Posts)
+                        if (item != null) _posts.Add(item);
+                }
+            }
+        }
+
+        private static List<ShortsVideoItem> ParseChannelShorts(IJsonValue root, int maxCount)
+        {
+            var result = new List<ShortsVideoItem>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var reelRenderers = new List<JsonObject>();
+            var lockups = new List<JsonObject>();
+
+            FindObjectsByKey(root, "reelItemRenderer", reelRenderers, 0, 14);
+            FindObjectsByKey(root, "shortsLockupViewModel", lockups, 0, 14);
+
+            for (int i = 0; i < reelRenderers.Count && result.Count < maxCount; i++)
+            {
+                var renderer = reelRenderers[i];
+                var videoId = FirstNonEmpty(
+                    GetString(renderer, "videoId"),
+                    FindStringByKey(renderer, "videoId", 0, 14));
+
+                if (string.IsNullOrWhiteSpace(videoId) || !seen.Add(videoId))
+                {
+                    continue;
+                }
+
+                var title = FirstNonEmpty(
+                    ExtractText(GetObject(renderer, "headline")),
+                    ExtractText(GetObject(renderer, "title")),
+                    FindFirstTextByKey(renderer, "headline", 0, 10),
+                    "Shorts");
+
+                var thumbnail = FirstNonEmpty(
+                    ExtractThumbnailUrl(GetObject(renderer, "thumbnail")),
+                    ExtractFirstImageUrl(renderer, "thumbnail"),
+                    ExtractFirstImageUrl(renderer, "image"),
+                    "https://i.ytimg.com/vi/" + videoId + "/oardefault.jpg");
+
+                result.Add(new ShortsVideoItem
+                {
+                    VideoId = videoId,
+                    Title = title,
+                    ChannelName = string.Empty,
+                    ThumbnailUrl = thumbnail
+                });
+            }
+
+            for (int i = 0; i < lockups.Count && result.Count < maxCount; i++)
+            {
+                var renderer = lockups[i];
+
+                // Current shortsLockupViewModel keeps the id under onTap.reelWatchEndpoint.
+                var videoId = FindStringByKey(renderer, "videoId", 0, 14);
+                if (string.IsNullOrWhiteSpace(videoId) || !seen.Add(videoId))
+                {
+                    continue;
+                }
+
+                var overlay = GetObject(renderer, "overlayMetadata");
+                var primary = GetObject(overlay, "primaryText");
+                var title = FirstNonEmpty(
+                    ExtractText(primary),
+                    FindFirstTextByKey(renderer, "primaryText", 0, 10),
+                    FindFirstTextByKey(renderer, "title", 0, 10),
+                    "Shorts");
+
+                var thumbnail = FirstNonEmpty(
+                    ExtractThumbnailUrl(GetObject(renderer, "thumbnail")),
+                    ExtractFirstImageUrl(renderer, "thumbnail"),
+                    ExtractFirstImageUrl(renderer, "image"),
+                    "https://i.ytimg.com/vi/" + videoId + "/oardefault.jpg");
+
+                result.Add(new ShortsVideoItem
+                {
+                    VideoId = videoId,
+                    Title = title,
+                    ChannelName = string.Empty,
+                    ThumbnailUrl = thumbnail
+                });
+            }
+
+            System.Diagnostics.Debug.WriteLine(
+                "[Channel] Shorts parsed: reel=" + reelRenderers.Count
+                + ", lockup=" + lockups.Count
+                + ", items=" + result.Count);
+
+            return result;
+        }
+
+        private static List<PlaylistItem> ParseChannelPlaylists(IJsonValue root, int maxCount)
+        {
+            var result = new List<PlaylistItem>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            // Current WEB channel playlists are richGridRenderer -> richItemRenderer ->
+            // lockupViewModel. This is the same shape YouTube currently uses elsewhere for
+            // playlists: contentId + LOCKUP_CONTENT_TYPE_PLAYLIST + lockupMetadataViewModel.
+            var lockups = new List<JsonObject>();
+            FindObjectsByKey(root, "lockupViewModel", lockups, 0, 18);
+
+            for (int i = 0; i < lockups.Count && result.Count < maxCount; i++)
+            {
+                var renderer = lockups[i];
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                var contentType = GetString(renderer, "contentType");
+                if (!string.IsNullOrWhiteSpace(contentType)
+                    && contentType.IndexOf("PLAYLIST", StringComparison.OrdinalIgnoreCase) < 0)
+                {
+                    continue;
+                }
+
+                var playlistId = FirstNonEmpty(
+                    GetString(renderer, "contentId"),
+                    FindPlaylistIdFromNavigation(renderer));
+
+                if (string.IsNullOrWhiteSpace(playlistId) || !seen.Add(playlistId))
+                {
+                    continue;
+                }
+
+                var metadata = GetObject(renderer, "metadata");
+                var lockupMetadata = GetObject(metadata, "lockupMetadataViewModel");
+                var titleNode = GetObject(lockupMetadata, "title");
+
+                var title = FirstNonEmpty(
+                    GetString(titleNode, "content"),
+                    ExtractText(titleNode),
+                    FindFirstTextByKey(renderer, "title", 0, 12),
+                    "Playlist");
+
+                var thumbnail = ExtractPlaylistLockupThumbnail(renderer);
+                var countText = ExtractPlaylistLockupCount(lockupMetadata);
+
+                result.Add(new PlaylistItem
+                {
+                    PlaylistId = playlistId,
+                    Title = title,
+                    ThumbnailUrl = thumbnail,
+                    VideoCountText = countText
+                });
+            }
+
+            // Legacy shapes are still used on some channels / clients.
+            var legacy = new List<JsonObject>();
+            FindObjectsByKey(root, "playlistRenderer", legacy, 0, 18);
+            FindObjectsByKey(root, "gridPlaylistRenderer", legacy, 0, 18);
+            FindObjectsByKey(root, "tileRenderer", legacy, 0, 18);
+
+            for (int i = 0; i < legacy.Count && result.Count < maxCount; i++)
+            {
+                var renderer = legacy[i];
+                var playlistId = FirstNonEmpty(
+                    GetString(renderer, "playlistId"),
+                    FindPlaylistIdFromNavigation(renderer));
+
+                if (string.IsNullOrWhiteSpace(playlistId) || !seen.Add(playlistId))
+                {
+                    continue;
+                }
+
+                result.Add(new PlaylistItem
+                {
+                    PlaylistId = playlistId,
+                    Title = FirstNonEmpty(
+                        ExtractText(GetObject(renderer, "title")),
+                        FindFirstTextByKey(renderer, "title", 0, 10),
+                        "Playlist"),
+                    ThumbnailUrl = FirstNonEmpty(
+                        ExtractThumbnailUrl(GetObject(renderer, "thumbnail")),
+                        ExtractFirstImageUrl(renderer, "thumbnail"),
+                        ExtractFirstImageUrl(renderer, "image")),
+                    VideoCountText = FirstNonEmpty(
+                        ExtractText(GetObject(renderer, "videoCountText")),
+                        GetString(renderer, "videoCount"),
+                        FindFirstTextByKey(renderer, "videoCountText", 0, 12))
+                });
+            }
+
+            System.Diagnostics.Debug.WriteLine(
+                "[Channel] Playlists exact parser: lockups=" + lockups.Count
+                + ", legacy=" + legacy.Count
+                + ", items=" + result.Count);
+
+            return result;
+        }
+
+        private static string ExtractPlaylistLockupThumbnail(JsonObject renderer)
+        {
+            try
+            {
+                var contentImage = GetObject(renderer, "contentImage");
+                var collection = GetObject(contentImage, "collectionThumbnailViewModel");
+                var primary = GetObject(collection, "primaryThumbnail");
+                var thumbnailView = GetObject(primary, "thumbnailViewModel");
+                var image = GetObject(thumbnailView, "image");
+
+                var url = ExtractLargestThumbnailSource(image);
+                if (!string.IsNullOrWhiteSpace(url))
+                {
+                    return url;
+                }
+
+                // Some lockups use thumbnailViewModel directly without collectionThumbnailViewModel.
+                thumbnailView = GetObject(contentImage, "thumbnailViewModel");
+                image = GetObject(thumbnailView, "image");
+                return ExtractLargestThumbnailSource(image);
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
+        private static string ExtractPlaylistLockupCount(JsonObject lockupMetadata)
+        {
+            if (lockupMetadata == null)
+            {
+                return string.Empty;
+            }
+
+            var metadata = GetObject(lockupMetadata, "metadata");
+            var contentMetadata = GetObject(metadata, "contentMetadataViewModel");
+            var rows = GetArray(contentMetadata, "metadataRows");
+            if (rows == null)
+            {
+                return string.Empty;
+            }
+
+            for (int r = 0; r < (int)rows.Count; r++)
+            {
+                var row = rows.GetObjectAt((uint)r);
+                var parts = GetArray(row, "metadataParts");
+                if (parts == null)
+                {
+                    continue;
+                }
+
+                for (int p = 0; p < (int)parts.Count; p++)
+                {
+                    var part = parts.GetObjectAt((uint)p);
+                    var textNode = GetObject(part, "text");
+                    var value = FirstNonEmpty(
+                        GetString(textNode, "content"),
+                        ExtractText(textNode));
+
+                    if (!string.IsNullOrWhiteSpace(value)
+                        && (value.IndexOf("video", StringComparison.OrdinalIgnoreCase) >= 0
+                            || value.IndexOf("видео", StringComparison.OrdinalIgnoreCase) >= 0))
+                    {
+                        return value;
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static string ExtractLargestThumbnailSource(JsonObject image)
+        {
+            if (image == null)
+            {
+                return string.Empty;
+            }
+
+            var sources = GetArray(image, "sources");
+            if (sources == null)
+            {
+                sources = GetArray(image, "thumbnails");
+            }
+
+            if (sources == null || sources.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            string bestUrl = string.Empty;
+            double bestArea = -1;
+
+            for (int i = 0; i < (int)sources.Count; i++)
+            {
+                var source = sources.GetObjectAt((uint)i);
+                var url = GetString(source, "url");
+                var width = source != null
+                    && source.ContainsKey("width")
+                    && source["width"] != null
+                    && source["width"].ValueType == JsonValueType.Number
+                    ? source["width"].GetNumber()
+                    : 0;
+                var height = source != null
+                    && source.ContainsKey("height")
+                    && source["height"] != null
+                    && source["height"].ValueType == JsonValueType.Number
+                    ? source["height"].GetNumber()
+                    : 0;
+                var area = width > 0 && height > 0 ? width * height : i + 1;
+
+                if (!string.IsNullOrWhiteSpace(url) && area >= bestArea)
+                {
+                    bestUrl = url;
+                    bestArea = area;
+                }
+            }
+
+            return bestUrl;
+        }
+
+
+        private static string FindPlaylistIdFromNavigation(IJsonValue value)
+        {
+            var playlistId = FindStringByKey(value, "playlistId", 0, 14);
+            if (!string.IsNullOrWhiteSpace(playlistId))
+            {
+                return playlistId;
+            }
+
+            var browseId = FindStringByKey(value, "browseId", 0, 14);
+            if (!string.IsNullOrWhiteSpace(browseId)
+                && browseId.StartsWith("VL", StringComparison.OrdinalIgnoreCase)
+                && browseId.Length > 2)
+            {
+                return browseId.Substring(2);
+            }
+
+            return string.Empty;
+        }
+
+        private static List<ChannelPostItem> ParseChannelPosts(IJsonValue root, int maxCount, string channelAvatarUrl)
+        {
+            var result = new List<ChannelPostItem>();
+            var renderers = new List<JsonObject>();
+            FindObjectsByKey(root, "backstagePostRenderer", renderers, 0, 14);
+            FindObjectsByKey(root, "postRenderer", renderers, 0, 14);
+            FindObjectsByKey(root, "sharedPostRenderer", renderers, 0, 14);
+
+            // Current WEB responses often wrap the actual post renderer in a thread.
+            var threads = new List<JsonObject>();
+            FindObjectsByKey(root, "backstagePostThreadRenderer", threads, 0, 14);
+            for (int i = 0; i < threads.Count; i++)
+            {
+                var wrappedPost = GetObject(threads[i], "post");
+                if (wrappedPost == null) continue;
+
+                var backstage = GetObject(wrappedPost, "backstagePostRenderer");
+                if (backstage != null) renderers.Add(backstage);
+
+                var post = GetObject(wrappedPost, "postRenderer");
+                if (post != null) renderers.Add(post);
+            }
+
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            for (int i = 0; i < renderers.Count && result.Count < maxCount; i++)
+            {
+                var renderer = renderers[i];
+                if (renderer == null) continue;
+
+                var text = FirstNonEmpty(
+                    ExtractText(GetObject(renderer, "contentText")),
+                    ExtractText(GetObject(renderer, "text")),
+                    FindFirstTextByKey(renderer, "contentText", 0, 10));
+
+                var published = FirstNonEmpty(
+                    ExtractText(GetObject(renderer, "publishedTimeText")),
+                    FindFirstTextByKey(renderer, "publishedTimeText", 0, 10));
+
+                var author = FirstNonEmpty(
+                    ExtractText(GetObject(renderer, "authorText")),
+                    FindFirstTextByKey(renderer, "authorText", 0, 10));
+
+                var authorThumbnail = FirstNonEmpty(
+                    ExtractThumbnailUrl(GetObject(renderer, "authorThumbnail")),
+                    ExtractFirstImageUrl(renderer, "authorThumbnail"),
+                    channelAvatarUrl);
+
+                var image = ExtractPostImageUrl(renderer);
+
+                if (!string.IsNullOrWhiteSpace(image))
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Channel] Community attachment URL: " + image);
+                }
+
+                // Image-only posts are valid too, so do not throw them away when contentText is empty.
+                if (string.IsNullOrWhiteSpace(text) && string.IsNullOrWhiteSpace(image))
+                {
+                    continue;
+                }
+
+                var key = (text ?? string.Empty) + "|" + (published ?? string.Empty) + "|" + (image ?? string.Empty);
+                if (!seen.Add(key)) continue;
+
+                result.Add(new ChannelPostItem
+                {
+                    Text = text ?? string.Empty,
+                    Author = author ?? string.Empty,
+                    PublishedText = published ?? string.Empty,
+                    AuthorThumbnailUrl = authorThumbnail ?? string.Empty,
+                    ImageUrl = image ?? string.Empty
+                });
+            }
+
+            System.Diagnostics.Debug.WriteLine(
+                "[Channel] Posts parsed: renderers=" + renderers.Count + ", items=" + result.Count);
+            return result;
+        }
+
+        private static string ExtractPostImageUrl(JsonObject renderer)
+        {
+            if (renderer == null)
+            {
+                return string.Empty;
+            }
+
+            var attachment = GetObject(renderer, "backstageAttachment");
+            if (attachment == null)
+            {
+                return string.Empty;
+            }
+
+            // Single-image community post:
+            // backstageAttachment.backstageImageRenderer.image.thumbnails[]
+            var single = GetObject(attachment, "backstageImageRenderer");
+            if (single == null && attachment.ContainsKey("image"))
+            {
+                single = attachment;
+            }
+            if (single != null)
+            {
+                var image = GetObject(single, "image");
+                var url = ExtractLargestThumbnailSource(image);
+                if (!string.IsNullOrWhiteSpace(url))
+                {
+                    return NormalizeCommunityImageUrl(url);
+                }
+            }
+
+            // Multi-image community post:
+            // backstageAttachment.postMultiImageRenderer.images[]
+            //     .backstageImageRenderer.image.thumbnails[]
+            var multi = GetObject(attachment, "postMultiImageRenderer");
+            var images = GetArray(multi, "images");
+            if (images != null)
+            {
+                for (int i = 0; i < (int)images.Count; i++)
+                {
+                    var imageWrapper = images.GetObjectAt((uint)i);
+                    var backstage = GetObject(imageWrapper, "backstageImageRenderer");
+                    if (backstage == null && imageWrapper.ContainsKey("image"))
+                    {
+                        // Parser.parseArray(data.images, BackstageImage) means some API shapes
+                        // already expose the BackstageImage payload without the renderer wrapper.
+                        backstage = imageWrapper;
+                    }
+                    var image = GetObject(backstage, "image");
+                    var url = ExtractLargestThumbnailSource(image);
+                    if (!string.IsNullOrWhiteSpace(url))
+                    {
+                        // The UI currently displays the first image; the parser no longer loses
+                        // the entire attachment just because it is a multi-image post.
+                        return NormalizeCommunityImageUrl(url);
+                    }
+                }
+            }
+
+            // YouTube periodically wraps the same media in a new view-model layer.
+            // Restrict the fallback to backstageAttachment, then select its largest image.
+            // This catches imageAttachmentViewModel/new community wrappers without ever
+            // walking the full post/page and accidentally selecting an avatar.
+            var fallback = ExtractLargestImageUrl(attachment);
+            if (!string.IsNullOrWhiteSpace(fallback))
+            {
+                return NormalizeCommunityImageUrl(fallback);
+            }
+
+            return string.Empty;
+        }
+
+        private static string NormalizeCommunityImageUrl(string url)
+        {
+            url = NormalizeImageUrl(url);
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return string.Empty;
+            }
+
+            // Community thumbnails are commonly ggpht URLs with a dynamic =wNNN-hNNN... suffix.
+            // Requesting a simple size form avoids formats/variants that old Win10 BitmapImage
+            // cannot decode reliably.
+            var equals = url.LastIndexOf('=');
+            if (equals > url.IndexOf("://", StringComparison.Ordinal) + 3
+                && (url.IndexOf("ggpht", StringComparison.OrdinalIgnoreCase) >= 0
+                    || url.IndexOf("googleusercontent", StringComparison.OrdinalIgnoreCase) >= 0))
+            {
+                url = url.Substring(0, equals) + "=s1200";
+            }
+
+            return url;
+        }
+
+
+        private static string ExtractLargestImageUrl(IJsonValue value)
+        {
+            var candidates = new List<ImageUrlCandidate>();
+            CollectImageUrlCandidates(value, candidates, 0, 14);
+
+            ImageUrlCandidate best = null;
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                var candidate = candidates[i];
+                if (candidate == null || string.IsNullOrWhiteSpace(candidate.Url))
+                {
+                    continue;
+                }
+
+                if (best == null || candidate.Area > best.Area)
+                {
+                    best = candidate;
+                }
+            }
+
+            return best != null ? best.Url : string.Empty;
+        }
+
+        private sealed class ImageUrlCandidate
+        {
+            public string Url;
+            public double Area;
+        }
+
+        private static void CollectImageUrlCandidates(
+            IJsonValue value,
+            List<ImageUrlCandidate> result,
+            int depth,
+            int maxDepth)
+        {
+            if (value == null || result == null || depth > maxDepth)
+            {
+                return;
+            }
+
+            if (value.ValueType == JsonValueType.Object)
+            {
+                var obj = value.GetObject();
+
+                if (obj.ContainsKey("url")
+                    && obj["url"] != null
+                    && obj["url"].ValueType == JsonValueType.String)
+                {
+                    var url = obj["url"].GetString();
+                    if (!string.IsNullOrWhiteSpace(url)
+                        && (url.IndexOf("ytimg", StringComparison.OrdinalIgnoreCase) >= 0
+                            || url.IndexOf("ggpht", StringComparison.OrdinalIgnoreCase) >= 0
+                            || url.IndexOf("googleusercontent", StringComparison.OrdinalIgnoreCase) >= 0))
+                    {
+                        var width = obj.ContainsKey("width")
+                            && obj["width"].ValueType == JsonValueType.Number
+                            ? obj["width"].GetNumber()
+                            : 0;
+                        var height = obj.ContainsKey("height")
+                            && obj["height"].ValueType == JsonValueType.Number
+                            ? obj["height"].GetNumber()
+                            : 0;
+
+                        result.Add(new ImageUrlCandidate
+                        {
+                            Url = url,
+                            Area = width > 0 && height > 0 ? width * height : 1
+                        });
+                    }
+                }
+
+                foreach (var pair in obj)
+                {
+                    if (pair.Value != null
+                        && (pair.Value.ValueType == JsonValueType.Object
+                            || pair.Value.ValueType == JsonValueType.Array))
+                    {
+                        CollectImageUrlCandidates(pair.Value, result, depth + 1, maxDepth);
+                    }
+                }
+            }
+            else if (value.ValueType == JsonValueType.Array)
+            {
+                var array = value.GetArray();
+                for (int i = 0; i < (int)array.Count; i++)
+                {
+                    CollectImageUrlCandidates(array[i], result, depth + 1, maxDepth);
+                }
+            }
+        }
+
+        private static void FindObjectsByKey(IJsonValue value, string key, List<JsonObject> result, int depth, int maxDepth)
+        {
+            if (value == null || result == null || depth > maxDepth) return;
+
+            if (value.ValueType == JsonValueType.Object)
+            {
+                var obj = value.GetObject();
+                foreach (var pair in obj)
+                {
+                    if (string.Equals(pair.Key, key, StringComparison.Ordinal)
+                        && pair.Value != null
+                        && pair.Value.ValueType == JsonValueType.Object)
+                    {
+                        result.Add(pair.Value.GetObject());
+                    }
+
+                    if (pair.Value != null
+                        && (pair.Value.ValueType == JsonValueType.Object || pair.Value.ValueType == JsonValueType.Array))
+                    {
+                        FindObjectsByKey(pair.Value, key, result, depth + 1, maxDepth);
+                    }
+                }
+            }
+            else if (value.ValueType == JsonValueType.Array)
+            {
+                var array = value.GetArray();
+                for (int i = 0; i < (int)array.Count; i++)
+                {
+                    FindObjectsByKey(array[i], key, result, depth + 1, maxDepth);
+                }
+            }
+        }
+
+        private static string FindStringByKey(IJsonValue value, string key, int depth, int maxDepth)
+        {
+            if (value == null || depth > maxDepth) return string.Empty;
+
+            if (value.ValueType == JsonValueType.Object)
+            {
+                var obj = value.GetObject();
+                if (obj.ContainsKey(key) && obj[key] != null && obj[key].ValueType == JsonValueType.String)
+                    return obj[key].GetString();
+
+                foreach (var pair in obj)
+                {
+                    if (pair.Value != null
+                        && (pair.Value.ValueType == JsonValueType.Object || pair.Value.ValueType == JsonValueType.Array))
+                    {
+                        var found = FindStringByKey(pair.Value, key, depth + 1, maxDepth);
+                        if (!string.IsNullOrWhiteSpace(found)) return found;
+                    }
+                }
+            }
+            else if (value.ValueType == JsonValueType.Array)
+            {
+                var array = value.GetArray();
+                for (int i = 0; i < (int)array.Count; i++)
+                {
+                    var found = FindStringByKey(array[i], key, depth + 1, maxDepth);
+                    if (!string.IsNullOrWhiteSpace(found)) return found;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static string FindFirstTextByKey(IJsonValue value, string key, int depth, int maxDepth)
+        {
+            if (value == null || depth > maxDepth) return string.Empty;
+
+            if (value.ValueType == JsonValueType.Object)
+            {
+                var obj = value.GetObject();
+                if (obj.ContainsKey(key) && obj[key] != null)
+                {
+                    if (obj[key].ValueType == JsonValueType.Object)
+                    {
+                        var text = ExtractText(obj[key].GetObject());
+                        if (!string.IsNullOrWhiteSpace(text)) return text;
+                    }
+                    if (obj[key].ValueType == JsonValueType.String)
+                        return obj[key].GetString();
+                }
+
+                foreach (var pair in obj)
+                {
+                    if (pair.Value != null
+                        && (pair.Value.ValueType == JsonValueType.Object || pair.Value.ValueType == JsonValueType.Array))
+                    {
+                        var found = FindFirstTextByKey(pair.Value, key, depth + 1, maxDepth);
+                        if (!string.IsNullOrWhiteSpace(found)) return found;
+                    }
+                }
+            }
+            else if (value.ValueType == JsonValueType.Array)
+            {
+                var array = value.GetArray();
+                for (int i = 0; i < (int)array.Count; i++)
+                {
+                    var found = FindFirstTextByKey(array[i], key, depth + 1, maxDepth);
+                    if (!string.IsNullOrWhiteSpace(found)) return found;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static string ExtractContinuationToken(IJsonValue value)
+        {
+            if (value == null)
+            {
+                return string.Empty;
+            }
+
+            // YouTube.js takes the ContinuationItem from the current channel tab. Prefer those
+            // explicit list-tail nodes so we do not accidentally use an unrelated continuation
+            // from another part of the channel page.
+            var continuationItems = new List<JsonObject>();
+            FindObjectsByKey(value, "continuationItemRenderer", continuationItems, 0, 14);
+            for (int i = 0; i < continuationItems.Count; i++)
+            {
+                var token = ExtractContinuationToken(continuationItems[i], 0, 8);
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    return token;
+                }
+            }
+
+            return ExtractContinuationToken(value, 0, 14);
+        }
+
+        private static string ExtractContinuationToken(IJsonValue value, int depth, int maxDepth)
+        {
+            if (value == null || depth > maxDepth) return string.Empty;
+
+            if (value.ValueType == JsonValueType.Object)
+            {
+                var obj = value.GetObject();
+
+                var next = GetObject(obj, "nextContinuationData");
+                var token = GetString(next, "continuation");
+                if (!string.IsNullOrWhiteSpace(token)) return token;
+
+                var reload = GetObject(obj, "reloadContinuationData");
+                token = GetString(reload, "continuation");
+                if (!string.IsNullOrWhiteSpace(token)) return token;
+
+                var command = GetObject(obj, "continuationCommand");
+                token = FirstNonEmpty(GetString(command, "token"), GetString(command, "continuation"));
+                if (!string.IsNullOrWhiteSpace(token)) return token;
+
+                foreach (var pair in obj)
+                {
+                    if (pair.Value != null
+                        && (pair.Value.ValueType == JsonValueType.Object || pair.Value.ValueType == JsonValueType.Array))
+                    {
+                        token = ExtractContinuationToken(pair.Value, depth + 1, maxDepth);
+                        if (!string.IsNullOrWhiteSpace(token)) return token;
+                    }
+                }
+            }
+            else if (value.ValueType == JsonValueType.Array)
+            {
+                var array = value.GetArray();
+                for (int i = 0; i < (int)array.Count; i++)
+                {
+                    var token = ExtractContinuationToken(array[i], depth + 1, maxDepth);
+                    if (!string.IsNullOrWhiteSpace(token)) return token;
+                }
+            }
+
+            return string.Empty;
         }
 
         private async Task<string> ResolveHandleToChannelIdAsync(string input)
@@ -1384,13 +3156,37 @@ namespace YouTube
                 VideosItemsControl.Padding = isPortrait
                     ? new Thickness(0, 8, 0, 16)
                     : new Thickness(8, 8, 8, 16);
+                double videoWidth = GetItemsControlContentWidth(VideosItemsControl, Window.Current.Bounds.Width);
+                UpdateItemsWrapGrid(VideosItemsControl,
+                    isPortrait ? Math.Max(0, videoWidth) : DefaultCardWidth,
+                    isPortrait ? 1 : 3);
+                UpdateResponsiveCardMargins(VideosItemsControl);
             }
 
-            double baseWidth = GetItemsControlContentWidth(VideosItemsControl, Window.Current.Bounds.Width);
-            var itemWidth = isPortrait ? Math.Max(0, baseWidth) : DefaultCardWidth;
-            var maxColumns = isPortrait ? 1 : 3;
-            UpdateItemsWrapGrid(VideosItemsControl, itemWidth, maxColumns);
-            UpdateResponsiveCardMargins(VideosItemsControl);
+            if (PlaylistsItemsControl != null)
+            {
+                PlaylistsItemsControl.Padding = isPortrait
+                    ? new Thickness(0, 8, 0, 16)
+                    : new Thickness(8, 8, 8, 16);
+                double playlistWidth = GetItemsControlContentWidth(PlaylistsItemsControl, Window.Current.Bounds.Width);
+                UpdateItemsWrapGrid(PlaylistsItemsControl,
+                    isPortrait ? Math.Max(0, playlistWidth) : DefaultCardWidth,
+                    isPortrait ? 1 : 3);
+                UpdateResponsiveCardMargins(PlaylistsItemsControl);
+            }
+
+            if (ShortsItemsControl != null)
+            {
+                ShortsItemsControl.Padding = isPortrait
+                    ? new Thickness(20, 8, 20, 20)
+                    : new Thickness(12, 8, 12, 20);
+
+                double shortsWidth = GetItemsControlContentWidth(ShortsItemsControl, Window.Current.Bounds.Width);
+                var shortItemWidth = isPortrait
+                    ? Math.Max(112, (shortsWidth - 20) / 2.0)
+                    : 190.0;
+                UpdateItemsWrapGrid(ShortsItemsControl, shortItemWidth, isPortrait ? 2 : 8);
+            }
         }
 
         private static double GetItemsControlContentWidth(Control control, double fallbackWidth)
@@ -3514,10 +5310,36 @@ namespace YouTube
             return (text ?? string.Empty).Replace("_", string.Empty).Replace("-", string.Empty).Replace(" ", string.Empty).ToUpperInvariant();
         }
 
+        private sealed class ChannelPostItem
+        {
+            public string Text { get; set; }
+            public string Author { get; set; }
+            public string PublishedText { get; set; }
+            public string AuthorThumbnailUrl { get; set; }
+            public string ImageUrl { get; set; }
+            public BitmapImage ImageSource { get; set; }
+
+            public string MetaLine
+            {
+                get
+                {
+                    if (string.IsNullOrWhiteSpace(Author)) return PublishedText ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(PublishedText)) return Author;
+                    return Author + " • " + PublishedText;
+                }
+            }
+
+            public Visibility ImageVisibility
+            {
+                get { return ImageSource != null ? Visibility.Visible : Visibility.Collapsed; }
+            }
+        }
+
         private sealed class ChannelPageData
         {
             public ChannelPageInfo Info { get; set; }
             public List<VideoCardItem> Videos { get; set; }
+            public string Continuation { get; set; }
             public SubscriptionLoadResult SubscriptionState { get; set; }
         }
 

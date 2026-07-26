@@ -40,6 +40,8 @@ namespace YouTube
 
         private bool isLoadingMore = false;
         private int recommendationRequestCount = RecommendationPageSize;
+        private string recommendationsContinuationToken = string.Empty;
+        private bool recommendationsReachedEnd = false;
         private DateTime lastLoadMoreAttemptUtc = DateTime.MinValue;
         private const int LoadMoreAttemptThrottleMs = 600;
 
@@ -48,6 +50,8 @@ namespace YouTube
         private const string LiveTileFallbackImage = "ms-appx:///Assets/Square150x150Logo.png";
         private static readonly HttpClient liveTileHttpClient = new HttpClient();
         private bool isUpdatingLiveTile = false;
+        private bool _postHomeStartupWorkScheduled;
+        private bool _homeNotificationRefreshStarted;
 
         public Home()
         {
@@ -138,6 +142,8 @@ namespace YouTube
                 Config.LoadUserToken();
 
                 recommendationRequestCount = RecommendationPageSize;
+                recommendationsContinuationToken = string.Empty;
+                recommendationsReachedEnd = false;
                 recommendationVideos.Clear();
 
                 if (string.IsNullOrEmpty(Config.UserToken))
@@ -149,23 +155,49 @@ namespace YouTube
                     return;
                 }
 
-                System.Diagnostics.Debug.WriteLine("[Home] Loading categories and recommendations...");
+                System.Diagnostics.Debug.WriteLine("[Home] Loading recommendations page...");
 
-                var categoriesTask = Config.GetHomeCategoriesAsync(Config.UserToken);
-                var recommendationsTask = Config.GetRecommendationsAsync(Config.UserToken, recommendationRequestCount);
-
-                var categories = await categoriesTask;
+                // Categories are fixed locally (Task.FromResult in Config), so render them
+                // immediately and do not put them in the network critical path.
+                var categories = await Config.GetHomeCategoriesAsync(Config.UserToken);
                 homeCategories = categories != null ? categories : new List<HomeCategoryItem>();
                 selectedCategory = FindAllCategory(homeCategories);
                 RenderCategoryChips();
 
-                var recommendations = await recommendationsTask;
-                System.Diagnostics.Debug.WriteLine("[Home] Got " + (recommendations != null ? recommendations.Count.ToString() : "0") + " recommendations");
+                // One request returns both cards and the token for the real next page.
+                var page = await Config.GetRecommendationsPageAsync(
+                    Config.UserToken,
+                    null,
+                    RecommendationPageSize);
+
+                var recommendations = page != null ? page.Videos : null;
+                recommendationsContinuationToken =
+                    page != null ? (page.ContinuationToken ?? string.Empty) : string.Empty;
+                recommendationsReachedEnd = string.IsNullOrWhiteSpace(recommendationsContinuationToken);
+
+                System.Diagnostics.Debug.WriteLine(
+                    "[Home] Got first page "
+                    + (recommendations != null ? recommendations.Count.ToString() : "0")
+                    + ", hasNext=" + (!recommendationsReachedEnd));
 
                 var added = AppendUniqueRecommendations(recommendations);
                 UpdateResponsiveCardLayouts();
-                await UpdateLiveTileFromLoadedRecommendationsAsync();
-                System.Diagnostics.Debug.WriteLine("[Home] Added " + added + " videos, total: " + recommendationVideos.Count);
+
+                // The feed is the only critical startup work. Hide its loader immediately after
+                // the cards are in the ObservableCollection, before starting notifications,
+                // Live Tile thumbnails or any other network request.
+                if (SkeletonLoader != null)
+                {
+                    SkeletonLoader.Visibility = Visibility.Collapsed;
+                }
+                ShowCategoryPlaceholders(false);
+
+                // Notifications are intentionally fetched from Home, but only AFTER recommendations
+                // are already visible. Live Tile image downloads are deferred for the same reason.
+                SchedulePostHomeStartupWork();
+
+                System.Diagnostics.Debug.WriteLine(
+                    "[Home] Added " + added + " videos, total: " + recommendationVideos.Count);
             }
             catch (Exception ex)
             {
@@ -224,6 +256,14 @@ namespace YouTube
         {
             if (isLoadingMore || !IsInternetAvailable()) return;
 
+            // "All" uses a true YouTube continuation. Once the server says there is no next page,
+            // stop hitting the endpoint every time the user reaches the bottom.
+            bool isAllRecommendations = selectedCategory == null || selectedCategory.IsAll;
+            if (isAllRecommendations && recommendationsReachedEnd)
+            {
+                return;
+            }
+
             Config.LoadUserToken();
             if (string.IsNullOrEmpty(Config.UserToken))
             {
@@ -249,24 +289,46 @@ namespace YouTube
                 BottomLoadingRing.IsActive = true;
             }
 
-            var nextRequestCount = recommendationRequestCount + RecommendationPageSize;
-
             try
             {
-                // Request a larger slice each time: 12 -> 24 -> 36...
-                // Duplicate filtering below appends only the newly discovered cards and keeps scroll position.
-                var moreRecommendations = await GetSelectedCategoryVideosAsync(nextRequestCount);
-                var added = AppendUniqueRecommendations(moreRecommendations);
-                if (added > 0)
+                int added;
+
+                if (isAllRecommendations)
                 {
-                    await UpdateLiveTileFromLoadedRecommendationsAsync();
+                    var tokenUsed = recommendationsContinuationToken;
+                    var page = await Config.GetRecommendationsPageAsync(
+                        Config.UserToken,
+                        tokenUsed,
+                        RecommendationPageSize);
+
+                    var moreRecommendations = page != null ? page.Videos : null;
+                    recommendationsContinuationToken =
+                        page != null ? (page.ContinuationToken ?? string.Empty) : string.Empty;
+                    recommendationsReachedEnd =
+                        string.IsNullOrWhiteSpace(recommendationsContinuationToken);
+
+                    added = AppendUniqueRecommendations(moreRecommendations);
+
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Home] Continuation page added " + added
+                        + ", total=" + recommendationVideos.Count
+                        + ", hasNext=" + (!recommendationsReachedEnd));
+                }
+                else
+                {
+                    // Fixed category chips are search-backed and currently do not expose their
+                    // continuation through Config, so retain the old count-growth behavior only
+                    // for those categories. The main Home recommendations no longer use it.
+                    var nextRequestCount = recommendationRequestCount + RecommendationPageSize;
+                    var moreRecommendations =
+                        await GetSelectedCategoryVideosAsync(nextRequestCount);
+                    added = AppendUniqueRecommendations(moreRecommendations);
+                    recommendationRequestCount = nextRequestCount;
                 }
 
-                recommendationRequestCount = nextRequestCount;
-
-                // Do not permanently stop loading when YouTube returns no new IDs.
-                // The next bottom-scroll event will request an even larger slice.
-                System.Diagnostics.Debug.WriteLine("[Home] Load more requested " + nextRequestCount + ", added " + added + ", total " + recommendationVideos.Count);
+                // Do not refresh Live Tile during pagination. Each refresh downloads several
+                // thumbnails and used to compete with the next continuation request. The deferred
+                // startup update is enough; another Home visit can refresh it later.
             }
             catch (Exception ex)
             {
@@ -371,6 +433,8 @@ namespace YouTube
 
             isLoadingMore = true;
             recommendationRequestCount = RecommendationPageSize;
+            recommendationsContinuationToken = string.Empty;
+            recommendationsReachedEnd = false;
             recommendationVideos.Clear();
             SetHomeLoading(false);
             ShowInlineCardPlaceholders(true);
@@ -380,7 +444,9 @@ namespace YouTube
                 var videos = await GetSelectedCategoryVideosAsync(recommendationRequestCount);
                 AppendUniqueRecommendations(videos);
                 UpdateResponsiveCardLayouts();
-                await UpdateLiveTileFromLoadedRecommendationsAsync();
+
+                // Category cards should become interactive immediately; Live Tile is non-critical.
+                SchedulePostHomeStartupWork();
             }
             catch (Exception ex)
             {
@@ -600,6 +666,65 @@ namespace YouTube
             }
 
             return IsNetworkException(ex.InnerException);
+        }
+
+        private void SchedulePostHomeStartupWork()
+        {
+            if (_postHomeStartupWorkScheduled)
+            {
+                return;
+            }
+
+            _postHomeStartupWorkScheduled = true;
+
+            // Give the UI and thumbnail requests a moment to start before optional Home work
+            // opens more HTTP connections. This task is deliberately fire-and-forget.
+            var ignored = RunPostHomeStartupWorkAsync();
+        }
+
+        private async Task RunPostHomeStartupWorkAsync()
+        {
+            try
+            {
+                await Task.Delay(1500);
+
+                // Fetch notifications on Home as requested. It is no longer part of App startup,
+                // so it cannot hold up the first recommendations response.
+                if (!_homeNotificationRefreshStarted)
+                {
+                    _homeNotificationRefreshStarted = true;
+                    try
+                    {
+                        await YouTubeNotificationService.RefreshAndShowNewVideoNotificationsAsync(
+                            "home-after-feed");
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(
+                            "[Home] Notification refresh failed: " + ex.Message);
+                    }
+                }
+
+                // Wait a little longer before downloading Live Tile artwork. Notification refresh
+                // can involve subscriptions requests, while Live Tile performs several image GETs.
+                await Task.Delay(1000);
+
+                try
+                {
+                    await UpdateLiveTileFromLoadedRecommendationsAsync();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Home] Deferred Live Tile update failed: " + ex.Message);
+                }
+            }
+            finally
+            {
+                // Keep notification refresh one-shot per Home instance, but permit a later Home
+                // reload to schedule Live Tile work again.
+                _postHomeStartupWorkScheduled = false;
+            }
         }
 
         private sealed class LiveTileRecommendationItem

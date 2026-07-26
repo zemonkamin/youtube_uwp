@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -301,75 +301,23 @@ namespace YouTube
 
         private static bool IsCompactOverlaySupported()
         {
-            try
-            {
-                if (!ApiInformation.IsMethodPresent("Windows.UI.ViewManagement.ApplicationView", "IsViewModeSupported"))
-                {
-                    return false;
-                }
-
-                return ApplicationView.GetForCurrentView().IsViewModeSupported(ApplicationViewMode.CompactOverlay);
-            }
-            catch
-            {
-                return false;
-            }
+            // VS2015 / older Windows 10 SDK does not expose ApplicationViewMode,
+            // ViewModePreferences or TryEnterViewModeAsync. Keep the in-app mini-player
+            // working and simply disable OS-level CompactOverlay on this target.
+            return false;
         }
 
-        private static async void TryEnterCompactOverlay()
+        private static void TryEnterCompactOverlay()
         {
-            if (_compactOverlay || !IsCompactOverlaySupported())
-            {
-                return;
-            }
-
-            try
-            {
-                var preferences = ViewModePreferences.CreateDefault(ApplicationViewMode.CompactOverlay);
-                preferences.CustomSize = new Size(CompactWidth, CompactHeight);
-
-                var entered = await ApplicationView.GetForCurrentView()
-                    .TryEnterViewModeAsync(ApplicationViewMode.CompactOverlay, preferences);
-
-                if (!entered || _player == null)
-                {
-                    return;
-                }
-
-                _compactOverlay = true;
-                _compactRefitAttempts = 0;
-                Window.Current.SizeChanged += CompactOverlay_WindowSizeChanged;
-
-                // Do NOT measure the window here: the shell has accepted the mode but the actual
-                // resize lands later, so Bounds is still the old (possibly full-screen) size and
-                // stretching to it would blow the mini-player up over the whole screen. Start at
-                // the size we asked for and let SizeChanged fit it exactly.
-                _popup.HorizontalOffset = 0;
-                _popup.VerticalOffset = 0;
-                _root.Width = CompactWidth;
-                _root.Height = CompactHeight;
-                ApplyCompactChrome(true);
-                FillWindowForCompactOverlay();
-                System.Diagnostics.Debug.WriteLine("[MiniPlayer] Entered compact overlay");
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("[MiniPlayer] Compact overlay failed: " + ex.Message);
-            }
+            // CompactOverlay is unavailable when compiling against the VS2015 UWP SDK.
+            // The Popup-based mini-player continues to work inside the application window.
+            _compactOverlay = false;
         }
 
         public static bool IsCompactOverlayActive { get { return _compactOverlay; } }
 
-        // Returns the window to its normal size. MUST be awaited before navigating back to the
-        // video page: otherwise the page is measured while the window is still 360px wide and
-        // stays laid out as a narrow strip after the window grows again.
-        public static async System.Threading.Tasks.Task LeaveCompactOverlayAsync()
+        public static System.Threading.Tasks.Task LeaveCompactOverlayAsync()
         {
-            if (!_compactOverlay)
-            {
-                return;
-            }
-
             _compactOverlay = false;
             ApplyCompactChrome(false);
 
@@ -380,17 +328,12 @@ namespace YouTube
                 {
                     _compactResizeTimer.Stop();
                 }
-                await ApplicationView.GetForCurrentView().TryEnterViewModeAsync(ApplicationViewMode.Default);
-                System.Diagnostics.Debug.WriteLine(
-                    "[MiniPlayer] Left compact overlay; window is now " + Window.Current.Bounds.Width
-                    + "x" + Window.Current.Bounds.Height);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[MiniPlayer] Leaving compact overlay failed: " + ex.Message);
             }
 
-            // Back to the small floating card inside the app window.
             if (_root != null)
             {
                 _root.Width = MiniWidth;
@@ -398,8 +341,17 @@ namespace YouTube
             }
             PositionPopup();
 
-            // The page behind us was measured at the small size; make it re-measure at the new one.
-            try { (Window.Current.Content as FrameworkElement)?.InvalidateMeasure(); } catch { }
+            try
+            {
+                var content = Window.Current.Content as FrameworkElement;
+                if (content != null)
+                {
+                    content.InvalidateMeasure();
+                }
+            }
+            catch { }
+
+            return System.Threading.Tasks.Task.FromResult(true);
         }
 
         private static async void ExitCompactOverlay()

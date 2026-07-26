@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -17,6 +17,7 @@ namespace YouTube
     public sealed partial class Searching : Page
     {
         private const string SEARCH_HISTORY_SETTING = "SearchHistory";
+        private const int MAX_SEARCH_HISTORY_ITEMS = 200;
         private CancellationTokenSource _suggestionsCancellationTokenSource;
         private List<SearchHistoryItem> _searchHistory;
 
@@ -84,6 +85,11 @@ namespace YouTube
                         }
                     }
                     
+                    if (history.Count > MAX_SEARCH_HISTORY_ITEMS)
+                    {
+                        history = history.Take(MAX_SEARCH_HISTORY_ITEMS).ToList();
+                    }
+
                     return history;
                 }
                 catch
@@ -121,9 +127,9 @@ namespace YouTube
                 Timestamp = DateTime.Now
             });
 
-            if (_searchHistory.Count > 10)
+            if (_searchHistory.Count > MAX_SEARCH_HISTORY_ITEMS)
             {
-                _searchHistory = _searchHistory.Take(10).ToList();
+                _searchHistory = _searchHistory.Take(MAX_SEARCH_HISTORY_ITEMS).ToList();
             }
 
             SaveSearchHistory();
