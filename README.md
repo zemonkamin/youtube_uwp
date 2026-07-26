@@ -9,6 +9,9 @@ The project aims to provide a native Windows experience using the **Universal Wi
 
 YouTube UWP is intended for enthusiasts of Windows Phone, Windows 10 Mobile, and UWP applications, as well as anyone interested in keeping these platforms usable and alive.
 
+# Screenshots:
+<img src="https://raw.githubusercontent.com/zemonkamin/youtube_uwp/refs/heads/main/Screenshots/wp_ss_20260726_0003.png" width=20%><img src="https://raw.githubusercontent.com/zemonkamin/youtube_uwp/refs/heads/main/Screenshots/wp_ss_20260726_0001.png" width=20%><img src="https://raw.githubusercontent.com/zemonkamin/youtube_uwp/refs/heads/main/Screenshots/wp_ss_20260726_0005.png" width=20%><img src="https://raw.githubusercontent.com/zemonkamin/youtube_uwp/refs/heads/main/Screenshots/wp_ss_20260726_0009.png" width=20%><img src="https://raw.githubusercontent.com/zemonkamin/youtube_uwp/refs/heads/main/Screenshots/wp_ss_20260726_0006.png" width=20%><img src="https://raw.githubusercontent.com/zemonkamin/youtube_uwp/refs/heads/main/Screenshots/wp_ss_20260726_0007.png" width=20%><img src="https://raw.githubusercontent.com/zemonkamin/youtube_uwp/refs/heads/main/Screenshots/wp_ss_20260726_0008.png" width=20%>
+
 # Developers:
 <table style="border-collapse: separate; border-spacing: 0 10px;">
 <tr>
