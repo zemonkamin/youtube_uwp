@@ -3,6 +3,12 @@
 <h1>YouTube UWP</h1>
 </div>
 
+** YouTube UWP ** - это альтернативный клиент YouTube, созданный для ** Windows 10 Mobile и Windows 10+**, предназначенный для воссоздания внешнего вида и функциональности официальных приложений YouTube.
+
+Целью проекта является создание собственной операционной системы Windows с использованием универсальной платформы Windows (UWP) с интерфейсом, вдохновленным языком дизайна Microsoft, и официальными клиентами YouTube эпохи Windows Phone.
+
+YouTube UWP предназначен для энтузиастов приложений Windows Phone, Windows 10 Mobile и UWP, а также для всех, кто заинтересован в том, чтобы эти платформы были удобными и жизнеспособными.
+
 # Developers:
 <table style="border-collapse: separate; border-spacing: 0 10px;">
 <tr>
