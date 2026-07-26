@@ -2,27 +2,33 @@
 <img src="YouTube/Assets/Square150x150Logo.scale-200.png?raw=true" width=20% height=20%>
 <h1>YouTube UWP</h1>
 </div>
-<a href="https://github.com/zemonkamin/ytapilegacy">Server Side</a>
 
-We are looking for people who could help with the development of the project.
+# Developers:
+<table style="border-collapse: separate; border-spacing: 0 10px;">
+<tr>
+    <td style="vertical-align: middle;">
+      <img src="https://cdn.discordapp.com/avatars/274765047342039040/71631003d16f8893dc72f789c1c992d6.png" width=50px>
+    </td>
+    <td style="vertical-align: middle; padding-left: 12px; font-size: 16px;">
+      zemonkamin
+    </td>
+</tr>
 
-Instances:
-- <a href="https://legacyprojects.ru/youtube/">LegacyProjects</a>
-- <a href="https://qqq.bccst.ru/youtube/">qqq.bccst.ru (old php version)</a>
-<hr>
+<tr>
+    <td style="vertical-align: middle;">
+      <img src="https://avatars.githubusercontent.com/u/89143494?v=4" width=50px>
+    </td>
+    <td style="vertical-align: middle; padding-left: 12px; font-size: 16px;">
+      ausansdev
+    </td>
+</tr>
 
-### Implemented:
-- categories
-- videos from categories
-- recommendations
-- video search
-- getting video data
-- getting a direct link to the video (in various quality)
-- Video from a certain person
-- Getting information about the author of the video
-- Comments
-- Search suggestions
-- authorization
-- personal recommendations
-
-<img src="https://github.com/user-attachments/assets/eda6cfdd-0211-4107-8815-26e8a5cc9e64" width=20%><img src="https://github.com/user-attachments/assets/9102baa8-ac93-42c1-affc-11933d717fd7" width=20%>
+<tr>
+    <td style="vertical-align: middle;">
+      <img src="https://avatars.githubusercontent.com/u/31623340?v=4" width=50px>
+    </td>
+    <td style="vertical-align: middle; padding-left: 12px; font-size: 16px;">
+      Computershik73
+    </td>
+</tr>
+</table>
