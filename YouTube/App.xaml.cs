@@ -269,6 +269,17 @@ namespace YouTube
                 };
             }
 
+            string searchQuery = ExtractYouTubeSearchQuery(url);
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                return new YouTubeNavigationTarget
+                {
+                    PageType = typeof(Search),
+                    Parameter = searchQuery,
+                    DebugName = "Search"
+                };
+            }
+
             return null;
         }
 
@@ -400,6 +411,44 @@ namespace YouTube
                 {
                     return playlistId;
                 }
+            }
+            catch
+            {
+            }
+
+            return string.Empty;
+        }
+
+        // https://www.youtube.com/results?search_query=...
+        // Companion apps that only know a track name (and not a video id) can hand the query
+        // over this way; the Search page takes the raw query string as its parameter.
+        private static string ExtractYouTubeSearchQuery(string url)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(url))
+                {
+                    return string.Empty;
+                }
+
+                var isResultsPage = Regex.IsMatch(
+                    url,
+                    @"(?:youtube\.com|m\.youtube\.com|www\.youtube\.com)/results",
+                    RegexOptions.IgnoreCase
+                );
+
+                if (!isResultsPage)
+                {
+                    return string.Empty;
+                }
+
+                var query = GetQueryParameter(url, "search_query");
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    query = GetQueryParameter(url, "q");
+                }
+
+                return (query ?? string.Empty).Trim();
             }
             catch
             {
