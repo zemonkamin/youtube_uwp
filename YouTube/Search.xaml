@@ -5,10 +5,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:YouTube"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Background="#0F0F0F"
+    Background="{ThemeResource AppBackgroundBrush}"
     mc:Ignorable="d">
 
-    <Grid Background="#0F0F0F">
+    <Grid Background="{ThemeResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -36,7 +36,7 @@
                 Tapped="SearchBox_Tapped">
                 <Border
                     Height="40"
-                    Background="#222222"
+                    Background="{ThemeResource AppDividerBrush}"
                     CornerRadius="20" />
 
                 <TextBlock
@@ -45,7 +45,7 @@
                     VerticalAlignment="Center"
                     FontFamily="Roboto"
                     FontSize="16"
-                    Foreground="White"
+                    Foreground="{ThemeResource AppPrimaryTextBrush}"
                     Text="Search YouTube"
                     TextTrimming="CharacterEllipsis"
                     Tapped="SearchInput_Tapped" />
@@ -59,7 +59,7 @@
                     Background="Transparent"
                     Content="&#xE106;"
                     FontFamily="Segoe MDL2 Assets"
-                    Foreground="#AAAAAA"
+                    Foreground="{ThemeResource AppSecondaryTextBrush}"
                     Visibility="Collapsed" />
             </Grid>
 
@@ -71,14 +71,14 @@
                 VerticalAlignment="Center"
                 Background="Transparent"
                 BorderThickness="0"
-                Foreground="#666666"
+                Foreground="{ThemeResource AppMutedTextBrush}"
 
                 IsHitTestVisible="False"
                 Opacity="0.45">
                 <Image
                     Width="24"
                     Height="24"
-                    Source="Assets/microphone.png"
+                    local:ThemeAsset.Path="Assets/microphone.png"
                     Stretch="Uniform" />
             </Button>
 
@@ -91,11 +91,11 @@
                 Background="Transparent"
                 BorderThickness="0"
                 Click="MoreButton_Click"
-                Foreground="White">
+                Foreground="{ThemeResource AppPrimaryTextBrush}">
                 <Image
                     Width="24"
                     Height="24"
-                    Source="Assets/more.png"
+                    local:ThemeAsset.Path="Assets/more.png"
                     Stretch="Uniform" />
             </Button>
         </Grid>
@@ -103,20 +103,20 @@
         <!--  Main content with ScrollViewer  -->
         <ScrollViewer
             Grid.Row="1"
-            Background="#0F0F0F"
+            Background="{ThemeResource AppBackgroundBrush}"
             HorizontalScrollBarVisibility="Disabled"
             HorizontalScrollMode="Disabled"
             VerticalScrollBarVisibility="Auto"
             ViewChanged="ScrollViewer_ViewChanged"
             ZoomMode="Disabled">
 
-            <StackPanel Background="#0F0F0F">
+            <StackPanel Background="{ThemeResource AppBackgroundBrush}">
 
                 <ItemsControl
                     x:Name="SearchResultsList"
                     Padding="8,0,8,16"
                     HorizontalAlignment="Stretch"
-                    Background="#0F0F0F"
+                    Background="{ThemeResource AppBackgroundBrush}"
                     SizeChanged="CardsItemsControl_SizeChanged">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -146,16 +146,16 @@
                                 Background="Transparent"
                                 BorderThickness="0"
                                 Click="VideoCard_Click">
-                                <Grid HorizontalAlignment="Stretch" Background="#0F0F0F">
+                                <Grid HorizontalAlignment="Stretch" Background="{ThemeResource AppBackgroundBrush}">
                                     <!--  Video / playlist card  -->
                                     <StackPanel
                                         HorizontalAlignment="Stretch"
-                                        Background="#0F0F0F"
+                                        Background="{ThemeResource AppBackgroundBrush}"
                                         Orientation="Vertical"
                                         Visibility="{Binding MediaCardVisibility}">
                                         <Grid SizeChanged="VideoThumbnailHost_SizeChanged"
                                               CornerRadius="8">
-                                            <Border Background="#1A1A1A" CornerRadius="8" />
+                                            <Border Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="8" />
                                             <Border CornerRadius="8">
                                                 <Image
                                                     HorizontalAlignment="Stretch"
@@ -168,10 +168,9 @@
                                                 Padding="6,2"
                                                 HorizontalAlignment="Right"
                                                 VerticalAlignment="Bottom"
-                                                Visibility="{Binding DurationVisibility}">
-                                                <Border.Background>
-                                                    <SolidColorBrush Opacity="0.8" Color="Black" />
-                                                </Border.Background>
+                                                Visibility="{Binding DurationVisibility}"
+                                                CornerRadius="4"
+                                                Background="#CC000000">
                                                 <TextBlock
                                                     FontSize="12"
                                                     FontWeight="Medium"
@@ -185,7 +184,7 @@
                                                 FontFamily="Roboto"
                                                 FontSize="14"
                                                 FontWeight="Medium"
-                                                Foreground="White"
+                                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                 Text="{Binding Title}"
                                                 TextTrimming="CharacterEllipsis"
                                                 TextWrapping="NoWrap" />
@@ -193,7 +192,7 @@
                                                 Margin="0,4,0,0"
                                                 FontFamily="Roboto"
                                                 FontSize="12"
-                                                Foreground="Gray"
+                                                Foreground="{ThemeResource AppMutedTextBrush}"
                                                 Text="{Binding MetadataLine}"
                                                 TextTrimming="CharacterEllipsis"
                                                 TextWrapping="NoWrap" />
@@ -237,7 +236,7 @@
                                                 FontFamily="Roboto"
                                                 FontSize="16"
                                                 FontWeight="SemiBold"
-                                                Foreground="White"
+                                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                 Text="{Binding Title}"
                                                 TextTrimming="CharacterEllipsis"
                                                 TextWrapping="WrapWholeWords" />
@@ -249,7 +248,7 @@
                                         MinHeight="78"
                                         Padding="14,8,14,8"
                                         HorizontalAlignment="Stretch"
-                                        Background="#0F0F0F"
+                                        Background="{ThemeResource AppBackgroundBrush}"
                                         Visibility="{Binding ChannelCardVisibility}">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
@@ -261,7 +260,7 @@
                                             Width="54"
                                             Height="54"
                                             VerticalAlignment="Center">
-                                            <Ellipse Fill="#333333" />
+                                            <Ellipse Fill="{ThemeResource AvatarPlaceholderBrush}" />
                                             <Ellipse>
                                                 <Ellipse.Fill>
                                                     <ImageBrush ImageSource="{Binding ChannelAvatarSource}" Stretch="UniformToFill" />
@@ -277,7 +276,7 @@
                                                 FontFamily="Roboto"
                                                 FontSize="17"
                                                 FontWeight="SemiBold"
-                                                Foreground="White"
+                                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                 Text="{Binding Title}"
                                                 TextTrimming="CharacterEllipsis"
                                                 TextWrapping="NoWrap"
@@ -286,7 +285,7 @@
                                                 Margin="0,2,0,0"
                                                 FontFamily="Roboto"
                                                 FontSize="13"
-                                                Foreground="#AAAAAA"
+                                                Foreground="{ThemeResource AppSecondaryTextBrush}"
                                                 Text="{Binding Author}"
                                                 TextTrimming="CharacterEllipsis"
                                                 TextWrapping="NoWrap" />
@@ -294,7 +293,7 @@
                                                 Margin="0,2,0,0"
                                                 FontFamily="Roboto"
                                                 FontSize="13"
-                                                Foreground="#AAAAAA"
+                                                Foreground="{ThemeResource AppSecondaryTextBrush}"
                                                 Text="{Binding Views}"
                                                 TextTrimming="CharacterEllipsis"
                                                 TextWrapping="NoWrap" />
@@ -321,7 +320,7 @@
                         Margin="0,8,0,0"
                         HorizontalAlignment="Center"
                         FontSize="14"
-                        Foreground="Gray"
+                        Foreground="{ThemeResource AppMutedTextBrush}"
                         Text="Searching..." />
                 </StackPanel>
 
@@ -340,7 +339,7 @@
                         Margin="0,8,0,0"
                         HorizontalAlignment="Center"
                         FontSize="14"
-                        Foreground="Gray"
+                        Foreground="{ThemeResource AppMutedTextBrush}"
                         Text="Loading more results..." />
                 </StackPanel>
 
@@ -363,14 +362,14 @@
         <Grid
             x:Name="SkeletonLoader"
             Grid.Row="1"
-            Background="#0F0F0F"
+            Background="{ThemeResource AppBackgroundBrush}"
             Visibility="Collapsed">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
                 <ItemsControl
                     x:Name="SkeletonCardsList"
                     Padding="8,0,8,16"
                     HorizontalAlignment="Stretch"
-                    Background="#0F0F0F"
+                    Background="{ThemeResource AppBackgroundBrush}"
                     SizeChanged="CardsItemsControl_SizeChanged">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -398,7 +397,7 @@
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Stretch"
                                     ImageOpened="PlaceholderCard_ImageOpened"
-                                    Source="Assets/yt_skeleton/video.png"
+                                    local:ThemeAsset.Path="Assets/yt_skeleton/video.png"
                                     Stretch="Uniform" />
                             </Grid>
                         </DataTemplate>
@@ -411,7 +410,7 @@
         <Grid
             x:Name="SearchLoadingGrid"
             Grid.Row="1"
-            Background="#0F0F0F"
+            Background="{ThemeResource AppBackgroundBrush}"
             Visibility="Collapsed">
             <local:AndroidLoadingRing
                 x:Name="SearchLoadingRing"
@@ -439,7 +438,7 @@
             Margin="10,0,10,10"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Bottom"
-            Background="#1A1A1A"
+            Background="{ThemeResource AppSurfaceAltBrush}"
             CornerRadius="15"
             Visibility="Collapsed">
             <Border.RenderTransform>
@@ -477,7 +476,7 @@
                         Margin="16,0,16,8"
                         FontSize="18"
                         FontWeight="SemiBold"
-                        Foreground="White"
+                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                         Text="Type" />
 
                     <Button
@@ -502,13 +501,13 @@
                                 VerticalAlignment="Center"
                                 FontFamily="Segoe MDL2 Assets"
                                 FontSize="16"
-                                Foreground="White"
+                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                 Glyph="&#xE73E;" />
                             <TextBlock
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
                                 FontSize="14"
-                                Foreground="White"
+                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                 Text="Videos" />
                         </Grid>
                     </Button>
@@ -535,13 +534,13 @@
                                 VerticalAlignment="Center"
                                 FontFamily="Segoe MDL2 Assets"
                                 FontSize="16"
-                                Foreground="White"
+                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                 Glyph="&#xE73E;" />
                             <TextBlock
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
                                 FontSize="14"
-                                Foreground="White"
+                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                 Text="Shorts" />
                         </Grid>
                     </Button>
@@ -568,13 +567,13 @@
                                 VerticalAlignment="Center"
                                 FontFamily="Segoe MDL2 Assets"
                                 FontSize="16"
-                                Foreground="White"
+                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                 Glyph="&#xE73E;" />
                             <TextBlock
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
                                 FontSize="14"
-                                Foreground="White"
+                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                 Text="Playlists" />
                         </Grid>
                     </Button>
@@ -601,13 +600,13 @@
                                 VerticalAlignment="Center"
                                 FontFamily="Segoe MDL2 Assets"
                                 FontSize="16"
-                                Foreground="White"
+                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                 Glyph="&#xE73E;" />
                             <TextBlock
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
                                 FontSize="14"
-                                Foreground="White"
+                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                 Text="Channels" />
                         </Grid>
                     </Button>

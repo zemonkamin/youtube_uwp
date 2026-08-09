@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="#0F0F0F">
+    Background="{ThemeResource AppBackgroundBrush}">
 
     <Page.Resources>
         <Style x:Key="SettingsIconButtonStyle" TargetType="Button">
@@ -29,7 +29,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="#0F0F0F">
+    <Grid Background="{ThemeResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="56" />
             <RowDefinition Height="*" />
@@ -38,20 +38,20 @@
 
         <local:Navbar x:Name="navbar" Grid.Row="0" />
 
-        <Grid Grid.Row="1" Background="#0F0F0F">
+        <Grid Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}">
             <ScrollViewer VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled"
                           ZoomMode="Disabled">
                 <StackPanel Padding="0,12,0,82">
                     <TextBlock Text="Settings"
-                               Foreground="White"
+                               Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="22"
                                FontWeight="SemiBold"
                                VerticalAlignment="Center"
                                Margin="18,0,18,22" />
 
                     <TextBlock Text="Account"
-                               Foreground="White"
+                               Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
                                Margin="18,0,18,10" />
@@ -66,14 +66,14 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0"
-                                   Source="Assets/log_out.png"
+                                   local:ThemeAsset.Path="Assets/log_out.png"
                                    Width="23"
                                    Height="23"
                                    Stretch="Uniform"
                                    VerticalAlignment="Center" />
                             <TextBlock Grid.Column="1"
                                        Text="Log out"
-                                       Foreground="White"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
                                        Margin="18,0,0,0" />
@@ -81,7 +81,7 @@
                     </Button>
 
                     <TextBlock Text="Video"
-                               Foreground="White"
+                               Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
                                Margin="18,22,18,10" />
@@ -97,14 +97,14 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0"
-                                   Source="Assets/player/quality.png"
+                                   local:ThemeAsset.Path="Assets/player/quality.png"
                                    Width="23"
                                    Height="23"
                                    Stretch="Uniform"
                                    VerticalAlignment="Center" />
                             <TextBlock Grid.Column="1"
                                        Text="Preferred video quality"
-                                       Foreground="White"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
                                        Margin="18,0,0,0" />
@@ -115,10 +115,10 @@
                                         Margin="8,0,0,0">
                                 <TextBlock x:Name="PreferredQualityValueText"
                                            Text="Auto"
-                                           Foreground="#AAAAAA"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
                                            VerticalAlignment="Center" />
-                                <Image Source="Assets/player/skip.png"
+                                <Image local:ThemeAsset.Path="Assets/player/skip.png"
                                        Width="14"
                                        Height="14"
                                        Stretch="Uniform"
@@ -140,14 +140,14 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0"
-                                   Source="Assets/player/quality.png"
+                                   local:ThemeAsset.Path="Assets/player/quality.png"
                                    Width="23"
                                    Height="23"
                                    Stretch="Uniform"
                                    VerticalAlignment="Center" />
                             <TextBlock Grid.Column="1"
                                        Text="Preferred Shorts quality"
-                                       Foreground="White"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
                                        Margin="18,0,0,0" />
@@ -158,10 +158,10 @@
                                         Margin="8,0,0,0">
                                 <TextBlock x:Name="PreferredShortsQualityValueText"
                                            Text="Auto"
-                                           Foreground="#AAAAAA"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
                                            VerticalAlignment="Center" />
-                                <Image Source="Assets/player/skip.png"
+                                <Image local:ThemeAsset.Path="Assets/player/skip.png"
                                        Width="14"
                                        Height="14"
                                        Stretch="Uniform"
@@ -188,10 +188,10 @@
                                         VerticalAlignment="Center"
                                         Margin="0,0,12,0">
                                 <TextBlock Text="Seek preview"
-                                           Foreground="White"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
                                            FontSize="16" />
                                 <TextBlock Text="Show video thumbnail while seeking"
-                                           Foreground="#AAAAAA"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="12"
                                            Margin="0,2,0,0" />
                             </StackPanel>
@@ -203,11 +203,11 @@
                                 <Border x:Name="ScrubPreviewToggleTrack"
                                         Width="46"
                                         Height="26"
-                                        Background="#9B9B9B"
+                                        Background="{ThemeResource AppMutedTextBrush}"
                                         CornerRadius="13" />
                                 <Ellipse Width="20"
                                          Height="20"
-                                         Fill="#202124"
+                                         Fill="{ThemeResource ToggleKnobBrush}"
                                          HorizontalAlignment="Left"
                                          Margin="3,3,0,3">
                                     <Ellipse.RenderTransform>
@@ -234,10 +234,10 @@
                                         VerticalAlignment="Center"
                                         Margin="0,0,12,0">
                                 <TextBlock Text="Auto fullscreen in landscape"
-                                           Foreground="White"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
                                            FontSize="16" />
                                 <TextBlock Text="Expand the video when the phone rotates"
-                                           Foreground="#AAAAAA"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="12"
                                            Margin="0,2,0,0" />
                             </StackPanel>
@@ -249,11 +249,11 @@
                                 <Border x:Name="AutoFullscreenLandscapeToggleTrack"
                                         Width="46"
                                         Height="26"
-                                        Background="#FFFFFF"
+                                        Background="{ThemeResource PrimaryActionBackgroundBrush}"
                                         CornerRadius="13" />
                                 <Ellipse Width="20"
                                          Height="20"
-                                         Fill="#202124"
+                                         Fill="{ThemeResource ToggleKnobBrush}"
                                          HorizontalAlignment="Left"
                                          Margin="3,3,0,3">
                                     <Ellipse.RenderTransform>
@@ -268,7 +268,7 @@
 
 
                     <TextBlock Text="Notifications"
-                               Foreground="White"
+                               Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
                                Margin="18,22,18,10" />
@@ -284,14 +284,14 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0"
-                                   Source="Assets/notifications.png"
+                                   local:ThemeAsset.Path="Assets/notifications.png"
                                    Width="23"
                                    Height="23"
                                    Stretch="Uniform"
                                    VerticalAlignment="Center" />
                             <TextBlock Grid.Column="1"
                                        Text="Notifications"
-                                       Foreground="White"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
                                        Margin="18,0,0,0" />
@@ -302,10 +302,10 @@
                                         Margin="8,0,0,0">
                                 <TextBlock x:Name="NotificationFrequencyValueText"
                                            Text="Every hour"
-                                           Foreground="#AAAAAA"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
                                            VerticalAlignment="Center" />
-                                <Image Source="Assets/player/skip.png"
+                                <Image local:ThemeAsset.Path="Assets/player/skip.png"
                                        Width="14"
                                        Height="14"
                                        Stretch="Uniform"
@@ -317,7 +317,7 @@
                     </Button>
 
                     <TextBlock Text="About"
-                               Foreground="White"
+                               Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
                                Margin="18,22,18,10" />
@@ -333,19 +333,19 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0"
-                                   Source="Assets/info.png"
+                                   local:ThemeAsset.Path="Assets/info.png"
                                    Width="23"
                                    Height="23"
                                    Stretch="Uniform"
                                    VerticalAlignment="Center" />
                             <TextBlock Grid.Column="1"
                                        Text="Information"
-                                       Foreground="White"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
                                        Margin="18,0,0,0" />
                             <Image Grid.Column="2"
-                                   Source="Assets/player/skip.png"
+                                   local:ThemeAsset.Path="Assets/player/skip.png"
                                    Width="14"
                                    Height="14"
                                    Stretch="Uniform"
@@ -365,7 +365,7 @@
             <Border x:Name="QualityBottomSheetPanel"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
-                    Background="#222222"
+                    Background="{ThemeResource AppDividerBrush}"
                     CornerRadius="15"
                     Height="330"
                     Margin="10,0,10,10"
@@ -397,7 +397,7 @@
                     <Grid Grid.Row="1" Margin="16,0,16,16">
                         <StackPanel>
                             <TextBlock Text="Preferred video quality"
-                                       Foreground="White"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontWeight="SemiBold"
                                        FontSize="15"
                                        Margin="0,0,0,12" />
@@ -412,7 +412,7 @@
             <Border x:Name="NotificationsBottomSheetPanel"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
-                    Background="#222222"
+                    Background="{ThemeResource AppDividerBrush}"
                     CornerRadius="15"
                     Height="370"
                     Margin="10,0,10,10"
@@ -444,7 +444,7 @@
                     <Grid Grid.Row="1" Margin="16,0,16,16">
                         <StackPanel>
                             <TextBlock Text="Notifications"
-                                       Foreground="White"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontWeight="SemiBold"
                                        FontSize="15"
                                        Margin="0,0,0,12" />
@@ -456,10 +456,10 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                     <TextBlock Text="Send notifications"
-                                               Foreground="White"
+                                               Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                FontSize="14" />
                                     <TextBlock Text="Background toasts from YouTube notifications"
-                                               Foreground="#AAAAAA"
+                                               Foreground="{ThemeResource AppSecondaryTextBrush}"
                                                FontSize="12"
                                                Margin="0,2,0,0" />
                                 </StackPanel>
@@ -473,12 +473,12 @@
                                         <Border x:Name="NotificationsToggleTrack"
                                                 Width="56"
                                                 Height="32"
-                                                Background="#9B9B9B"
+                                                Background="{ThemeResource AppMutedTextBrush}"
                                                 CornerRadius="16" />
                                         <Ellipse x:Name="NotificationsToggleThumb"
                                                  Width="24"
                                                  Height="24"
-                                                 Fill="#202124"
+                                                 Fill="{ThemeResource ToggleKnobBrush}"
                                                  HorizontalAlignment="Left"
                                                  Margin="4,4,0,4">
                                             <Ellipse.RenderTransform>
@@ -490,7 +490,7 @@
                             </Grid>
 
                             <TextBlock Text="Frequency"
-                                       Foreground="#AAAAAA"
+                                       Foreground="{ThemeResource AppSecondaryTextBrush}"
                                        FontSize="12"
                                        Margin="0,0,0,8" />
                             <StackPanel x:Name="NotificationFrequencyOptionsPanel" />
@@ -502,7 +502,7 @@
             <Border x:Name="AboutBottomSheetPanel"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
-                    Background="#1A1A1A"
+                    Background="{ThemeResource AppSurfaceAltBrush}"
                     CornerRadius="15"
                     Height="250"
                     Margin="10,0,10,10"
@@ -534,12 +534,12 @@
                     <Grid Grid.Row="1" Margin="16,0,16,16">
                         <StackPanel>
                             <TextBlock Text="Information"
-                                       Foreground="White"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        FontWeight="SemiBold"
                                        Margin="0,0,0,12" />
                             <TextBlock x:Name="AboutText"
-                                       Foreground="White"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="13"
                                        TextWrapping="Wrap" />
                         </StackPanel>

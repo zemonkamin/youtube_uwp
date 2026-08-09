@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="#0F0F0F">
+    Background="{ThemeResource AppBackgroundBrush}">
 
     <Page.Resources>
         <Style x:Key="FlatButtonStyle" TargetType="Button">
@@ -25,21 +25,21 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="#0F0F0F">
+    <Grid Background="{ThemeResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="64"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="52"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Background="#0F0F0F">
+        <Grid Grid.Row="0" Background="{ThemeResource AppBackgroundBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <TextBlock Text="Notifications"
-                       Foreground="White"
+                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                        FontSize="26"
                        FontWeight="SemiBold"
                        VerticalAlignment="Center"
@@ -50,7 +50,7 @@
                     Width="64"
                     Height="64"
                     Click="SearchButton_Click">
-                <Image Source="Assets/search.png"
+                <Image local:ThemeAsset.Path="Assets/search.png"
                        Width="28"
                        Height="28"
                        HorizontalAlignment="Center"
@@ -77,13 +77,13 @@
                     Margin="24">
             <TextBlock x:Name="EmptyTitleText"
                        Text="No notifications"
-                       Foreground="White"
+                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                        FontSize="20"
                        FontWeight="SemiBold"
                        TextAlignment="Center"/>
             <TextBlock x:Name="EmptySubtitleText"
                        Text="New updates from your subscriptions will appear here."
-                       Foreground="#AAAAAA"
+                       Foreground="{ThemeResource AppSecondaryTextBrush}"
                        FontSize="14"
                        TextWrapping="Wrap"
                        TextAlignment="Center"

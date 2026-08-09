@@ -52,6 +52,110 @@ namespace YouTube
             // Enable or disable authenticated tabs based on login state
             UpdateShortsButtonState();
             UpdateSubscriptionsButtonState();
+
+            // The cached avatar is applied immediately. On the first signed-in run,
+            // fetch it once and persist it for future app/page entries.
+            RefreshAccountIconFromCache();
+            EnsureAccountIconCachedAsync();
+        }
+
+        public void RefreshAccountIconFromCache()
+        {
+            Config.LoadUserToken();
+            var refreshToken = Config.UserToken;
+
+            if (string.IsNullOrWhiteSpace(refreshToken) || !TryApplyCachedAccountIcon(refreshToken))
+            {
+                ApplyDefaultAccountIcon(_currentActiveTab == ActiveTab.Account);
+            }
+        }
+
+        private async void EnsureAccountIconCachedAsync()
+        {
+            try
+            {
+                Config.LoadUserToken();
+                var refreshToken = Config.UserToken;
+                if (string.IsNullOrWhiteSpace(refreshToken))
+                {
+                    return;
+                }
+
+                // Once a persistent avatar exists, the tabbar never waits for the network.
+                // Freshness is checked when the user opens the profile page.
+                if (TryApplyCachedAccountIcon(refreshToken))
+                {
+                    return;
+                }
+
+                var profile = await Config.GetAccountInfoAsync(refreshToken);
+                if (profile == null || string.IsNullOrWhiteSpace(profile.ThumbnailUrl))
+                {
+                    return;
+                }
+
+                await Config.UpdateCachedAccountAvatarAsync(refreshToken, profile.ThumbnailUrl);
+                TryApplyCachedAccountIcon(refreshToken);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Tabbar account avatar initialization failed: " + ex.Message);
+            }
+        }
+
+        private bool TryApplyCachedAccountIcon(string refreshToken)
+        {
+            var cachedUri = Config.GetCachedAccountAvatarUri(refreshToken);
+            if (string.IsNullOrWhiteSpace(cachedUri) || AccountAvatarEllipse == null)
+            {
+                return false;
+            }
+
+            try
+            {
+                var bitmap = new BitmapImage();
+                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                bitmap.UriSource = new Uri(cachedUri);
+
+                AccountAvatarEllipse.Fill = new ImageBrush
+                {
+                    ImageSource = bitmap,
+                    Stretch = Stretch.UniformToFill
+                };
+                AccountAvatarEllipse.Visibility = Visibility.Visible;
+
+                if (AccountDefaultIcon != null)
+                {
+                    AccountDefaultIcon.Visibility = Visibility.Collapsed;
+                    AccountDefaultIcon.Opacity = 1.0;
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void ApplyDefaultAccountIcon(bool isActive)
+        {
+            if (AccountDefaultIcon != null)
+            {
+                App.SetThemeImageSource(
+                    AccountDefaultIcon,
+                    isActive ? "Assets/tabbar/user-icon-active.png" : "Assets/tabbar/user-icon.png");
+                AccountDefaultIcon.Stretch = Stretch.Uniform;
+                AccountDefaultIcon.Visibility = Visibility.Visible;
+                AccountDefaultIcon.Opacity = 1.0;
+            }
+
+            if (AccountAvatarEllipse != null)
+            {
+                AccountAvatarEllipse.Fill = App.GetThemeBrush("AvatarPlaceholderBrush") ?? new SolidColorBrush(Color.FromArgb(255, 42, 42, 42));
+                AccountAvatarEllipse.Stroke = new SolidColorBrush(Colors.Transparent);
+                AccountAvatarEllipse.Visibility = Visibility.Collapsed;
+            }
         }
 
         public void UpdateShortsButtonState()
@@ -66,13 +170,13 @@ namespace YouTube
                 var textBlock = FindTextBlockInButton(ShortsButton);
                 if (textBlock != null)
                 {
-                    textBlock.Foreground = new SolidColorBrush(Colors.White);
+                    textBlock.Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Colors.White));
                 }
 
                 var image = FindImageInButton(ShortsButton);
                 if (image != null)
                 {
-                    image.Source = new BitmapImage(new Uri("ms-appx:///Assets/tabbar/shorts-icon.png"));
+                    App.SetThemeImageSource(image, "Assets/tabbar/shorts-icon.png");
                     image.Opacity = 1.0;
                 }
             }
@@ -95,7 +199,7 @@ namespace YouTube
                 var textBlock = FindTextBlockInButton(SubscriptionsButton);
                 if (textBlock != null)
                 {
-                    textBlock.Foreground = new SolidColorBrush(Colors.White);
+                    textBlock.Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Colors.White));
                 }
 
                 var image = FindImageInButton(SubscriptionsButton);
@@ -149,7 +253,7 @@ namespace YouTube
                 var textBlock = FindTextBlockInButton(button);
                 if (textBlock != null)
                 {
-                    textBlock.Foreground = new SolidColorBrush(Colors.Gray);
+                    textBlock.Foreground = (App.GetThemeBrush("AppMutedTextBrush") ?? new SolidColorBrush(Colors.Gray));
                 }
 
                 // Find the Image in the button and set its opacity to 0.5
@@ -169,7 +273,7 @@ namespace YouTube
                 var homeImage = FindImageInButton(HomeButton);
                 if (homeImage != null)
                 {
-                    homeImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/tabbar/home-icon-active.png"));
+                    App.SetThemeImageSource(homeImage, "Assets/tabbar/home-icon-active.png");
                     homeImage.Opacity = 1.0;
                 }
 
@@ -177,7 +281,7 @@ namespace YouTube
                 var homeText = FindTextBlockInButton(HomeButton);
                 if (homeText != null)
                 {
-                    homeText.Foreground = new SolidColorBrush(Colors.White);
+                    homeText.Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Colors.White));
                 }
             }
             else
@@ -186,7 +290,7 @@ namespace YouTube
                 var homeImage = FindImageInButton(HomeButton);
                 if (homeImage != null)
                 {
-                    homeImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/tabbar/home-icon.png"));
+                    App.SetThemeImageSource(homeImage, "Assets/tabbar/home-icon.png");
                     homeImage.Opacity = 1.0; // Keep full opacity for enabled buttons
                 }
 
@@ -194,7 +298,7 @@ namespace YouTube
                 var homeText = FindTextBlockInButton(HomeButton);
                 if (homeText != null)
                 {
-                    homeText.Foreground = new SolidColorBrush(Colors.White);
+                    homeText.Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Colors.White));
                 }
             }
         }
@@ -204,16 +308,16 @@ namespace YouTube
             var shortsImage = FindImageInButton(ShortsButton);
             if (shortsImage != null)
             {
-                shortsImage.Source = new BitmapImage(new Uri(isActive
-                    ? "ms-appx:///Assets/tabbar/shorts-icon-active.png"
-                    : "ms-appx:///Assets/tabbar/shorts-icon.png"));
+                App.SetThemeImageSource(
+                    shortsImage,
+                    isActive ? "Assets/tabbar/shorts-icon-active.png" : "Assets/tabbar/shorts-icon.png");
                 shortsImage.Opacity = 1.0;
             }
 
             var shortsText = FindTextBlockInButton(ShortsButton);
             if (shortsText != null)
             {
-                shortsText.Foreground = new SolidColorBrush(Colors.White);
+                shortsText.Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Colors.White));
             }
         }
 
@@ -225,7 +329,7 @@ namespace YouTube
                 var subscriptionsImage = FindImageInButton(SubscriptionsButton);
                 if (subscriptionsImage != null)
                 {
-                    subscriptionsImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/tabbar/sub-icon-active.png"));
+                    App.SetThemeImageSource(subscriptionsImage, "Assets/tabbar/sub-icon-active.png");
                     subscriptionsImage.Opacity = 1.0;
                 }
 
@@ -233,7 +337,7 @@ namespace YouTube
                 var subscriptionsText = FindTextBlockInButton(SubscriptionsButton);
                 if (subscriptionsText != null)
                 {
-                    subscriptionsText.Foreground = new SolidColorBrush(Colors.White);
+                    subscriptionsText.Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Colors.White));
                 }
             }
             else
@@ -242,7 +346,7 @@ namespace YouTube
                 var subscriptionsImage = FindImageInButton(SubscriptionsButton);
                 if (subscriptionsImage != null)
                 {
-                    subscriptionsImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/tabbar/sub-icon.png"));
+                    App.SetThemeImageSource(subscriptionsImage, "Assets/tabbar/sub-icon.png");
                     subscriptionsImage.Opacity = 1.0; // Keep full opacity for enabled buttons
                 }
 
@@ -250,46 +354,33 @@ namespace YouTube
                 var subscriptionsText = FindTextBlockInButton(SubscriptionsButton);
                 if (subscriptionsText != null)
                 {
-                    subscriptionsText.Foreground = new SolidColorBrush(Colors.White);
+                    subscriptionsText.Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Colors.White));
                 }
             }
         }
 
         private void SetAccountTabActive(bool isActive)
         {
-            if (isActive)
-            {
-                // Change to active icon
-                var accountImage = FindImageInButton(AccountButton);
-                if (accountImage != null)
-                {
-                    accountImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/tabbar/user-icon-active.png"));
-                    accountImage.Opacity = 1.0;
-                }
+            Config.LoadUserToken();
+            var refreshToken = Config.UserToken;
 
-                // Change text color to white
-                var accountText = FindTextBlockInButton(AccountButton);
-                if (accountText != null)
-                {
-                    accountText.Foreground = new SolidColorBrush(Colors.White);
-                }
+            // Authenticated users keep their cached profile image for both active and
+            // inactive states. The theme-contrast ring is shown only while the Account tab is active.
+            if (string.IsNullOrWhiteSpace(refreshToken) || !TryApplyCachedAccountIcon(refreshToken))
+            {
+                ApplyDefaultAccountIcon(isActive);
             }
-            else
+            else if (AccountAvatarEllipse != null)
             {
-                // Change to inactive icon
-                var accountImage = FindImageInButton(AccountButton);
-                if (accountImage != null)
-                {
-                    accountImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/tabbar/user-icon.png"));
-                    accountImage.Opacity = 1.0; // Keep full opacity for enabled buttons
-                }
+                AccountAvatarEllipse.Stroke = isActive
+                    ? (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Colors.White))
+                    : new SolidColorBrush(Colors.Transparent);
+            }
 
-                // Change text color to white (enabled buttons stay white)
-                var accountText = FindTextBlockInButton(AccountButton);
-                if (accountText != null)
-                {
-                    accountText.Foreground = new SolidColorBrush(Colors.White);
-                }
+            var accountText = FindTextBlockInButton(AccountButton);
+            if (accountText != null)
+            {
+                accountText.Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Colors.White));
             }
         }
 

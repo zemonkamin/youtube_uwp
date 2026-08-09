@@ -21,6 +21,7 @@ using Windows.UI;
 using System.Threading;
 using Windows.Storage;
 using Windows.Storage.Streams;
+using Windows.System;
 
 namespace YouTube
 {
@@ -32,12 +33,6 @@ namespace YouTube
             public string Title { get; set; }
         }
 
-        public sealed class QualityChangeRefreshRequest
-        {
-            public string QualityTag { get; set; }
-            public bool ShouldAutoPlay { get; set; }
-            public TimeSpan Position { get; set; }
-        }
 
         public sealed class CustomVideoPlayerMediaFailedEventArgs : EventArgs
         {
@@ -187,6 +182,8 @@ namespace YouTube
         private Popup _fullscreenPopup; // Popup for true fullscreen
         private Grid _fullscreenGrid; // Reference to fullscreen grid
         private bool _isDisposed = false; // To track disposal
+        private bool _keyboardShortcutsAttached;
+        private CoreDispatcher _keyboardShortcutDispatcher;
         private Visibility _originalControlsVisibility; // Store original controls visibility
         private DispatcherTimer _controlsTimer; // Timer to auto-hide controls in fullscreen
         private DispatcherTimer _autoHideTimer; // Timer to auto-hide controls after inactivity
@@ -215,17 +212,24 @@ namespace YouTube
         // Add fields to track position for end detection
         private TimeSpan _lastPosition = TimeSpan.Zero;
         private int _positionStuckCounter = 0;
+        // Guards the UI timer fallback and the real MediaPlayer.MediaEnded event from firing
+        // playlist auto-advance twice for the same source.
+        private bool _videoEndHandled = false;
 
         private DispatcherTimer _skipOverlayTimer;
 
         public event EventHandler<object> FullscreenRequested;
+        public event Action<bool> FullscreenStateChanged;
         public event EventHandler<object> SettingsRequested;
         public event EventHandler<CustomVideoPlayerMediaFailedEventArgs> MediaFailed;
         public event EventHandler<bool> SkipOverlayRequested; // New event for skip overlay
-        public event EventHandler<object> RefreshRequested; // New event for refresh requests
         // Raised once when playback reaches the end, so the page can auto-advance inside a
         // playlist / mix ("jam") queue.
         public event EventHandler<object> VideoEnded;
+        // Raised by Windows System Media Transport Controls. The Video page decides whether a
+        // playlist has a valid previous/next item and performs the full metadata/source switch.
+        public event EventHandler<object> NextRequested;
+        public event EventHandler<object> PreviousRequested;
         // Raised when playback cannot keep up with real time for several seconds, so the page
         // can drop to a lighter quality instead of grinding to a halt and crashing.
         public event EventHandler<object> PlaybackStalling;
@@ -349,144 +353,7 @@ namespace YouTube
             }
         }
 
-        // Heights ("360", "720", "1080", ...) this video actually offers, published by the page
-        // so the fullscreen quality menu lists the same options as the portrait one.
-        public List<string> AvailableQualities { get; set; }
 
-        private List<string> BuildQualityOptionLabels()
-        {
-            var labels = new List<string> { "Auto" };
-            var heights = AvailableQualities;
-            if (heights != null && heights.Count > 0)
-            {
-                for (int i = 0; i < heights.Count; i++)
-                {
-                    labels.Add(heights[i] + "p");
-                }
-            }
-            else
-            {
-                labels.Add("144p");
-                labels.Add("360p");
-                labels.Add("480p");
-                labels.Add("720p");
-                labels.Add("1080p");
-            }
-
-            return labels;
-        }
-
-        private bool IsCurrentQualityLabel(string label)
-        {
-            if (string.Equals(label, "Auto", StringComparison.OrdinalIgnoreCase))
-            {
-                return string.IsNullOrWhiteSpace(_currentQuality);
-            }
-
-            return string.Equals(_currentQuality, label.Replace("p", ""), StringComparison.Ordinal);
-        }
-
-        // Fullscreen settings uses the same check-column option style as the Video page sheet.
-        private Button MakeFullscreenCheckableOptionButton(string label, bool isCurrent, Action onClick)
-        {
-            var button = new Button
-            {
-                Background = new SolidColorBrush(Colors.Transparent),
-                Foreground = new SolidColorBrush(Colors.White),
-                FontWeight = isCurrent ? Windows.UI.Text.FontWeights.SemiBold : Windows.UI.Text.FontWeights.Normal,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                Padding = new Thickness(16, 12, 16, 12),
-                Margin = new Thickness(0, 0, 0, 4),
-                FontSize = 14
-            };
-
-            var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(28) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
-            var check = new FontIcon
-            {
-                Glyph = "\uE73E",
-                FontFamily = new FontFamily("Segoe MDL2 Assets"),
-                FontSize = 16,
-                Foreground = new SolidColorBrush(Colors.White),
-                Visibility = isCurrent ? Visibility.Visible : Visibility.Collapsed,
-                HorizontalAlignment = HorizontalAlignment.Left,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            Grid.SetColumn(check, 0);
-            grid.Children.Add(check);
-
-            var labelText = new TextBlock
-            {
-                Text = label,
-                Foreground = new SolidColorBrush(Colors.White),
-                FontWeight = isCurrent ? Windows.UI.Text.FontWeights.SemiBold : Windows.UI.Text.FontWeights.Normal,
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            Grid.SetColumn(labelText, 1);
-            grid.Children.Add(labelText);
-
-            button.Content = grid;
-            if (onClick != null)
-            {
-                button.Click += (s, e) => onClick();
-            }
-            return button;
-        }
-
-        private void PopulateFullscreenQualityOptions(StackPanel qualityOptionsPanel)
-        {
-            if (qualityOptionsPanel == null)
-            {
-                return;
-            }
-
-            qualityOptionsPanel.Children.Clear();
-
-            var qualityOptions = BuildQualityOptionLabels();
-            for (int i = 0; i < qualityOptions.Count; i++)
-            {
-                var quality = qualityOptions[i];
-                var isCurrent = IsCurrentQualityLabel(quality);
-                string selectedQuality = quality;
-
-                var qualityOptionButton = MakeFullscreenCheckableOptionButton(quality, isCurrent, () =>
-                {
-                    string newQuality = null;
-                    if (!string.Equals(selectedQuality, "Auto", StringComparison.OrdinalIgnoreCase))
-                    {
-                        newQuality = selectedQuality.Replace("p", "");
-                    }
-
-                    System.Diagnostics.Debug.WriteLine(string.Format(
-                        "Quality selected: {0}, internal quality: {1}",
-                        selectedQuality,
-                        newQuality ?? "auto"));
-
-                    var resumePosition = GetCurrentPlaybackPositionSafe();
-                    _resumePlaybackAfterQualityChange = true;
-                    _resumePositionAfterQualityChange = resumePosition;
-                    _currentQuality = newQuality;
-
-                    if (RefreshRequested != null)
-                    {
-                        RefreshRequested(this, new QualityChangeRefreshRequest
-                        {
-                            QualityTag = newQuality,
-                            ShouldAutoPlay = true,
-                            Position = resumePosition
-                        });
-                    }
-
-                    _isSettingsPanelOpen = false;
-                    AnimateFullscreenSettingsPanel(false);
-                });
-
-                qualityOptionsPanel.Children.Add(qualityOptionButton);
-            }
-        }
 
         public void PrepareResumeAfterSourceReload(TimeSpan position, bool autoPlay)
         {
@@ -531,6 +398,7 @@ namespace YouTube
             }
 
             ConfigureMediaPlayerForBackground(MediaPlayer.MediaPlayer);
+            AttachVisibleVideoEndedHandler();
             InitializeSystemMediaControls();
 
             _isWindowsMobileAudioMode = DetectWindowsMobileDevice();
@@ -556,10 +424,13 @@ namespace YouTube
             PlayPauseButton.Opacity = 0.8;
             SettingsButton.Opacity = 0.8;
             this.Loaded += CustomVideoPlayer_Loaded;
+            this.Unloaded += CustomVideoPlayer_Unloaded;
         }
 
         private void CustomVideoPlayer_Loaded(object sender, RoutedEventArgs e)
         {
+            AttachKeyboardShortcuts();
+
             // Get references to the Image controls directly
             // Since the Image controls have x:Name attributes, they should be accessible directly
             _playPauseIcon = PlayPauseIcon;
@@ -578,8 +449,8 @@ namespace YouTube
             if (_playPauseIcon != null)
             {
                 // Determine the correct icon based on current play state
-                string iconPath = _isPlaying ? "ms-appx:///Assets/player/pause.png" : "ms-appx:///Assets/player/play.png";
-                _playPauseIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(iconPath));
+                string iconPath = _isPlaying ? "Assets/Dark/player/pause.png" : "Assets/Dark/player/play.png";
+                App.SetThemeImageSource(_playPauseIcon, iconPath);
             }
             
             // Ensure controls overlay is hit-testable by default
@@ -595,6 +466,141 @@ namespace YouTube
             FadeInControls();
         }
         
+        private void CustomVideoPlayer_Unloaded(object sender, RoutedEventArgs e)
+        {
+            DetachKeyboardShortcuts();
+        }
+
+        private void AttachKeyboardShortcuts()
+        {
+            if (_keyboardShortcutsAttached || _isDisposed)
+            {
+                return;
+            }
+
+            try
+            {
+                var coreWindow = Window.Current != null ? Window.Current.CoreWindow : CoreWindow.GetForCurrentThread();
+                if (coreWindow != null && coreWindow.Dispatcher != null)
+                {
+                    _keyboardShortcutDispatcher = coreWindow.Dispatcher;
+                    _keyboardShortcutDispatcher.AcceleratorKeyActivated += CustomVideoPlayer_AcceleratorKeyActivated;
+                    _keyboardShortcutsAttached = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("CustomVideoPlayer keyboard attach failed: " + ex.Message);
+            }
+        }
+
+        private void DetachKeyboardShortcuts()
+        {
+            if (!_keyboardShortcutsAttached)
+            {
+                return;
+            }
+
+            try
+            {
+                if (_keyboardShortcutDispatcher != null)
+                {
+                    _keyboardShortcutDispatcher.AcceleratorKeyActivated -= CustomVideoPlayer_AcceleratorKeyActivated;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("CustomVideoPlayer keyboard detach failed: " + ex.Message);
+            }
+            finally
+            {
+                _keyboardShortcutDispatcher = null;
+                _keyboardShortcutsAttached = false;
+            }
+        }
+
+        private bool ShouldIgnoreKeyboardShortcut()
+        {
+            var focused = FocusManager.GetFocusedElement();
+            return focused is TextBox
+                || focused is PasswordBox
+                || focused is RichEditBox
+                || focused is Slider
+                || focused is ComboBox;
+        }
+
+        private void CustomVideoPlayer_AcceleratorKeyActivated(CoreDispatcher sender, AcceleratorKeyEventArgs args)
+        {
+            try
+            {
+                if (args == null
+                    || (args.EventType != CoreAcceleratorKeyEventType.KeyDown
+                        && args.EventType != CoreAcceleratorKeyEventType.SystemKeyDown)
+                    || _isDisposed
+                    || _isMiniMode
+                    || ShouldIgnoreKeyboardShortcut())
+                {
+                    return;
+                }
+
+                switch (args.VirtualKey)
+                {
+                    case VirtualKey.Left:
+                        args.Handled = true;
+                        SeekVideo(-5);
+                        ShowSkipOverlay(false);
+                        break;
+                    case VirtualKey.Right:
+                        args.Handled = true;
+                        SeekVideo(5);
+                        ShowSkipOverlay(true);
+                        break;
+                    case VirtualKey.Space:
+                        if (args.KeyStatus.WasKeyDown) return;
+                        args.Handled = true;
+                        if (_isPlaying) Pause(); else Play();
+                        break;
+                    case VirtualKey.Escape:
+                        if (_isFullscreen)
+                        {
+                            args.Handled = true;
+                            ToggleFullscreen();
+                        }
+                        break;
+                    case VirtualKey.F:
+                        if (args.KeyStatus.WasKeyDown) return;
+                        args.Handled = true;
+                        ToggleFullscreen();
+                        break;
+                    case VirtualKey.C:
+                        if (args.KeyStatus.WasKeyDown) return;
+                        args.Handled = true;
+                        ToggleSubtitlesFromKeyboard();
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("CustomVideoPlayer keyboard shortcut failed: " + ex.Message);
+            }
+        }
+
+        private void ToggleSubtitlesFromKeyboard()
+        {
+            if (_activeSubtitleTrack != null)
+            {
+                SelectSubtitleTrack(null);
+                return;
+            }
+
+            if (_subtitleTracks == null || !_subtitleTracks.HasAny || _subtitleTracks.Tracks.Count == 0)
+            {
+                return;
+            }
+
+            SelectSubtitleTrack(_subtitleTracks.Tracks[0]);
+        }
+
         // Mobile-specific optimizations for video playback
         private void OptimizeForMobile()
         {
@@ -932,6 +938,52 @@ namespace YouTube
             DisableAutoTransportControls(player);
         }
 
+        private void AttachVisibleVideoEndedHandler()
+        {
+            try
+            {
+                var player = MediaPlayer == null ? null : MediaPlayer.MediaPlayer;
+                if (player == null)
+                {
+                    return;
+                }
+
+                player.MediaEnded -= VisibleVideoPlayer_MediaEnded;
+                player.MediaEnded += VisibleVideoPlayer_MediaEnded;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: MediaEnded attach failed - " + ex.Message);
+            }
+        }
+
+        // DispatcherTimer is throttled/suspended when the app or page is in the background. The
+        // MediaPlayer event itself continues to be the authoritative end signal for background
+        // media playback, so marshal only the UI bookkeeping back to this control's dispatcher.
+        private async void VisibleVideoPlayer_MediaEnded(MediaPlayer sender, object args)
+        {
+            try
+            {
+                var dispatcher = Dispatcher;
+                if (dispatcher == null)
+                {
+                    return;
+                }
+
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    if (!_videoEndHandled)
+                    {
+                        HandleVideoEnd();
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: MediaEnded dispatch failed - " + ex.Message);
+            }
+        }
+
         // A MediaPlayer auto-integrates with the System Media Transport Controls through its
         // CommandManager. We already drive SMTC manually (InitializeSystemMediaControls), and the
         // two channels talking to the same cross-process SMTC is what produced the constant
@@ -974,6 +1026,8 @@ namespace YouTube
                 _systemMediaControls.IsPlayEnabled = true;
                 _systemMediaControls.IsPauseEnabled = true;
                 _systemMediaControls.IsStopEnabled = true;
+                _systemMediaControls.IsNextEnabled = false;
+                _systemMediaControls.IsPreviousEnabled = false;
                 _systemMediaControls.PlaybackStatus = MediaPlaybackStatus.Closed;
             }
             catch (Exception ex)
@@ -999,12 +1053,51 @@ namespace YouTube
                         case SystemMediaTransportControlsButton.Stop:
                             Stop();
                             break;
+                        case SystemMediaTransportControlsButton.Next:
+                        {
+                            var nextHandler = NextRequested;
+                            if (nextHandler != null)
+                            {
+                                nextHandler(this, null);
+                            }
+                            break;
+                        }
+                        case SystemMediaTransportControlsButton.Previous:
+                        {
+                            var previousHandler = PreviousRequested;
+                            if (previousHandler != null)
+                            {
+                                previousHandler(this, null);
+                            }
+                            break;
+                        }
                     }
                 });
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: SMTC button error - " + ex.Message);
+            }
+        }
+
+        public void SetSystemMediaNavigationEnabled(bool previousEnabled, bool nextEnabled)
+        {
+            try
+            {
+                if (_systemMediaControls == null)
+                {
+                    InitializeSystemMediaControls();
+                }
+
+                if (_systemMediaControls != null)
+                {
+                    _systemMediaControls.IsPreviousEnabled = previousEnabled;
+                    _systemMediaControls.IsNextEnabled = nextEnabled;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: SMTC navigation state failed - " + ex.Message);
             }
         }
 
@@ -1161,8 +1254,9 @@ namespace YouTube
                     return;
                 }
 
-                _playPauseIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(
-                    new Uri(isPlaying ? "ms-appx:///Assets/player/pause.png" : "ms-appx:///Assets/player/play.png"));
+                App.SetThemeImageSource(
+                    _playPauseIcon,
+                    isPlaying ? "Assets/Dark/player/pause.png" : "Assets/Dark/player/play.png");
             }
             catch { }
         }
@@ -1306,6 +1400,7 @@ namespace YouTube
             // Replay the video from the beginning
             if (MediaPlayer.MediaPlayer != null)
             {
+                _videoEndHandled = false;
                 System.Diagnostics.Debug.WriteLine("[ReplayButton] Resetting video position to 0");
                 MediaPlayer.MediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
                 _isPlaying = true;
@@ -1319,7 +1414,7 @@ namespace YouTube
                 }
                 if (_playPauseIcon != null)
                 {
-                    _playPauseIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/pause.png"));
+                    App.SetThemeImageSource(_playPauseIcon, "Assets/Dark/player/pause.png");
                 }
                 _updateTimer.Start();
                 
@@ -1343,12 +1438,6 @@ namespace YouTube
         {
             if (_isFullscreen)
             {
-                // If settings panel is open in fullscreen mode, close it first
-                if (_isSettingsPanelOpen && _fullscreenSettingsPanel != null)
-                {
-                    _isSettingsPanelOpen = false;
-                    AnimateFullscreenSettingsPanel(false);
-                }
                 ExitFullscreen();
             }
             else
@@ -1469,31 +1558,31 @@ namespace YouTube
 
                 _isFullscreen = true;
                 UpdateFullscreenTitleVisibility();
+                var fullscreenStateHandler = FullscreenStateChanged;
+                if (fullscreenStateHandler != null)
+                {
+                    fullscreenStateHandler(true);
+                }
 
                 // Update fullscreen icon
                 System.Diagnostics.Debug.WriteLine($"Setting exit fullscreen icon, _fullscreenIcon is null: {_fullscreenIcon == null}");
                 if (_fullscreenIcon != null)
                 {
-                    _fullscreenIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/exit_fullscreen.png"));
+                    App.SetThemeImageSource(_fullscreenIcon, "Assets/Dark/player/exit_fullscreen.png");
                 }
                 
                 // Restore the play/pause icon state after entering fullscreen
                 if (_playPauseIcon != null)
                 {
                     // Determine the correct icon based on current play state
-                    string iconPath = wasPlaying ? "ms-appx:///Assets/player/pause.png" : "ms-appx:///Assets/player/play.png";
-                    _playPauseIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(iconPath));
+                    string iconPath = wasPlaying ? "Assets/Dark/player/pause.png" : "Assets/Dark/player/play.png";
+                    App.SetThemeImageSource(_playPauseIcon, iconPath);
                 }
                 
                 // Add handlers to show/hide controls in fullscreen
                 _fullscreenGrid.PointerMoved += FullscreenGrid_PointerMoved;
                 _fullscreenGrid.Tapped += FullscreenGrid_Tapped;
                 
-                // If settings panel was open, close it when entering fullscreen
-                if (_isSettingsPanelOpen)
-                {
-                    _isSettingsPanelOpen = false;
-                }
             }
             catch (Exception ex)
             {
@@ -1678,6 +1767,11 @@ namespace YouTube
 
                     _isFullscreen = false;
                     UpdateFullscreenTitleVisibility();
+                    var fullscreenStateHandler = FullscreenStateChanged;
+                    if (fullscreenStateHandler != null)
+                    {
+                        fullscreenStateHandler(false);
+                    }
 
                     // Hide the fullscreen skip overlay when exiting fullscreen
                     if (SkipOverlayFullscreen != null)
@@ -1696,20 +1790,17 @@ namespace YouTube
                     System.Diagnostics.Debug.WriteLine($"Setting fullscreen icon, _fullscreenIcon is null: {_fullscreenIcon == null}");
                     if (_fullscreenIcon != null)
                     {
-                        _fullscreenIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/fullscreen.png"));
+                        App.SetThemeImageSource(_fullscreenIcon, "Assets/Dark/player/fullscreen.png");
                     }
                     
                     // Restore the play/pause icon state after exiting fullscreen
                     if (_playPauseIcon != null)
                     {
                         // Determine the correct icon based on current play state
-                        string iconPath = wasPlaying ? "ms-appx:///Assets/player/pause.png" : "ms-appx:///Assets/player/play.png";
-                        _playPauseIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(iconPath));
+                        string iconPath = wasPlaying ? "Assets/Dark/player/pause.png" : "Assets/Dark/player/play.png";
+                        App.SetThemeImageSource(_playPauseIcon, iconPath);
                     }
                     
-                    // Reset settings panel state
-                    _isSettingsPanelOpen = false;
-                    _fullscreenSettingsPanel = null;
                 }
                 else
                 {
@@ -1780,713 +1871,18 @@ namespace YouTube
             }
         }
 
-        // Keep track of whether settings panel is open
-        private bool _isSettingsPanelOpen = false;
-
-        // Method to reset settings button appearance
-        public void ResetSettingsButtonAppearance()
-        {
-            if (SettingsButton != null)
-            {
-                _isSettingsPanelOpen = false;
-            }
-        }
-
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            // Reset the auto-hide timer
             ResetAutoHideTimer();
-            
-            // Ensure controls are visible when user interacts
             FadeInControls();
-            
-            // Always (re)open settings
-            _isSettingsPanelOpen = true;
-            
-            // Check if we're in fullscreen mode
-            if (_isFullscreen)
+
+            // One settings UI only: the owning Video page presents its bottom sheet.
+            // This event is used in both normal and fullscreen playback.
+            var handler = SettingsRequested;
+            if (handler != null)
             {
-                // In fullscreen mode, show settings within the fullscreen popup
-                ShowFullscreenSettings();
+                handler(this, null);
             }
-            else
-            {
-                // In normal mode, use the event to show settings in the parent page
-                SettingsRequested?.Invoke(this, null);
-            }
-        }
-
-        // Method to show settings panel within the fullscreen popup
-        private void ShowFullscreenSettings()
-        {
-            if (_isSettingsPanelOpen && _fullscreenGrid != null)
-            {
-                // If settings panel already exists, just show it
-                if (_fullscreenSettingsPanel != null)
-                {
-                    // Show overlay (it's the second to last child, just before settings panel)
-                    if (_fullscreenGrid.Children.Count >= 2)
-                    {
-                        var overlay = _fullscreenGrid.Children[_fullscreenGrid.Children.Count - 2];
-                        if (overlay is Grid)
-                        {
-                            overlay.Visibility = Visibility.Visible;
-                        }
-                    }
-                    
-                    // Show settings panel
-                    _fullscreenSettingsPanel.Visibility = Visibility.Visible;
-                    
-                    // ALWAYS reset to main panel when showing settings
-                    // Find the child panels in the settings panel
-                    if (_fullscreenSettingsPanel.Children.Count > 0)
-                    {
-                        var contentGrid = _fullscreenSettingsPanel.Children[0] as Grid;
-                        if (contentGrid != null && contentGrid.Children.Count > 0)
-                        {
-                            var settingsContentGrid = contentGrid.Children[0] as Grid;
-                            if (settingsContentGrid != null && settingsContentGrid.Children.Count >= 3)
-                            {
-                                // Show the first panel (main settings) and hide the others
-                                settingsContentGrid.Children[0].Visibility = Visibility.Visible; // Main panel
-                                settingsContentGrid.Children[1].Visibility = Visibility.Collapsed; // Quality panel
-                                settingsContentGrid.Children[2].Visibility = Visibility.Collapsed; // Speed panel
-                            }
-                        }
-                    }
-                    
-                    // Animate the settings panel sliding up
-                    AnimateFullscreenSettingsPanel(true);
-                }
-                else
-                {
-                    // Create a settings panel for fullscreen mode
-                    CreateFullscreenSettingsPanel();
-                }
-            }
-            else if (!_isSettingsPanelOpen && _fullscreenSettingsPanel != null && _fullscreenGrid != null)
-            {
-                // Hide the settings panel
-                AnimateFullscreenSettingsPanel(false);
-            }
-        }
-
-        // Reference to the fullscreen settings panel
-        private Grid _fullscreenSettingsPanel;
-
-        // Method to create and show settings panel within the fullscreen popup
-        private void CreateFullscreenSettingsPanel()
-        {
-            if (_fullscreenGrid == null) return;
-
-            // Remove existing settings panel if any
-            if (_fullscreenSettingsPanel != null)
-            {
-                // Remove overlay (it's the first child before the settings panel)
-                if (_fullscreenGrid.Children.Count >= 2)
-                {
-                    _fullscreenGrid.Children.RemoveAt(0);
-                }
-                // Remove settings panel
-                _fullscreenGrid.Children.Remove(_fullscreenSettingsPanel);
-                _fullscreenSettingsPanel = null;
-            }
-
-            // Create overlay background that closes settings when tapped
-            var overlay = new Grid();
-            overlay.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(128, 0, 0, 0)); // Semi-transparent black
-            overlay.Tapped += (s, e) => {
-                // Close settings when tapping the overlay
-                _isSettingsPanelOpen = false;
-                AnimateFullscreenSettingsPanel(false);
-                e.Handled = true;
-            };
-
-            // Create a new settings panel for fullscreen mode with margins and rounded corners
-            _fullscreenSettingsPanel = new Grid();
-            _fullscreenSettingsPanel.VerticalAlignment = VerticalAlignment.Bottom;
-            _fullscreenSettingsPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
-            _fullscreenSettingsPanel.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 26, 26, 26)); // Darker background #1A1A1A
-            _fullscreenSettingsPanel.CornerRadius = new CornerRadius(15); // Rounded corners on all sides
-            _fullscreenSettingsPanel.Height = 205;
-            _fullscreenSettingsPanel.Margin = new Thickness(10, 0, 10, 10); // Smaller equal margins on all sides
-
-            // Variables for drag functionality
-            double initialY = 0;
-            double initialTranslateY = 0;
-            bool isDragging = false;
-
-            // Create the content for the settings panel
-            var contentGrid = new Grid();
-            contentGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto }); // Drag area
-            contentGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) }); // Content
-
-            // Create drag area with pointer event handlers for swipe-to-close
-            var dragArea = new Grid();
-            dragArea.Background = new SolidColorBrush(Colors.Transparent);
-            dragArea.Height = 40;
-            
-            // Pointer pressed event
-            dragArea.PointerPressed += (s, e) => {
-                var pointer = e.Pointer;
-                if (dragArea.CapturePointer(pointer))
-                {
-                    var point = e.GetCurrentPoint(dragArea);
-                    initialY = point.Position.Y;
-                    var dragTransform = _fullscreenSettingsPanel.RenderTransform as TranslateTransform;
-                    initialTranslateY = dragTransform?.Y ?? 0;
-                    isDragging = true;
-                    e.Handled = true;
-                }
-            };
-            
-            // Pointer moved event
-            dragArea.PointerMoved += (s, e) => {
-                if (isDragging)
-                {
-                    var point = e.GetCurrentPoint(dragArea);
-                    double deltaY = point.Position.Y - initialY;
-                    
-                    // Only move the panel down when dragging down
-                    if (deltaY > 0)
-                    {
-                        var dragTransform = _fullscreenSettingsPanel.RenderTransform as TranslateTransform;
-                        if (dragTransform != null)
-                        {
-                            dragTransform.Y = initialTranslateY + deltaY;
-                        }
-                    }
-                    e.Handled = true;
-                }
-            };
-            
-            // Pointer released event
-            dragArea.PointerReleased += (s, e) => {
-                if (isDragging)
-                {
-                    isDragging = false;
-                    dragArea.ReleasePointerCapture(e.Pointer);
-                    
-                    var dragTransform = _fullscreenSettingsPanel.RenderTransform as TranslateTransform;
-                    if (dragTransform != null && dragTransform.Y > 150) // If dragged down more than half
-                    {
-                        // Check if we're in a sub panel and navigate back to main instead of closing
-                        if (_fullscreenSettingsPanel != null)
-                        {
-                            // Find the panels by name
-                            var mainPanel = FindVisualChild<StackPanel>(_fullscreenSettingsPanel, "MainSettingsPanel");
-                            var qualityPanel = FindVisualChild<ScrollViewer>(_fullscreenSettingsPanel, "QualitySettingsPanel");
-                            var speedPanel = FindVisualChild<ScrollViewer>(_fullscreenSettingsPanel, "SpeedSettingsPanel");
-                            
-                            // Check if we're in a sub panel
-                            if (qualityPanel != null && qualityPanel.Visibility == Visibility.Visible ||
-                                speedPanel != null && speedPanel.Visibility == Visibility.Visible)
-                            {
-                                // Hide sub panels and show main panel
-                                if (qualityPanel != null) qualityPanel.Visibility = Visibility.Collapsed;
-                                if (speedPanel != null) speedPanel.Visibility = Visibility.Collapsed;
-                                if (mainPanel != null) mainPanel.Visibility = Visibility.Visible;
-                                
-                                // Reset the position to fully up since we're not closing
-                                var resetAnimation = new DoubleAnimation();
-                                resetAnimation.To = 0;
-                                resetAnimation.Duration = TimeSpan.FromMilliseconds(300);
-                                resetAnimation.EasingFunction = new CircleEase();
-                                Storyboard.SetTarget(resetAnimation, dragTransform);
-                                Storyboard.SetTargetProperty(resetAnimation, "Y");
-                                var resetStoryboard = new Storyboard();
-                                resetStoryboard.Children.Add(resetAnimation);
-                                resetStoryboard.Begin();
-                            }
-                            else
-                            {
-                                // Close the settings panel
-                                _isSettingsPanelOpen = false;
-                                AnimateFullscreenSettingsPanel(false);
-                            }
-                        }
-                        else
-                        {
-                            // Close the settings panel
-                            _isSettingsPanelOpen = false;
-                            AnimateFullscreenSettingsPanel(false);
-                        }
-                    }
-                    else
-                    {
-                        // Snap back to original position
-                        AnimateFullscreenSettingsPanel(true);
-                    }
-                    e.Handled = true;
-                }
-            };
-            
-            // Pointer capture lost event
-            dragArea.PointerCaptureLost += (s, e) => {
-                if (isDragging)
-                {
-                    isDragging = false;
-                    // Snap back to original position
-                    AnimateFullscreenSettingsPanel(true);
-                }
-            };
-
-            // Tap event for quick close
-            dragArea.Tapped += (s, e) => {
-                // Check if we're in a sub panel and navigate back to main instead of closing
-                if (_fullscreenSettingsPanel != null)
-                {
-                    // Find the panels by name
-                    var mainPanel = FindVisualChild<StackPanel>(_fullscreenSettingsPanel, "MainSettingsPanel");
-                    var qualityPanel = FindVisualChild<ScrollViewer>(_fullscreenSettingsPanel, "QualitySettingsPanel");
-                    var speedPanel = FindVisualChild<ScrollViewer>(_fullscreenSettingsPanel, "SpeedSettingsPanel");
-                    
-                    // Check if we're in a sub panel
-                    if (qualityPanel != null && qualityPanel.Visibility == Visibility.Visible ||
-                        speedPanel != null && speedPanel.Visibility == Visibility.Visible)
-                    {
-                        // Hide sub panels and show main panel
-                        if (qualityPanel != null) qualityPanel.Visibility = Visibility.Collapsed;
-                        if (speedPanel != null) speedPanel.Visibility = Visibility.Collapsed;
-                        if (mainPanel != null) mainPanel.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        // Close settings when tapping the drag area
-                        _isSettingsPanelOpen = false;
-                        AnimateFullscreenSettingsPanel(false);
-                    }
-                }
-                else
-                {
-                    // Close settings when tapping the drag area
-                    _isSettingsPanelOpen = false;
-                    AnimateFullscreenSettingsPanel(false);
-                }
-                e.Handled = true;
-            };
-
-            // Create overlay background that closes settings when tapped
-            var settingsOverlay = new Grid();
-            settingsOverlay.Background = new SolidColorBrush(Windows.UI.Color.FromArgb(128, 0, 0, 0)); // Semi-transparent black
-            settingsOverlay.Tapped += (s, e) => {
-                // Check if we're in a sub panel and navigate back to main instead of closing
-                if (_fullscreenSettingsPanel != null)
-                {
-                    // Find the panels by name
-                    var mainPanel = FindVisualChild<StackPanel>(_fullscreenSettingsPanel, "MainSettingsPanel");
-                    var qualityPanel = FindVisualChild<ScrollViewer>(_fullscreenSettingsPanel, "QualitySettingsPanel");
-                    var speedPanel = FindVisualChild<ScrollViewer>(_fullscreenSettingsPanel, "SpeedSettingsPanel");
-                    
-                    // Check if we're in a sub panel
-                    if (qualityPanel != null && qualityPanel.Visibility == Visibility.Visible ||
-                        speedPanel != null && speedPanel.Visibility == Visibility.Visible)
-                    {
-                        // Hide sub panels and show main panel
-                        if (qualityPanel != null) qualityPanel.Visibility = Visibility.Collapsed;
-                        if (speedPanel != null) speedPanel.Visibility = Visibility.Collapsed;
-                        if (mainPanel != null) mainPanel.Visibility = Visibility.Visible;
-                    }
-                    else
-                    {
-                        // Close settings when tapping the overlay
-                        _isSettingsPanelOpen = false;
-                        AnimateFullscreenSettingsPanel(false);
-                    }
-                }
-                else
-                {
-                    // Close settings when tapping the overlay
-                    _isSettingsPanelOpen = false;
-                    AnimateFullscreenSettingsPanel(false);
-                }
-                e.Handled = true;
-            };
-
-            // Create visible drag handle
-            var dragHandle = new Rectangle();
-            dragHandle.Width = 40;
-            dragHandle.Height = 4;
-            dragHandle.Fill = new SolidColorBrush(Colors.Gray);
-            dragHandle.RadiusX = 2;
-            dragHandle.RadiusY = 2;
-            dragHandle.HorizontalAlignment = HorizontalAlignment.Center;
-            dragHandle.VerticalAlignment = VerticalAlignment.Center;
-
-            dragArea.Children.Add(dragHandle);
-            Grid.SetRow(dragArea, 0);
-            contentGrid.Children.Add(dragArea);
-
-            // Create settings content grid (matching normal settings panel)
-            var settingsContentGrid = new Grid();
-            settingsContentGrid.Margin = new Thickness(20, 0, 20, 20);
-            Grid.SetRow(settingsContentGrid, 1);
-
-            // Create main settings panel with two full-width buttons
-            var mainSettingsPanel = new StackPanel();
-            mainSettingsPanel.Name = "MainSettingsPanel";
-
-            // Create quality settings panel with ScrollViewer (matching normal settings panel)
-            var qualitySettingsPanel = new ScrollViewer();
-            qualitySettingsPanel.Name = "QualitySettingsPanel";
-            qualitySettingsPanel.Visibility = Visibility.Collapsed;
-            qualitySettingsPanel.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            
-            var qualityContentStackPanel = new StackPanel();
-           
-            var qualityHeader = new TextBlock();
-            qualityHeader.Text = "Quality";
-            qualityHeader.Foreground = new SolidColorBrush(Colors.White);
-            qualityHeader.FontWeight = Windows.UI.Text.FontWeights.SemiBold;
-            qualityHeader.Margin = new Thickness(0, 0, 0, 16);
-            qualityHeader.FontSize = 16;
-            qualityContentStackPanel.Children.Add(qualityHeader);
-            
-            var qualityOptionsPanel = new StackPanel();
-            qualityOptionsPanel.Name = "QualityOptionsPanel";
-            qualityContentStackPanel.Children.Add(qualityOptionsPanel);
-            qualitySettingsPanel.Content = qualityContentStackPanel;
-
-            // Create speed settings panel with ScrollViewer (matching normal settings panel)
-            var speedSettingsPanel = new ScrollViewer();
-            speedSettingsPanel.Name = "SpeedSettingsPanel";
-            speedSettingsPanel.Visibility = Visibility.Collapsed;
-            speedSettingsPanel.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-            
-            var speedContentStackPanel = new StackPanel();
-           
-            
-            var speedHeader = new TextBlock();
-            speedHeader.Text = "Playback speed";
-            speedHeader.Foreground = new SolidColorBrush(Colors.White);
-            speedHeader.FontWeight = Windows.UI.Text.FontWeights.SemiBold;
-            speedHeader.Margin = new Thickness(0, 0, 0, 16);
-            speedHeader.FontSize = 16;
-            speedContentStackPanel.Children.Add(speedHeader);
-            
-            var speedOptionsPanel = new StackPanel();
-            speedOptionsPanel.Name = "SpeedOptionsPanel";
-            speedContentStackPanel.Children.Add(speedOptionsPanel);
-            speedSettingsPanel.Content = speedContentStackPanel;
-
-            // Subtitles panel, same shape as the quality and speed ones.
-            var subtitlesSettingsPanel = new ScrollViewer();
-            subtitlesSettingsPanel.Name = "SubtitlesSettingsPanel";
-            subtitlesSettingsPanel.Visibility = Visibility.Collapsed;
-            subtitlesSettingsPanel.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
-
-            var subtitlesContentStackPanel = new StackPanel();
-
-            var subtitlesHeader = new TextBlock();
-            subtitlesHeader.Text = "Subtitles";
-            subtitlesHeader.Foreground = new SolidColorBrush(Colors.White);
-            subtitlesHeader.FontWeight = Windows.UI.Text.FontWeights.SemiBold;
-            subtitlesHeader.Margin = new Thickness(0, 0, 0, 16);
-            subtitlesHeader.FontSize = 16;
-            subtitlesContentStackPanel.Children.Add(subtitlesHeader);
-
-            var subtitlesOptionsPanel = new StackPanel();
-            subtitlesOptionsPanel.Name = "SubtitlesOptionsPanel";
-            subtitlesContentStackPanel.Children.Add(subtitlesOptionsPanel);
-            subtitlesSettingsPanel.Content = subtitlesContentStackPanel;
-
-            // Create quality option buttons (rebuilt whenever the panel is opened so the
-            // highlight follows the current selection).
-            PopulateFullscreenQualityOptions(qualityOptionsPanel);
-
-            // Create speed option buttons. Rates above 1x are hidden while a demuxed source is
-            // playing: measured on the device, the pipeline accepts the rate for a
-            // MediaStreamSource but the media clock keeps running at exactly 1.00x, so those
-            // options would simply do nothing. Slower-than-normal rates are unaffected.
-            var speedOptions = GetAvailableSpeedOptions();
-            for (int i = 0; i < speedOptions.Count; i++)
-            {
-                var speed = speedOptions[i];
-                var rateString = speed.Replace("x", "");
-                double optionRate;
-                var parsed = double.TryParse(
-                    rateString,
-                    System.Globalization.NumberStyles.Any,
-                    System.Globalization.CultureInfo.InvariantCulture,
-                    out optionRate);
-                var isCurrent = parsed && Math.Abs(optionRate - _desiredPlaybackRate) < 0.001;
-                string selectedSpeed = speed;
-
-                var speedOptionButton = MakeFullscreenCheckableOptionButton(speed, isCurrent, () =>
-                {
-                    try
-                    {
-                        var selectedRateString = selectedSpeed.Replace("x", "");
-                        double selectedRate;
-                        if (double.TryParse(
-                            selectedRateString,
-                            System.Globalization.NumberStyles.Any,
-                            System.Globalization.CultureInfo.InvariantCulture,
-                            out selectedRate))
-                        {
-                            SetPlaybackRate(selectedRate);
-                        }
-                    }
-                    catch { }
-
-                    _isSettingsPanelOpen = false;
-                    AnimateFullscreenSettingsPanel(false);
-                });
-                speedOptionsPanel.Children.Add(speedOptionButton);
-            }
-
-            // Quality Button
-            var qualityButton = new Button();
-            qualityButton.Background = new SolidColorBrush(Colors.Transparent);
-            qualityButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-            qualityButton.HorizontalContentAlignment = HorizontalAlignment.Stretch;
-            qualityButton.Padding = new Thickness(0);
-            qualityButton.Height = 60;
-            qualityButton.Margin = new Thickness(0, 0, 0, 8);
-            var qualityButtonGrid = new Grid();
-            qualityButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            qualityButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-            qualityButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            qualityButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            var qualityIcon = new Image();
-            qualityIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/quality.png"));
-            qualityIcon.Width = 24;
-            qualityIcon.Height = 24;
-            qualityIcon.Margin = new Thickness(0, 0, 16, 0);
-            Grid.SetColumn(qualityIcon, 0);
-            qualityButtonGrid.Children.Add(qualityIcon);
-            var qualityText = new TextBlock();
-            qualityText.Text = "Quality";
-            qualityText.Foreground = new SolidColorBrush(Colors.White);
-            qualityText.VerticalAlignment = VerticalAlignment.Center;
-            qualityText.FontSize = 16;
-            Grid.SetColumn(qualityText, 1);
-            qualityButtonGrid.Children.Add(qualityText);
-            var qualityValueText = new TextBlock();
-            qualityValueText.Text = string.IsNullOrWhiteSpace(_currentQuality) ? "Auto" : _currentQuality + "p";
-            qualityValueText.Foreground = new SolidColorBrush(Color.FromArgb(180, 255, 255, 255));
-            qualityValueText.VerticalAlignment = VerticalAlignment.Center;
-            qualityValueText.FontSize = 14;
-            qualityValueText.Margin = new Thickness(12, 0, 8, 0);
-            Grid.SetColumn(qualityValueText, 2);
-            qualityButtonGrid.Children.Add(qualityValueText);
-            var qualitySkipIcon = new Image();
-            qualitySkipIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/skip.png"));
-            qualitySkipIcon.Width = 24;
-            qualitySkipIcon.Height = 24;
-            qualitySkipIcon.Margin = new Thickness(16, 0, 0, 0);
-            Grid.SetColumn(qualitySkipIcon, 3);
-            qualityButtonGrid.Children.Add(qualitySkipIcon);
-            qualityButton.Content = qualityButtonGrid;
-            qualityButton.Click += (s, e) => {
-                // Rebuild so the available list and the current-quality highlight are fresh.
-                PopulateFullscreenQualityOptions(qualityOptionsPanel);
-
-                // Hide main panel and show quality settings panel
-                mainSettingsPanel.Visibility = Visibility.Collapsed;
-                qualitySettingsPanel.Visibility = Visibility.Visible;
-            };
-            mainSettingsPanel.Children.Add(qualityButton);
-
-            // Speed Button
-            var speedButton = new Button();
-            speedButton.Background = new SolidColorBrush(Colors.Transparent);
-            speedButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-            speedButton.HorizontalContentAlignment = HorizontalAlignment.Stretch;
-            speedButton.Padding = new Thickness(0);
-            speedButton.Height = 60;
-            speedButton.Margin = new Thickness(0, 0, 0, 8);
-            var speedButtonGrid = new Grid();
-            speedButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            speedButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-            speedButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            speedButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            var speedIcon = new Image();
-            speedIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/speed.png"));
-            speedIcon.Width = 24;
-            speedIcon.Height = 24;
-            speedIcon.Margin = new Thickness(0, 0, 16, 0);
-            Grid.SetColumn(speedIcon, 0);
-            speedButtonGrid.Children.Add(speedIcon);
-            var speedText = new TextBlock();
-            speedText.Text = "Playback speed";
-            speedText.Foreground = new SolidColorBrush(Colors.White);
-            speedText.VerticalAlignment = VerticalAlignment.Center;
-            speedText.FontSize = 16;
-            Grid.SetColumn(speedText, 1);
-            speedButtonGrid.Children.Add(speedText);
-            var speedValueText = new TextBlock();
-            speedValueText.Text = _desiredPlaybackRate.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture) + "x";
-            speedValueText.Foreground = new SolidColorBrush(Color.FromArgb(180, 255, 255, 255));
-            speedValueText.VerticalAlignment = VerticalAlignment.Center;
-            speedValueText.FontSize = 14;
-            speedValueText.Margin = new Thickness(12, 0, 8, 0);
-            Grid.SetColumn(speedValueText, 2);
-            speedButtonGrid.Children.Add(speedValueText);
-            var speedSkipIcon = new Image();
-            speedSkipIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/skip.png"));
-            speedSkipIcon.Width = 24;
-            speedSkipIcon.Height = 24;
-            speedSkipIcon.Margin = new Thickness(16, 0, 0, 0);
-            Grid.SetColumn(speedSkipIcon, 3);
-            speedButtonGrid.Children.Add(speedSkipIcon);
-            speedButton.Content = speedButtonGrid;
-            speedButton.Click += (s, e) => {
-                // Hide main panel and show speed settings panel
-                mainSettingsPanel.Visibility = Visibility.Collapsed;
-                speedSettingsPanel.Visibility = Visibility.Visible;
-            };
-            mainSettingsPanel.Children.Add(speedButton);
-
-            // Subtitles Button — only offered when the video actually ships captions.
-            var subtitlesButton = new Button();
-            subtitlesButton.Background = new SolidColorBrush(Colors.Transparent);
-            subtitlesButton.HorizontalAlignment = HorizontalAlignment.Stretch;
-            subtitlesButton.HorizontalContentAlignment = HorizontalAlignment.Stretch;
-            subtitlesButton.Padding = new Thickness(0);
-            subtitlesButton.Height = 60;
-            subtitlesButton.Margin = new Thickness(0, 0, 0, 8);
-            subtitlesButton.Visibility = _subtitleTracks.HasAny ? Visibility.Visible : Visibility.Collapsed;
-            var subtitlesButtonGrid = new Grid();
-            subtitlesButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            subtitlesButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-            subtitlesButtonGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            var subtitlesIcon = new Image();
-            subtitlesIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/comments.png"));
-            subtitlesIcon.Width = 24;
-            subtitlesIcon.Height = 24;
-            subtitlesIcon.Margin = new Thickness(0, 0, 16, 0);
-            Grid.SetColumn(subtitlesIcon, 0);
-            subtitlesButtonGrid.Children.Add(subtitlesIcon);
-            var subtitlesText = new TextBlock();
-            subtitlesText.Text = "Subtitles";
-            subtitlesText.Foreground = new SolidColorBrush(Colors.White);
-            subtitlesText.VerticalAlignment = VerticalAlignment.Center;
-            subtitlesText.FontSize = 16;
-            Grid.SetColumn(subtitlesText, 1);
-            subtitlesButtonGrid.Children.Add(subtitlesText);
-            var subtitlesSkipIcon = new Image();
-            subtitlesSkipIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/skip.png"));
-            subtitlesSkipIcon.Width = 24;
-            subtitlesSkipIcon.Height = 24;
-            subtitlesSkipIcon.Margin = new Thickness(16, 0, 0, 0);
-            Grid.SetColumn(subtitlesSkipIcon, 2);
-            subtitlesButtonGrid.Children.Add(subtitlesSkipIcon);
-            subtitlesButton.Content = subtitlesButtonGrid;
-            subtitlesButton.Click += (s, e) => {
-                _fullscreenShowingTranslations = false;
-                PopulateFullscreenSubtitleOptions(subtitlesOptionsPanel);
-                mainSettingsPanel.Visibility = Visibility.Collapsed;
-                subtitlesSettingsPanel.Visibility = Visibility.Visible;
-            };
-            mainSettingsPanel.Children.Add(subtitlesButton);
-
-            // Add panels to settings content grid
-            settingsContentGrid.Children.Add(mainSettingsPanel);
-            settingsContentGrid.Children.Add(qualitySettingsPanel);
-            settingsContentGrid.Children.Add(speedSettingsPanel);
-            settingsContentGrid.Children.Add(subtitlesSettingsPanel);
-
-            // Add settings content grid to content grid
-            contentGrid.Children.Add(settingsContentGrid);
-
-            // Add content grid to settings panel
-            _fullscreenSettingsPanel.Children.Add(contentGrid);
-
-            // Create a translate transform for animation
-            var settingsTransform = new TranslateTransform();
-            settingsTransform.Y = 205; // Match Video settings bottom-sheet height
-            _fullscreenSettingsPanel.RenderTransform = settingsTransform;
-
-            // Add overlay to fullscreen grid first (so it's behind the settings panel)
-            _fullscreenGrid.Children.Add(settingsOverlay);
-            
-            // Add settings panel to fullscreen grid
-            _fullscreenGrid.Children.Add(_fullscreenSettingsPanel);
-
-            // Show main panel and hide others when creating
-            mainSettingsPanel.Visibility = Visibility.Visible;
-            qualitySettingsPanel.Visibility = Visibility.Collapsed;
-            speedSettingsPanel.Visibility = Visibility.Collapsed;
-            subtitlesSettingsPanel.Visibility = Visibility.Collapsed;
-
-            // Animate the settings panel sliding up
-            AnimateFullscreenSettingsPanel(true);
-        }
-
-        // Method to animate the fullscreen settings panel
-        private void AnimateFullscreenSettingsPanel(bool show)
-        {
-            if (_fullscreenSettingsPanel == null) return;
-
-            var animateTransform = _fullscreenSettingsPanel.RenderTransform as TranslateTransform;
-            if (animateTransform == null) return;
-
-            var animation = new DoubleAnimation();
-            animation.Duration = new Duration(TimeSpan.FromMilliseconds(300));
-            animation.EasingFunction = new CircleEase();
-
-            if (show)
-            {
-                animation.To = 0; // Move to visible position
-            }
-            else
-            {
-                animation.To = 205; // Match Video settings bottom-sheet height
-            }
-
-            Storyboard.SetTarget(animation, animateTransform);
-            Storyboard.SetTargetProperty(animation, "Y");
-
-            var storyboard = new Storyboard();
-            storyboard.Children.Add(animation);
-
-            if (!show)
-            {
-                // Hide the settings panel and overlay after animation completes
-                storyboard.Completed += (s, e) => {
-                    if (_fullscreenGrid != null && _fullscreenSettingsPanel != null)
-                    {
-                        // Instead of removing children, just hide them
-                        // Find and hide the overlay (it's the second to last child, just before settings panel)
-                        if (_fullscreenGrid.Children.Count >= 2)
-                        {
-                            var overlay = _fullscreenGrid.Children[_fullscreenGrid.Children.Count - 2];
-                            if (overlay is Grid)
-                            {
-                                overlay.Visibility = Visibility.Collapsed;
-                            }
-                        }
-                        
-                        // Hide settings panel
-                        _fullscreenSettingsPanel.Visibility = Visibility.Collapsed;
-                        
-                        // Reset panel states to ensure main panel is shown next time
-                        if (_fullscreenSettingsPanel.Children.Count > 0)
-                        {
-                            var contentGrid = _fullscreenSettingsPanel.Children[0] as Grid;
-                            if (contentGrid != null && contentGrid.Children.Count > 0)
-                            {
-                                var settingsContentGrid = contentGrid.Children[0] as Grid;
-                                if (settingsContentGrid != null && settingsContentGrid.Children.Count >= 3)
-                                {
-                                    // Show the first panel (main settings) and hide the others
-                                    settingsContentGrid.Children[0].Visibility = Visibility.Visible; // Main panel
-                                    for (int i = 1; i < settingsContentGrid.Children.Count; i++)
-                                    {
-                                        settingsContentGrid.Children[i].Visibility = Visibility.Collapsed;
-                                    }
-                                }
-                            }
-                        }
-                        
-                        // Reset the flag
-                        _isSettingsPanelOpen = false;
-                    }
-                };
-            }
-
-            storyboard.Begin();
         }
 
         private void MediaPlayer_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
@@ -2562,7 +1958,7 @@ namespace YouTube
                 {
                     // Forward skip: text "+10" on left, icon skip.png on right, panel on right side
                     skipText.Text = "+10";
-                    skipIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/skip.png"));
+                    App.SetThemeImageSource(skipIcon, "Assets/Dark/player/skip.png");
                     skipIcon.Margin = new Thickness(10, 0, 0, 0);
                     
                     // Position border on the right side
@@ -2584,7 +1980,7 @@ namespace YouTube
                 {
                     // Backward skip: icon back.png on left, text "-10" on right, panel on left side
                     skipText.Text = "-10";
-                    skipIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/back.png"));
+                    App.SetThemeImageSource(skipIcon, "Assets/player/back.png");
                     skipIcon.Margin = new Thickness(0, 0, 10, 0);
                     
                     // Position border on the left side
@@ -3461,11 +2857,17 @@ namespace YouTube
 
         private void HandleVideoEnd()
         {
+            if (_videoEndHandled)
+            {
+                return;
+            }
+
             System.Diagnostics.Debug.WriteLine("[HandleVideoEnd] Method called");
             
             // Pause the video
             if (MediaPlayer.MediaPlayer != null)
             {
+                _videoEndHandled = true;
                 System.Diagnostics.Debug.WriteLine("[HandleVideoEnd] Pausing MediaPlayer");
                 _isPlaying = false;
                 UpdateSystemMediaPlaybackStatus(MediaPlaybackStatus.Stopped);
@@ -3473,7 +2875,7 @@ namespace YouTube
                 PauseSeparateAudio();
                 if (_playPauseIcon != null)
                 {
-                    _playPauseIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/play.png"));
+                    App.SetThemeImageSource(_playPauseIcon, "Assets/Dark/player/play.png");
                 }
                 _updateTimer.Stop();
                 
@@ -3779,111 +3181,9 @@ namespace YouTube
             };
         }
 
-        private bool _fullscreenShowingTranslations;
-
         // Fullscreen twin of the page's subtitle list: the author's tracks first, with the long
         // machine-translation language list behind its own entry.
-        private void PopulateFullscreenSubtitleOptions(StackPanel panel)
-        {
-            if (panel == null)
-            {
-                return;
-            }
 
-            panel.Children.Clear();
-
-            if (_fullscreenShowingTranslations)
-            {
-                var source = _subtitleTracks.TranslationSource;
-
-                AddFullscreenSubtitleOption(panel, "< Back", false, () =>
-                {
-                    _fullscreenShowingTranslations = false;
-                    PopulateFullscreenSubtitleOptions(panel);
-                });
-
-                foreach (var language in _subtitleTracks.TranslationLanguages)
-                {
-                    var target = language;
-                    var isActive = _activeSubtitleTrack != null
-                        && string.Equals(_activeSubtitleTrack.TranslationLanguageCode, target.LanguageCode, StringComparison.Ordinal);
-
-                    AddFullscreenSubtitleOption(panel, target.Name, isActive, () =>
-                    {
-                        SelectSubtitleTrack(MakeTranslatedTrack(source, target));
-                        _isSettingsPanelOpen = false;
-                        AnimateFullscreenSettingsPanel(false);
-                    });
-                }
-
-                return;
-            }
-
-            // Sync adjustment, offered only while a track is on — with subtitles off it means
-            // nothing.
-            if (_activeSubtitleTrack != null)
-            {
-                AddFullscreenSubtitleOption(panel, "Sync: " + SubtitleOffsetDisplayText, false, null);
-                AddFullscreenSubtitleOption(panel, "   Earlier (+0.25s)", false, () =>
-                {
-                    AdjustSubtitleOffset(SubtitleOffsetStepMs);
-                    PopulateFullscreenSubtitleOptions(panel);
-                });
-                AddFullscreenSubtitleOption(panel, "   Later (-0.25s)", false, () =>
-                {
-                    AdjustSubtitleOffset(-SubtitleOffsetStepMs);
-                    PopulateFullscreenSubtitleOptions(panel);
-                });
-            }
-
-            AddFullscreenSubtitleOption(panel, "Off", _activeSubtitleTrack == null, () =>
-            {
-                SelectSubtitleTrack(null);
-                _isSettingsPanelOpen = false;
-                AnimateFullscreenSettingsPanel(false);
-            });
-
-            foreach (var track in _subtitleTracks.Tracks)
-            {
-                var selected = track;
-                var isActive = _activeSubtitleTrack != null
-                    && string.IsNullOrEmpty(_activeSubtitleTrack.TranslationLanguageCode)
-                    && string.Equals(_activeSubtitleTrack.BaseUrl, selected.BaseUrl, StringComparison.Ordinal);
-
-                AddFullscreenSubtitleOption(panel, selected.DisplayName, isActive, () =>
-                {
-                    SelectSubtitleTrack(selected);
-                    _isSettingsPanelOpen = false;
-                    AnimateFullscreenSettingsPanel(false);
-                });
-            }
-
-            if (_subtitleTracks.CanTranslate)
-            {
-                AddFullscreenSubtitleOption(panel, "Auto-translate >", false, () =>
-                {
-                    _fullscreenShowingTranslations = true;
-                    PopulateFullscreenSubtitleOptions(panel);
-                });
-            }
-        }
-
-        private void AddFullscreenSubtitleOption(StackPanel panel, string label, bool isActive, Action onClick)
-        {
-            Button button;
-            if (onClick == null)
-            {
-                button = MakeFullscreenCheckableOptionButton(label, false, null);
-                button.IsHitTestVisible = false;
-                button.Opacity = 0.7;
-            }
-            else
-            {
-                button = MakeFullscreenCheckableOptionButton(label, isActive, onClick);
-            }
-
-            panel.Children.Add(button);
-        }
 
         // Replaces the displayed track. Pass null or an empty list to turn subtitles off.
         public void SetSubtitleCues(IEnumerable<Subtitles.SubtitleCue> cues)
@@ -6952,6 +6252,7 @@ namespace YouTube
                     ErrorMessageText.Visibility = Visibility.Collapsed;
                 }
 
+                _videoEndHandled = false;
                 _videoLoaded = false;
                 ProgressSlider.Value = 0;
                 ProgressSlider.Maximum = 100;
@@ -6968,7 +6269,7 @@ namespace YouTube
                     PlayPauseButton.Visibility = Visibility.Visible;
                     if (_playPauseIcon != null)
                     {
-                        _playPauseIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/play.png"));
+                        App.SetThemeImageSource(_playPauseIcon, "Assets/Dark/player/play.png");
                     }
                     PlayPauseButton.Opacity = 0.8;
                     PlayPauseButton.IsHitTestVisible = true;
@@ -6979,6 +6280,7 @@ namespace YouTube
                 MediaPlayer.MediaPlayer.MediaFailed -= MediaPlayer_MediaFailed;
                 MediaPlayer.MediaPlayer.MediaOpened += MediaPlayer_MediaOpened;
                 MediaPlayer.MediaPlayer.MediaFailed += MediaPlayer_MediaFailed;
+                AttachVisibleVideoEndedHandler();
                 AttachVisibleVideoPlaybackStateHandler();
                 ResetBufferingDetector();
                 _visibleVideoMediaOpened = false;
@@ -7069,7 +6371,7 @@ namespace YouTube
                     PlayPauseButton.Visibility = Visibility.Visible;
                     if (_playPauseIcon != null)
                     {
-                        _playPauseIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/play.png"));
+                        App.SetThemeImageSource(_playPauseIcon, "Assets/Dark/player/play.png");
                     }
                     PlayPauseButton.Opacity = 0.8;
                     PlayPauseButton.IsHitTestVisible = true;
@@ -7290,7 +6592,7 @@ namespace YouTube
 
             if (_playPauseIcon != null)
             {
-                _playPauseIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/play.png"));
+                App.SetThemeImageSource(_playPauseIcon, "Assets/Dark/player/play.png");
             }
             if (ProgressSlider != null) ProgressSlider.Value = 0;
             _updateTimer?.Stop();
@@ -7493,7 +6795,7 @@ namespace YouTube
                 PlayPauseButton.Visibility = Visibility.Visible;
                 if (_playPauseIcon != null)
                 {
-                    _playPauseIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/play.png"));
+                    App.SetThemeImageSource(_playPauseIcon, "Assets/Dark/player/play.png");
                 }
                 PlayPauseButton.Opacity = 0.8;
                 PlayPauseButton.IsHitTestVisible = true;
@@ -7546,7 +6848,7 @@ namespace YouTube
                     PlayPauseButton.Visibility = Visibility.Visible;
                     if (_playPauseIcon != null)
                     {
-                        _playPauseIcon.Source = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri("ms-appx:///Assets/player/play.png"));
+                        App.SetThemeImageSource(_playPauseIcon, "Assets/Dark/player/play.png");
                     }
                     PlayPauseButton.Opacity = 0.8;
                     PlayPauseButton.IsHitTestVisible = true;
@@ -7589,8 +6891,11 @@ namespace YouTube
                 return;
             }
 
-            // Unsubscribe from window size changes
+            // Unsubscribe from window size changes and keyboard hooks.
             Window.Current.SizeChanged -= Current_SizeChanged;
+            DetachKeyboardShortcuts();
+            this.Loaded -= CustomVideoPlayer_Loaded;
+            this.Unloaded -= CustomVideoPlayer_Unloaded;
             
             // Dispose of timers
             if (_updateTimer != null)
@@ -7636,14 +6941,12 @@ namespace YouTube
                 _fullscreenGrid = null;
             }
             
-            // Clean up fullscreen settings panel
-            _fullscreenSettingsPanel = null;
-            
             // Unsubscribe from media events
             if (MediaPlayer?.MediaPlayer != null)
             {
                 MediaPlayer.MediaPlayer.MediaOpened -= MediaPlayer_MediaOpened;
                 MediaPlayer.MediaPlayer.MediaFailed -= MediaPlayer_MediaFailed;
+                MediaPlayer.MediaPlayer.MediaEnded -= VisibleVideoPlayer_MediaEnded;
                 DetachVisibleVideoPlaybackStateHandler();
             }
 
@@ -7687,6 +6990,7 @@ namespace YouTube
                 if (player != null)
                 {
                     try { player.Pause(); } catch { }
+                    try { player.MediaEnded -= VisibleVideoPlayer_MediaEnded; } catch { }
 
                     // Disposing the source closes our MediaStreamSource, which stops the
                     // demuxer's background prefetching (see DashMediaSource.OnClosed).

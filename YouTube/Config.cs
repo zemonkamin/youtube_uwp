@@ -28,8 +28,13 @@ public static class Config
     private const int MaxCommentsToParse = 80;
     private const int MaxVideoListCacheEntries = 64;
     private const bool VerboseParserLogs = false;
+    private const string AccountAvatarCacheFileName = "yt_account_avatar.jpg";
+    private const string AccountAvatarTokenKeySetting = "yt_account_avatar_token_key";
+    private const string AccountAvatarUrlSetting = "yt_account_avatar_url";
+    private const string AccountAvatarReadySetting = "yt_account_avatar_ready";
 
     private static readonly SemaphoreSlim _tokenRefreshGate = new SemaphoreSlim(1, 1);
+    private static readonly SemaphoreSlim _accountAvatarCacheGate = new SemaphoreSlim(1, 1);
     private static readonly object _cacheGate = new object();
 
     private sealed class VideoListCacheEntry
@@ -125,6 +130,106 @@ public static class Config
         ApplicationData.Current.LocalSettings.Values.Remove("yt_refresh_token");
         ApplicationData.Current.LocalSettings.Values.Remove("AuthToken");
         System.Diagnostics.Debug.WriteLine("Config: Cleared token from local settings");
+    }
+
+    public static bool HasCachedAccountAvatar(string refreshToken)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            return false;
+        }
+
+        var values = ApplicationData.Current.LocalSettings.Values;
+        if (!values.ContainsKey(AccountAvatarReadySetting) ||
+            !(values[AccountAvatarReadySetting] is bool) ||
+            !(bool)values[AccountAvatarReadySetting] ||
+            !values.ContainsKey(AccountAvatarTokenKeySetting))
+        {
+            return false;
+        }
+
+        var storedTokenKey = values[AccountAvatarTokenKeySetting] as string;
+        return string.Equals(storedTokenKey, BuildTokenKey(refreshToken), StringComparison.Ordinal);
+    }
+
+    public static string GetCachedAccountAvatarUri(string refreshToken)
+    {
+        return HasCachedAccountAvatar(refreshToken)
+            ? "ms-appdata:///local/" + AccountAvatarCacheFileName
+            : string.Empty;
+    }
+
+    public static async Task<bool> UpdateCachedAccountAvatarAsync(string refreshToken, string thumbnailUrl)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken) || string.IsNullOrWhiteSpace(thumbnailUrl))
+        {
+            return false;
+        }
+
+        if (thumbnailUrl.StartsWith("//", StringComparison.Ordinal))
+        {
+            thumbnailUrl = "https:" + thumbnailUrl;
+        }
+
+        await _accountAvatarCacheGate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            var values = ApplicationData.Current.LocalSettings.Values;
+            var tokenKey = BuildTokenKey(refreshToken);
+            var storedTokenKey = values.ContainsKey(AccountAvatarTokenKeySetting)
+                ? values[AccountAvatarTokenKeySetting] as string
+                : string.Empty;
+            var storedUrl = values.ContainsKey(AccountAvatarUrlSetting)
+                ? values[AccountAvatarUrlSetting] as string
+                : string.Empty;
+
+            if (HasCachedAccountAvatar(refreshToken) &&
+                string.Equals(storedTokenKey, tokenKey, StringComparison.Ordinal) &&
+                string.Equals(storedUrl, thumbnailUrl, StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            byte[] imageBytes;
+            try
+            {
+                imageBytes = await httpClient.GetByteArrayAsync(thumbnailUrl).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Account avatar download failed: " + ex.Message);
+                return false;
+            }
+
+            if (imageBytes == null || imageBytes.Length == 0)
+            {
+                return false;
+            }
+
+            try
+            {
+                var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(
+                    AccountAvatarCacheFileName,
+                    CreationCollisionOption.ReplaceExisting);
+                await FileIO.WriteBytesAsync(file, imageBytes);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Account avatar cache write failed: " + ex.Message);
+                return false;
+            }
+
+            // Metadata is written only after the file is fully replaced, so the tabbar
+            // never treats a partial/failed write as a valid cached avatar.
+            values[AccountAvatarTokenKeySetting] = tokenKey;
+            values[AccountAvatarUrlSetting] = thumbnailUrl;
+            values[AccountAvatarReadySetting] = true;
+            return true;
+        }
+        finally
+        {
+            _accountAvatarCacheGate.Release();
+        }
     }
 
     // InnerTube API methods
@@ -2332,7 +2437,26 @@ public static class Config
         return fallback;
     }
 
-    public static async Task<AccountInfo> GetAccountInfoAsync(string refreshToken)
+    public static Task<AccountInfo> GetAccountInfoAsync(string refreshToken)
+    {
+        return GetAccountInfoInternalAsync(refreshToken, false);
+    }
+
+    public static async Task<AccountInfo> GetAccountInfoFreshAsync(string refreshToken)
+    {
+        var freshAccount = await GetAccountInfoInternalAsync(refreshToken, true).ConfigureAwait(false);
+        if (freshAccount != null)
+        {
+            return freshAccount;
+        }
+
+        // Keep the profile usable offline/after a transient API failure. The fresh call
+        // is still attempted first so avatar changes are detected whenever possible.
+        AccountInfo cachedAccount;
+        return TryGetCachedAccount(refreshToken, out cachedAccount) ? cachedAccount : null;
+    }
+
+    private static async Task<AccountInfo> GetAccountInfoInternalAsync(string refreshToken, bool forceRefresh)
     {
         if (string.IsNullOrWhiteSpace(refreshToken))
         {
@@ -2340,7 +2464,7 @@ public static class Config
         }
 
         AccountInfo cachedAccount;
-        if (TryGetCachedAccount(refreshToken, out cachedAccount))
+        if (!forceRefresh && TryGetCachedAccount(refreshToken, out cachedAccount))
         {
             return cachedAccount;
         }

@@ -90,12 +90,12 @@ namespace YouTube
                         roundingOverlay.Width = 80;
                         roundingOverlay.Height = 80;
                         roundingOverlay.Stretch = Stretch.Fill;
-                        roundingOverlay.Source = new BitmapImage(new Uri("ms-appx:///Assets/rounding.png"));
+                        App.SetThemeImageSource(roundingOverlay, "Assets/rounding.png");
                         imageGrid.Children.Add(roundingOverlay);
 
                         var titleText = new TextBlock();
                         titleText.Text = channel.ChannelName;
-                        titleText.Foreground = new SolidColorBrush(Windows.UI.Colors.White);
+                        titleText.Foreground = App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White);
                         titleText.FontSize = 12;
                         titleText.TextWrapping = TextWrapping.NoWrap;
                         titleText.TextTrimming = TextTrimming.CharacterEllipsis;

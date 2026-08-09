@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Foundation.Metadata;
+using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Navigation;
 
@@ -70,6 +72,7 @@ namespace YouTube
         private bool _shareWithTimestamp;
         private Storyboard _shareToggleStoryboard;
         private MediaPlayerElement _cachedShortsMediaPlayerElement;
+        private bool _keyboardShortcutsAttached;
 
         // Shorts settings-sheet drag state. Matches the Video page bottom-sheet gesture.
         private double _shortsSettingsInitialY;
@@ -96,6 +99,7 @@ namespace YouTube
         {
             this.InitializeComponent();
             ResetShareTimeToggleVisual(false);
+            this.Loaded += Shorts_Loaded;
             this.Unloaded += Shorts_Unloaded;
 
             if (ShortsPlayer != null)
@@ -1667,16 +1671,16 @@ namespace YouTube
 
             if (LikeIconImage != null)
             {
-                LikeIconImage.Source = new BitmapImage(new Uri(liked
-                    ? "ms-appx:///Assets/player/like_clicked.png"
-                    : "ms-appx:///Assets/player/like.png"));
+                App.SetThemeImageSource(LikeIconImage, liked
+                    ? "Assets/Dark/player/like_clicked.png"
+                    : "Assets/Dark/player/like.png");
             }
 
             if (DislikeIconImage != null)
             {
-                DislikeIconImage.Source = new BitmapImage(new Uri(disliked
-                    ? "ms-appx:///Assets/player/dislike_clicked.png"
-                    : "ms-appx:///Assets/player/dislike.png"));
+                App.SetThemeImageSource(DislikeIconImage, disliked
+                    ? "Assets/Dark/player/dislike_clicked.png"
+                    : "Assets/Dark/player/dislike.png");
             }
 
             if (LikeButton != null)
@@ -4513,6 +4517,119 @@ namespace YouTube
             Windows.ApplicationModel.DataTransfer.DataTransferManager.ShowShareUI();
         }
 
+        private void Shorts_Loaded(object sender, RoutedEventArgs e)
+        {
+            AttachKeyboardShortcuts();
+        }
+
+        private void AttachKeyboardShortcuts()
+        {
+            if (_keyboardShortcutsAttached)
+            {
+                return;
+            }
+
+            try
+            {
+                var coreWindow = CoreWindow.GetForCurrentThread();
+                if (coreWindow != null)
+                {
+                    coreWindow.KeyDown += Shorts_CoreWindow_KeyDown;
+                    _keyboardShortcutsAttached = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Shorts] Keyboard attach failed: " + ex.Message);
+            }
+        }
+
+        private void DetachKeyboardShortcuts()
+        {
+            if (!_keyboardShortcutsAttached)
+            {
+                return;
+            }
+
+            try
+            {
+                var coreWindow = CoreWindow.GetForCurrentThread();
+                if (coreWindow != null)
+                {
+                    coreWindow.KeyDown -= Shorts_CoreWindow_KeyDown;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Shorts] Keyboard detach failed: " + ex.Message);
+            }
+            finally
+            {
+                _keyboardShortcutsAttached = false;
+            }
+        }
+
+        private bool IsShortsModalOpen()
+        {
+            return ShortsOverlayGrid != null && ShortsOverlayGrid.Visibility == Visibility.Visible;
+        }
+
+        private async void Shorts_CoreWindow_KeyDown(CoreWindow sender, KeyEventArgs args)
+        {
+            try
+            {
+                if (IsShortsModalOpen())
+                {
+                    return;
+                }
+
+                if (args.VirtualKey == VirtualKey.Space)
+                {
+                    // Ignore auto-repeat so holding Space cannot rapidly flip play/pause.
+                    if (args.KeyStatus.WasKeyDown)
+                    {
+                        return;
+                    }
+
+                    args.Handled = true;
+                    if (ShortsPlayer != null)
+                    {
+                        ShortsPlayer.TogglePlayPause();
+                    }
+                    return;
+                }
+
+                if (args.VirtualKey != VirtualKey.Up && args.VirtualKey != VirtualKey.Down)
+                {
+                    return;
+                }
+
+                args.Handled = true;
+                if (_isAnimating)
+                {
+                    return;
+                }
+
+                if (ShortsPlayer != null)
+                {
+                    ShortsPlayer.Pause();
+                }
+
+                if (args.VirtualKey == VirtualKey.Down)
+                {
+                    await ShowNextShortAsync();
+                }
+                else
+                {
+                    await ShowPreviousShortAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Shorts] Keyboard shortcut failed: " + ex.Message);
+            }
+        }
+
         private double GetSwipeDistance()
         {
             if (ShortsRoot != null && ShortsRoot.ActualHeight > 0)
@@ -4615,6 +4732,8 @@ namespace YouTube
 
         private void Shorts_Unloaded(object sender, RoutedEventArgs e)
         {
+            DetachKeyboardShortcuts();
+
             if (ShortsPlayer != null)
             {
                 ShortsPlayer.DisposePlayer();

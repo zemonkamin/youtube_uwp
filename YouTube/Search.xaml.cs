@@ -573,7 +573,7 @@ namespace YouTube
                         "Playlist"),
                     Views = videoCountText,
                     Duration = string.Empty,
-                    Thumbnail = FirstNonEmpty(ExtractThumbnailUrl(renderer), "Assets/yt_skeleton/video.png")
+                    Thumbnail = FirstNonEmpty(ExtractThumbnailUrl(renderer), App.GetThemeAssetUri("Assets/yt_skeleton/video.png").ToString())
                 });
             }
 
@@ -603,7 +603,7 @@ namespace YouTube
                     Author = FirstNonEmpty(ExtractLockupSubtitle(renderer), "Playlist"),
                     Views = FirstNonEmpty(ExtractLockupMetadata(renderer), string.Empty),
                     Duration = string.Empty,
-                    Thumbnail = FirstNonEmpty(ExtractThumbnailUrl(renderer), "Assets/yt_skeleton/video.png")
+                    Thumbnail = FirstNonEmpty(ExtractThumbnailUrl(renderer), App.GetThemeAssetUri("Assets/yt_skeleton/video.png").ToString())
                 });
             }
 

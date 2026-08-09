@@ -175,7 +175,7 @@ namespace YouTube
             var header = new TextBlock
             {
                 Text = text,
-                Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 170, 170, 170)),
+                Foreground = (App.GetThemeBrush("AppSecondaryTextBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 170, 170, 170))),
                 FontSize = 20,
                 FontWeight = Windows.UI.Text.FontWeights.SemiBold,
                 Margin = new Thickness(20, 8, 20, 18)
@@ -228,7 +228,7 @@ namespace YouTube
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, 2, 0, 0),
-                Fill = CreateImageBrush(item == null ? string.Empty : item.AvatarUrl, Stretch.UniformToFill, Windows.UI.Color.FromArgb(255, 32, 32, 32))
+                Fill = CreateImageBrush(item == null ? string.Empty : item.AvatarUrl, Stretch.UniformToFill, App.GetThemeColor("AvatarPlaceholderBrush", Windows.UI.Color.FromArgb(255, 32, 32, 32)))
             };
             Grid.SetColumn(avatar, 1);
             root.Children.Add(avatar);
@@ -242,7 +242,7 @@ namespace YouTube
             var title = new TextBlock
             {
                 Text = item == null ? string.Empty : item.Title,
-                Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+                Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White)),
                 FontSize = 15,
                 FontWeight = Windows.UI.Text.FontWeights.SemiBold,
                 TextTrimming = TextTrimming.CharacterEllipsis,
@@ -254,7 +254,7 @@ namespace YouTube
             var message = new TextBlock
             {
                 Text = item == null ? string.Empty : item.Message,
-                Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+                Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White)),
                 FontSize = 13,
                 TextWrapping = TextWrapping.Wrap,
                 TextTrimming = TextTrimming.CharacterEllipsis,
@@ -266,7 +266,7 @@ namespace YouTube
             var time = new TextBlock
             {
                 Text = item == null ? string.Empty : item.TimeText,
-                Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 170, 170, 170)),
+                Foreground = (App.GetThemeBrush("AppSecondaryTextBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 170, 170, 170))),
                 FontSize = 12,
                 TextTrimming = TextTrimming.CharacterEllipsis,
                 TextWrapping = TextWrapping.NoWrap,
@@ -283,7 +283,7 @@ namespace YouTube
                 Width = 96,
                 Height = 54,
                 CornerRadius = new CornerRadius(6),
-                Background = CreateImageBrush(item == null ? string.Empty : item.ThumbnailUrl, Stretch.UniformToFill, Windows.UI.Color.FromArgb(255, 55, 55, 55)),
+                Background = CreateImageBrush(item == null ? string.Empty : item.ThumbnailUrl, Stretch.UniformToFill, App.GetThemeColor("VideoPlaceholderBrush", Windows.UI.Color.FromArgb(255, 55, 55, 55))),
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(0, 0, 0, 0)

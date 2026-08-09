@@ -245,7 +245,7 @@ namespace YouTube
             if (brush == null)
             {
                 brush = new SolidColorBrush(
-                    isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155));
+                    isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155)));
                 ScrubPreviewToggleTrack.Background = brush;
             }
 
@@ -253,7 +253,7 @@ namespace YouTube
 
             if (!animate)
             {
-                brush.Color = isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155);
+                brush.Color = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155));
                 ScrubPreviewToggleThumbTransform.X = isOn ? OnOffset : 0;
                 return;
             }
@@ -267,7 +267,7 @@ namespace YouTube
             var colorAnimation = new ColorAnimation
             {
                 Duration = TimeSpan.FromMilliseconds(180),
-                To = isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155)
+                To = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155))
             };
 
             Storyboard.SetTarget(thumbAnimation, ScrubPreviewToggleThumbTransform);
@@ -355,7 +355,7 @@ namespace YouTube
             if (brush == null)
             {
                 brush = new SolidColorBrush(
-                    isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155));
+                    isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155)));
                 AutoFullscreenLandscapeToggleTrack.Background = brush;
             }
 
@@ -363,7 +363,7 @@ namespace YouTube
 
             if (!animate)
             {
-                brush.Color = isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155);
+                brush.Color = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155));
                 AutoFullscreenLandscapeToggleThumbTransform.X = isOn ? OnOffset : 0;
                 return;
             }
@@ -377,7 +377,7 @@ namespace YouTube
             var colorAnimation = new ColorAnimation
             {
                 Duration = TimeSpan.FromMilliseconds(180),
-                To = isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155)
+                To = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155))
             };
 
             Storyboard.SetTarget(thumbAnimation, AutoFullscreenLandscapeToggleThumbTransform);
@@ -437,7 +437,7 @@ namespace YouTube
                 var text = new TextBlock
                 {
                     Text = quality,
-                    Foreground = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.White),
+                    Foreground = new Windows.UI.Xaml.Media.SolidColorBrush(App.GetThemeColor("AppPrimaryTextBrush", Windows.UI.Colors.White)),
                     FontSize = 14,
                     VerticalAlignment = VerticalAlignment.Center
                 };
@@ -449,7 +449,7 @@ namespace YouTube
                     Glyph = "\uE73E",
                     FontFamily = new Windows.UI.Xaml.Media.FontFamily("Segoe MDL2 Assets"),
                     FontSize = 18,
-                    Foreground = new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.White),
+                    Foreground = new Windows.UI.Xaml.Media.SolidColorBrush(App.GetThemeColor("AppPrimaryTextBrush", Windows.UI.Colors.White)),
                     Visibility = string.Equals(current, quality, StringComparison.OrdinalIgnoreCase)
                         ? Visibility.Visible
                         : Visibility.Collapsed,
@@ -576,7 +576,7 @@ namespace YouTube
                 var text = new TextBlock
                 {
                     Text = option.Title,
-                    Foreground = new SolidColorBrush(Colors.White),
+                    Foreground = new SolidColorBrush(App.GetThemeColor("AppPrimaryTextBrush", Colors.White)),
                     FontSize = 14,
                     VerticalAlignment = VerticalAlignment.Center
                 };
@@ -588,7 +588,7 @@ namespace YouTube
                     Glyph = "",
                     FontFamily = new FontFamily("Segoe MDL2 Assets"),
                     FontSize = 18,
-                    Foreground = new SolidColorBrush(Colors.White),
+                    Foreground = new SolidColorBrush(App.GetThemeColor("AppPrimaryTextBrush", Colors.White)),
                     Visibility = current == option.Minutes ? Visibility.Visible : Visibility.Collapsed,
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(12, 0, 0, 0)
@@ -652,13 +652,13 @@ namespace YouTube
             var brush = NotificationsToggleTrack.Background as SolidColorBrush;
             if (brush == null)
             {
-                brush = new SolidColorBrush(isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155));
+                brush = new SolidColorBrush(isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155)));
                 NotificationsToggleTrack.Background = brush;
             }
 
             if (!animate)
             {
-                brush.Color = isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155);
+                brush.Color = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155));
                 NotificationsToggleThumbTransform.X = isOn ? 24 : 0;
                 return;
             }
@@ -672,7 +672,7 @@ namespace YouTube
             var colorAnimation = new ColorAnimation
             {
                 Duration = TimeSpan.FromMilliseconds(180),
-                To = isOn ? Colors.White : Color.FromArgb(255, 155, 155, 155)
+                To = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155))
             };
 
             Storyboard.SetTarget(thumbAnimation, NotificationsToggleThumbTransform);

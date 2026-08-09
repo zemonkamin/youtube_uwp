@@ -55,7 +55,11 @@ namespace YouTube
                     return;
                 }
 
-                var profileTask = Config.GetAccountInfoAsync(refreshToken);
+                ApplyCachedProfileImage(refreshToken);
+
+                // Profile is deliberately refreshed here instead of using the short-lived
+                // in-memory account cache. This is where avatar changes are detected.
+                var profileTask = Config.GetAccountInfoFreshAsync(refreshToken);
                 var historyTask = Config.GetHistoryAsync(refreshToken, 12);
                 var playlistsTask = Config.GetMyPlaylistsAsync(refreshToken, 25);
 
@@ -91,6 +95,7 @@ namespace YouTube
                 }
 
                 ApplyProfile(profile);
+                await UpdateCachedProfileImageAsync(refreshToken, profile);
                 ApplyHistory(history);
                 ApplyPlaylists(playlists);
 
@@ -152,13 +157,52 @@ namespace YouTube
                 GoToChannelButton.Visibility = Visibility.Collapsed;
             }
 
-            if (!string.IsNullOrWhiteSpace(profile.ThumbnailUrl))
+            if (!string.IsNullOrWhiteSpace(profile.ThumbnailUrl) &&
+                !Config.HasCachedAccountAvatar(Config.UserToken))
             {
                 try
                 {
                     ProfileImageBrush.ImageSource = new BitmapImage(new Uri(profile.ThumbnailUrl));
                 }
                 catch { }
+            }
+        }
+
+        private void ApplyCachedProfileImage(string refreshToken)
+        {
+            var cachedUri = Config.GetCachedAccountAvatarUri(refreshToken);
+            if (string.IsNullOrWhiteSpace(cachedUri))
+            {
+                return;
+            }
+
+            try
+            {
+                var bitmap = new BitmapImage();
+                bitmap.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
+                bitmap.UriSource = new Uri(cachedUri);
+                ProfileImageBrush.ImageSource = bitmap;
+            }
+            catch
+            {
+            }
+        }
+
+        private async Task UpdateCachedProfileImageAsync(string refreshToken, AccountInfo profile)
+        {
+            if (profile == null || string.IsNullOrWhiteSpace(profile.ThumbnailUrl))
+            {
+                return;
+            }
+
+            await Config.UpdateCachedAccountAvatarAsync(refreshToken, profile.ThumbnailUrl);
+
+            // Re-read through ms-appdata with IgnoreImageCache so an overwritten file is
+            // visible immediately on this profile and on this page's tabbar.
+            ApplyCachedProfileImage(refreshToken);
+            if (tabbar != null)
+            {
+                tabbar.RefreshAccountIconFromCache();
             }
         }
 

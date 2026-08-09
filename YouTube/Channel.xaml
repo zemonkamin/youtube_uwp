@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="#0F0F0F">
+    Background="{ThemeResource AppBackgroundBrush}">
 
     <Page.Resources>
         <Style x:Key="PlainVideoButtonStyle" TargetType="Button">
@@ -47,7 +47,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="#0F0F0F">
+    <Grid Background="{ThemeResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="56" />
             <RowDefinition Height="*" />
@@ -56,36 +56,36 @@
 
         <local:Navbar x:Name="navbar" Grid.Row="0" />
 
-        <Grid x:Name="LoadingGrid" Grid.Row="1" Background="#0F0F0F" Visibility="Visible">
+        <Grid x:Name="LoadingGrid" Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}" Visibility="Visible">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <local:AndroidLoadingRing x:Name="LoadingRing" Width="42" Height="42" IsActive="True" />
-                <TextBlock Text="Loading channel..." Foreground="#AAAAAA" FontSize="14" Margin="0,12,0,0" HorizontalAlignment="Center" />
+                <TextBlock Text="Loading channel..." Foreground="{ThemeResource AppSecondaryTextBrush}" FontSize="14" Margin="0,12,0,0" HorizontalAlignment="Center" />
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="ErrorPanel" Grid.Row="1" Background="#0F0F0F" Visibility="Collapsed">
+        <Grid x:Name="ErrorPanel" Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}" Visibility="Collapsed">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24">
-                <FontIcon Glyph="&#xE783;" FontFamily="Segoe MDL2 Assets" Foreground="#AAAAAA" FontSize="42" />
-                <TextBlock x:Name="ErrorText" Text="Could not load channel" Foreground="White" FontSize="18" FontWeight="SemiBold" TextAlignment="Center" Margin="0,16,0,8" />
-                <TextBlock Text="Check your connection and try again" Foreground="#AAAAAA" FontSize="14" TextAlignment="Center" Margin="0,0,0,20" />
-                <Button Content="Retry" Click="RetryButton_Click" Background="White" Foreground="#0F0F0F" BorderThickness="0" Padding="24,10" />
+                <FontIcon Glyph="&#xE783;" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource AppSecondaryTextBrush}" FontSize="42" />
+                <TextBlock x:Name="ErrorText" Text="Could not load channel" Foreground="{ThemeResource AppPrimaryTextBrush}" FontSize="18" FontWeight="SemiBold" TextAlignment="Center" Margin="0,16,0,8" />
+                <TextBlock Text="Check your connection and try again" Foreground="{ThemeResource AppSecondaryTextBrush}" FontSize="14" TextAlignment="Center" Margin="0,0,0,20" />
+                <Button Content="Retry" Click="RetryButton_Click" Background="{ThemeResource PrimaryActionBackgroundBrush}" Foreground="{ThemeResource PrimaryActionForegroundBrush}" BorderThickness="0" Padding="24,10" />
             </StackPanel>
         </Grid>
 
         <ScrollViewer x:Name="MainContent"
                       Grid.Row="1"
-                      Background="#0F0F0F"
+                      Background="{ThemeResource AppBackgroundBrush}"
                       Visibility="Collapsed"
                       ZoomMode="Disabled"
                       HorizontalScrollMode="Disabled"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       ViewChanged="MainContent_ViewChanged">
-            <StackPanel Background="#0F0F0F" Padding="0,8,0,24">
+            <StackPanel Background="{ThemeResource AppBackgroundBrush}" Padding="0,8,0,24">
 
                 <!--  Collapsed when the channel has no banner art, so no empty box is shown.  -->
                 <Grid x:Name="ChannelBannerSection" Margin="12,0,12,0" Visibility="Collapsed">
-                    <Border Height="110" CornerRadius="10" Background="#1F1F1F" />
+                    <Border Height="110" CornerRadius="10" Background="{ThemeResource AppSurfaceAltBrush}" />
                     <Border Height="110" CornerRadius="10">
                         <Border.Background>
                             <ImageBrush x:Name="ChannelBannerBrush" Stretch="UniformToFill" />
@@ -100,7 +100,7 @@
                     </Grid.ColumnDefinitions>
 
                     <Grid Width="64" Height="64" VerticalAlignment="Top">
-                        <Ellipse Fill="#2A2A2A" />
+                        <Ellipse Fill="{ThemeResource AvatarPlaceholderBrush}" />
                         <Ellipse>
                             <Ellipse.Fill>
                                 <ImageBrush x:Name="ChannelIconBrush" Stretch="UniformToFill" />
@@ -109,9 +109,9 @@
                     </Grid>
 
                     <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
-                        <TextBlock x:Name="ChannelTitle" Text="Channel" Foreground="White" FontSize="20" FontWeight="SemiBold" TextWrapping="WrapWholeWords" MaxLines="2" />
-                        <TextBlock x:Name="ChannelHandle" Foreground="#DDDDDD" FontSize="11" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" />
-                        <TextBlock x:Name="ChannelStats" Foreground="#AAAAAA" FontSize="11" Margin="0,3,0,0" Text="0 subscribers • 0 videos" />
+                        <TextBlock x:Name="ChannelTitle" Text="Channel" Foreground="{ThemeResource AppPrimaryTextBrush}" FontSize="20" FontWeight="SemiBold" TextWrapping="WrapWholeWords" MaxLines="2" />
+                        <TextBlock x:Name="ChannelHandle" Foreground="{ThemeResource AppSecondaryTextBrush}" FontSize="11" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" />
+                        <TextBlock x:Name="ChannelStats" Foreground="{ThemeResource AppSecondaryTextBrush}" FontSize="11" Margin="0,3,0,0" Text="0 subscribers • 0 videos" />
                     </StackPanel>
                 </Grid>
 
@@ -126,14 +126,14 @@
                     <StackPanel>
                         <TextBlock x:Name="ChannelDescription"
                                    Text=""
-                                   Foreground="#CCCCCC"
+                                   Foreground="{ThemeResource AppSecondaryTextBrush}"
                                    FontSize="11"
                                    TextWrapping="Wrap"
                                    TextTrimming="WordEllipsis"
                                    MaxLines="2" />
                         <TextBlock x:Name="DescriptionMoreText"
                                    Text="...more"
-                                   Foreground="White"
+                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
                                    FontSize="11"
                                    FontWeight="SemiBold"
                                    Margin="0,3,0,0" />
@@ -142,8 +142,8 @@
 
                 <Border x:Name="SubscribeButtonContainer"
                         Margin="12,12,12,12"
-                        Background="#F1F1F1"
-                        BorderBrush="#F1F1F1"
+                        Background="{ThemeResource PrimaryActionBackgroundBrush}"
+                        BorderBrush="{ThemeResource PrimaryActionBackgroundBrush}"
                         BorderThickness="1"
                         CornerRadius="20"
                         Height="40"
@@ -151,7 +151,7 @@
                     <Button x:Name="SubscribeButton"
                             Style="{StaticResource SubscriptionIconButtonStyle}"
                             Background="Transparent"
-                            Foreground="#0F0F0F"
+                            Foreground="{ThemeResource PrimaryActionForegroundBrush}"
                             BorderThickness="0"
                             FontSize="14"
                             FontWeight="SemiBold"
@@ -164,7 +164,7 @@
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <TextBlock x:Name="SubscribeButtonText"
                                        Text="Subscribe"
-                                       Foreground="#0F0F0F"
+                                       Foreground="{ThemeResource PrimaryActionForegroundBrush}"
                                        FontSize="14"
                                        FontWeight="SemiBold"
                                        VerticalAlignment="Center" />
@@ -177,14 +177,14 @@
                                        Width="22"
                                        Height="22"
                                        Stretch="Uniform"
-                                       Source="Assets/notifications.png"
+                                       local:ThemeAsset.Path="Assets/notifications.png"
                                        VerticalAlignment="Center" />
                                 <Image x:Name="SubscribeDownArrowIcon"
                                        Width="16"
                                        Height="16"
                                        Margin="6,0,10,0"
                                        Stretch="Uniform"
-                                       Source="Assets/down_arrow.png"
+                                       local:ThemeAsset.Path="Assets/down_arrow.png"
                                        VerticalAlignment="Center" />
                             </StackPanel>
                         </StackPanel>
@@ -203,11 +203,11 @@
                                 <RowDefinition Height="2" />
                             </Grid.RowDefinitions>
                             <TextBlock x:Name="VideosTabText" Grid.Row="0"
-                                       Text="Videos" Foreground="White" FontSize="15"
+                                       Text="Videos" Foreground="{ThemeResource AppPrimaryTextBrush}" FontSize="15"
                                        FontWeight="SemiBold" HorizontalAlignment="Center"
                                        VerticalAlignment="Center" />
                             <Border x:Name="VideosTabIndicator" Grid.Row="1"
-                                    Height="2" Background="White"
+                                    Height="2" Background="{ThemeResource AppPrimaryTextBrush}"
                                     HorizontalAlignment="Stretch" />
                         </Grid>
 
@@ -218,11 +218,11 @@
                                 <RowDefinition Height="2" />
                             </Grid.RowDefinitions>
                             <TextBlock x:Name="ShortsTabText" Grid.Row="0"
-                                       Text="Shorts" Foreground="#AAAAAA" FontSize="15"
+                                       Text="Shorts" Foreground="{ThemeResource AppSecondaryTextBrush}" FontSize="15"
                                        FontWeight="SemiBold" HorizontalAlignment="Center"
                                        VerticalAlignment="Center" />
                             <Border x:Name="ShortsTabIndicator" Grid.Row="1"
-                                    Height="2" Background="White" Opacity="0"
+                                    Height="2" Background="{ThemeResource AppPrimaryTextBrush}" Opacity="0"
                                     HorizontalAlignment="Stretch" />
                         </Grid>
 
@@ -233,11 +233,11 @@
                                 <RowDefinition Height="2" />
                             </Grid.RowDefinitions>
                             <TextBlock x:Name="PlaylistsTabText" Grid.Row="0"
-                                       Text="Playlists" Foreground="#AAAAAA" FontSize="15"
+                                       Text="Playlists" Foreground="{ThemeResource AppSecondaryTextBrush}" FontSize="15"
                                        FontWeight="SemiBold" HorizontalAlignment="Center"
                                        VerticalAlignment="Center" />
                             <Border x:Name="PlaylistsTabIndicator" Grid.Row="1"
-                                    Height="2" Background="White" Opacity="0"
+                                    Height="2" Background="{ThemeResource AppPrimaryTextBrush}" Opacity="0"
                                     HorizontalAlignment="Stretch" />
                         </Grid>
 
@@ -248,11 +248,11 @@
                                 <RowDefinition Height="2" />
                             </Grid.RowDefinitions>
                             <TextBlock x:Name="PostsTabText" Grid.Row="0"
-                                       Text="Posts" Foreground="#AAAAAA" FontSize="15"
+                                       Text="Posts" Foreground="{ThemeResource AppSecondaryTextBrush}" FontSize="15"
                                        FontWeight="SemiBold" HorizontalAlignment="Center"
                                        VerticalAlignment="Center" />
                             <Border x:Name="PostsTabIndicator" Grid.Row="1"
-                                    Height="2" Background="White" Opacity="0"
+                                    Height="2" Background="{ThemeResource AppPrimaryTextBrush}" Opacity="0"
                                     HorizontalAlignment="Stretch" />
                         </Grid>
                     </StackPanel>
@@ -269,7 +269,7 @@
 
                 <!-- Videos -->
                 <ItemsControl x:Name="VideosItemsControl"
-                              Background="#0F0F0F"
+                              Background="{ThemeResource AppBackgroundBrush}"
                               HorizontalAlignment="Stretch"
                               Padding="8,8,8,16">
                     <ItemsControl.ItemsPanel>
@@ -292,29 +292,27 @@
                                     SizeChanged="ResponsiveCard_SizeChanged"
                                     Margin="0,0,0,16"
                                     Click="VideoCard_Click">
-                                <StackPanel Orientation="Vertical" Background="#0F0F0F"
+                                <StackPanel Orientation="Vertical" Background="{ThemeResource AppBackgroundBrush}"
                                             HorizontalAlignment="Stretch">
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged">
-                                        <Border CornerRadius="8" Background="#1A1A1A" />
+                                        <Border CornerRadius="8" Background="{ThemeResource AppSurfaceAltBrush}" />
                                         <Border CornerRadius="8">
                                             <Image DataContextChanged="CardThumbnail_DataContextChanged"
                                                    Stretch="UniformToFill" />
                                         </Border>
                                         <Border HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                                Margin="0,0,8,8" Padding="6,2">
-                                            <Border.Background>
-                                                <SolidColorBrush Color="Black" Opacity="0.8" />
-                                            </Border.Background>
+                                                Margin="0,0,8,8" Padding="6,2"
+                                                CornerRadius="4" Background="#CC000000">
                                             <TextBlock Text="{Binding Duration}" Foreground="White"
                                                        FontSize="12" FontWeight="Medium" />
                                         </Border>
                                     </Grid>
                                     <StackPanel Margin="12,12,12,0">
                                         <TextBlock Text="{Binding Title}" TextWrapping="NoWrap"
-                                                   TextTrimming="CharacterEllipsis" Foreground="White"
+                                                   TextTrimming="CharacterEllipsis" Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                    FontFamily="Roboto" FontSize="14" FontWeight="Medium" />
                                         <TextBlock Text="{Binding StatsLine}" TextWrapping="NoWrap"
-                                                   TextTrimming="CharacterEllipsis" Foreground="Gray"
+                                                   TextTrimming="CharacterEllipsis" Foreground="{ThemeResource AppMutedTextBrush}"
                                                    FontFamily="Roboto" FontSize="12" Margin="0,4,0,0" />
                                     </StackPanel>
                                 </StackPanel>
@@ -325,7 +323,7 @@
 
                 <!-- Shorts: same 9:16 two-column portrait cards as Search. -->
                 <ItemsControl x:Name="ShortsItemsControl"
-                              Background="#0F0F0F"
+                              Background="{ThemeResource AppBackgroundBrush}"
                               HorizontalAlignment="Stretch"
                               Padding="20,8,20,20"
                               Visibility="Collapsed">
@@ -361,7 +359,7 @@
                                     </Border>
                                     <TextBlock Margin="12,0,12,12" MaxLines="2"
                                                VerticalAlignment="Bottom" FontFamily="Roboto"
-                                               FontSize="16" FontWeight="SemiBold" Foreground="White"
+                                               FontSize="16" FontWeight="SemiBold" Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                Text="{Binding Title}" TextTrimming="CharacterEllipsis"
                                                TextWrapping="WrapWholeWords" />
                                 </Grid>
@@ -372,7 +370,7 @@
 
                 <!-- Playlists: same full-width / responsive cards used in Search. -->
                 <ItemsControl x:Name="PlaylistsItemsControl"
-                              Background="#0F0F0F"
+                              Background="{ThemeResource AppBackgroundBrush}"
                               HorizontalAlignment="Stretch"
                               Padding="8,8,8,16"
                               Visibility="Collapsed">
@@ -392,17 +390,17 @@
                                     Click="ChannelPlaylistCard_Click">
                                 <StackPanel>
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged">
-                                        <Border CornerRadius="8" Background="#1A1A1A" />
+                                        <Border CornerRadius="8" Background="{ThemeResource AppSurfaceAltBrush}" />
                                         <Border CornerRadius="8">
                                             <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill" />
                                         </Border>
                                     </Grid>
                                     <StackPanel Margin="12,12,12,0">
-                                        <TextBlock Text="{Binding Title}" Foreground="White"
+                                        <TextBlock Text="{Binding Title}" Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                    FontFamily="Roboto" FontSize="14" FontWeight="Medium"
                                                    MaxLines="2" TextWrapping="WrapWholeWords"
                                                    TextTrimming="CharacterEllipsis" />
-                                        <TextBlock Text="Playlist" Foreground="Gray"
+                                        <TextBlock Text="Playlist" Foreground="{ThemeResource AppMutedTextBrush}"
                                                    FontFamily="Roboto" FontSize="12" Margin="0,4,0,0" />
                                     </StackPanel>
                                 </StackPanel>
@@ -413,7 +411,7 @@
 
                 <!-- Community posts: compact YouTube-style card with author row and large media. -->
                 <ItemsControl x:Name="PostsItemsControl"
-                              Background="#0F0F0F"
+                              Background="{ThemeResource AppBackgroundBrush}"
                               HorizontalAlignment="Stretch"
                               HorizontalContentAlignment="Stretch"
                               Padding="12,8,12,20"
@@ -428,8 +426,8 @@
                             <Border Margin="0,0,0,16"
                                     Padding="16"
                                     HorizontalAlignment="Stretch"
-                                    Background="#101010"
-                                    BorderBrush="#404040"
+                                    Background="{ThemeResource AppSurfaceAltBrush}"
+                                    BorderBrush="{ThemeResource AppDividerBrush}"
                                     BorderThickness="1"
                                     CornerRadius="14">
                                 <StackPanel>
@@ -444,7 +442,7 @@
                                                 HorizontalAlignment="Left"
                                                 VerticalAlignment="Top"
                                                 CornerRadius="18"
-                                                Background="#242424">
+                                                Background="{ThemeResource AppSurfaceBrush}">
                                             <Image Stretch="UniformToFill"
                                                    DataContextChanged="PostAvatar_DataContextChanged" />
                                         </Border>
@@ -454,13 +452,13 @@
                                                     VerticalAlignment="Center"
                                                     Margin="4,0,0,0">
                                             <TextBlock Text="{Binding Author}"
-                                                       Foreground="White"
+                                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                        FontFamily="Roboto"
                                                        FontWeight="SemiBold"
                                                        FontSize="14"
                                                        VerticalAlignment="Center" />
                                             <TextBlock Text="{Binding PublishedText}"
-                                                       Foreground="#AAAAAA"
+                                                       Foreground="{ThemeResource AppSecondaryTextBrush}"
                                                        FontFamily="Roboto"
                                                        FontSize="13"
                                                        Margin="9,0,0,0"
@@ -470,7 +468,7 @@
 
                                     <!-- Post text -->
                                     <TextBlock Text="{Binding Text}"
-                                               Foreground="White"
+                                               Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                FontFamily="Roboto"
                                                FontSize="17"
                                                Margin="44,8,4,0"
@@ -479,8 +477,8 @@
                                     <!-- First attached photo. Multi-image posts still show their
                                          first full-resolution image instead of an empty placeholder. -->
                                     <Border Margin="44,14,4,0"
-                                            Background="#0A0A0A"
-                                            BorderBrush="#303030"
+                                            Background="{ThemeResource AppSurfaceAltBrush}"
+                                            BorderBrush="{ThemeResource AppDividerBrush}"
                                             BorderThickness="1"
                                             CornerRadius="12"
                                             Visibility="{Binding ImageVisibility}">
@@ -503,7 +501,7 @@
                             Visibility="Collapsed">
                     <local:AndroidLoadingRing x:Name="ChannelBottomLoadingRing"
                                               Width="30" Height="30" IsActive="False" />
-                    <TextBlock Text="Loading more..." Foreground="#888888"
+                    <TextBlock Text="Loading more..." Foreground="{ThemeResource AppMutedTextBrush}"
                                FontSize="12" Margin="0,7,0,0"
                                HorizontalAlignment="Center" />
                 </StackPanel>
@@ -520,7 +518,7 @@
                 Grid.Row="1"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Stretch"
-                Background="#1A1A1A"
+                Background="{ThemeResource AppSurfaceAltBrush}"
                 CornerRadius="15"
                 Height="400"
                 Margin="10,0,10,10"
@@ -561,14 +559,14 @@
 
                     <TextBlock Grid.Row="0"
                                Text="Description"
-                               Foreground="White"
+                               Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontWeight="SemiBold"
                                Margin="0,0,0,16"
                                FontSize="18" />
 
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <TextBlock x:Name="FullDescriptionText"
-                                   Foreground="White"
+                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
                                    FontSize="14"
                                    TextWrapping="Wrap" />
                     </ScrollViewer>
@@ -580,7 +578,7 @@
                 Grid.Row="1"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Stretch"
-                Background="#222222"
+                Background="{ThemeResource AppDividerBrush}"
                 CornerRadius="15"
                 Height="300"
                 Margin="10,0,10,10"
@@ -616,7 +614,7 @@
                 <Grid Grid.Row="1" Margin="20,0,20,20">
                     <StackPanel>
                         <TextBlock Text="Notifications"
-                                   Foreground="White"
+                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
                                    FontWeight="SemiBold"
                                    Margin="0,0,0,16"
                                    FontSize="16" />
@@ -636,9 +634,9 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <Image Grid.Column="0" Source="Assets/all_notifications.png" Width="24" Height="24" Margin="0,0,16,0" />
-                                <TextBlock Grid.Column="1" Text="All" Foreground="White" VerticalAlignment="Center" FontSize="16" />
-                                <FontIcon x:Name="NotificationAllCheckmark" Grid.Column="2" Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="White" Margin="16,0,0,0" VerticalAlignment="Center" Visibility="Collapsed" />
+                                <Image Grid.Column="0" local:ThemeAsset.Path="Assets/all_notifications.png" Width="24" Height="24" Margin="0,0,16,0" />
+                                <TextBlock Grid.Column="1" Text="All" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16" />
+                                <FontIcon x:Name="NotificationAllCheckmark" Grid.Column="2" Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="{ThemeResource AppPrimaryTextBrush}" Margin="16,0,0,0" VerticalAlignment="Center" Visibility="Collapsed" />
                             </Grid>
                         </Button>
 
@@ -657,9 +655,9 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <Image Grid.Column="0" Source="Assets/notifications.png" Width="24" Height="24" Margin="0,0,16,0" />
-                                <TextBlock Grid.Column="1" Text="Personalized" Foreground="White" VerticalAlignment="Center" FontSize="16" />
-                                <FontIcon x:Name="NotificationPersonalizedCheckmark" Grid.Column="2" Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="White" Margin="16,0,0,0" VerticalAlignment="Center" Visibility="Collapsed" />
+                                <Image Grid.Column="0" local:ThemeAsset.Path="Assets/notifications.png" Width="24" Height="24" Margin="0,0,16,0" />
+                                <TextBlock Grid.Column="1" Text="Personalized" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16" />
+                                <FontIcon x:Name="NotificationPersonalizedCheckmark" Grid.Column="2" Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="{ThemeResource AppPrimaryTextBrush}" Margin="16,0,0,0" VerticalAlignment="Center" Visibility="Collapsed" />
                             </Grid>
                         </Button>
 
@@ -678,9 +676,9 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <Image Grid.Column="0" Source="Assets/none_notifications.png" Width="24" Height="24" Margin="0,0,16,0" />
-                                <TextBlock Grid.Column="1" Text="None" Foreground="White" VerticalAlignment="Center" FontSize="16" />
-                                <FontIcon x:Name="NotificationNoneCheckmark" Grid.Column="2" Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="White" Margin="16,0,0,0" VerticalAlignment="Center" Visibility="Collapsed" />
+                                <Image Grid.Column="0" local:ThemeAsset.Path="Assets/none_notifications.png" Width="24" Height="24" Margin="0,0,16,0" />
+                                <TextBlock Grid.Column="1" Text="None" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16" />
+                                <FontIcon x:Name="NotificationNoneCheckmark" Grid.Column="2" Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="{ThemeResource AppPrimaryTextBrush}" Margin="16,0,0,0" VerticalAlignment="Center" Visibility="Collapsed" />
                             </Grid>
                         </Button>
 
@@ -698,8 +696,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
-                                <Image Grid.Column="0" Source="Assets/unsubscribe.png" Width="24" Height="24" Margin="0,0,16,0" />
-                                <TextBlock Grid.Column="1" Text="Unsubscribe" Foreground="White" VerticalAlignment="Center" FontSize="16" />
+                                <Image Grid.Column="0" local:ThemeAsset.Path="Assets/unsubscribe.png" Width="24" Height="24" Margin="0,0,16,0" />
+                                <TextBlock Grid.Column="1" Text="Unsubscribe" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16" />
                             </Grid>
                         </Button>
                     </StackPanel>

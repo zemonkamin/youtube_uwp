@@ -20,14 +20,294 @@ using Windows.ApplicationModel.Background;
 using Windows.Data.Xml.Dom;
 using Windows.Storage;
 using Windows.UI.Notifications;
+using Windows.UI;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace YouTube
 {
+    // VS2015/UWP XAML is more reliable when a custom attached property is exposed
+    // by a public DependencyObject service rather than by the App class itself.
+    // XAML uses local:ThemeAsset.Path and the actual theme selection remains in App.
+    public sealed class ThemeAsset : DependencyObject
+    {
+        public static readonly DependencyProperty PathProperty =
+            DependencyProperty.RegisterAttached(
+                "Path",
+                typeof(string),
+                typeof(ThemeAsset),
+                new PropertyMetadata(null, OnPathChanged));
+
+        public static string GetPath(DependencyObject target)
+        {
+            return target == null ? null : target.GetValue(PathProperty) as string;
+        }
+
+        public static void SetPath(DependencyObject target, string value)
+        {
+            if (target != null)
+            {
+                target.SetValue(PathProperty, value);
+            }
+        }
+
+        private static void OnPathChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
+        {
+            App.OnThemeAssetPathChanged(target, e.NewValue as string);
+        }
+    }
+
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
     sealed partial class App : Application
     {
+        private static readonly object ThemeAssetTargetsLock = new object();
+        private static readonly List<WeakReference> ThemeAssetTargets = new List<WeakReference>();
+        private static readonly HashSet<string> ThemeAwareRootAssets = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "all_notifications.png",
+            "copy.png",
+            "down_arrow.png",
+            "info.png",
+            "link.png",
+            "log_out.png",
+            "microphone.png",
+            "more.png",
+            "none_notifications.png",
+            "notifications.png",
+            "qr.png",
+            "rounding.png",
+            "rounding_up.png",
+            "search.png",
+            "share.png",
+            "unsubscribe.png",
+            "ytlogo.png"
+        };
+
+        private static UISettings _uiSettings;
+        private static CoreDispatcher _uiDispatcher;
+        private static bool _useLightThemeAssets;
+
+        public static Uri GetThemeAssetUri(string assetPath)
+        {
+            var normalized = NormalizeAssetPath(assetPath);
+            if (string.IsNullOrWhiteSpace(normalized))
+            {
+                return null;
+            }
+
+            if (IsThemeAwareAsset(normalized))
+            {
+                var relative = normalized.Substring("Assets/".Length);
+                normalized = "Assets/" + (_useLightThemeAssets ? "Light/" : "Dark/") + relative;
+            }
+
+            return new Uri("ms-appx:///" + normalized, UriKind.Absolute);
+        }
+
+        public static void SetThemeImageSource(Image image, string assetPath)
+        {
+            if (image == null)
+            {
+                return;
+            }
+
+            ThemeAsset.SetPath(image, assetPath);
+        }
+
+        public static SolidColorBrush GetThemeBrush(string resourceKey)
+        {
+            if (string.IsNullOrWhiteSpace(resourceKey) || Current == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                return Current.Resources[resourceKey] as SolidColorBrush;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static Color GetThemeColor(string resourceKey, Color fallback)
+        {
+            var brush = GetThemeBrush(resourceKey);
+            return brush != null ? brush.Color : fallback;
+        }
+
+        internal static void OnThemeAssetPathChanged(DependencyObject target, string assetPath)
+        {
+            RegisterThemeAssetTarget(target);
+            ApplyThemeAsset(target, assetPath);
+        }
+
+        private static void RegisterThemeAssetTarget(DependencyObject target)
+        {
+            if (target == null)
+            {
+                return;
+            }
+
+            lock (ThemeAssetTargetsLock)
+            {
+                for (var i = ThemeAssetTargets.Count - 1; i >= 0; i--)
+                {
+                    var existing = ThemeAssetTargets[i].Target as DependencyObject;
+                    if (existing == null)
+                    {
+                        ThemeAssetTargets.RemoveAt(i);
+                    }
+                    else if (ReferenceEquals(existing, target))
+                    {
+                        return;
+                    }
+                }
+
+                ThemeAssetTargets.Add(new WeakReference(target));
+            }
+        }
+
+        private static void ApplyThemeAsset(DependencyObject target, string assetPath)
+        {
+            if (target == null || string.IsNullOrWhiteSpace(assetPath))
+            {
+                return;
+            }
+
+            try
+            {
+                var uri = GetThemeAssetUri(assetPath);
+                if (uri == null)
+                {
+                    return;
+                }
+
+                var image = target as Image;
+                if (image != null)
+                {
+                    image.Source = new BitmapImage(uri);
+                    return;
+                }
+
+                var imageBrush = target as ImageBrush;
+                if (imageBrush != null)
+                {
+                    imageBrush.ImageSource = new BitmapImage(uri);
+                    return;
+                }
+
+                var bitmapIcon = target as BitmapIcon;
+                if (bitmapIcon != null)
+                {
+                    bitmapIcon.UriSource = uri;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Theme] Failed to apply asset '" + assetPath + "': " + ex.Message);
+            }
+        }
+
+        private static string NormalizeAssetPath(string assetPath)
+        {
+            if (string.IsNullOrWhiteSpace(assetPath))
+            {
+                return string.Empty;
+            }
+
+            var normalized = assetPath.Trim().Replace('\\', '/');
+            const string appxPrefix = "ms-appx:///";
+            if (normalized.StartsWith(appxPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                normalized = normalized.Substring(appxPrefix.Length);
+            }
+
+            normalized = normalized.TrimStart('/');
+            return normalized;
+        }
+
+        private static bool IsThemeAwareAsset(string normalizedAssetPath)
+        {
+            if (string.IsNullOrWhiteSpace(normalizedAssetPath) ||
+                !normalizedAssetPath.StartsWith("Assets/", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            var relative = normalizedAssetPath.Substring("Assets/".Length);
+            if (relative.StartsWith("Light/", StringComparison.OrdinalIgnoreCase) ||
+                relative.StartsWith("Dark/", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            if (relative.StartsWith("player/", StringComparison.OrdinalIgnoreCase) ||
+                relative.StartsWith("tabbar/", StringComparison.OrdinalIgnoreCase) ||
+                relative.StartsWith("yt_skeleton/", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return ThemeAwareRootAssets.Contains(relative);
+        }
+
+        private static bool DetectLightSystemTheme(UISettings settings)
+        {
+            try
+            {
+                var background = settings.GetColorValue(UIColorType.Background);
+                return background.R + background.G + background.B >= 384;
+            }
+            catch
+            {
+                return Current != null && Current.RequestedTheme == ApplicationTheme.Light;
+            }
+        }
+
+        private static async void UiSettings_ColorValuesChanged(UISettings sender, object args)
+        {
+            var useLight = DetectLightSystemTheme(sender);
+            _useLightThemeAssets = useLight;
+
+            var dispatcher = _uiDispatcher;
+            if (dispatcher == null)
+            {
+                return;
+            }
+
+            try
+            {
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, RefreshRegisteredThemeAssets);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Theme] Refresh failed: " + ex.Message);
+            }
+        }
+
+        private static void RefreshRegisteredThemeAssets()
+        {
+            lock (ThemeAssetTargetsLock)
+            {
+                for (var i = ThemeAssetTargets.Count - 1; i >= 0; i--)
+                {
+                    var target = ThemeAssetTargets[i].Target as DependencyObject;
+                    if (target == null)
+                    {
+                        ThemeAssetTargets.RemoveAt(i);
+                        continue;
+                    }
+
+                    ApplyThemeAsset(target, ThemeAsset.GetPath(target));
+                }
+            }
+        }
+
         private sealed class YouTubeNavigationTarget
         {
             public Type PageType { get; set; }
@@ -42,6 +322,11 @@ namespace YouTube
         public App()
         {
             this.InitializeComponent();
+
+            _uiSettings = new UISettings();
+            _useLightThemeAssets = DetectLightSystemTheme(_uiSettings);
+            _uiSettings.ColorValuesChanged += UiSettings_ColorValuesChanged;
+
             this.Suspending += OnSuspending;
 
             // The process was dying with only "exited with code -1" in the log, which says nothing
@@ -138,6 +423,7 @@ namespace YouTube
 
         private void InitializeRootFrame(YouTubeNavigationTarget target, bool prelaunchActivated, string launchArguments)
         {
+            _uiDispatcher = Window.Current.Dispatcher;
             Frame rootFrame = Window.Current.Content as Frame;
 
             if (rootFrame == null)

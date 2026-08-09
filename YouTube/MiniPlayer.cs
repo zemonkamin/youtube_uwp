@@ -36,6 +36,16 @@ namespace YouTube
         private static double _startOffsetX;
         private static double _startOffsetY;
 
+        // Edge-snap animation. Popup offsets are updated on a small DispatcherTimer instead of
+        // teleporting to the side, which keeps this compatible with the old VS2015 UWP target
+        // (including Windows 10 Mobile) without relying on newer Composition APIs.
+        private static DispatcherTimer _snapTimer;
+        private static DateTime _snapStartedAt;
+        private static double _snapStartX;
+        private static double _snapStartY;
+        private static double _snapTargetX;
+        private static double _snapTargetY;
+
         // True while the whole app window is in CompactOverlay ("always on top") mode. Desktop
         // only — Windows 10 Mobile has no windowed mode and reports it as unsupported.
         private static bool _compactOverlay;
@@ -53,6 +63,7 @@ namespace YouTube
         private const double EdgeMargin = 10;
         private const double BottomInset = 68; // clear a bottom tab bar on the page behind it
         private const double DragThreshold = 8;
+        private const double SnapAnimationMilliseconds = 220;
 
         public static bool IsActive { get { return _popup != null && _popup.IsOpen && _player != null; } }
 
@@ -84,6 +95,7 @@ namespace YouTube
             player.SetMiniMode(true);
 
             UpdatePlayPauseIcon();
+            StopSnapAnimation(false);
             PositionPopup();
             _popup.IsOpen = true;
 
@@ -112,6 +124,7 @@ namespace YouTube
         public static CustomVideoPlayer ReleasePlayerForRestore()
         {
             ExitCompactOverlay();
+            StopSnapAnimation(false);
 
             var player = _player;
             _player = null;
@@ -134,6 +147,7 @@ namespace YouTube
         public static void Close()
         {
             ExitCompactOverlay();
+            StopSnapAnimation(false);
 
             var player = _player;
             var onClosed = _onClosed;
@@ -198,9 +212,9 @@ namespace YouTube
             _playPauseIcon = new Image
             {
                 Width = 18,
-                Height = 18,
-                Source = new BitmapImage(new Uri("ms-appx:///Assets/player/pause.png"))
+                Height = 18
             };
+            App.SetThemeImageSource(_playPauseIcon, "Assets/Dark/player/pause.png");
             playPauseButton.Content = _playPauseIcon;
             playPauseButton.Click += (s, e) => TogglePlayPause();
             _playPauseButton = playPauseButton;
@@ -482,6 +496,10 @@ namespace YouTube
 
         private static void Root_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
+            // If the user grabs the card while it is still gliding to an edge, continue the drag
+            // from the exact current position instead of waiting for the snap to finish.
+            StopSnapAnimation(false);
+
             // In compact overlay the OS moves the window itself, so in-popup dragging is off —
             // only the tap-to-expand gesture stays.
             if (_compactOverlay)
@@ -555,7 +573,8 @@ namespace YouTube
         }
 
         // Magnetise horizontally to whichever side edge is nearer, and clamp vertically inside the
-        // screen — the picture-in-picture "sticks" to the border.
+        // screen. Instead of assigning the final Popup offsets immediately, glide there with a
+        // short ease-out animation like the modern YouTube mini-player.
         private static void SnapToEdge()
         {
             try
@@ -566,17 +585,97 @@ namespace YouTube
 
                 var centerX = x + MiniWidth / 2.0;
                 var snapLeft = centerX < bounds.Width / 2.0;
-                x = snapLeft ? EdgeMargin : bounds.Width - MiniWidth - EdgeMargin;
+                var targetX = snapLeft ? EdgeMargin : bounds.Width - MiniWidth - EdgeMargin;
+                var targetY = y;
 
-                if (y < EdgeMargin) y = EdgeMargin;
-                if (y > bounds.Height - MiniHeight - EdgeMargin) y = bounds.Height - MiniHeight - EdgeMargin;
+                if (targetY < EdgeMargin) targetY = EdgeMargin;
+                if (targetY > bounds.Height - MiniHeight - EdgeMargin)
+                {
+                    targetY = bounds.Height - MiniHeight - EdgeMargin;
+                }
 
-                _popup.HorizontalOffset = x;
-                _popup.VerticalOffset = y;
+                StartSnapAnimation(targetX, targetY);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[MiniPlayer] Snap failed: " + ex.Message);
+            }
+        }
+
+        private static void StartSnapAnimation(double targetX, double targetY)
+        {
+            if (_popup == null)
+            {
+                return;
+            }
+
+            StopSnapAnimation(false);
+
+            _snapStartX = _popup.HorizontalOffset;
+            _snapStartY = _popup.VerticalOffset;
+            _snapTargetX = targetX;
+            _snapTargetY = targetY;
+
+            // Nothing meaningful to animate. Keep the exact final value so repeated drags do not
+            // accumulate sub-pixel offsets.
+            if (Math.Abs(_snapTargetX - _snapStartX) < 0.5
+                && Math.Abs(_snapTargetY - _snapStartY) < 0.5)
+            {
+                _popup.HorizontalOffset = _snapTargetX;
+                _popup.VerticalOffset = _snapTargetY;
+                return;
+            }
+
+            if (_snapTimer == null)
+            {
+                _snapTimer = new DispatcherTimer();
+                _snapTimer.Interval = TimeSpan.FromMilliseconds(16);
+                _snapTimer.Tick += SnapTimer_Tick;
+            }
+
+            _snapStartedAt = DateTime.UtcNow;
+            _snapTimer.Start();
+        }
+
+        private static void SnapTimer_Tick(object sender, object e)
+        {
+            if (_popup == null || !_popup.IsOpen || _pointerDown || _compactOverlay)
+            {
+                StopSnapAnimation(false);
+                return;
+            }
+
+            var elapsed = (DateTime.UtcNow - _snapStartedAt).TotalMilliseconds;
+            var progress = elapsed / SnapAnimationMilliseconds;
+            if (progress >= 1.0)
+            {
+                _popup.HorizontalOffset = _snapTargetX;
+                _popup.VerticalOffset = _snapTargetY;
+                StopSnapAnimation(false);
+                return;
+            }
+
+            if (progress < 0) progress = 0;
+
+            // Cubic ease-out: quick response right after release and a soft finish at the edge.
+            var remaining = 1.0 - progress;
+            var eased = 1.0 - (remaining * remaining * remaining);
+
+            _popup.HorizontalOffset = _snapStartX + ((_snapTargetX - _snapStartX) * eased);
+            _popup.VerticalOffset = _snapStartY + ((_snapTargetY - _snapStartY) * eased);
+        }
+
+        private static void StopSnapAnimation(bool complete)
+        {
+            if (_snapTimer != null)
+            {
+                _snapTimer.Stop();
+            }
+
+            if (complete && _popup != null)
+            {
+                _popup.HorizontalOffset = _snapTargetX;
+                _popup.VerticalOffset = _snapTargetY;
             }
         }
 
@@ -587,8 +686,8 @@ namespace YouTube
                 return;
             }
 
-            var path = _player.IsPlaying ? "ms-appx:///Assets/player/pause.png" : "ms-appx:///Assets/player/play.png";
-            _playPauseIcon.Source = new BitmapImage(new Uri(path));
+            var path = _player.IsPlaying ? "Assets/Dark/player/pause.png" : "Assets/Dark/player/play.png";
+            App.SetThemeImageSource(_playPauseIcon, path);
         }
     }
 }

@@ -7,15 +7,15 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="#0F0F0F">
+    <Grid Background="{ThemeResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="2"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
         <!-- Top dark gray bar -->
-        <Border Grid.Row="0" Background="#FF222222"/>
+        <Border Grid.Row="0" Background="{ThemeResource AppDividerBrush}"/>
         <!-- Bottom TabBar -->
-        <Grid Grid.Row="1" Background="#0F0F0F">
+        <Grid Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -33,12 +33,12 @@
                 <StackPanel Orientation="Vertical" 
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center">
-                    <Image Source="Assets/tabbar/home-icon.png" 
+                    <Image local:ThemeAsset.Path="Assets/tabbar/home-icon.png" 
                            Width="24" 
                            Height="24"
                            Stretch="Uniform"/>
                     <TextBlock Text="Home" 
-                               Foreground="White" 
+                               Foreground="{ThemeResource AppPrimaryTextBrush}" 
                                Margin="0,0,0,0"
                                FontSize="12" HorizontalAlignment="Center"/>
                 </StackPanel>
@@ -54,12 +54,12 @@
                 <StackPanel Orientation="Vertical"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center">
-                    <Image Source="Assets/tabbar/shorts-icon.png" 
+                    <Image local:ThemeAsset.Path="Assets/tabbar/shorts-icon.png" 
                            Width="24" 
                            Height="24"
                            Stretch="Uniform"/>
                     <TextBlock Text="Shorts" 
-                               Foreground="White" 
+                               Foreground="{ThemeResource AppPrimaryTextBrush}" 
                                 Margin="0,0,0,0"
                               FontSize="12" HorizontalAlignment="Center"/>
                 </StackPanel>
@@ -75,12 +75,12 @@
                 <StackPanel Orientation="Vertical"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center">
-                    <Image Source="Assets/tabbar/sub-icon.png" 
+                    <Image local:ThemeAsset.Path="Assets/tabbar/sub-icon.png" 
                            Width="24" 
                            Height="24"
                            Stretch="Uniform"/>
                     <TextBlock Text="Subscriptions" 
-                               Foreground="White" 
+                               Foreground="{ThemeResource AppPrimaryTextBrush}" 
                                 Margin="0,0,0,0"
                               FontSize="12" HorizontalAlignment="Center"/>
                 </StackPanel>
@@ -96,12 +96,22 @@
                 <StackPanel Orientation="Vertical"
                            HorizontalAlignment="Center"
                            VerticalAlignment="Center">
-                    <Image Source="Assets/tabbar/user-icon.png" 
-                           Width="24" 
-                           Height="24"
-                           Stretch="Uniform"/>
+                    <Grid Width="24" Height="24">
+                        <Image x:Name="AccountDefaultIcon"
+                               local:ThemeAsset.Path="Assets/tabbar/user-icon.png" 
+                               Width="24" 
+                               Height="24"
+                               Stretch="Uniform"/>
+                        <Ellipse x:Name="AccountAvatarEllipse"
+                                 Width="24"
+                                 Height="24"
+                                 Fill="{ThemeResource AvatarPlaceholderBrush}"
+                                 Stroke="Transparent"
+                                 StrokeThickness="1.5"
+                                 Visibility="Collapsed"/>
+                    </Grid>
                     <TextBlock Text="You" 
-                               Foreground="White" 
+                               Foreground="{ThemeResource AppPrimaryTextBrush}" 
                                Margin="0,0,0,0"
                                FontSize="12" HorizontalAlignment="Center"/>
                 </StackPanel>

@@ -17,6 +17,7 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -88,6 +89,9 @@ namespace YouTube
         private string _playlistQueueTitle = string.Empty;
         private int _playlistCurrentIndex = -1;
         private readonly List<RelatedVideoCardItem> _playlistQueue = new List<RelatedVideoCardItem>();
+        // Serializes playlist next/previous/auto-advance requests. This matters in
+        // background/mini-player mode where MediaEnded and SMTC can arrive almost together.
+        private bool _playlistSwitchInProgress;
         // Accumulated mix ("jam") history. Static on purpose: every video opens a brand-new
         // Video page, so an instance field would lose the list on each navigation.
         private static string _jamQueuePlaylistId;
@@ -184,6 +188,10 @@ namespace YouTube
         private double _settingsInitialY;
         private double _settingsInitialTransformY;
         private bool _settingsIsDragging;
+        private Popup _fullscreenSettingsPopup;
+        private Grid _fullscreenSettingsPopupRoot;
+        private Panel _settingsBottomSheetOriginalParent;
+        private int _settingsBottomSheetOriginalIndex = -1;
 
         // Subscription / notifications bottom sheet fields
         private double _subscriptionMenuInitialY;
@@ -247,16 +255,9 @@ namespace YouTube
 
             UpdateVideoPlayerLayout();
 
-            // Subscribe to MediaFailed event for error handling
-            if (CustomVideoPlayer != null)
-            {
-                CustomVideoPlayer.MediaFailed += CustomVideoPlayer_MediaFailed;
-                CustomVideoPlayer.SettingsRequested += CustomVideoPlayer_SettingsRequested;
-                CustomVideoPlayer.RefreshRequested += CustomVideoPlayer_RefreshRequested;
-                CustomVideoPlayer.VideoEnded += CustomVideoPlayer_VideoEnded;
-                CustomVideoPlayer.PlaybackStalling += CustomVideoPlayer_PlaybackStalling;
-                CustomVideoPlayer.MinimizeRequested += CustomVideoPlayer_MinimizeRequested;
-            }
+            // Reattach once per visual load. The helper first removes existing handlers so a
+            // cached Video page cannot accumulate duplicate VideoEnded callbacks after restores.
+            AttachPlayerEventHandlers();
 
             // Register back button handler
             SystemNavigationManager.GetForCurrentView().BackRequested += VideoPage_BackRequested;
@@ -551,37 +552,19 @@ namespace YouTube
             ShowSettingsBottomSheet();
         }
 
-        private async void CustomVideoPlayer_RefreshRequested(object sender, object e)
+        private void CustomVideoPlayer_FullscreenStateChanged(bool isFullscreen)
         {
-            // Same guard as ChangeQuality: the fullscreen menu raises this, and overlapping
-            // source swaps race on the MediaPlayer (a common crash when rotating mid-switch).
-            if (_qualityChangeInProgress)
+            if (!isFullscreen)
             {
-                System.Diagnostics.Debug.WriteLine("[Video] Quality change already in progress; ignoring fullscreen request");
-                return;
-            }
-
-            _qualityChangeInProgress = true;
-            try
-            {
-                currentQualityTag = NormalizeQualityTag(CustomVideoPlayer != null ? CustomVideoPlayer.CurrentQuality : currentQualityTag);
-                if (CustomVideoPlayer != null)
-                {
-                    // Spinner + no play/seek until the new stream is actually ready.
-                    CustomVideoPlayer.BeginSourceLoading();
-                }
-
-                await ReloadPlayerOnlyAsync(true);
-            }
-            finally
-            {
-                _qualityChangeInProgress = false;
+                RestoreSettingsBottomSheetFromFullscreenPopup();
             }
         }
+
 
         private void Video_Unloaded(object sender, RoutedEventArgs e)
         {
             Window.Current.SizeChanged -= Window_SizeChanged;
+            RestoreSettingsBottomSheetFromFullscreenPopup();
 
             // When minimized, the player was handed to the mini-player — leave it running.
             // Otherwise stop it but keep the control alive: this page is cached and reused, so
@@ -627,6 +610,8 @@ namespace YouTube
 
         private async void Window_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
         {
+            UpdateFullscreenSettingsPopupBounds(e.Size);
+
             if (_minimizedToMiniPlayer)
             {
                 return;
@@ -1126,6 +1111,7 @@ namespace YouTube
             bool isPortrait = windowHeight > windowWidth;
 
             UpdateTitleDescriptionSkeletonLayout(isPortrait);
+            MovePlaylistQueueForLayout(isPortrait);
 
             if (isPortrait)
             {
@@ -1212,6 +1198,56 @@ namespace YouTube
             _wasPortrait = isPortrait;
         }
 
+        // The queue is one live control so its expansion state, ItemsSource and current marker are
+        // preserved. Portrait keeps the original placement in the main content; landscape moves
+        // that same Border above the related-video rail. This only uses Panel reparenting/Grid.Row,
+        // which works on the VS2015 / Windows 10 Mobile UWP target.
+        private void MovePlaylistQueueForLayout(bool isPortrait)
+        {
+            if (PlaylistQueuePanel == null || PlayerInfoPanel == null || LandscapePlaylistHost == null)
+            {
+                return;
+            }
+
+            try
+            {
+                if (isPortrait)
+                {
+                    if (!PlayerInfoPanel.Children.Contains(PlaylistQueuePanel))
+                    {
+                        var oldParent = PlaylistQueuePanel.Parent as Panel;
+                        if (oldParent != null)
+                        {
+                            oldParent.Children.Remove(PlaylistQueuePanel);
+                        }
+                        PlayerInfoPanel.Children.Add(PlaylistQueuePanel);
+                    }
+
+                    Grid.SetRow(PlaylistQueuePanel, 4);
+                    PlaylistQueuePanel.Margin = new Thickness(16, 0, 16, 16);
+                }
+                else
+                {
+                    if (!LandscapePlaylistHost.Children.Contains(PlaylistQueuePanel))
+                    {
+                        var oldParent = PlaylistQueuePanel.Parent as Panel;
+                        if (oldParent != null)
+                        {
+                            oldParent.Children.Remove(PlaylistQueuePanel);
+                        }
+                        LandscapePlaylistHost.Children.Add(PlaylistQueuePanel);
+                    }
+
+                    Grid.SetRow(PlaylistQueuePanel, 0);
+                    PlaylistQueuePanel.Margin = new Thickness(8, 0, 8, 12);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[PlaylistQueue] Layout reparent failed: " + ex.Message);
+            }
+        }
+
         private void VideoPage_BackRequested(object sender, BackRequestedEventArgs e)
         {
             if (!Frame.CanGoBack)
@@ -1254,9 +1290,11 @@ namespace YouTube
                     return;
                 }
 
-                // The page is about to die; stop its callbacks from reaching a dead page, and stop
-                // its own teardown from disposing the player we are handing off.
+                // Keep only playlist navigation callbacks while the cached page is behind the
+                // mini-player. They are needed so MediaEnded / SMTC next/previous can load the
+                // next full Video state while the same player remains reparented in MiniPlayer.
                 DetachPlayerEventHandlers();
+                AttachBackgroundPlaylistEventHandlers();
                 _minimizedToMiniPlayer = true;
 
                 // Video_Unloaded normally drops this, but it runs after the window has already
@@ -1268,7 +1306,15 @@ namespace YouTube
                 MiniPlayer.Show(
                     CustomVideoPlayer,
                     RestoreFromMiniPlayer,
-                    () => { try { if (frame != null) frame.ForwardStack.Clear(); } catch { } });
+                    () =>
+                    {
+                        // Closing the mini-player is a real end of this hand-off. Do not leave the
+                        // cached Video page latched in mini mode or a later navigation would keep
+                        // its player detached from VideoPlayerContainer.
+                        _minimizedToMiniPlayer = false;
+                        DetachPlayerEventHandlers();
+                        try { if (frame != null) frame.ForwardStack.Clear(); } catch { }
+                    });
                 System.Diagnostics.Debug.WriteLine("[Video] Minimized to mini-player");
             }
             catch (Exception ex)
@@ -1276,6 +1322,39 @@ namespace YouTube
                 System.Diagnostics.Debug.WriteLine("[Video] Minimize to mini-player failed: " + ex.Message);
                 _minimizedToMiniPlayer = false;
             }
+        }
+
+        private void AttachPlayerEventHandlers()
+        {
+            if (CustomVideoPlayer == null)
+            {
+                return;
+            }
+
+            DetachPlayerEventHandlers();
+            CustomVideoPlayer.MediaFailed += CustomVideoPlayer_MediaFailed;
+            CustomVideoPlayer.SettingsRequested += CustomVideoPlayer_SettingsRequested;
+            CustomVideoPlayer.FullscreenStateChanged += CustomVideoPlayer_FullscreenStateChanged;
+            CustomVideoPlayer.VideoEnded += CustomVideoPlayer_VideoEnded;
+            CustomVideoPlayer.NextRequested += CustomVideoPlayer_NextRequested;
+            CustomVideoPlayer.PreviousRequested += CustomVideoPlayer_PreviousRequested;
+            CustomVideoPlayer.PlaybackStalling += CustomVideoPlayer_PlaybackStalling;
+            CustomVideoPlayer.MinimizeRequested += CustomVideoPlayer_MinimizeRequested;
+        }
+
+        private void AttachBackgroundPlaylistEventHandlers()
+        {
+            if (CustomVideoPlayer == null)
+            {
+                return;
+            }
+
+            CustomVideoPlayer.VideoEnded -= CustomVideoPlayer_VideoEnded;
+            CustomVideoPlayer.NextRequested -= CustomVideoPlayer_NextRequested;
+            CustomVideoPlayer.PreviousRequested -= CustomVideoPlayer_PreviousRequested;
+            CustomVideoPlayer.VideoEnded += CustomVideoPlayer_VideoEnded;
+            CustomVideoPlayer.NextRequested += CustomVideoPlayer_NextRequested;
+            CustomVideoPlayer.PreviousRequested += CustomVideoPlayer_PreviousRequested;
         }
 
         private void DetachPlayerEventHandlers()
@@ -1289,8 +1368,10 @@ namespace YouTube
             {
                 CustomVideoPlayer.MediaFailed -= CustomVideoPlayer_MediaFailed;
                 CustomVideoPlayer.SettingsRequested -= CustomVideoPlayer_SettingsRequested;
-                CustomVideoPlayer.RefreshRequested -= CustomVideoPlayer_RefreshRequested;
+                CustomVideoPlayer.FullscreenStateChanged -= CustomVideoPlayer_FullscreenStateChanged;
                 CustomVideoPlayer.VideoEnded -= CustomVideoPlayer_VideoEnded;
+                CustomVideoPlayer.NextRequested -= CustomVideoPlayer_NextRequested;
+                CustomVideoPlayer.PreviousRequested -= CustomVideoPlayer_PreviousRequested;
                 CustomVideoPlayer.PlaybackStalling -= CustomVideoPlayer_PlaybackStalling;
                 CustomVideoPlayer.MinimizeRequested -= CustomVideoPlayer_MinimizeRequested;
             }
@@ -1390,14 +1471,8 @@ namespace YouTube
                 CustomVideoPlayer.Margin = new Thickness(0);
                 VideoPlayerContainer.Children.Add(CustomVideoPlayer);
 
-                // The handlers were detached when the player was handed off.
-                DetachPlayerEventHandlers();
-                CustomVideoPlayer.MediaFailed += CustomVideoPlayer_MediaFailed;
-                CustomVideoPlayer.SettingsRequested += CustomVideoPlayer_SettingsRequested;
-                CustomVideoPlayer.RefreshRequested += CustomVideoPlayer_RefreshRequested;
-                CustomVideoPlayer.VideoEnded += CustomVideoPlayer_VideoEnded;
-                CustomVideoPlayer.PlaybackStalling += CustomVideoPlayer_PlaybackStalling;
-                CustomVideoPlayer.MinimizeRequested += CustomVideoPlayer_MinimizeRequested;
+                // The handlers were reduced to background playlist callbacks while minimized.
+                AttachPlayerEventHandlers();
             }
             catch (Exception ex)
             {
@@ -1526,11 +1601,15 @@ namespace YouTube
             // out at its IsStillCurrentVideo checks. Stopping the player gives a clean hand-off;
             // BindPlayerSourceAsync then replaces the source (same as a quality change does).
             currentVideoId = videoId;
+            UpdatePlaylistTransportControls();
 
-            // This page is cached and reused, and its player may currently be sitting in the
-            // mini-player (or have been released when the mini-player was closed). Put it back in
-            // place and clear the released latch before loading anything.
-            EnsurePlayerAttached();
+            // When the page is visible, make sure the player is in its normal host. While the
+            // mini-player is active the SAME control must stay there; loading a playlist item is
+            // allowed to update the cached page and replace the media source without reparenting it.
+            if (!_minimizedToMiniPlayer)
+            {
+                EnsurePlayerAttached();
+            }
 
             if (CustomVideoPlayer != null)
             {
@@ -1586,24 +1665,20 @@ namespace YouTube
         {
             base.OnNavigatedFrom(e);
 
-            // Deterministic teardown when leaving the page. Unloaded does not reliably fire when
-            // navigating straight from one video to another, and the MediaPlayer is configured
-            // for background playback — so without this the previous video kept playing on top
-            // of the new one and even survived closing the app from the task switcher.
-            currentVideoId = null;
-
-            // If the player was handed to the mini-player, it now lives there and keeps playing —
-            // do not touch it. Otherwise just STOP: this page is cached and may be navigated back
-            // to, and releasing the player would leave that reused page with a dead one. Stopping
-            // is what actually matters here — it is what keeps a left-behind video from playing on
-            // over the next one.
+            // When handed to MiniPlayer this cached page remains the playlist controller: keep
+            // currentVideoId and the lightweight next/previous/end handlers alive so background
+            // transitions can run the SAME full SwitchToVideoAsync path and refresh all metadata.
             if (!_minimizedToMiniPlayer)
             {
+                currentVideoId = null;
+                DetachPlayerEventHandlers();
+
                 try
                 {
                     if (CustomVideoPlayer != null)
                     {
                         CustomVideoPlayer.Stop();
+                        CustomVideoPlayer.SetSystemMediaNavigationEnabled(false, false);
                     }
                 }
                 catch (Exception ex)
@@ -2788,10 +2863,6 @@ namespace YouTube
             {
                 CustomVideoPlayer.SetWindowsMobileAudioMode(isWindowsMobile);
                 CustomVideoPlayer.CurrentQuality = string.IsNullOrWhiteSpace(effectiveQualityTag) ? null : effectiveQualityTag;
-
-                // Publish the real per-video quality list so the fullscreen (landscape) menu
-                // shows the same options — and the same highlight — as the portrait one.
-                CustomVideoPlayer.AvailableQualities = await GetAvailableQualityTagsAsync(currentVideoId);
 
                 // Scrub-preview frames. Present in the primary (IOS) player response; if that one
                 // lacks them, fall back to the ANDROID response the quality list already fetched.
@@ -8835,11 +8906,11 @@ namespace YouTube
 
             if (SubscribeButtonContainer != null)
             {
-                var color = isSubscribed
-                    ? Windows.UI.Color.FromArgb(255, 39, 39, 39)
-                    : Windows.UI.Color.FromArgb(255, 241, 241, 241);
-                SubscribeButtonContainer.Background = new SolidColorBrush(color);
-                SubscribeButtonContainer.BorderBrush = new SolidColorBrush(color);
+                var containerBrush = isSubscribed
+                    ? (App.GetThemeBrush("AppSurfaceBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 39, 39, 39)))
+                    : (App.GetThemeBrush("PrimaryActionBackgroundBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 241, 241, 241)));
+                SubscribeButtonContainer.Background = containerBrush;
+                SubscribeButtonContainer.BorderBrush = containerBrush;
                 SubscribeButtonContainer.Opacity = 1.0;
                 SubscribeButtonContainer.MinWidth = 0;
                 SubscribeButtonContainer.CornerRadius = new CornerRadius(18);
@@ -8849,7 +8920,7 @@ namespace YouTube
             {
                 SubscribeButtonText.Text = "Subscribe";
                 SubscribeButtonText.Visibility = isSubscribed ? Visibility.Collapsed : Visibility.Visible;
-                SubscribeButtonText.Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 15, 15, 15));
+                SubscribeButtonText.Foreground = App.GetThemeBrush("PrimaryActionForegroundBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 15, 15, 15));
             }
 
             if (SubscribeSubscribedIconsPanel != null)
@@ -8981,7 +9052,7 @@ namespace YouTube
 
             try
             {
-                image.Source = new BitmapImage(new Uri("ms-appx:///" + assetPath.TrimStart('/')));
+                App.SetThemeImageSource(image, assetPath);
             }
             catch (Exception ex)
             {
@@ -9133,12 +9204,12 @@ namespace YouTube
             try
             {
                 var targetColor = isOn
-                    ? Windows.UI.Colors.White
-                    : Windows.UI.Color.FromArgb(255, 168, 168, 168);
+                    ? App.GetThemeColor("PrimaryActionBackgroundBrush", Windows.UI.Colors.White)
+                    : App.GetThemeColor("AppMutedTextBrush", Windows.UI.Color.FromArgb(255, 168, 168, 168));
 
                 if (ShareTimeToggleKnob != null)
                 {
-                    ShareTimeToggleKnob.Fill = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 32, 33, 36));
+                    ShareTimeToggleKnob.Fill = App.GetThemeBrush("ToggleKnobBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 32, 33, 36));
                 }
 
                 if (ShareTimeToggleTrackBrush != null)
@@ -9216,13 +9287,13 @@ namespace YouTube
 
                 var isOn = _shareWithTimestamp;
                 var targetColor = isOn
-                    ? Windows.UI.Colors.White
-                    : Windows.UI.Color.FromArgb(255, 168, 168, 168);
+                    ? App.GetThemeColor("PrimaryActionBackgroundBrush", Windows.UI.Colors.White)
+                    : App.GetThemeColor("AppMutedTextBrush", Windows.UI.Color.FromArgb(255, 168, 168, 168));
                 var targetX = isOn ? 28.0 : 0.0;
 
                 if (ShareTimeToggleKnob != null)
                 {
-                    ShareTimeToggleKnob.Fill = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 32, 33, 36));
+                    ShareTimeToggleKnob.Fill = App.GetThemeBrush("ToggleKnobBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 32, 33, 36));
                 }
 
                 if (!animate)
@@ -9558,6 +9629,7 @@ namespace YouTube
             if (string.IsNullOrWhiteSpace(currentPlaylistId) || _playlistQueue.Count == 0)
             {
                 PlaylistQueuePanel.Visibility = Visibility.Collapsed;
+                UpdatePlaylistTransportControls();
                 return;
             }
 
@@ -9593,6 +9665,24 @@ namespace YouTube
                 PlaylistQueueContainer.ItemsSource = null;
                 PlaylistQueueContainer.ItemsSource = _playlistQueue;
             }
+
+            UpdatePlaylistTransportControls();
+        }
+
+        private void UpdatePlaylistTransportControls()
+        {
+            if (CustomVideoPlayer == null)
+            {
+                return;
+            }
+
+            var index = GetCurrentPlaylistIndex();
+            var canPrevious = !string.IsNullOrWhiteSpace(currentPlaylistId) && index > 0;
+            var canNext = !string.IsNullOrWhiteSpace(currentPlaylistId)
+                && index >= 0
+                && index + 1 < _playlistQueue.Count;
+
+            CustomVideoPlayer.SetSystemMediaNavigationEnabled(canPrevious, canNext);
         }
 
         // Walks a chain of nested objects, returning null if any link is missing.
@@ -9676,16 +9766,65 @@ namespace YouTube
 
         // Keeps the playlist / mix context while moving between its videos, so the queue (and,
         // for a jam, its endless continuation) survives the navigation.
-        private void NavigateToPlaylistVideo(string videoId)
+        private async void NavigateToPlaylistVideo(string videoId)
         {
-            if (string.IsNullOrWhiteSpace(videoId))
+            if (string.IsNullOrWhiteSpace(videoId) || _playlistSwitchInProgress)
             {
                 return;
             }
 
-            // Switch in place, keeping the current playlist/mix context so the queue (and, for a
-            // jam, its endless continuation) carries over.
-            var ignored = SwitchToVideoAsync(videoId, currentPlaylistId, _playlistQueueTitle);
+            _playlistSwitchInProgress = true;
+            try
+            {
+                await SwitchToVideoAsync(videoId, currentPlaylistId, _playlistQueueTitle);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[PlaylistQueue] Direct switch failed: " + ex.Message);
+            }
+            finally
+            {
+                _playlistSwitchInProgress = false;
+                UpdatePlaylistTransportControls();
+            }
+        }
+
+        private async Task SwitchPlaylistRelativeAsync(int offset, string reason)
+        {
+            if (_playlistSwitchInProgress || string.IsNullOrWhiteSpace(currentPlaylistId) || _playlistQueue.Count == 0)
+            {
+                return;
+            }
+
+            var index = GetCurrentPlaylistIndex();
+            var targetIndex = index + offset;
+            if (index < 0 || targetIndex < 0 || targetIndex >= _playlistQueue.Count)
+            {
+                UpdatePlaylistTransportControls();
+                return;
+            }
+
+            var target = _playlistQueue[targetIndex];
+            if (target == null || string.IsNullOrWhiteSpace(target.video_id))
+            {
+                return;
+            }
+
+            _playlistSwitchInProgress = true;
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("[PlaylistQueue] " + reason + " -> " + target.video_id);
+                await SwitchToVideoAsync(target.video_id, currentPlaylistId, _playlistQueueTitle);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[PlaylistQueue] " + reason + " failed: " + ex.Message);
+            }
+            finally
+            {
+                _playlistSwitchInProgress = false;
+                UpdatePlaylistTransportControls();
+            }
         }
 
         // Playback cannot keep up with the current format — step down to the next lower height
@@ -9740,29 +9879,21 @@ namespace YouTube
             }
         }
 
-        private void CustomVideoPlayer_VideoEnded(object sender, object e)
+        private async void CustomVideoPlayer_VideoEnded(object sender, object e)
         {
-            // Auto-advance inside a playlist / mix.
-            if (string.IsNullOrWhiteSpace(currentPlaylistId) || _playlistQueue.Count == 0)
-            {
-                return;
-            }
+            // MediaEnded is raised directly by MediaPlayer now, so this path continues to work
+            // while DispatcherTimer is throttled in the background / mini-player.
+            await SwitchPlaylistRelativeAsync(1, "auto-advance");
+        }
 
-            var index = GetCurrentPlaylistIndex();
-            if (index < 0 || index + 1 >= _playlistQueue.Count)
-            {
-                System.Diagnostics.Debug.WriteLine("[PlaylistQueue] End of queue; not auto-advancing");
-                return;
-            }
+        private async void CustomVideoPlayer_NextRequested(object sender, object e)
+        {
+            await SwitchPlaylistRelativeAsync(1, "SMTC next");
+        }
 
-            var next = _playlistQueue[index + 1];
-            if (next == null || string.IsNullOrWhiteSpace(next.video_id))
-            {
-                return;
-            }
-
-            System.Diagnostics.Debug.WriteLine("[PlaylistQueue] Auto-advancing to " + next.video_id);
-            NavigateToPlaylistVideo(next.video_id);
+        private async void CustomVideoPlayer_PreviousRequested(object sender, object e)
+        {
+            await SwitchPlaylistRelativeAsync(-1, "SMTC previous");
         }
 
         // The watch queue for the current playlist / mix. YouTube returns it inside the same
@@ -11305,7 +11436,9 @@ namespace YouTube
 
         private void ShowSettingsBottomSheet()
         {
-            // Reset to main settings panel
+            // Reset to the Video page's single settings UI. The same live controls are moved
+            // into a top-level popup when the player is fullscreen; CustomVideoPlayer no longer
+            // owns a second settings implementation.
             if (MainSettingsPanel != null)
                 MainSettingsPanel.Visibility = Visibility.Visible;
             if (QualitySettingsPanel != null)
@@ -11319,21 +11452,25 @@ namespace YouTube
 
             UpdateSettingsRowValues();
 
-            // Videos without captions get no entry at all rather than an empty list.
             if (SubtitlesButton != null)
                 SubtitlesButton.Visibility = (_subtitleTracks != null && _subtitleTracks.HasAny)
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
-            // The audio-track entry only appears for multi-language videos. The list is filled in
-            // lazily so single-track videos never pay for the extra request.
             if (AudioTrackButton != null)
                 AudioTrackButton.Visibility = (_availableAudioTracks != null && _availableAudioTracks.Count > 1)
                     ? Visibility.Visible
                     : Visibility.Collapsed;
             UpdateAudioTrackButtonVisibilityAsync();
 
-            // Show the overlay and bottom sheet
+            if (CustomVideoPlayer != null && CustomVideoPlayer.IsFullscreen)
+            {
+                ShowSettingsBottomSheetInFullscreenPopup();
+                return;
+            }
+
+            RestoreSettingsBottomSheetFromFullscreenPopup();
+
             if (OverlayGrid != null)
                 OverlayGrid.Visibility = Visibility.Visible;
 
@@ -11341,6 +11478,138 @@ namespace YouTube
             {
                 SettingsBottomSheetPanel.Visibility = Visibility.Visible;
                 AnimateSettingsBottomSheet(true);
+            }
+        }
+
+        private void ShowSettingsBottomSheetInFullscreenPopup()
+        {
+            if (SettingsBottomSheetPanel == null)
+            {
+                return;
+            }
+
+            if (_fullscreenSettingsPopup != null && _fullscreenSettingsPopup.IsOpen)
+            {
+                var currentBounds = Window.Current.Bounds;
+                UpdateFullscreenSettingsPopupBounds(new Windows.Foundation.Size(currentBounds.Width, currentBounds.Height));
+                SettingsBottomSheetPanel.Visibility = Visibility.Visible;
+                AnimateSettingsBottomSheet(true);
+                return;
+            }
+
+            var currentParent = SettingsBottomSheetPanel.Parent as Panel;
+            if (currentParent == null)
+            {
+                return;
+            }
+
+            _settingsBottomSheetOriginalParent = currentParent;
+            _settingsBottomSheetOriginalIndex = currentParent.Children.IndexOf(SettingsBottomSheetPanel);
+            currentParent.Children.Remove(SettingsBottomSheetPanel);
+
+            var bounds = Window.Current.Bounds;
+            _fullscreenSettingsPopupRoot = new Grid
+            {
+                Width = bounds.Width,
+                Height = bounds.Height,
+                Background = new SolidColorBrush(Windows.UI.Colors.Transparent)
+            };
+
+            var dimOverlay = new Grid
+            {
+                Background = new SolidColorBrush(Windows.UI.Color.FromArgb(128, 0, 0, 0))
+            };
+            dimOverlay.Tapped += FullscreenSettingsOverlay_Tapped;
+            _fullscreenSettingsPopupRoot.Children.Add(dimOverlay);
+
+            SettingsBottomSheetPanel.Visibility = Visibility.Visible;
+            SettingsBottomSheetPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+            SettingsBottomSheetPanel.VerticalAlignment = VerticalAlignment.Bottom;
+            if (SettingsBottomSheetTransform != null)
+            {
+                SettingsBottomSheetTransform.Y = 205;
+            }
+            _fullscreenSettingsPopupRoot.Children.Add(SettingsBottomSheetPanel);
+
+            _fullscreenSettingsPopup = new Popup
+            {
+                Child = _fullscreenSettingsPopupRoot,
+                HorizontalOffset = 0,
+                VerticalOffset = 0,
+                Width = bounds.Width,
+                Height = bounds.Height,
+                IsHitTestVisible = true
+            };
+            _fullscreenSettingsPopup.IsOpen = true;
+
+            AnimateSettingsBottomSheet(true);
+        }
+
+        private void FullscreenSettingsOverlay_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            AnimateSettingsBottomSheet(false);
+            e.Handled = true;
+        }
+
+        private void UpdateFullscreenSettingsPopupBounds(Windows.Foundation.Size size)
+        {
+            if (_fullscreenSettingsPopup == null || !_fullscreenSettingsPopup.IsOpen)
+            {
+                return;
+            }
+
+            _fullscreenSettingsPopup.Width = size.Width;
+            _fullscreenSettingsPopup.Height = size.Height;
+            if (_fullscreenSettingsPopupRoot != null)
+            {
+                _fullscreenSettingsPopupRoot.Width = size.Width;
+                _fullscreenSettingsPopupRoot.Height = size.Height;
+            }
+        }
+
+        private void RestoreSettingsBottomSheetFromFullscreenPopup()
+        {
+            if (_fullscreenSettingsPopup == null && _settingsBottomSheetOriginalParent == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var currentParent = SettingsBottomSheetPanel != null
+                    ? SettingsBottomSheetPanel.Parent as Panel
+                    : null;
+                if (currentParent != null)
+                {
+                    currentParent.Children.Remove(SettingsBottomSheetPanel);
+                }
+
+                if (SettingsBottomSheetPanel != null && _settingsBottomSheetOriginalParent != null)
+                {
+                    var insertIndex = _settingsBottomSheetOriginalIndex;
+                    if (insertIndex < 0 || insertIndex > _settingsBottomSheetOriginalParent.Children.Count)
+                    {
+                        insertIndex = _settingsBottomSheetOriginalParent.Children.Count;
+                    }
+                    _settingsBottomSheetOriginalParent.Children.Insert(insertIndex, SettingsBottomSheetPanel);
+                    SettingsBottomSheetPanel.Visibility = Visibility.Collapsed;
+                    if (SettingsBottomSheetTransform != null)
+                    {
+                        SettingsBottomSheetTransform.Y = 205;
+                    }
+                }
+            }
+            finally
+            {
+                if (_fullscreenSettingsPopup != null)
+                {
+                    _fullscreenSettingsPopup.IsOpen = false;
+                    _fullscreenSettingsPopup.Child = null;
+                }
+                _fullscreenSettingsPopup = null;
+                _fullscreenSettingsPopupRoot = null;
+                _settingsBottomSheetOriginalParent = null;
+                _settingsBottomSheetOriginalIndex = -1;
             }
         }
 
@@ -11367,6 +11636,7 @@ namespace YouTube
                 {
                     if (SettingsBottomSheetPanel != null)
                         SettingsBottomSheetPanel.Visibility = Visibility.Collapsed;
+                    RestoreSettingsBottomSheetFromFullscreenPopup();
                 };
             }
 
@@ -11499,7 +11769,7 @@ namespace YouTube
             var button = new Button
             {
                 Background = new SolidColorBrush(Windows.UI.Colors.Transparent),
-                Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+                Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White)),
                 FontWeight = isCurrent ? Windows.UI.Text.FontWeights.SemiBold : Windows.UI.Text.FontWeights.Normal,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
@@ -11517,7 +11787,7 @@ namespace YouTube
                 Glyph = "",
                 FontFamily = new FontFamily("Segoe MDL2 Assets"),
                 FontSize = 16,
-                Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+                Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White)),
                 Visibility = isCurrent ? Visibility.Visible : Visibility.Collapsed,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Center
@@ -11528,7 +11798,7 @@ namespace YouTube
             var labelText = new TextBlock
             {
                 Text = label,
-                Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+                Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White)),
                 FontWeight = isCurrent ? Windows.UI.Text.FontWeights.SemiBold : Windows.UI.Text.FontWeights.Normal,
                 VerticalAlignment = VerticalAlignment.Center
             };
@@ -11556,7 +11826,7 @@ namespace YouTube
             var button = new Button
             {
                 Background = new SolidColorBrush(Windows.UI.Colors.Transparent),
-                Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+                Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White)),
                 FontWeight = isCurrent ? Windows.UI.Text.FontWeights.SemiBold : Windows.UI.Text.FontWeights.Normal,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
@@ -11574,7 +11844,7 @@ namespace YouTube
                 Glyph = "",
                 FontFamily = new FontFamily("Segoe MDL2 Assets"),
                 FontSize = 16,
-                Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+                Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White)),
                 Visibility = isCurrent ? Visibility.Visible : Visibility.Collapsed,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Center
@@ -11585,7 +11855,7 @@ namespace YouTube
             var label = new TextBlock
             {
                 Text = quality,
-                Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+                Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White)),
                 FontWeight = isCurrent ? Windows.UI.Text.FontWeights.SemiBold : Windows.UI.Text.FontWeights.Normal,
                 VerticalAlignment = VerticalAlignment.Center
             };

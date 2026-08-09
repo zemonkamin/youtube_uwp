@@ -6,9 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="#0F0F0F">
+    Background="{ThemeResource AppBackgroundBrush}">
 
-    <Grid Background="#0F0F0F">
+    <Grid Background="{ThemeResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="56" />
             <RowDefinition Height="*" />
@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <!-- Top bar: search only. Back navigation uses the system back button. -->
-        <Grid Grid.Row="0" Background="#0F0F0F" Padding="8,0,8,0">
+        <Grid Grid.Row="0" Background="{ThemeResource AppBackgroundBrush}" Padding="8,0,8,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -29,43 +29,43 @@
                     BorderThickness="0"
                     Padding="10"
                     Click="SearchButton_Click">
-                <Image Source="Assets/search.png"
+                <Image local:ThemeAsset.Path="Assets/search.png"
                        Width="28"
                        Height="28"
                        Stretch="Uniform" />
             </Button>
         </Grid>
 
-        <Grid x:Name="LoadingGrid" Grid.Row="1" Background="#0F0F0F" Visibility="Visible">
+        <Grid x:Name="LoadingGrid" Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}" Visibility="Visible">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <local:AndroidLoadingRing x:Name="LoadingRing" Width="48" Height="48" IsActive="True" />
                 <TextBlock Text="Loading playlist..."
-                           Foreground="#AAAAAA"
+                           Foreground="{ThemeResource AppSecondaryTextBrush}"
                            FontSize="14"
                            Margin="0,12,0,0"
                            HorizontalAlignment="Center" />
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="ErrorPanel" Grid.Row="1" Background="#0F0F0F" Visibility="Collapsed">
+        <Grid x:Name="ErrorPanel" Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}" Visibility="Collapsed">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24">
-                <FontIcon Glyph="&#xE783;" FontFamily="Segoe MDL2 Assets" Foreground="#AAAAAA" FontSize="42" />
+                <FontIcon Glyph="&#xE783;" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource AppSecondaryTextBrush}" FontSize="42" />
                 <TextBlock x:Name="ErrorText"
                            Text="Could not load playlist"
-                           Foreground="White"
+                           Foreground="{ThemeResource AppPrimaryTextBrush}"
                            FontSize="18"
                            FontWeight="SemiBold"
                            TextAlignment="Center"
                            Margin="0,16,0,8" />
                 <TextBlock Text="Check your connection and try again"
-                           Foreground="#AAAAAA"
+                           Foreground="{ThemeResource AppSecondaryTextBrush}"
                            FontSize="14"
                            TextAlignment="Center"
                            Margin="0,0,0,20" />
                 <Button Content="Retry"
                         Click="RetryButton_Click"
-                        Background="White"
-                        Foreground="#0F0F0F"
+                        Background="{ThemeResource PrimaryActionBackgroundBrush}"
+                        Foreground="{ThemeResource PrimaryActionForegroundBrush}"
                         BorderThickness="0"
                         Padding="24,10" />
             </StackPanel>
@@ -73,18 +73,18 @@
 
         <ScrollViewer x:Name="MainContent"
                       Grid.Row="1"
-                      Background="#0F0F0F"
+                      Background="{ThemeResource AppBackgroundBrush}"
                       Visibility="Collapsed"
                       ZoomMode="Disabled"
                       HorizontalScrollMode="Disabled"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       ViewChanged="MainContent_ViewChanged">
-            <StackPanel Background="#0F0F0F" Padding="0,8,0,24">
+            <StackPanel Background="{ThemeResource AppBackgroundBrush}" Padding="0,8,0,24">
 
                 <!-- Playlist header, like the mobile playlist screen, but without Play all / Save / Share / menu buttons. -->
                 <Grid Margin="16,0,16,0">
-                    <Border x:Name="PlaylistHeaderImageBorder" Height="185" CornerRadius="12" Background="#1F1F1F" />
+                    <Border x:Name="PlaylistHeaderImageBorder" Height="185" CornerRadius="12" Background="{ThemeResource AppSurfaceAltBrush}" />
                     <Border Height="185" CornerRadius="12">
                         <Border.Background>
                             <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
@@ -98,7 +98,7 @@
                 <StackPanel x:Name="PlaylistInfoPanel" Margin="16,14,16,14">
                     <TextBlock x:Name="PlaylistTitleText"
                                Text="Playlist"
-                               Foreground="White"
+                               Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="30"
                                FontWeight="SemiBold"
                                TextWrapping="WrapWholeWords"
@@ -112,7 +112,7 @@
                                  Visibility="Collapsed" />
                         <TextBlock x:Name="OwnerText"
                                    Text=""
-                                   Foreground="White"
+                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
                                    FontSize="16"
                                    FontWeight="SemiBold"
                                    TextTrimming="CharacterEllipsis"
@@ -121,14 +121,14 @@
 
                     <TextBlock x:Name="PlaylistMetaText"
                                Text=""
-                               Foreground="#DDDDDD"
+                               Foreground="{ThemeResource AppSecondaryTextBrush}"
                                FontSize="15"
                                TextWrapping="Wrap"
                                Margin="0,6,0,0" />
 
                     <TextBlock x:Name="PlaylistDescriptionText"
                                Text=""
-                               Foreground="White"
+                               Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="15"
                                TextWrapping="Wrap"
                                TextTrimming="WordEllipsis"
@@ -139,7 +139,7 @@
                 <!-- Video cards: same layout as Channel/Home. -->
                 <ItemsControl x:Name="VideosItemsControl"
                               SizeChanged="VideosItemsControl_SizeChanged"
-                              Background="#0F0F0F"
+                              Background="{ThemeResource AppBackgroundBrush}"
                               HorizontalAlignment="Stretch"
                               Padding="8,8,8,16">
                     <ItemsControl.ItemsPanel>
@@ -170,11 +170,11 @@
                                     SizeChanged="ResponsiveCard_SizeChanged"
                                     Click="VideoCard_Click">
                                 <StackPanel Orientation="Vertical"
-                                            Background="#0F0F0F"
+                                            Background="{ThemeResource AppBackgroundBrush}"
                                             HorizontalAlignment="Stretch">
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged"
                                           CornerRadius="8">
-                                        <Border Background="#1A1A1A" CornerRadius="8" />
+                                        <Border Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="8" />
                                         <Border CornerRadius="8">
                                             <Image DataContextChanged="CardThumbnail_DataContextChanged"
                                                    Stretch="UniformToFill"
@@ -184,10 +184,9 @@
                                         <Border HorizontalAlignment="Right"
                                                 VerticalAlignment="Bottom"
                                                 Margin="0,0,8,8"
-                                                Padding="6,2">
-                                            <Border.Background>
-                                                <SolidColorBrush Color="Black" Opacity="0.8" />
-                                            </Border.Background>
+                                                Padding="6,2"
+                                                CornerRadius="4"
+                                                Background="#CC000000">
                                             <TextBlock Text="{Binding Duration}"
                                                        Foreground="White"
                                                        FontSize="12"
@@ -199,12 +198,12 @@
                                         <TextBlock Text="{Binding Title}"
                                                    TextWrapping="NoWrap"
                                                    TextTrimming="CharacterEllipsis"
-                                                   Foreground="White"
+                                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                    FontFamily="Roboto"
                                                    FontSize="14"
                                                    FontWeight="Medium" />
                                         <TextBlock Text="{Binding ChannelTitle}"
-                                                   Foreground="Gray"
+                                                   Foreground="{ThemeResource AppMutedTextBrush}"
                                                    FontFamily="Roboto"
                                                    FontSize="12"
                                                    Margin="0,4,0,0" />
@@ -225,7 +224,7 @@
                                               Height="32"
                                               IsActive="False" />
                     <TextBlock Text="Loading more..."
-                               Foreground="#AAAAAA"
+                               Foreground="{ThemeResource AppSecondaryTextBrush}"
                                FontSize="13"
                                VerticalAlignment="Center"
                                Margin="10,0,0,0" />
@@ -233,7 +232,7 @@
 
                 <TextBlock x:Name="EmptyText"
                            Text="No videos in this playlist"
-                           Foreground="#AAAAAA"
+                           Foreground="{ThemeResource AppSecondaryTextBrush}"
                            FontSize="16"
                            HorizontalAlignment="Center"
                            Visibility="Collapsed"

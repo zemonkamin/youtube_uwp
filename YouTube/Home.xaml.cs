@@ -520,8 +520,12 @@ namespace YouTube
                 Content = category.Title,
                 Tag = category,
                 Style = Resources["CategoryChipButtonStyle"] as Style,
-                Background = new SolidColorBrush(isSelected ? Windows.UI.Colors.White : Windows.UI.Color.FromArgb(255, 39, 39, 39)),
-                Foreground = new SolidColorBrush(isSelected ? Windows.UI.Colors.Black : Windows.UI.Colors.White),
+                Background = isSelected
+                    ? (App.GetThemeBrush("PrimaryActionBackgroundBrush") ?? new SolidColorBrush(Windows.UI.Colors.White))
+                    : (App.GetThemeBrush("AppSurfaceBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 39, 39, 39))),
+                Foreground = isSelected
+                    ? (App.GetThemeBrush("PrimaryActionForegroundBrush") ?? new SolidColorBrush(Windows.UI.Colors.Black))
+                    : (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White)),
                 Margin = new Thickness(0, 0, 8, 0),
                 FontSize = 14,
                 FontWeight = Windows.UI.Text.FontWeights.SemiBold

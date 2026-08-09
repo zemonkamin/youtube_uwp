@@ -1,7 +1,8 @@
 {
-  "version": 3,
+  "locked": false,
+  "version": 2,
   "targets": {
-    "UAP,Version=v10.0.10240": {
+    "UAP,Version=v10.0": {
       "Microsoft.CSharp/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -1878,7 +1879,7 @@
         }
       }
     },
-    "UAP,Version=v10.0.10240/win10-arm": {
+    "UAP,Version=v10.0/win10-arm": {
       "Microsoft.CSharp/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -3621,7 +3622,7 @@
         }
       }
     },
-    "UAP,Version=v10.0.10240/win10-arm-aot": {
+    "UAP,Version=v10.0/win10-arm-aot": {
       "Microsoft.CSharp/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -5321,7 +5322,7 @@
         }
       }
     },
-    "UAP,Version=v10.0.10240/win10-x64": {
+    "UAP,Version=v10.0/win10-x64": {
       "Microsoft.CSharp/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -7073,7 +7074,7 @@
         }
       }
     },
-    "UAP,Version=v10.0.10240/win10-x64-aot": {
+    "UAP,Version=v10.0/win10-x64-aot": {
       "Microsoft.CSharp/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -8773,7 +8774,7 @@
         }
       }
     },
-    "UAP,Version=v10.0.10240/win10-x86": {
+    "UAP,Version=v10.0/win10-x86": {
       "Microsoft.CSharp/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -10525,7 +10526,7 @@
         }
       }
     },
-    "UAP,Version=v10.0.10240/win10-x86-aot": {
+    "UAP,Version=v10.0/win10-x86-aot": {
       "Microsoft.CSharp/4.0.0": {
         "type": "package",
         "dependencies": {
@@ -15716,54 +15717,6 @@
     "": [
       "Microsoft.NETCore.UniversalWindowsPlatform >= 5.1.0"
     ],
-    "UAP,Version=v10.0.10240": []
-  },
-  "packageFolders": {
-    "C:\\Users\\zemonkamin\\.nuget\\packages\\": {}
-  },
-  "project": {
-    "restore": {
-      "projectUniqueName": "C:\\uwp\\youtube_uwp\\YouTube\\YouTube.csproj",
-      "projectName": "YouTube",
-      "projectPath": "C:\\uwp\\youtube_uwp\\YouTube\\YouTube.csproj",
-      "projectJsonPath": "C:\\uwp\\youtube_uwp\\YouTube\\project.json",
-      "packagesPath": "C:\\Users\\zemonkamin\\.nuget\\packages\\",
-      "outputPath": "C:\\uwp\\youtube_uwp\\YouTube\\obj\\",
-      "projectStyle": "ProjectJson",
-      "configFilePaths": [
-        "C:\\Users\\zemonkamin\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
-      ],
-      "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://api.nuget.org/v3/index.json": {}
-      }
-    },
-    "dependencies": {
-      "Microsoft.NETCore.UniversalWindowsPlatform": "[5.1.0, )"
-    },
-    "frameworks": {
-      "uap10.0.10240": {}
-    },
-    "runtimes": {
-      "win10-arm": {
-        "#import": []
-      },
-      "win10-arm-aot": {
-        "#import": []
-      },
-      "win10-x64": {
-        "#import": []
-      },
-      "win10-x64-aot": {
-        "#import": []
-      },
-      "win10-x86": {
-        "#import": []
-      },
-      "win10-x86-aot": {
-        "#import": []
-      }
-    }
+    "UAP,Version=v10.0": []
   }
 }

@@ -1,4 +1,4 @@
-<UserControl
+﻿<UserControl
     x:Class="YouTube.AndroidLoadingRing"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -19,7 +19,7 @@
             x:Name="SpinnerPath"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            Stroke="White"
+            Stroke="{ThemeResource LoadingRingBrush}"
             StrokeThickness="2.5"
             StrokeStartLineCap="Round"
             StrokeEndLineCap="Round" />

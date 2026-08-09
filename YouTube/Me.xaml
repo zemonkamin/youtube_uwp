@@ -1,4 +1,4 @@
-<Page
+﻿<Page
     x:Class="YouTube.Me"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,9 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="#0F0F0F">
+    Background="{ThemeResource AppBackgroundBrush}">
 
-    <Grid Background="#0F0F0F" x:Name="mainGrid">
+    <Grid Background="{ThemeResource AppBackgroundBrush}" x:Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -30,7 +30,7 @@
                                     BorderThickness="0"
                                     Padding="8"
                                     Click="SearchButton_Click">
-                                <Image Source="Assets/search.png"
+                                <Image local:ThemeAsset.Path="Assets/search.png"
                                        Width="22"
                                        Height="22"
                                        Stretch="Uniform"/>
@@ -44,7 +44,7 @@
                                     BorderThickness="0"
                                     Padding="6"
                                     Click="SettingsButton_Click">
-                                <Image Source="Assets/player/settings.png"
+                                <Image local:ThemeAsset.Path="Assets/player/settings.png"
                                        Width="24"
                                        Height="24"
                                        Stretch="Uniform"/>
@@ -74,7 +74,7 @@
                                     VerticalAlignment="Center">
                             <TextBlock x:Name="DisplayNameText"
                                        Text="Loading..."
-                                       Foreground="White"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="20"
                                        FontWeight="SemiBold"
                                        TextWrapping="NoWrap"
@@ -84,12 +84,12 @@
                                         Margin="0,3,0,0">
                                 <TextBlock x:Name="ChannelHandleText"
                                            Text=""
-                                           Foreground="#B8B8B8"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="12"
                                            VerticalAlignment="Center"/>
                                 <TextBlock x:Name="ProfileMetaSeparator"
                                            Text="  •  "
-                                           Foreground="#888888"
+                                           Foreground="{ThemeResource AppMutedTextBrush}"
                                            FontSize="12"
                                            VerticalAlignment="Center"/>
                                 <Button x:Name="GoToChannelButton"
@@ -99,11 +99,11 @@
                                         Click="GoToChannelButton_Click">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="View channel"
-                                                   Foreground="#B8B8B8"
+                                                   Foreground="{ThemeResource AppSecondaryTextBrush}"
                                                    FontSize="12"
                                                    VerticalAlignment="Center"/>
                                         <TextBlock Text=" &#x203A;"
-                                                   Foreground="#B8B8B8"
+                                                   Foreground="{ThemeResource AppSecondaryTextBrush}"
                                                    FontSize="18"
                                                    Margin="2,-2,0,0"
                                                    VerticalAlignment="Center"/>
@@ -122,12 +122,12 @@
                             Click="HistoryHeader_Click">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="History"
-                                       Foreground="White"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="18"
                                        FontWeight="SemiBold"
                                        VerticalAlignment="Center"/>
                             <TextBlock Text=" &#x203A;"
-                                       Foreground="#B8B8B8"
+                                       Foreground="{ThemeResource AppSecondaryTextBrush}"
                                        FontSize="24"
                                        Margin="3,-3,0,0"
                                        VerticalAlignment="Center"/>
@@ -168,10 +168,8 @@
                                                         VerticalAlignment="Bottom"
                                                         Margin="0,0,4,4"
                                                         Padding="4,1"
-                                                        CornerRadius="2">
-                                                    <Border.Background>
-                                                        <SolidColorBrush Color="Black" Opacity="0.82"/>
-                                                    </Border.Background>
+                                                        CornerRadius="4"
+                                                        Background="#D1000000">
                                                     <TextBlock Text="{Binding Duration}"
                                                                Foreground="White"
                                                                FontSize="10"
@@ -179,14 +177,14 @@
                                                 </Border>
                                             </Grid>
                                             <TextBlock Text="{Binding Title}"
-                                                       Foreground="White"
+                                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                        FontSize="13"
                                                        TextWrapping="Wrap"
                                                        TextTrimming="CharacterEllipsis"
                                                        MaxLines="2"
                                                        Margin="0,6,0,0"/>
                                             <TextBlock Text="{Binding ChannelTitle}"
-                                                       Foreground="#AAAAAA"
+                                                       Foreground="{ThemeResource AppSecondaryTextBrush}"
                                                        FontSize="11"
                                                        TextWrapping="NoWrap"
                                                        TextTrimming="CharacterEllipsis"
@@ -204,7 +202,7 @@
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
                             <TextBlock Text="Playlists"
-                                       Foreground="White"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="18"
                                        FontWeight="SemiBold"
                                        VerticalAlignment="Center"/>
@@ -243,14 +241,14 @@
                                                 </Border>
                                             </Grid>
                                             <TextBlock Text="{Binding Title}"
-                                                       Foreground="White"
+                                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                        FontSize="13"
                                                        TextWrapping="Wrap"
                                                        TextTrimming="CharacterEllipsis"
                                                        MaxLines="2"
                                                        Margin="0,6,0,0"/>
                                             <TextBlock Text="{Binding PrivacyText}"
-                                                       Foreground="#AAAAAA"
+                                                       Foreground="{ThemeResource AppSecondaryTextBrush}"
                                                        FontSize="11"
                                                        TextWrapping="NoWrap"
                                                        TextTrimming="CharacterEllipsis"
@@ -265,7 +263,7 @@
                     <TextBlock x:Name="EmptyText"
                                Visibility="Collapsed"
                                Text="No data"
-                               Foreground="#AAAAAA"
+                               Foreground="{ThemeResource AppSecondaryTextBrush}"
                                FontSize="16"
                                HorizontalAlignment="Center"
                                Margin="22,40,22,0"/>
@@ -273,7 +271,7 @@
             </ScrollViewer>
 
             <Grid x:Name="LoadingOverlay"
-                  Background="#0F0F0F"
+                  Background="{ThemeResource AppBackgroundBrush}"
                   Visibility="Collapsed">
                 <local:AndroidLoadingRing x:Name="LoadingRing"
                                           Width="48"

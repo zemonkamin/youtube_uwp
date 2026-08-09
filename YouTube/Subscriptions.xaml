@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="#0F0F0F">
+    Background="{ThemeResource AppBackgroundBrush}">
 
     <Page.Resources>
         <!-- Button style without pressed/hover states -->
@@ -24,7 +24,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="#0F0F0F">
+    <Grid Background="{ThemeResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="56"/>
             <RowDefinition Height="*"/>
@@ -56,7 +56,7 @@
 
                 <!-- Videos area -->
                 <ItemsControl x:Name="VideosItemsControl"
-                             Background="#0F0F0F"
+                             Background="{ThemeResource AppBackgroundBrush}"
                              HorizontalAlignment="Stretch"
                              Padding="8,0,8,16"
                              SizeChanged="CardsItemsControl_SizeChanged">
@@ -82,12 +82,12 @@
                                    Click="VideoCard_Click"
                                    Tag="{Binding}">
                                 <StackPanel Orientation="Vertical" 
-                                          Background="#0F0F0F" 
+                                          Background="{ThemeResource AppBackgroundBrush}" 
                                           HorizontalAlignment="Stretch">
                                     <!-- Video Thumbnail -->
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged"
                                           CornerRadius="8">
-                                        <Border Background="#1A1A1A" CornerRadius="8" />
+                                        <Border Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="8" />
                                         <Border CornerRadius="8">
                                             <Image DataContextChanged="CardThumbnail_DataContextChanged"
                                                    Stretch="UniformToFill"
@@ -98,10 +98,9 @@
                                         <Border HorizontalAlignment="Right"
                                                 VerticalAlignment="Bottom"
                                                 Margin="0,0,8,8"
-                                                Padding="6,2">
-                                            <Border.Background>
-                                                <SolidColorBrush Color="Black" Opacity="0.8"/>
-                                            </Border.Background>
+                                                Padding="6,2"
+                                                CornerRadius="4"
+                                                Background="#CC000000">
                                             <TextBlock Text="{Binding Duration}" 
                                                        Foreground="White" 
                                                        FontSize="12" 
@@ -114,10 +113,10 @@
                                         <TextBlock Text="{Binding Title}"
                                                  TextWrapping="NoWrap"
                                                  TextTrimming="CharacterEllipsis"
-                                                 Foreground="White"
+                                                 Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                  FontSize="14"/>
                                         <TextBlock Text="{Binding ChannelTitle}"
-                                                 Foreground="Gray"
+                                                 Foreground="{ThemeResource AppMutedTextBrush}"
                                                  FontSize="12"
                                                  Margin="0,4,0,0"/>
                                     </StackPanel>
@@ -130,7 +129,7 @@
                 <Grid x:Name="VideosSkeletonLoader"
                       Visibility="Collapsed">
                     <ItemsControl x:Name="VideosSkeletonCardsList"
-                              Background="#0F0F0F"
+                              Background="{ThemeResource AppBackgroundBrush}"
                               HorizontalAlignment="Stretch"
                               Padding="8,0,8,16"
                               SizeChanged="CardsItemsControl_SizeChanged">
@@ -149,7 +148,7 @@
                                   Tag="ResponsiveCard"
                                   Loaded="ResponsiveCard_Loaded"
                                   SizeChanged="PlaceholderCardHost_SizeChanged">
-                                <Image Source="Assets/yt_skeleton/video.png"
+                                <Image local:ThemeAsset.Path="Assets/yt_skeleton/video.png"
                                        Stretch="Uniform"
                                        HorizontalAlignment="Stretch"
                                        VerticalAlignment="Stretch"

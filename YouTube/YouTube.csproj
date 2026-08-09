@@ -97,21 +97,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <Content Include="Assets\all_notifications.png" />
-    <Content Include="Assets\copy.png" />
-    <Content Include="Assets\down_arrow.png" />
-    <Content Include="Assets\info.png" />
-    <Content Include="Assets\link.png" />
-    <Content Include="Assets\log_out.png" />
-    <Content Include="Assets\microphone.png" />
-    <Content Include="Assets\more.png" />
-    <Content Include="Assets\none_notifications.png" />
-    <Content Include="Assets\none_search.png" />
-    <Content Include="Assets\notifications.png" />
-    <Content Include="Assets\old_version.png" />
-    <Content Include="Assets\player\comments.png" />
-    <Content Include="Assets\qr.png" />
-    <Content Include="Assets\Roboto.ttf" />
+    <Content Include="Assets\**\*.*" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -194,59 +180,7 @@
     <None Include="YouTube_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\failed_loading.png" />
-    <Content Include="Assets\NoInternet.png" />
-    <Content Include="Assets\placeholder.png" />
-    <Content Include="Assets\player\back.png" />
-    <Content Include="Assets\player\bg.png" />
-    <Content Include="Assets\player\dislike.png" />
-    <Content Include="Assets\player\dislike_clicked.png" />
-    <Content Include="Assets\player\down_arrow.png" />
-    <Content Include="Assets\player\download.png" />
-    <Content Include="Assets\player\exit_fullscreen.png" />
-    <Content Include="Assets\player\fullscreen.png" />
-    <Content Include="Assets\player\like.png" />
-    <Content Include="Assets\player\like_clicked.png" />
-    <Content Include="Assets\player\pause.png" />
-    <Content Include="Assets\player\play.png" />
-    <Content Include="Assets\player\quality.png" />
-    <Content Include="Assets\player\reload.png" />
-    <Content Include="Assets\player\replay.png" />
-    <Content Include="Assets\player\send.png" />
-    <Content Include="Assets\player\settings.png" />
-    <Content Include="Assets\player\skip.png" />
-    <Content Include="Assets\player\speed.png" />
-    <Content Include="Assets\rounding.png" />
-    <Content Include="Assets\rounding_up.png" />
-    <Content Include="Assets\search.png" />
-    <Content Include="Assets\share.png" />
-    <Content Include="Assets\tabbar\home-icon-active.png" />
-    <Content Include="Assets\tabbar\home-icon.png" />
-    <Content Include="Assets\tabbar\shorts-icon-active.png" />
-    <Content Include="Assets\tabbar\shorts-icon.png" />
-    <Content Include="Assets\tabbar\sub-icon-active.png" />
-    <Content Include="Assets\tabbar\sub-icon.png" />
-    <Content Include="Assets\tabbar\user-icon-active.png" />
-    <Content Include="Assets\tabbar\user-icon.png" />
-    <Content Include="Assets\try_to_find.png" />
-    <Content Include="Assets\try_to_stream.png" />
-    <Content Include="Assets\unsubscribe.png" />
-    <Content Include="Assets\ytlogo.png" />
-    <Content Include="Assets\yt_skeleton\channel_subscribe.png" />
-    <Content Include="Assets\yt_skeleton\comments.png" />
-    <Content Include="Assets\yt_skeleton\like_share.png" />
-    <Content Include="Assets\yt_skeleton\title.png" />
-    <Content Include="Assets\yt_skeleton\title_description.png" />
-    <Content Include="Assets\yt_skeleton\video.png" />
-    <Content Include="Assets\yt_skeleton\video_channel_image.png" />
     <Content Include="Properties\Default.rd.xml" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

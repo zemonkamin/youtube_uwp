@@ -6,12 +6,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="#0F0F0F">
+    Background="{ThemeResource AppBackgroundBrush}">
 
     <Page.Resources>
         <Style x:Key="CategoryChipButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#272727"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{ThemeResource AppSurfaceBrush}"/>
+            <Setter Property="Foreground" Value="{ThemeResource AppPrimaryTextBrush}"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="14,0"/>
             <Setter Property="Height" Value="36"/>
@@ -36,7 +36,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="#0F0F0F">
+    <Grid Background="{ThemeResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="56"/>
             <RowDefinition Height="*"/>
@@ -50,7 +50,7 @@
         <Border x:Name="SuggestionsSection"
                 Grid.Row="1"
                 VerticalAlignment="Top"
-                Background="#0F0F0F"
+                Background="{ThemeResource AppBackgroundBrush}"
                 Visibility="Collapsed"
                 Padding="16,8">
             <StackPanel>
@@ -82,11 +82,11 @@
                                 <FontIcon Glyph="&#xE721;"
                                          FontFamily="Segoe MDL2 Assets"
                                          FontSize="16"
-                                         Foreground="#AAAAAA"
+                                         Foreground="{ThemeResource AppSecondaryTextBrush}"
                                          VerticalAlignment="Center"/>
                                 <TextBlock Grid.Column="1"
                                           Text="{Binding}"
-                                          Foreground="White"
+                                          Foreground="{ThemeResource AppPrimaryTextBrush}"
                                           FontFamily="Roboto"
                                           FontSize="14"
                                           Margin="16,0,0,0"
@@ -102,18 +102,18 @@
         <!-- Main content with ScrollViewer -->
         <ScrollViewer x:Name="MainScrollViewer"
                       Grid.Row="1"
-                      Background="#0F0F0F"
+                      Background="{ThemeResource AppBackgroundBrush}"
                       ZoomMode="Disabled"
                       HorizontalScrollMode="Disabled"
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       ViewChanged="ScrollViewer_ViewChanged">
 
-            <StackPanel Background="#0F0F0F">
+            <StackPanel Background="{ThemeResource AppBackgroundBrush}">
 
                 <!-- Home category chips -->
                 <Grid x:Name="CategoriesHost"
-                      Background="#0F0F0F"
+                      Background="{ThemeResource AppBackgroundBrush}"
                       Margin="0,0,0,8">
                     <ScrollViewer x:Name="CategoryPlaceholderScrollViewer"
                                   HorizontalScrollMode="Enabled"
@@ -124,31 +124,31 @@
                                   Visibility="Visible">
                         <StackPanel Orientation="Horizontal"
                                     Padding="12,6,12,6">
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
                         </StackPanel>
                     </ScrollViewer>
 
@@ -166,7 +166,7 @@
                 </Grid>
                 <!-- Video Cards Container -->
                 <ItemsControl x:Name="RecommendationsList"
-                             Background="#0F0F0F"
+                             Background="{ThemeResource AppBackgroundBrush}"
                              HorizontalAlignment="Stretch"
                              Padding="8,8,8,16"
                              SizeChanged="CardsItemsControl_SizeChanged">
@@ -192,12 +192,12 @@
                                    Margin="0,0,0,16"
                                    Click="VideoCard_Click">
                                 <StackPanel Orientation="Vertical" 
-                                          Background="#0F0F0F" 
+                                          Background="{ThemeResource AppBackgroundBrush}" 
                                           HorizontalAlignment="Stretch">
                                     <!-- Video Thumbnail -->
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged"
                                           CornerRadius="8">
-                                        <Border Background="#1A1A1A" CornerRadius="8" />
+                                        <Border Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="8" />
                                         <Border CornerRadius="8">
                                             <Image DataContextChanged="CardThumbnail_DataContextChanged"
                                                    Stretch="UniformToFill"
@@ -208,10 +208,9 @@
                                         <Border HorizontalAlignment="Right"
                                                 VerticalAlignment="Bottom"
                                                 Margin="0,0,8,8"
-                                                Padding="6,2">
-                                            <Border.Background>
-                                                <SolidColorBrush Color="Black" Opacity="0.8"/>
-                                            </Border.Background>
+                                                Padding="6,2"
+                                                CornerRadius="4"
+                                                Background="#CC000000">
                                             <TextBlock Text="{Binding Duration}" 
                                                        Foreground="White" 
                                                        FontSize="12" 
@@ -224,14 +223,14 @@
                                         <TextBlock Text="{Binding Title}"
                                                  TextWrapping="NoWrap"
                                                  TextTrimming="CharacterEllipsis"
-                                                 Foreground="White"
+                                                 Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                  FontFamily="Roboto"
                                                  FontSize="14"
                                                  FontWeight="Medium"/>
                                         <TextBlock Text="{Binding MetadataLine}"
                                                  TextWrapping="NoWrap"
                                                  TextTrimming="CharacterEllipsis"
-                                                 Foreground="Gray"
+                                                 Foreground="{ThemeResource AppMutedTextBrush}"
                                                  FontFamily="Roboto"
                                                  FontSize="12"
                                                  Margin="0,4,0,0"/>
@@ -244,7 +243,7 @@
 
                 <!-- Inline card placeholders used while switching category chips -->
                 <ItemsControl x:Name="InlineSkeletonCardsList"
-                              Background="#0F0F0F"
+                              Background="{ThemeResource AppBackgroundBrush}"
                               HorizontalAlignment="Stretch"
                               Padding="8,8,8,16"
                               Visibility="Collapsed"
@@ -264,7 +263,7 @@
                                   Tag="ResponsiveCard"
                                   Loaded="ResponsiveCard_Loaded"
                                   SizeChanged="PlaceholderCardHost_SizeChanged">
-                                <Image Source="Assets/yt_skeleton/video.png"
+                                <Image local:ThemeAsset.Path="Assets/yt_skeleton/video.png"
                                        Stretch="Uniform"
                                        ImageOpened="PlaceholderCard_ImageOpened"/>
                             </Grid>
@@ -282,7 +281,7 @@
                                               Width="30"
                                               Height="30"/>
                     <TextBlock Text="Loading more videos..."
-                               Foreground="Gray"
+                               Foreground="{ThemeResource AppMutedTextBrush}"
                                FontSize="14"
                                HorizontalAlignment="Center"
                                Margin="0,8,0,0"/>
@@ -296,10 +295,10 @@
         <!-- Skeleton Loading Screen -->
         <Grid x:Name="SkeletonLoader"
               Grid.Row="1"
-              Background="#0F0F0F"
+              Background="{ThemeResource AppBackgroundBrush}"
               Visibility="Collapsed">
             <ScrollViewer VerticalScrollBarVisibility="Hidden">
-                <StackPanel Background="#0F0F0F">
+                <StackPanel Background="{ThemeResource AppBackgroundBrush}">
                     <ScrollViewer HorizontalScrollMode="Enabled"
                                   HorizontalScrollBarVisibility="Hidden"
                                   VerticalScrollMode="Disabled"
@@ -308,36 +307,36 @@
                                   Margin="0,0,0,8">
                         <StackPanel Orientation="Horizontal"
                                     Padding="12,6,12,6">
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
-                            <Border Width="112" Height="36" CornerRadius="9" Background="#272727" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
+                            <Border Width="112" Height="36" CornerRadius="9" Background="{ThemeResource AppSurfaceBrush}" Margin="0,0,8,0"/>
                         </StackPanel>
                     </ScrollViewer>
 
                     <ItemsControl x:Name="SkeletonCardsList"
-                              Background="#0F0F0F"
+                              Background="{ThemeResource AppBackgroundBrush}"
                               HorizontalAlignment="Stretch"
                               Padding="8,8,8,16"
                               SizeChanged="CardsItemsControl_SizeChanged">
@@ -356,7 +355,7 @@
                                   Tag="ResponsiveCard"
                                   Loaded="ResponsiveCard_Loaded"
                                   SizeChanged="PlaceholderCardHost_SizeChanged">
-                                <Image Source="Assets/yt_skeleton/video.png"
+                                <Image local:ThemeAsset.Path="Assets/yt_skeleton/video.png"
                                        Stretch="Uniform"
                                        ImageOpened="PlaceholderCard_ImageOpened"/>
                             </Grid>
@@ -372,7 +371,7 @@
         <!-- Offline state -->
         <Grid x:Name="OfflinePanel"
               Grid.Row="1"
-              Background="#0F0F0F"
+              Background="{ThemeResource AppBackgroundBrush}"
               Visibility="Collapsed">
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center"
@@ -384,7 +383,7 @@
                        HorizontalAlignment="Center"
                        Margin="0,0,0,20"/>
                 <TextBlock Text="No connection to the Internet"
-                           Foreground="White"
+                           Foreground="{ThemeResource AppPrimaryTextBrush}"
                            FontSize="22"
                            FontWeight="SemiBold"
                            TextAlignment="Center"
@@ -392,7 +391,7 @@
                            HorizontalAlignment="Center"
                            Margin="0,0,0,8"/>
                 <TextBlock Text="Looks like we can't load videos for you."
-                           Foreground="#AAAAAA"
+                           Foreground="{ThemeResource AppSecondaryTextBrush}"
                            FontSize="16"
                            TextAlignment="Center"
                            TextWrapping="Wrap"
@@ -403,7 +402,7 @@
                         Content="Try again"
                         Click="RetryButton_Click"
                         Background="#3EA6FF"
-                        Foreground="#0F0F0F"
+                        Foreground="{ThemeResource PrimaryActionForegroundBrush}"
                         BorderThickness="0"
                         FontSize="16"
                         FontWeight="SemiBold"

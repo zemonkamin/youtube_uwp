@@ -6,14 +6,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="#0F0F0F">
+    Background="{ThemeResource AppBackgroundBrush}">
 
     <Page.Resources>
-        <SolidColorBrush x:Key="RefreshButtonBorderBrush" Color="#3A3A3A"/>
+        <SolidColorBrush x:Key="RefreshButtonBorderBrush" Color="{ThemeResource AppDividerColor}"/>
 
         <Style x:Key="PillOutlineButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#0F0F0F"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{ThemeResource AppBackgroundBrush}"/>
+            <Setter Property="Foreground" Value="{ThemeResource AppPrimaryTextBrush}"/>
             <Setter Property="BorderBrush" Value="{StaticResource RefreshButtonBorderBrush}"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Padding" Value="18.67,0"/>
@@ -81,7 +81,7 @@
         </Style>
     </Page.Resources>
 
-    <Grid Background="#0F0F0F" x:Name="mainGrid">
+    <Grid Background="{ThemeResource AppBackgroundBrush}" x:Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="56"/>
             <RowDefinition Height="*"/>
@@ -101,7 +101,7 @@
             <TextBlock x:Name="StatusText"
                        Text="Scan the QR code to sign in"
                        FontSize="18"
-                       Foreground="White"
+                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                        HorizontalAlignment="Center"
                        TextWrapping="Wrap"
                        TextAlignment="Center"
@@ -122,7 +122,7 @@
                        Text=""
                        FontSize="24"
                        FontWeight="Bold"
-                       Foreground="White"
+                       Foreground="{ThemeResource AppPrimaryTextBrush}"
                        HorizontalAlignment="Center"
                        TextAlignment="Center"
                        Margin="0,20,0,0"
@@ -130,7 +130,7 @@
 
             <TextBlock Text="Verification code"
                        FontSize="14"
-                       Foreground="Gray"
+                       Foreground="{ThemeResource AppMutedTextBrush}"
                        HorizontalAlignment="Center"
                        TextAlignment="Center"
                        Margin="0,4,0,0"/>

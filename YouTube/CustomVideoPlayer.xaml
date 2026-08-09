@@ -242,7 +242,7 @@
                     Opacity="0.8"
                     IsDoubleTapEnabled="False">
                 <Button.Content>
-                    <Image Source="Assets/player/down_arrow.png"
+                    <Image local:ThemeAsset.Path="Assets/Dark/player/down_arrow.png"
                            Width="20"
                            Height="20"/>
                 </Button.Content>
@@ -261,7 +261,7 @@
                     IsDoubleTapEnabled="False">
                 <Button.Content>
                     <Image x:Name="SettingsIcon" 
-                           Source="Assets/player/settings.png" 
+                           local:ThemeAsset.Path="Assets/Dark/player/settings.png" 
                            Width="20" 
                            Height="20"/>
                 </Button.Content>
@@ -279,7 +279,7 @@
                     IsDoubleTapEnabled="False">
                 <Button.Content>
                     <Image x:Name="PlayPauseIcon" 
-                           Source="Assets/player/play.png" 
+                           local:ThemeAsset.Path="Assets/Dark/player/play.png" 
                            Width="48" 
                            Height="48"/>
                 </Button.Content>
@@ -298,7 +298,7 @@
                     IsDoubleTapEnabled="False">
                 <Button.Content>
                     <Image x:Name="ReplayIcon" 
-                           Source="Assets/player/replay.png" 
+                           local:ThemeAsset.Path="Assets/Dark/player/replay.png" 
                            Width="48" 
                            Height="48"/>
                 </Button.Content>
@@ -313,7 +313,14 @@
                                       Height="56"
                                       IsActive="False"
                                       Visibility="Collapsed"
-                                      IsHitTestVisible="False"/>
+                                      IsHitTestVisible="False">
+                <!-- The player spinner is always drawn over video, so it must stay white
+                     in both app themes. Keep the app-wide LoadingRingBrush unchanged for
+                     page-level spinners, which remain black in Light theme. -->
+                <local:AndroidLoadingRing.Resources>
+                    <SolidColorBrush x:Key="LoadingRingBrush" Color="White"/>
+                </local:AndroidLoadingRing.Resources>
+            </local:AndroidLoadingRing>
 
             <!-- Bottom controls panel -->
             <Grid x:Name="BottomControlsPanel" 
@@ -321,7 +328,7 @@
                   Height="80"
                   Margin="0,0,0,0">
                 <Grid.Background>
-                    <ImageBrush ImageSource="Assets/player/bg.png" Stretch="Fill"/>
+                    <ImageBrush local:ThemeAsset.Path="Assets/player/bg.png" Stretch="Fill"/>
                 </Grid.Background>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -365,7 +372,7 @@
                             IsDoubleTapEnabled="False">
                         <Button.Content>
                             <Image x:Name="FullscreenIcon" 
-                                   Source="Assets/player/fullscreen.png" 
+                                   local:ThemeAsset.Path="Assets/Dark/player/fullscreen.png" 
                                    Width="20" 
                                    Height="20"/>
                         </Button.Content>

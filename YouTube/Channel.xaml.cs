@@ -490,9 +490,9 @@ namespace YouTube
 
             if (text != null)
             {
-                text.Foreground = new SolidColorBrush(selected
-                    ? Windows.UI.Colors.White
-                    : Windows.UI.Color.FromArgb(255, 170, 170, 170));
+                text.Foreground = selected
+                    ? (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White))
+                    : (App.GetThemeBrush("AppSecondaryTextBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 170, 170, 170)));
             }
         }
 
@@ -3897,18 +3897,18 @@ namespace YouTube
 
             if (SubscribeButtonContainer != null)
             {
-                var color = isSubscribed
-                    ? Windows.UI.Color.FromArgb(255, 39, 39, 39)
-                    : Windows.UI.Color.FromArgb(255, 241, 241, 241);
-                SubscribeButtonContainer.Background = new SolidColorBrush(color);
-                SubscribeButtonContainer.BorderBrush = new SolidColorBrush(color);
+                var containerBrush = isSubscribed
+                    ? (App.GetThemeBrush("AppSurfaceBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 39, 39, 39)))
+                    : (App.GetThemeBrush("PrimaryActionBackgroundBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 241, 241, 241)));
+                SubscribeButtonContainer.Background = containerBrush;
+                SubscribeButtonContainer.BorderBrush = containerBrush;
             }
 
             if (SubscribeButtonText != null)
             {
                 SubscribeButtonText.Text = "Subscribe";
                 SubscribeButtonText.Visibility = isSubscribed ? Visibility.Collapsed : Visibility.Visible;
-                SubscribeButtonText.Foreground = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 15, 15, 15));
+                SubscribeButtonText.Foreground = App.GetThemeBrush("PrimaryActionForegroundBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 15, 15, 15));
             }
 
             if (SubscribeSubscribedIconsPanel != null)
@@ -4293,7 +4293,7 @@ namespace YouTube
 
             try
             {
-                image.Source = new BitmapImage(new Uri("ms-appx:///" + path.TrimStart('/')));
+                App.SetThemeImageSource(image, path);
             }
             catch (Exception ex)
             {
