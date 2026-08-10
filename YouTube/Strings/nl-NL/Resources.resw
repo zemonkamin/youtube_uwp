@@ -1,0 +1,850 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutText" xml:space="preserve">
+    <value>Ontwikkeld door het LegacyProjects-team.
+Ondersteund door YouTube API Legacy.
+
+Versie {0}</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Automatisch</value>
+  </data>
+  <data name="AutoTranslate" xml:space="preserve">
+    <value>Automatisch vertalen &gt;</value>
+  </data>
+  <data name="ChannelLoadingError" xml:space="preserve">
+    <value>Fout bij laden van kanaal</value>
+  </data>
+  <data name="ChannelWasNotProvided" xml:space="preserve">
+    <value>Kanaal is niet opgegeven</value>
+  </data>
+  <data name="CouldNotLoadChannel" xml:space="preserve">
+    <value>Kan kanaal niet laden</value>
+  </data>
+  <data name="CouldNotLoadPlaylist" xml:space="preserve">
+    <value>Kan afspeellijst niet laden</value>
+  </data>
+  <data name="DescriptionNotAvailable" xml:space="preserve">
+    <value>Beschrijving niet beschikbaar</value>
+  </data>
+  <data name="ErrorFormat" xml:space="preserve">
+    <value>Fout: {0}</value>
+  </data>
+  <data name="Every15Min" xml:space="preserve">
+    <value>Elke 15 min</value>
+  </data>
+  <data name="Every2Hours" xml:space="preserve">
+    <value>Elke 2 uur</value>
+  </data>
+  <data name="Every30Min" xml:space="preserve">
+    <value>Elke 30 min</value>
+  </data>
+  <data name="Every6Hours" xml:space="preserve">
+    <value>Elke 6 uur</value>
+  </data>
+  <data name="EveryHour" xml:space="preserve">
+    <value>Elk uur</value>
+  </data>
+  <data name="EveryHours" xml:space="preserve">
+    <value>Elke {0} uur</value>
+  </data>
+  <data name="EveryMinutes" xml:space="preserve">
+    <value>Elke {0} min</value>
+  </data>
+  <data name="HistoryLoadFailed" xml:space="preserve">
+    <value>Kan geschiedenis niet laden</value>
+  </data>
+  <data name="HistorySignIn" xml:space="preserve">
+    <value>Log in om je kijkgeschiedenis te bekijken</value>
+  </data>
+  <data name="HomeAll" xml:space="preserve">
+    <value>Alles</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>App-taal</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>Engels</value>
+  </data>
+  <data name="LanguageRestartHint" xml:space="preserve">
+    <value>De interface wordt direct bijgewerkt.</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Russisch</value>
+  </data>
+  <data name="LanguageSection" xml:space="preserve">
+    <value>Taal</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>Systeemstandaard</value>
+  </data>
+  <data name="LinkCopied" xml:space="preserve">
+    <value>Link gekopieerd</value>
+  </data>
+  <data name="LoadingDescription" xml:space="preserve">
+    <value>Beschrijving laden...</value>
+  </data>
+  <data name="LoadingFailed" xml:space="preserve">
+    <value>Laden mislukt</value>
+  </data>
+  <data name="Loc_0Subscribers0Videos_Text.Text" xml:space="preserve">
+    <value>0 abonnees • 0 video's</value>
+  </data>
+  <data name="Loc_About_Text.Text" xml:space="preserve">
+    <value>Over</value>
+  </data>
+  <data name="Loc_Account_Text.Text" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="Loc_All_Text.Text" xml:space="preserve">
+    <value>Alles</value>
+  </data>
+  <data name="Loc_AudioTrack_Text.Text" xml:space="preserve">
+    <value>Audiotrack</value>
+  </data>
+  <data name="Loc_Auto_Text.Text" xml:space="preserve">
+    <value>Automatisch</value>
+  </data>
+  <data name="Loc_AutoFullscreenInLandscape_Text.Text" xml:space="preserve">
+    <value>Automatisch volledig scherm in liggende stand</value>
+  </data>
+  <data name="Loc_BackgroundToastsFromYouTubeNotifications_Text.Text" xml:space="preserve">
+    <value>Achtergrondmeldingen van YouTube-notificaties</value>
+  </data>
+  <data name="Loc_Channel_Text.Text" xml:space="preserve">
+    <value>Kanaal</value>
+  </data>
+  <data name="Loc_Channels_Text.Text" xml:space="preserve">
+    <value>Kanalen</value>
+  </data>
+  <data name="Loc_CheckYourConnectionAndTryAgain_Text.Text" xml:space="preserve">
+    <value>Controleer je verbinding en probeer het opnieuw</value>
+  </data>
+  <data name="Loc_Close_Content.Content" xml:space="preserve">
+    <value>Sluiten</value>
+  </data>
+  <data name="Loc_Comments_Text.Text" xml:space="preserve">
+    <value>Reacties</value>
+  </data>
+  <data name="Loc_CopyLink_Text.Text" xml:space="preserve">
+    <value>Link kopiëren</value>
+  </data>
+  <data name="Loc_CouldNotLoadChannel_Text.Text" xml:space="preserve">
+    <value>Kan kanaal niet laden</value>
+  </data>
+  <data name="Loc_CouldNotLoadPlaylist_Text.Text" xml:space="preserve">
+    <value>Kan afspeellijst niet laden</value>
+  </data>
+  <data name="Loc_Description_Text.Text" xml:space="preserve">
+    <value>Beschrijving</value>
+  </data>
+  <data name="Loc_EveryHour_Text.Text" xml:space="preserve">
+    <value>Elk uur</value>
+  </data>
+  <data name="Loc_ExpandTheVideoWhenThePhoneRotates_Text.Text" xml:space="preserve">
+    <value>Video vergroten wanneer de telefoon draait</value>
+  </data>
+  <data name="Loc_Frequency_Text.Text" xml:space="preserve">
+    <value>Frequentie</value>
+  </data>
+  <data name="Loc_History_Text.Text" xml:space="preserve">
+    <value>Geschiedenis</value>
+  </data>
+  <data name="Loc_Home_Text.Text" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Loc_Information_Text.Text" xml:space="preserve">
+    <value>Informatie</value>
+  </data>
+  <data name="Loc_Like_Text.Text" xml:space="preserve">
+    <value>Vind ik leuk</value>
+  </data>
+  <data name="Loc_Likes_Text.Text" xml:space="preserve">
+    <value>Vind-ik-leuks</value>
+  </data>
+  <data name="Loc_LinkCopied_Text.Text" xml:space="preserve">
+    <value>Link gekopieerd</value>
+  </data>
+  <data name="Loc_Loading_Text.Text" xml:space="preserve">
+    <value>Laden...</value>
+  </data>
+  <data name="Loc_LoadingChannel_Text.Text" xml:space="preserve">
+    <value>Kanaal laden...</value>
+  </data>
+  <data name="Loc_LoadingComments_Text.Text" xml:space="preserve">
+    <value>Reacties laden...</value>
+  </data>
+  <data name="Loc_LoadingMore_Text.Text" xml:space="preserve">
+    <value>Meer laden...</value>
+  </data>
+  <data name="Loc_LoadingMoreHistory_Text.Text" xml:space="preserve">
+    <value>Meer geschiedenis laden...</value>
+  </data>
+  <data name="Loc_LoadingMoreResults_Text.Text" xml:space="preserve">
+    <value>Meer resultaten laden...</value>
+  </data>
+  <data name="Loc_LoadingMoreVideos_Text.Text" xml:space="preserve">
+    <value>Meer video's laden...</value>
+  </data>
+  <data name="Loc_LoadingPlaylist_Text.Text" xml:space="preserve">
+    <value>Afspeellijst laden...</value>
+  </data>
+  <data name="Loc_LogOut_Text.Text" xml:space="preserve">
+    <value>Uitloggen</value>
+  </data>
+  <data name="Loc_LooksLikeWeCanTLoadVideosForYou_Text.Text" xml:space="preserve">
+    <value>Het lijkt erop dat we geen video's voor je kunnen laden.</value>
+  </data>
+  <data name="Loc_More_Text.Text" xml:space="preserve">
+    <value>...meer</value>
+  </data>
+  <data name="Loc_NewUpdatesFromYourSubscriptionsWillAppearHere_Text.Text" xml:space="preserve">
+    <value>Nieuwe updates van je abonnementen verschijnen hier.</value>
+  </data>
+  <data name="Loc_NoCommentsFound_Text.Text" xml:space="preserve">
+    <value>Geen reacties gevonden.</value>
+  </data>
+  <data name="Loc_NoConnectionToTheInternet_Text.Text" xml:space="preserve">
+    <value>Geen internetverbinding</value>
+  </data>
+  <data name="Loc_NoData_Text.Text" xml:space="preserve">
+    <value>Geen gegevens</value>
+  </data>
+  <data name="Loc_NoHistoryYet_Text.Text" xml:space="preserve">
+    <value>Nog geen geschiedenis</value>
+  </data>
+  <data name="Loc_None_Text.Text" xml:space="preserve">
+    <value>Geen</value>
+  </data>
+  <data name="Loc_NoNotifications_Text.Text" xml:space="preserve">
+    <value>Geen meldingen</value>
+  </data>
+  <data name="Loc_Notifications_Text.Text" xml:space="preserve">
+    <value>Meldingen</value>
+  </data>
+  <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
+    <value>Geen video's in deze afspeellijst</value>
+  </data>
+  <data name="Loc_Personalized_Text.Text" xml:space="preserve">
+    <value>Gepersonaliseerd</value>
+  </data>
+  <data name="Loc_PlaybackSpeed_Text.Text" xml:space="preserve">
+    <value>Afspeelsnelheid</value>
+  </data>
+  <data name="Loc_Playlist_Text.Text" xml:space="preserve">
+    <value>Afspeellijst</value>
+  </data>
+  <data name="Loc_Playlists_Text.Text" xml:space="preserve">
+    <value>Afspeellijsten</value>
+  </data>
+  <data name="Loc_Posts_Text.Text" xml:space="preserve">
+    <value>Berichten</value>
+  </data>
+  <data name="Loc_PreferredShortsQuality_Text.Text" xml:space="preserve">
+    <value>Voorkeurskwaliteit voor Shorts</value>
+  </data>
+  <data name="Loc_PreferredVideoQuality_Text.Text" xml:space="preserve">
+    <value>Voorkeurskwaliteit voor video</value>
+  </data>
+  <data name="Loc_Published_Text.Text" xml:space="preserve">
+    <value>Gepubliceerd</value>
+  </data>
+  <data name="Loc_QRCode_Text.Text" xml:space="preserve">
+    <value>QR-code</value>
+  </data>
+  <data name="Loc_Quality_Text.Text" xml:space="preserve">
+    <value>Kwaliteit</value>
+  </data>
+  <data name="Loc_RefreshQRCode_Content.Content" xml:space="preserve">
+    <value>QR-code vernieuwen</value>
+  </data>
+  <data name="Loc_ReloadVideo_Text.Text" xml:space="preserve">
+    <value>Video opnieuw laden</value>
+  </data>
+  <data name="Loc_Retry_Content.Content" xml:space="preserve">
+    <value>Opnieuw proberen</value>
+  </data>
+  <data name="Loc_ScanTheQRCodeToSignIn_Text.Text" xml:space="preserve">
+    <value>Scan de QR-code om in te loggen</value>
+  </data>
+  <data name="Loc_Search_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>Zoeken</value>
+  </data>
+  <data name="Loc_Searching_Text.Text" xml:space="preserve">
+    <value>Zoeken...</value>
+  </data>
+  <data name="Loc_SearchYouTube_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>Zoeken op YouTube</value>
+  </data>
+  <data name="Loc_SearchYouTube_Text.Text" xml:space="preserve">
+    <value>Zoeken op YouTube</value>
+  </data>
+  <data name="Loc_SeekPreview_Text.Text" xml:space="preserve">
+    <value>Zoekvoorbeeld</value>
+  </data>
+  <data name="Loc_SendNotifications_Text.Text" xml:space="preserve">
+    <value>Meldingen verzenden</value>
+  </data>
+  <data name="Loc_Settings_Text.Text" xml:space="preserve">
+    <value>Instellingen</value>
+  </data>
+  <data name="Loc_Share_Text.Text" xml:space="preserve">
+    <value>Delen</value>
+  </data>
+  <data name="Loc_ShareVia_Text.Text" xml:space="preserve">
+    <value>Delen via...</value>
+  </data>
+  <data name="Loc_Shorts_Text.Text" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="Loc_ShortsLinkHasBeenCopiedToClipboard_Text.Text" xml:space="preserve">
+    <value>De link van de Short is naar het klembord gekopieerd</value>
+  </data>
+  <data name="Loc_ShowQRCode_Text.Text" xml:space="preserve">
+    <value>QR-code tonen</value>
+  </data>
+  <data name="Loc_ShowVideoThumbnailWhileSeeking_Text.Text" xml:space="preserve">
+    <value>Videominiatuur tonen tijdens zoeken</value>
+  </data>
+  <data name="Loc_Subscribe_Text.Text" xml:space="preserve">
+    <value>Abonneren</value>
+  </data>
+  <data name="Loc_Subscriptions_Text.Text" xml:space="preserve">
+    <value>Abonnementen</value>
+  </data>
+  <data name="Loc_Subtitles_Text.Text" xml:space="preserve">
+    <value>Ondertiteling</value>
+  </data>
+  <data name="Loc_TrendingSearches_Text.Text" xml:space="preserve">
+    <value>Populaire zoekopdrachten</value>
+  </data>
+  <data name="Loc_TryAgain_Content.Content" xml:space="preserve">
+    <value>Opnieuw proberen</value>
+  </data>
+  <data name="Loc_Type_Text.Text" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="Loc_Unsubscribe_Text.Text" xml:space="preserve">
+    <value>Abonnement opzeggen</value>
+  </data>
+  <data name="Loc_VerificationCode_Text.Text" xml:space="preserve">
+    <value>Verificatiecode</value>
+  </data>
+  <data name="Loc_Video_Text.Text" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="Loc_Videos_Text.Text" xml:space="preserve">
+    <value>Video's</value>
+  </data>
+  <data name="Loc_ViewChannel_Text.Text" xml:space="preserve">
+    <value>Kanaal bekijken</value>
+  </data>
+  <data name="Loc_Views_Text.Text" xml:space="preserve">
+    <value>Weergaven</value>
+  </data>
+  <data name="Loc_You_Text.Text" xml:space="preserve">
+    <value>Jij</value>
+  </data>
+  <data name="LoginLoadingQr" xml:space="preserve">
+    <value>QR-code laden...</value>
+  </data>
+  <data name="LoginQrFailed" xml:space="preserve">
+    <value>Kan de QR-code niet laden.</value>
+  </data>
+  <data name="LoginScanQr" xml:space="preserve">
+    <value>Open de camera van je telefoon en scan de QR-code.</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>Inloggen geslaagd! Doorsturen...</value>
+  </data>
+  <data name="MeSignIn" xml:space="preserve">
+    <value>Log in om je geschiedenis en afspeellijsten te bekijken</value>
+  </data>
+  <data name="Mix" xml:space="preserve">
+    <value>Mix</value>
+  </data>
+  <data name="NoCommentsFound" xml:space="preserve">
+    <value>Geen reacties gevonden.</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>Geen gegevens</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>Geen beschrijving.</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>Geen beschrijving beschikbaar.</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>Geen naam</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>Geen meldingen</value>
+  </data>
+  <data name="NotificationPreferenceFailed" xml:space="preserve">
+    <value>Kan meldingsvoorkeur niet bijwerken.</value>
+  </data>
+  <data name="NotificationsFailed" xml:space="preserve">
+    <value>Meldingen mislukt</value>
+  </data>
+  <data name="NotSignedIn" xml:space="preserve">
+    <value>Niet ingelogd</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Uit</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Older" xml:space="preserve">
+    <value>Ouder</value>
+  </data>
+  <data name="PlaybackError" xml:space="preserve">
+    <value>Afspeelfout</value>
+  </data>
+  <data name="Playlist" xml:space="preserve">
+    <value>Afspeellijst</value>
+  </data>
+  <data name="QrCode" xml:space="preserve">
+    <value>QR-code</value>
+  </data>
+  <data name="QrDisplayErrorFormat" xml:space="preserve">
+    <value>Fout bij weergeven QR: {0}</value>
+  </data>
+  <data name="RatingFailed" xml:space="preserve">
+    <value>Beoordelen mislukt</value>
+  </data>
+  <data name="SearchErrorFormat" xml:space="preserve">
+    <value>Zoekfout: {0}</value>
+  </data>
+  <data name="ShareShortDescription" xml:space="preserve">
+    <value>Deze YouTube Short delen</value>
+  </data>
+  <data name="ShareVideoDescription" xml:space="preserve">
+    <value>Deze YouTube-video delen</value>
+  </data>
+  <data name="SignInAgain" xml:space="preserve">
+    <value>Kan het TV-vernieuwingstoken niet omwisselen voor een toegangstoken. Log opnieuw in en controleer of het vernieuwingstoken nog geldig is.</value>
+  </data>
+  <data name="SignInRequired" xml:space="preserve">
+    <value>Inloggen vereist</value>
+  </data>
+  <data name="SubscribersVideosFormat" xml:space="preserve">
+    <value>{0} abonnees • {1} video's</value>
+  </data>
+  <data name="SubscriptionFailed" xml:space="preserve">
+    <value>Abonneren mislukt</value>
+  </data>
+  <data name="SubscriptionRejected" xml:space="preserve">
+    <value>YouTube heeft het abonnementsverzoek geweigerd.</value>
+  </data>
+  <data name="SubtitleEarlier" xml:space="preserve">
+    <value>   Eerder (+0.25s)</value>
+  </data>
+  <data name="SubtitleLater" xml:space="preserve">
+    <value>   Later (-0.25s)</value>
+  </data>
+  <data name="SyncFormat" xml:space="preserve">
+    <value>Synchronisatie: {0}</value>
+  </data>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Kan reacties niet laden.</value>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>Naamloos</value>
+  </data>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>De videolink is naar het klembord gekopieerd.</value>
+  </data>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} video's</value>
+  </data>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Taal</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>App-taal</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Taal</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Gebruikt standaard de Windows-taal.</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Systeemstandaard</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Engels</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Russisch</value>
+  </data>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube-video</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Kanaal</value>
+  </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Onbekend</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Geen titel</value>
+  </data>
+  <data name="TvTokenMissing" xml:space="preserve">
+    <value>TV-vernieuwingstoken niet gevonden. Log opnieuw in en probeer opnieuw.</value>
+  </data>
+  <data name="TvTokenMissingDetailed" xml:space="preserve">
+    <value>TV-vernieuwingstoken niet gevonden. Log opnieuw in zodat yt_refresh_token wordt opgeslagen en probeer opnieuw.</value>
+  </data>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Kan TV-vernieuwingstoken niet omwisselen voor toegangstoken.</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Kan vernieuwingstoken niet omwisselen voor toegangstoken.</value>
+  </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Afspelen mislukt</value>
+  </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Kan deze Short niet afspelen</value>
+  </data>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Time-out bij laden van video. Controleer je internetverbinding.</value>
+  </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Kan de video niet laden. Probeer het opnieuw.</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Kan de video niet afspelen. De speler is niet geïnitialiseerd.</value>
+  </data>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Kan de video niet laden. De link is mogelijk verlopen of de indeling wordt niet ondersteund.</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Netwerkfout. Controleer je internetverbinding.</value>
+  </data>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Fout bij afspelen van video. Probeer een lagere kwaliteit te selecteren.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Kan de video niet afspelen.</value>
+  </data>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Muziekvideo's</value>
+  </data>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Gaminghoogtepunten</value>
+  </data>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Kookrecepten</value>
+  </data>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Technologiereviews</value>
+  </data>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Filmtrailers</value>
+  </data>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Sporthoogtepunten</value>
+  </data>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Comedysketches</value>
+  </data>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Doe-het-zelf-tutorials</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Aanbevolen video</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Weet je zeker dat je wilt uitloggen?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Uitloggen bevestigen</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nee</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Log in om je YouTube-meldingen te bekijken.</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Kan meldingen niet laden</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Open deze pagina later opnieuw.</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Afspeellijst-ID is leeg</value>
+  </data>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} video's</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Onbekend</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Log in om Shorts te bekijken.</value>
+  </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Geen Shorts gevonden.</value>
+  </data>
+  <data name="UnableLoadShorts" xml:space="preserve">
+    <value>Kan Shorts niet laden.</value>
+  </data>
+  <data name="UnablePlayShortPeriod" xml:space="preserve">
+    <value>Kan deze Short niet afspelen.</value>
+  </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Kwaliteit</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Afspeelsnelheid</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Audiotrack</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Ondertiteling</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Video afspelen mislukt: {0}</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Foutcode: {0}</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Vandaag</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} dagen geleden</value>
+  </data>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} weken geleden</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} maanden geleden</value>
+  </data>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} jaar geleden</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Terug</value>
+  </data>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube-video</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>abonnee</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>abonnees</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>abonnees</value>
+  </data>
+  <data name="VideoOne" xml:space="preserve">
+    <value>video</value>
+  </data>
+  <data name="VideoFew" xml:space="preserve">
+    <value>video's</value>
+  </data>
+  <data name="VideoMany" xml:space="preserve">
+    <value>video's</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Abonneren</value>
+  </data>
+  <data name="Like" xml:space="preserve">
+    <value>Vind ik leuk</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Reacties</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Nieuwe updates van je abonnementen verschijnen hier.</value>
+  </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube heeft het abonnementsverzoek geweigerd. Controleer of het TV-token geldig is en of de kanaal-ID is gevonden.</value>
+  </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube heeft het beoordelingsverzoek geweigerd. Controleer of het TV-token geldig is en YouTube-beoordelingsrechten heeft.</value>
+  </data>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Kan het TV-vernieuwingstoken niet omwisselen voor een toegangstoken. Log opnieuw in en controleer of het vernieuwingstoken nog geldig is.</value>
+  </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Gisteren</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Deze week</value>
+  </data>
+  <data name="UploadedVideo" xml:space="preserve">
+    <value>Heeft een video geüpload</value>
+  </data>
+  <data name="UploadedVideoTitleFormat" xml:space="preserve">
+    <value>Heeft een video “{0}” geüpload</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Van abonnementen</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Alles</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Film en animatie</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Auto's en voertuigen</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Muziek</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Huisdieren en dieren</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Sport</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Korte films</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Reizen en evenementen</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Gaming</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Videobloggen</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Mensen en blogs</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Comedy</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Entertainment</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Nieuws en politiek</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>How-to en stijl</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Onderwijs</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Wetenschap en technologie</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Non-profit en activisme</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Films</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Animatie</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Actie/Avontuur</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Klassiekers</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Documentaire</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Drama</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Familie</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Buitenlands</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Horror</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Sciencefiction/Fantasy</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Thriller</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Programma's</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Trailers</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Leren</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Videogames</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Nieuws</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podcasts</value>
+  </data>
+
+  <data name="Appearance" xml:space="preserve">
+    <value>Weergave</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Thema</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Licht</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Donker</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Live-tegel</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Aanbevelingen op het startscherm weergeven</value>
+  </data>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Miniatuurkwaliteit</value>
+  </data>
+</root>

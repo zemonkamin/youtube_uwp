@@ -43,14 +43,14 @@
                           HorizontalScrollBarVisibility="Disabled"
                           ZoomMode="Disabled">
                 <StackPanel Padding="0,12,0,82">
-                    <TextBlock Text="Settings"
+                    <TextBlock x:Uid="Loc_Settings_Text"
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="22"
                                FontWeight="SemiBold"
                                VerticalAlignment="Center"
                                Margin="18,0,18,22" />
 
-                    <TextBlock Text="Account"
+                    <TextBlock x:Uid="Loc_Account_Text"
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
@@ -71,8 +71,7 @@
                                    Height="23"
                                    Stretch="Uniform"
                                    VerticalAlignment="Center" />
-                            <TextBlock Grid.Column="1"
-                                       Text="Log out"
+                            <TextBlock x:Uid="Loc_LogOut_Text" Grid.Column="1"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
@@ -80,7 +79,154 @@
                         </Grid>
                     </Button>
 
-                    <TextBlock Text="Video"
+                    <TextBlock x:Uid="SettingsLanguageSection"
+                               Foreground="{ThemeResource AppPrimaryTextBrush}"
+                               FontSize="17"
+                               FontWeight="Bold"
+                               Margin="18,22,18,10" />
+
+                    <Button Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="52"
+                            HorizontalAlignment="Stretch"
+                            Click="LanguageButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   local:ThemeAsset.Path="Assets/languages.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <TextBlock x:Uid="SettingsLanguageLabel"
+                                       Grid.Column="1"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                       FontSize="16"
+                                       VerticalAlignment="Center"
+                                       Margin="18,0,0,0" />
+                            <StackPanel Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="8,0,0,0">
+                                <TextBlock x:Name="LanguageValueText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="13"
+                                           VerticalAlignment="Center" />
+                                <Image local:ThemeAsset.Path="Assets/player/skip.png"
+                                       Width="14"
+                                       Height="14"
+                                       Stretch="Uniform"
+                                       Opacity="0.6"
+                                       VerticalAlignment="Center"
+                                       Margin="6,0,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <TextBlock x:Name="AppearanceSectionText"
+                               Foreground="{ThemeResource AppPrimaryTextBrush}"
+                               FontSize="17"
+                               FontWeight="Bold"
+                               Margin="18,22,18,10" />
+
+                    <Button Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="52"
+                            HorizontalAlignment="Stretch"
+                            Click="ThemeButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   local:ThemeAsset.Path="Assets/theme.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <TextBlock x:Name="ThemeLabelText"
+                                       Grid.Column="1"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                       FontSize="16"
+                                       VerticalAlignment="Center"
+                                       Margin="18,0,0,0" />
+                            <StackPanel Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="8,0,0,0">
+                                <TextBlock x:Name="ThemeValueText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="13"
+                                           VerticalAlignment="Center" />
+                                <Image local:ThemeAsset.Path="Assets/player/skip.png"
+                                       Width="14"
+                                       Height="14"
+                                       Stretch="Uniform"
+                                       Opacity="0.6"
+                                       VerticalAlignment="Center"
+                                       Margin="6,0,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <Button x:Name="LiveTileToggleButton"
+                            Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="62"
+                            HorizontalAlignment="Stretch"
+                            Click="LiveTileToggleButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   local:ThemeAsset.Path="Assets/live_tile.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Margin="18,0,12,0">
+                                <TextBlock x:Name="LiveTileLabelText"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                           FontSize="16" />
+                                <TextBlock x:Name="LiveTileDescriptionText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="12"
+                                           TextWrapping="Wrap"
+                                           Margin="0,2,0,0" />
+                            </StackPanel>
+                            <Grid Grid.Column="2"
+                                  Width="46"
+                                  Height="26"
+                                  VerticalAlignment="Center">
+                                <Border x:Name="LiveTileToggleTrack"
+                                        Width="46"
+                                        Height="26"
+                                        Background="Transparent"
+                                        CornerRadius="13" />
+                                <Ellipse Width="20"
+                                         Height="20"
+                                         Fill="{ThemeResource ToggleKnobBrush}"
+                                         HorizontalAlignment="Left"
+                                         Margin="3,3,0,3">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="LiveTileToggleThumbTransform" X="0" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Grid>
+                        </Grid>
+                    </Button>
+
+                    <TextBlock x:Uid="Loc_Video_Text"
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
@@ -102,8 +248,7 @@
                                    Height="23"
                                    Stretch="Uniform"
                                    VerticalAlignment="Center" />
-                            <TextBlock Grid.Column="1"
-                                       Text="Preferred video quality"
+                            <TextBlock x:Uid="Loc_PreferredVideoQuality_Text" Grid.Column="1"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
@@ -113,8 +258,7 @@
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
                                         Margin="8,0,0,0">
-                                <TextBlock x:Name="PreferredQualityValueText"
-                                           Text="Auto"
+                                <TextBlock x:Uid="Loc_Auto_Text" x:Name="PreferredQualityValueText"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
                                            VerticalAlignment="Center" />
@@ -145,8 +289,7 @@
                                    Height="23"
                                    Stretch="Uniform"
                                    VerticalAlignment="Center" />
-                            <TextBlock Grid.Column="1"
-                                       Text="Preferred Shorts quality"
+                            <TextBlock x:Uid="Loc_PreferredShortsQuality_Text" Grid.Column="1"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
@@ -156,8 +299,7 @@
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
                                         Margin="8,0,0,0">
-                                <TextBlock x:Name="PreferredShortsQualityValueText"
-                                           Text="Auto"
+                                <TextBlock x:Uid="Loc_Auto_Text" x:Name="PreferredShortsQualityValueText"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
                                            VerticalAlignment="Center" />
@@ -173,6 +315,48 @@
                     </Button>
 
 
+                    <Button Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="52"
+                            HorizontalAlignment="Stretch"
+                            Click="ThumbnailQualityButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   local:ThemeAsset.Path="Assets/player/quality.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <TextBlock x:Name="ThumbnailQualityLabelText"
+                                       Grid.Column="1"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                       FontSize="16"
+                                       VerticalAlignment="Center"
+                                       Margin="18,0,0,0" />
+                            <StackPanel Grid.Column="2"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Margin="8,0,0,0">
+                                <TextBlock x:Name="ThumbnailQualityValueText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="13"
+                                           VerticalAlignment="Center" />
+                                <Image local:ThemeAsset.Path="Assets/player/skip.png"
+                                       Width="14"
+                                       Height="14"
+                                       Stretch="Uniform"
+                                       Opacity="0.6"
+                                       VerticalAlignment="Center"
+                                       Margin="6,0,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
                     <Button x:Name="ScrubPreviewToggleButton"
                             Style="{StaticResource SettingsIconButtonStyle}"
                             Height="58"
@@ -187,10 +371,10 @@
                             <StackPanel Grid.Column="0"
                                         VerticalAlignment="Center"
                                         Margin="0,0,12,0">
-                                <TextBlock Text="Seek preview"
+                                <TextBlock x:Uid="Loc_SeekPreview_Text"
                                            Foreground="{ThemeResource AppPrimaryTextBrush}"
                                            FontSize="16" />
-                                <TextBlock Text="Show video thumbnail while seeking"
+                                <TextBlock x:Uid="Loc_ShowVideoThumbnailWhileSeeking_Text"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="12"
                                            Margin="0,2,0,0" />
@@ -233,10 +417,10 @@
                             <StackPanel Grid.Column="0"
                                         VerticalAlignment="Center"
                                         Margin="0,0,12,0">
-                                <TextBlock Text="Auto fullscreen in landscape"
+                                <TextBlock x:Uid="Loc_AutoFullscreenInLandscape_Text"
                                            Foreground="{ThemeResource AppPrimaryTextBrush}"
                                            FontSize="16" />
-                                <TextBlock Text="Expand the video when the phone rotates"
+                                <TextBlock x:Uid="Loc_ExpandTheVideoWhenThePhoneRotates_Text"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="12"
                                            Margin="0,2,0,0" />
@@ -267,7 +451,7 @@
 
 
 
-                    <TextBlock Text="Notifications"
+                    <TextBlock x:Uid="Loc_Notifications_Text"
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
@@ -289,8 +473,7 @@
                                    Height="23"
                                    Stretch="Uniform"
                                    VerticalAlignment="Center" />
-                            <TextBlock Grid.Column="1"
-                                       Text="Notifications"
+                            <TextBlock x:Uid="Loc_Notifications_Text" Grid.Column="1"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
@@ -300,8 +483,7 @@
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
                                         Margin="8,0,0,0">
-                                <TextBlock x:Name="NotificationFrequencyValueText"
-                                           Text="Every hour"
+                                <TextBlock x:Uid="Loc_EveryHour_Text" x:Name="NotificationFrequencyValueText"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
                                            VerticalAlignment="Center" />
@@ -316,7 +498,7 @@
                         </Grid>
                     </Button>
 
-                    <TextBlock Text="About"
+                    <TextBlock x:Uid="Loc_About_Text"
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
@@ -338,8 +520,7 @@
                                    Height="23"
                                    Stretch="Uniform"
                                    VerticalAlignment="Center" />
-                            <TextBlock Grid.Column="1"
-                                       Text="Information"
+                            <TextBlock x:Uid="Loc_Information_Text" Grid.Column="1"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
@@ -396,7 +577,7 @@
                     </Grid>
                     <Grid Grid.Row="1" Margin="16,0,16,16">
                         <StackPanel>
-                            <TextBlock Text="Preferred video quality"
+                            <TextBlock x:Name="QualitySheetTitleText"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontWeight="SemiBold"
                                        FontSize="15"
@@ -407,7 +588,103 @@
                 </Grid>
             </Border>
 
+            <Border x:Name="LanguageBottomSheetPanel"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Stretch"
+                    Background="{ThemeResource AppDividerBrush}"
+                    CornerRadius="15"
+                    Height="420"
+                    Margin="10,0,10,10"
+                    Visibility="Collapsed">
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="LanguageBottomSheetTransform" Y="430" />
+                </Border.RenderTransform>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0"
+                          Height="34"
+                          Background="Transparent"
+                          Tapped="LanguageDragArea_Tapped"
+                          PointerPressed="LanguageDragArea_PointerPressed"
+                          PointerMoved="LanguageDragArea_PointerMoved"
+                          PointerReleased="LanguageDragArea_PointerReleased"
+                          PointerCaptureLost="LanguageDragArea_PointerReleased">
+                        <Rectangle Width="38"
+                                   Height="4"
+                                   Fill="Gray"
+                                   RadiusX="2"
+                                   RadiusY="2"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="16,0,16,16">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0"
+                                   x:Uid="SettingsLanguageSheetTitle"
+                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                   FontWeight="SemiBold"
+                                   FontSize="15"
+                                   Margin="0,0,0,12" />
+                        <ScrollViewer Grid.Row="1"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled"
+                                      VerticalScrollMode="Enabled">
+                            <StackPanel x:Name="LanguageOptionsPanel" />
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </Border>
 
+            <Border x:Name="ThemeBottomSheetPanel"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Stretch"
+                    Background="{ThemeResource AppDividerBrush}"
+                    CornerRadius="15"
+                    Height="230"
+                    Margin="10,0,10,10"
+                    Visibility="Collapsed">
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="ThemeBottomSheetTransform" Y="240" />
+                </Border.RenderTransform>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0"
+                          Height="34"
+                          Background="Transparent"
+                          Tapped="ThemeDragArea_Tapped"
+                          PointerPressed="ThemeDragArea_PointerPressed"
+                          PointerMoved="ThemeDragArea_PointerMoved"
+                          PointerReleased="ThemeDragArea_PointerReleased"
+                          PointerCaptureLost="ThemeDragArea_PointerReleased">
+                        <Rectangle Width="38"
+                                   Height="4"
+                                   Fill="Gray"
+                                   RadiusX="2"
+                                   RadiusY="2"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                    <Grid Grid.Row="1" Margin="16,0,16,16">
+                        <StackPanel>
+                            <TextBlock x:Name="ThemeSheetTitleText"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                       FontWeight="SemiBold"
+                                       FontSize="15"
+                                       Margin="0,0,0,12" />
+                            <StackPanel x:Name="ThemeOptionsPanel" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
 
             <Border x:Name="NotificationsBottomSheetPanel"
                     VerticalAlignment="Bottom"
@@ -443,7 +720,7 @@
                     </Grid>
                     <Grid Grid.Row="1" Margin="16,0,16,16">
                         <StackPanel>
-                            <TextBlock Text="Notifications"
+                            <TextBlock x:Uid="Loc_Notifications_Text"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontWeight="SemiBold"
                                        FontSize="15"
@@ -455,10 +732,10 @@
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                    <TextBlock Text="Send notifications"
+                                    <TextBlock x:Uid="Loc_SendNotifications_Text"
                                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                FontSize="14" />
-                                    <TextBlock Text="Background toasts from YouTube notifications"
+                                    <TextBlock x:Uid="Loc_BackgroundToastsFromYouTubeNotifications_Text"
                                                Foreground="{ThemeResource AppSecondaryTextBrush}"
                                                FontSize="12"
                                                Margin="0,2,0,0" />
@@ -489,7 +766,7 @@
                                 </Button>
                             </Grid>
 
-                            <TextBlock Text="Frequency"
+                            <TextBlock x:Uid="Loc_Frequency_Text"
                                        Foreground="{ThemeResource AppSecondaryTextBrush}"
                                        FontSize="12"
                                        Margin="0,0,0,8" />
@@ -533,7 +810,7 @@
                     </Grid>
                     <Grid Grid.Row="1" Margin="16,0,16,16">
                         <StackPanel>
-                            <TextBlock Text="Information"
+                            <TextBlock x:Uid="Loc_Information_Text"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        FontWeight="SemiBold"

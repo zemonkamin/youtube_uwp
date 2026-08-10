@@ -39,14 +39,13 @@
                     Background="{ThemeResource AppDividerBrush}"
                     CornerRadius="20" />
 
-                <TextBlock
+                <TextBlock x:Uid="Loc_SearchYouTube_Text"
                     x:Name="SearchInput"
                     Margin="16,0,40,0"
                     VerticalAlignment="Center"
                     FontFamily="Roboto"
                     FontSize="16"
                     Foreground="{ThemeResource AppPrimaryTextBrush}"
-                    Text="Search YouTube"
                     TextTrimming="CharacterEllipsis"
                     Tapped="SearchInput_Tapped" />
 
@@ -160,7 +159,7 @@
                                                 <Image
                                                     HorizontalAlignment="Stretch"
                                                     VerticalAlignment="Stretch"
-                                                    Source="{Binding Thumbnail}"
+                                                    DataContextChanged="SearchThumbnail_DataContextChanged"
                                                     Stretch="UniformToFill" />
                                             </Border>
                                             <Border
@@ -179,7 +178,7 @@
                                             </Border>
                                         </Grid>
 
-                                        <StackPanel Margin="12,12,12,0">
+                                        <StackPanel Margin="0,12,0,0">
                                             <TextBlock
                                                 FontFamily="Roboto"
                                                 FontSize="14"
@@ -316,12 +315,11 @@
                         Width="42"
                         Height="42"
                         IsActive="False" />
-                    <TextBlock
+                    <TextBlock x:Uid="Loc_Searching_Text"
                         Margin="0,8,0,0"
                         HorizontalAlignment="Center"
                         FontSize="14"
-                        Foreground="{ThemeResource AppMutedTextBrush}"
-                        Text="Searching..." />
+                        Foreground="{ThemeResource AppMutedTextBrush}" />
                 </StackPanel>
 
                 <!--  Bottom Loading Indicator for infinite scroll  -->
@@ -335,12 +333,11 @@
                         Width="30"
                         Height="30"
                         IsActive="False" />
-                    <TextBlock
+                    <TextBlock x:Uid="Loc_LoadingMoreResults_Text"
                         Margin="0,8,0,0"
                         HorizontalAlignment="Center"
                         FontSize="14"
-                        Foreground="{ThemeResource AppMutedTextBrush}"
-                        Text="Loading more results..." />
+                        Foreground="{ThemeResource AppMutedTextBrush}" />
                 </StackPanel>
 
                 <!--  Error Text  -->
@@ -472,12 +469,11 @@
                 </Grid>
 
                 <StackPanel Grid.Row="1" Margin="4,0,4,12">
-                    <TextBlock
+                    <TextBlock x:Uid="Loc_Type_Text"
                         Margin="16,0,16,8"
                         FontSize="18"
                         FontWeight="SemiBold"
-                        Foreground="{ThemeResource AppPrimaryTextBrush}"
-                        Text="Type" />
+                        Foreground="{ThemeResource AppPrimaryTextBrush}" />
 
                     <Button
                         x:Name="VideosTypeButton"
@@ -503,12 +499,11 @@
                                 FontSize="16"
                                 Foreground="{ThemeResource AppPrimaryTextBrush}"
                                 Glyph="&#xE73E;" />
-                            <TextBlock
+                            <TextBlock x:Uid="Loc_Videos_Text"
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
                                 FontSize="14"
-                                Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                Text="Videos" />
+                                Foreground="{ThemeResource AppPrimaryTextBrush}" />
                         </Grid>
                     </Button>
 
@@ -536,12 +531,11 @@
                                 FontSize="16"
                                 Foreground="{ThemeResource AppPrimaryTextBrush}"
                                 Glyph="&#xE73E;" />
-                            <TextBlock
+                            <TextBlock x:Uid="Loc_Shorts_Text"
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
                                 FontSize="14"
-                                Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                Text="Shorts" />
+                                Foreground="{ThemeResource AppPrimaryTextBrush}" />
                         </Grid>
                     </Button>
 
@@ -569,12 +563,11 @@
                                 FontSize="16"
                                 Foreground="{ThemeResource AppPrimaryTextBrush}"
                                 Glyph="&#xE73E;" />
-                            <TextBlock
+                            <TextBlock x:Uid="Loc_Playlists_Text"
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
                                 FontSize="14"
-                                Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                Text="Playlists" />
+                                Foreground="{ThemeResource AppPrimaryTextBrush}" />
                         </Grid>
                     </Button>
 
@@ -602,12 +595,11 @@
                                 FontSize="16"
                                 Foreground="{ThemeResource AppPrimaryTextBrush}"
                                 Glyph="&#xE73E;" />
-                            <TextBlock
+                            <TextBlock x:Uid="Loc_Channels_Text"
                                 Grid.Column="1"
                                 VerticalAlignment="Center"
                                 FontSize="14"
-                                Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                Text="Channels" />
+                                Foreground="{ThemeResource AppPrimaryTextBrush}" />
                         </Grid>
                     </Button>
                 </StackPanel>

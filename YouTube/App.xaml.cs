@@ -73,6 +73,8 @@ namespace YouTube
             "info.png",
             "link.png",
             "log_out.png",
+            "languages.png",
+            "live_tile.png",
             "microphone.png",
             "more.png",
             "none_notifications.png",
@@ -82,9 +84,16 @@ namespace YouTube
             "rounding_up.png",
             "search.png",
             "share.png",
+            "theme.png",
             "unsubscribe.png",
             "ytlogo.png"
         };
+
+        internal const string ThemeSettingKey = "AppTheme";
+        internal const string ThemeModeSystem = "System";
+        internal const string ThemeModeLight = "Light";
+        internal const string ThemeModeDark = "Dark";
+        internal const string LiveTileEnabledSettingKey = "LiveTileEnabled";
 
         private static UISettings _uiSettings;
         private static CoreDispatcher _uiDispatcher;
@@ -269,10 +278,163 @@ namespace YouTube
             }
         }
 
+        internal static string GetSavedThemeMode()
+        {
+            try
+            {
+                object raw;
+                if (ApplicationData.Current.LocalSettings.Values.TryGetValue(ThemeSettingKey, out raw) && raw != null)
+                {
+                    var value = raw.ToString();
+                    if (string.Equals(value, ThemeModeLight, StringComparison.OrdinalIgnoreCase))
+                        return ThemeModeLight;
+                    if (string.Equals(value, ThemeModeDark, StringComparison.OrdinalIgnoreCase))
+                        return ThemeModeDark;
+                }
+            }
+            catch
+            {
+            }
+
+            return ThemeModeSystem;
+        }
+
+        private static bool ResolveLightThemeAssets(UISettings settings)
+        {
+            var mode = GetSavedThemeMode();
+            if (string.Equals(mode, ThemeModeLight, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (string.Equals(mode, ThemeModeDark, StringComparison.OrdinalIgnoreCase))
+                return false;
+            return DetectLightSystemTheme(settings);
+        }
+
+        private static ElementTheme GetElementTheme(string mode)
+        {
+            if (string.Equals(mode, ThemeModeLight, StringComparison.OrdinalIgnoreCase))
+                return ElementTheme.Light;
+            if (string.Equals(mode, ThemeModeDark, StringComparison.OrdinalIgnoreCase))
+                return ElementTheme.Dark;
+
+            // Do not rely on ElementTheme.Default here. On older Windows builds its desktop
+            // behavior differs from Phone; resolving the system color explicitly keeps both
+            // Windows 10 desktop and Windows 10 Mobile in sync with the user's system theme.
+            return DetectLightSystemTheme(_uiSettings) ? ElementTheme.Light : ElementTheme.Dark;
+        }
+
+        private static void ApplySavedTheme(FrameworkElement root)
+        {
+            if (root != null)
+            {
+                root.RequestedTheme = GetElementTheme(GetSavedThemeMode());
+            }
+        }
+
+        internal static void SetThemeMode(string mode)
+        {
+            var normalized = ThemeModeSystem;
+            if (string.Equals(mode, ThemeModeLight, StringComparison.OrdinalIgnoreCase))
+                normalized = ThemeModeLight;
+            else if (string.Equals(mode, ThemeModeDark, StringComparison.OrdinalIgnoreCase))
+                normalized = ThemeModeDark;
+
+            try
+            {
+                ApplicationData.Current.LocalSettings.Values[ThemeSettingKey] = normalized;
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                ApplySavedTheme(Window.Current.Content as FrameworkElement);
+            }
+            catch
+            {
+            }
+
+            _useLightThemeAssets = ResolveLightThemeAssets(_uiSettings);
+            RefreshRegisteredThemeAssets();
+        }
+
+        internal static bool IsLiveTileEnabled()
+        {
+            try
+            {
+                object raw;
+                if (!ApplicationData.Current.LocalSettings.Values.TryGetValue(LiveTileEnabledSettingKey, out raw) || raw == null)
+                    return true;
+                if (raw is bool)
+                    return (bool)raw;
+                bool parsed;
+                return !bool.TryParse(raw.ToString(), out parsed) || parsed;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
+        internal static void SetLiveTileEnabled(bool enabled)
+        {
+            try
+            {
+                ApplicationData.Current.LocalSettings.Values[LiveTileEnabledSettingKey] = enabled;
+            }
+            catch
+            {
+            }
+
+            if (!enabled)
+            {
+                ClearLiveTile();
+            }
+        }
+
+        internal static void ClearLiveTile()
+        {
+            try
+            {
+                var updater = TileUpdateManager.CreateTileUpdaterForApplication();
+
+                // A scheduled rotation keeps running after the app is suspended, so remove every
+                // pending state when the user turns Live Tile off. Clear() alone only resets the
+                // currently displayed notification and does not cancel ScheduledTileNotification.
+                var scheduled = updater.GetScheduledTileNotifications();
+                if (scheduled != null)
+                {
+                    foreach (var notification in scheduled.ToList())
+                    {
+                        updater.RemoveFromSchedule(notification);
+                    }
+                }
+
+                try
+                {
+                    updater.StopPeriodicUpdate();
+                }
+                catch
+                {
+                }
+
+                updater.Clear();
+                updater.EnableNotificationQueue(false);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[LiveTile] Clear failed: " + ex.Message);
+            }
+        }
+
         private static async void UiSettings_ColorValuesChanged(UISettings sender, object args)
         {
-            var useLight = DetectLightSystemTheme(sender);
-            _useLightThemeAssets = useLight;
+            if (!string.Equals(GetSavedThemeMode(), ThemeModeSystem, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            _useLightThemeAssets = DetectLightSystemTheme(sender);
 
             var dispatcher = _uiDispatcher;
             if (dispatcher == null)
@@ -282,12 +444,25 @@ namespace YouTube
 
             try
             {
-                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, RefreshRegisteredThemeAssets);
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, RefreshSystemThemeOnUiThread);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[Theme] Refresh failed: " + ex.Message);
             }
+        }
+
+        private static void RefreshSystemThemeOnUiThread()
+        {
+            try
+            {
+                ApplySavedTheme(Window.Current.Content as FrameworkElement);
+            }
+            catch
+            {
+            }
+
+            RefreshRegisteredThemeAssets();
         }
 
         private static void RefreshRegisteredThemeAssets()
@@ -321,10 +496,11 @@ namespace YouTube
         /// </summary>
         public App()
         {
+            Localization.InitializeLanguage();
             this.InitializeComponent();
 
             _uiSettings = new UISettings();
-            _useLightThemeAssets = DetectLightSystemTheme(_uiSettings);
+            _useLightThemeAssets = ResolveLightThemeAssets(_uiSettings);
             _uiSettings.ColorValuesChanged += UiSettings_ColorValuesChanged;
 
             this.Suspending += OnSuspending;
@@ -430,7 +606,12 @@ namespace YouTube
             {
                 rootFrame = new Frame();
                 rootFrame.NavigationFailed += OnNavigationFailed;
+                ApplySavedTheme(rootFrame);
                 Window.Current.Content = rootFrame;
+            }
+            else
+            {
+                ApplySavedTheme(rootFrame);
             }
 
             if (!prelaunchActivated)
@@ -1038,27 +1219,27 @@ namespace YouTube
         {
             if (!AreNotificationsEnabled())
             {
-                return "Off";
+                return Localization.GetString("Off");
             }
 
             var minutes = GetNotificationIntervalMinutes();
             if (minutes < 60)
             {
-                return "Every " + minutes + " min";
+                return Localization.Format("EveryMinutes", minutes);
             }
 
             if (minutes == 60)
             {
-                return "Every hour";
+                return Localization.GetString("EveryHour");
             }
 
             if (minutes % 60 == 0)
             {
                 var hours = minutes / 60;
-                return hours == 1 ? "Every hour" : "Every " + hours + " hours";
+                return hours == 1 ? Localization.GetString("EveryHour") : Localization.Format("EveryHours", hours);
             }
 
-            return "Every " + minutes + " min";
+            return Localization.Format("EveryMinutes", minutes);
         }
 
         private static int NormalizeNotificationInterval(int minutes)
@@ -1381,10 +1562,10 @@ namespace YouTube
 
             try
             {
-                var rawVideoTitle = FirstNonEmpty(item.VideoTitle, ExtractVideoTitleFromMessage(item.Message), item.Message, "YouTube video");
+                var rawVideoTitle = FirstNonEmpty(item.VideoTitle, ExtractVideoTitleFromMessage(item.Message), item.Message, Localization.GetString("YouTubeVideo"));
                 if (IsGenericNewVideoToastText(rawVideoTitle))
                 {
-                    rawVideoTitle = FirstNonEmpty(item.VideoTitle, ExtractVideoTitleFromMessage(item.Message), "YouTube video");
+                    rawVideoTitle = FirstNonEmpty(item.VideoTitle, ExtractVideoTitleFromMessage(item.Message), Localization.GetString("YouTubeVideo"));
                 }
 
                 var videoTitle = TrimForToast(rawVideoTitle, 110);

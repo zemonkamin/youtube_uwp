@@ -109,7 +109,7 @@
                                     </Grid>
 
                                     <!-- Title and Channel -->
-                                    <StackPanel Margin="12,12,12,0">
+                                    <StackPanel Margin="0,12,0,0">
                                         <TextBlock Text="{Binding Title}"
                                                  TextWrapping="NoWrap"
                                                  TextTrimming="CharacterEllipsis"

@@ -314,7 +314,7 @@ namespace YouTube
                 return;
             }
 
-            ThumbnailImageLoader.Assign(image, item.LargeThumbnailUrl, item.ThumbnailUrl, 360);
+            VideoThumbnailController.Assign(image, item.VideoId, item.ThumbnailUrl, 360);
         }
 
         private void VideoThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)

@@ -63,9 +63,8 @@
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox x:Name="SearchInputHorizontal"
+                    <TextBox x:Uid="Loc_Search_PlaceholderText" x:Name="SearchInputHorizontal"
                              Grid.Column="0"
-                             PlaceholderText="Search"
                              Background="Transparent"
                              BorderThickness="0"
                              FontFamily="Roboto"

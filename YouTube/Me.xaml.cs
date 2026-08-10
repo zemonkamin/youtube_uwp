@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -101,7 +101,7 @@ namespace YouTube
 
                 if (_historyItems.Count == 0 && _playlistItems.Count == 0)
                 {
-                    EmptyText.Text = "No data";
+                    EmptyText.Text = Localization.GetString("NoData");
                     EmptyText.Visibility = Visibility.Visible;
                 }
             }
@@ -113,14 +113,14 @@ namespace YouTube
 
         private void ApplySignedOutState()
         {
-            DisplayNameText.Text = "Not signed in";
+            DisplayNameText.Text = Localization.GetString("NotSignedIn");
             ChannelHandleText.Text = "";
             ProfileMetaSeparator.Visibility = Visibility.Collapsed;
             GoToChannelButton.Visibility = Visibility.Collapsed;
             _channelTarget = string.Empty;
             _historyItems.Clear();
             _playlistItems.Clear();
-            EmptyText.Text = "Sign in to see your history and playlists";
+            EmptyText.Text = Localization.GetString("MeSignIn");
             EmptyText.Visibility = Visibility.Visible;
         }
 
@@ -128,7 +128,7 @@ namespace YouTube
         {
             if (profile == null)
             {
-                DisplayNameText.Text = "Loading failed";
+                DisplayNameText.Text = Localization.GetString("LoadingFailed");
                 ChannelHandleText.Text = "";
                 ProfileMetaSeparator.Visibility = Visibility.Collapsed;
                 GoToChannelButton.Visibility = Visibility.Collapsed;
@@ -137,7 +137,7 @@ namespace YouTube
             }
 
             DisplayNameText.Text = string.IsNullOrWhiteSpace(profile.DisplayName)
-                ? "No name"
+                ? Localization.GetString("NoName")
                 : profile.DisplayName;
 
             if (!string.IsNullOrWhiteSpace(profile.ChannelHandle))
@@ -256,13 +256,13 @@ namespace YouTube
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new MessageDialog(
-                "Are you sure you want to sign out?",
-                "Confirm sign out"
+                Localization.GetString("ConfirmSignOutMessage"),
+                Localization.GetString("ConfirmSignOutTitle")
             );
 
             dialog.Commands.Add(
                 new UICommand(
-                    "Yes",
+                    Localization.GetString("Yes"),
                     async (command) =>
                     {
                         ApplicationData.Current.LocalSettings.Values.Remove("yt_refresh_token");
@@ -274,7 +274,7 @@ namespace YouTube
                 )
             );
 
-            dialog.Commands.Add(new UICommand("No", null));
+            dialog.Commands.Add(new UICommand(Localization.GetString("No"), null));
 
             await dialog.ShowAsync();
         }
@@ -295,6 +295,16 @@ namespace YouTube
             {
                 _frame.Navigate(historyPageType);
             }
+        }
+
+        private void HistoryThumbnail_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var image = sender as Image;
+            var item = args.NewValue as VideoCardItem;
+            if (image == null || item == null)
+                return;
+
+            VideoThumbnailController.Assign(image, item.VideoId, item.ThumbnailUrl, 180);
         }
 
         private void VideoCard_Click(object sender, RoutedEventArgs e)

@@ -315,10 +315,10 @@ namespace YouTube
                     {
                         var dialog = new ContentDialog
                         {
-                            Title = "Playback Error",
-                            Content =
-                                $"Failed to play video: {playbackErrorMessage}\n\nError Code: {playbackError}",
-                            PrimaryButtonText = "OK",
+                            Title = Localization.GetString("PlaybackError"),
+                            Content = Localization.Format("FailedPlayVideoFormat", playbackErrorMessage)
+                                + "\n\n" + Localization.Format("ErrorCodeFormat", playbackError),
+                            PrimaryButtonText = Localization.GetString("OK"),
                         };
                         await dialog.ShowAsync();
                     }
@@ -351,9 +351,9 @@ namespace YouTube
                     {
                         var dialog = new ContentDialog
                         {
-                            Title = "Playback Error",
-                            Content = message + "\n\nError Code: " + code,
-                            PrimaryButtonText = "OK",
+                            Title = Localization.GetString("PlaybackError"),
+                            Content = message + "\n\n" + Localization.Format("ErrorCodeFormat", code),
+                            PrimaryButtonText = Localization.GetString("OK"),
                         };
                         await dialog.ShowAsync();
                     }
@@ -707,7 +707,7 @@ namespace YouTube
                 return;
             }
 
-            ThumbnailImageLoader.Assign(image, item.large_thumbnail, item.thumbnail, 360);
+            VideoThumbnailController.Assign(image, item.video_id, item.thumbnail, 360);
         }
 
         private void RelatedThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -2311,7 +2311,7 @@ namespace YouTube
                         "User-Agent",
                         "com.google.ios.youtube/19.16.3 (iPhone16,2; U; CPU iOS 18_0 like Mac OS X)"
                     );
-                    request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                    request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                     request.Headers.TryAddWithoutValidation("Content-Type", "application/json");
                 }
                 else
@@ -2320,7 +2320,7 @@ namespace YouTube
                         "User-Agent",
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
                     );
-                    request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                    request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                 }
 
                 var response = await httpClient.SendAsync(request).ConfigureAwait(false);
@@ -2468,7 +2468,7 @@ namespace YouTube
                 );
                 request.Headers.TryAddWithoutValidation("User-Agent", InnertubeAndroidVrUserAgent);
                 request.Headers.TryAddWithoutValidation("Accept", "application/json");
-                request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                 request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", InnertubeAndroidVrClientHeaderName);
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", InnertubeAndroidVrClientVersion);
@@ -2628,7 +2628,7 @@ namespace YouTube
                     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15,gzip(gfe)"
                 );
                 request.Headers.TryAddWithoutValidation("Accept", "application/json");
-                request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                 request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
                 request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/watch?v=" + Uri.EscapeDataString(videoId));
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "1");
@@ -3460,7 +3460,7 @@ namespace YouTube
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
                     );
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
-                    request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                    request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                     request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
                     request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "1");
                     request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "2.20260626.01.00");
@@ -3934,7 +3934,7 @@ namespace YouTube
                     "User-Agent",
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"
                 );
-                request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
 
                 var response = await httpClient.SendAsync(request).ConfigureAwait(false);
                 response.EnsureSuccessStatusCode();
@@ -5383,23 +5383,23 @@ namespace YouTube
 
                     if (diff.TotalDays < 1)
                     {
-                        return "Today";
+                        return Localization.GetString("Today");
                     }
                     else if (diff.TotalDays < 7)
                     {
-                        return string.Format("{0} days ago", (int)diff.TotalDays);
+                        return Localization.Format("DaysAgo", (int)diff.TotalDays);
                     }
                     else if (diff.TotalDays < 30)
                     {
-                        return string.Format("{0} weeks ago", (int)(diff.TotalDays / 7));
+                        return Localization.Format("WeeksAgo", (int)(diff.TotalDays / 7));
                     }
                     else if (diff.TotalDays < 365)
                     {
-                        return string.Format("{0} months ago", (int)(diff.TotalDays / 30));
+                        return Localization.Format("MonthsAgo", (int)(diff.TotalDays / 30));
                     }
                     else
                     {
-                        return string.Format("{0} years ago", (int)(diff.TotalDays / 365));
+                        return Localization.Format("YearsAgo", (int)(diff.TotalDays / 365));
                     }
                 }
                 return publishDate;
@@ -6381,8 +6381,8 @@ namespace YouTube
                     UpdateSubscriptionVisualState();
                     UpdateSubscriptionMenuVisualState();
                     await ShowRatingMessageAsync(
-                        "Subscription failed",
-                        "YouTube rejected the subscription request. Check that the TV token is valid and that the channel id was found."
+                        Localization.GetString("SubscriptionFailed"),
+                        Localization.GetString("SubscriptionRejectedDetailed")
                     );
                     return;
                 }
@@ -6408,7 +6408,7 @@ namespace YouTube
                 }
 
                 System.Diagnostics.Debug.WriteLine("[Subscription] Error updating subscription: " + ex.Message);
-                await ShowRatingMessageAsync("Subscription failed", ex.Message);
+                await ShowRatingMessageAsync(Localization.GetString("SubscriptionFailed"), ex.Message);
             }
             finally
             {
@@ -6523,7 +6523,7 @@ namespace YouTube
                             + " "
                             + body
                         );
-                        await ShowRatingMessageAsync("Notifications failed", "Could not update notification preference.");
+                        await ShowRatingMessageAsync(Localization.GetString("NotificationsFailed"), Localization.GetString("NotificationPreferenceFailed"));
                         return false;
                     }
                 }
@@ -6548,7 +6548,7 @@ namespace YouTube
                 }
 
                 System.Diagnostics.Debug.WriteLine("[Subscription] Notification preference update error: " + ex.Message);
-                await ShowRatingMessageAsync("Notifications failed", ex.Message);
+                await ShowRatingMessageAsync(Localization.GetString("NotificationsFailed"), ex.Message);
                 return false;
             }
             finally
@@ -6568,8 +6568,8 @@ namespace YouTube
             var client = new JsonObject();
             client["clientName"] = JsonValue.CreateStringValue(InnertubeTvClientName);
             client["clientVersion"] = JsonValue.CreateStringValue(InnertubeTvClientVersion);
-            client["hl"] = JsonValue.CreateStringValue("ru");
-            client["gl"] = JsonValue.CreateStringValue("RU");
+            client["hl"] = JsonValue.CreateStringValue(Config.Hl);
+            client["gl"] = JsonValue.CreateStringValue(Config.Gl);
             client["platform"] = JsonValue.CreateStringValue("TV");
             client["clientFormFactor"] = JsonValue.CreateStringValue("UNKNOWN_FORM_FACTOR");
             context["client"] = client;
@@ -7957,8 +7957,8 @@ namespace YouTube
             var client = new JsonObject();
             client["clientName"] = JsonValue.CreateStringValue(InnertubeTvClientName);
             client["clientVersion"] = JsonValue.CreateStringValue(InnertubeTvClientVersion);
-            client["hl"] = JsonValue.CreateStringValue("ru");
-            client["gl"] = JsonValue.CreateStringValue("RU");
+            client["hl"] = JsonValue.CreateStringValue(Config.Hl);
+            client["gl"] = JsonValue.CreateStringValue(Config.Gl);
             client["platform"] = JsonValue.CreateStringValue("TV");
             client["clientFormFactor"] = JsonValue.CreateStringValue("UNKNOWN_FORM_FACTOR");
             context["client"] = client;
@@ -8038,8 +8038,8 @@ namespace YouTube
                     _currentUserRating = oldRating;
                     UpdateRatingVisualState();
                     await ShowRatingMessageAsync(
-                        "Rating failed",
-                        "YouTube rejected the rating request. Check that the TV token is valid and has YouTube rating scope."
+                        Localization.GetString("RatingFailed"),
+                        Localization.GetString("RatingRejectedDetailed")
                     );
                     return;
                 }
@@ -8060,7 +8060,7 @@ namespace YouTube
                 }
 
                 System.Diagnostics.Debug.WriteLine("[Rating] Error toggling rating: " + ex.Message);
-                await ShowRatingMessageAsync("Rating failed", ex.Message);
+                await ShowRatingMessageAsync(Localization.GetString("RatingFailed"), ex.Message);
             }
             finally
             {
@@ -8780,8 +8780,8 @@ namespace YouTube
                 if (showErrors)
                 {
                     await ShowStaticRatingMessageAsync(
-                        "Sign in required",
-                        "TV refresh token was not found. Sign in again so yt_refresh_token is saved, then retry."
+                        Localization.GetString("SignInRequired"),
+                        Localization.GetString("TvTokenMissingDetailed")
                     );
                 }
 
@@ -8795,8 +8795,8 @@ namespace YouTube
                 if (showErrors)
                 {
                     await ShowStaticRatingMessageAsync(
-                        "Sign in required",
-                        "Could not exchange the TV refresh token for an access token. Sign in again and check that the refresh token is still valid."
+                        Localization.GetString("SignInRequired"),
+                        Localization.GetString("TvTokenExchangeFailedDetailed")
                     );
                 }
 
@@ -8815,7 +8815,7 @@ namespace YouTube
                 {
                     Title = title,
                     Content = message,
-                    PrimaryButtonText = "OK"
+                    PrimaryButtonText = Localization.GetString("OK")
                 };
                 await dialog.ShowAsync();
             }
@@ -8844,7 +8844,7 @@ namespace YouTube
             }
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
         }
 
         private static void AddInnertubeAuthHeadersForClient(
@@ -8856,7 +8856,7 @@ namespace YouTube
         )
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             request.Headers.TryAddWithoutValidation("User-Agent", userAgent);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", clientNameHeader);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
@@ -8918,7 +8918,7 @@ namespace YouTube
 
             if (SubscribeButtonText != null)
             {
-                SubscribeButtonText.Text = "Subscribe";
+                SubscribeButtonText.Text = Localization.GetString("Subscribe");
                 SubscribeButtonText.Visibility = isSubscribed ? Visibility.Collapsed : Visibility.Visible;
                 SubscribeButtonText.Foreground = App.GetThemeBrush("PrimaryActionForegroundBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 15, 15, 15));
             }
@@ -9068,7 +9068,7 @@ namespace YouTube
                 {
                     Title = title,
                     Content = message,
-                    PrimaryButtonText = "OK"
+                    PrimaryButtonText = Localization.GetString("OK")
                 };
                 await dialog.ShowAsync();
             }
@@ -9392,12 +9392,12 @@ namespace YouTube
                 var encoded = Uri.EscapeDataString(shareUrl);
                 var qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=448x448&margin=0&data=" + encoded;
                 var bitmap = new BitmapImage(new Uri(qrUrl));
-                ShowSharePopup("QR code", shareUrl, bitmap);
+                ShowSharePopup(Localization.GetString("QrCode"), shareUrl, bitmap);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[Video] Failed to show QR code: " + ex.Message);
-                ShowSharePopup("QR code", shareUrl);
+                ShowSharePopup(Localization.GetString("QrCode"), shareUrl);
             }
         }
 
@@ -9638,7 +9638,7 @@ namespace YouTube
             if (PlaylistQueueTitleText != null)
             {
                 PlaylistQueueTitleText.Text = string.IsNullOrWhiteSpace(_playlistQueueTitle)
-                    ? (Config.IsMixPlaylistId(currentPlaylistId) ? "Mix" : "Playlist")
+                    ? (Config.IsMixPlaylistId(currentPlaylistId) ? Localization.GetString("Mix") : Localization.GetString("Playlist"))
                     : _playlistQueueTitle;
             }
 
@@ -9647,7 +9647,7 @@ namespace YouTube
             {
                 PlaylistQueuePositionText.Text = index >= 0
                     ? (index + 1) + " / " + _playlistQueue.Count
-                    : _playlistQueue.Count + " videos";
+                    : Localization.Format("VideosSuffixFormat", _playlistQueue.Count);
             }
 
             // Mark the item that is playing right now.
@@ -11376,7 +11376,7 @@ namespace YouTube
                 Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
 
                 AnimateShareBottomSheet(false);
-                ShowSharePopup("Link copied", "The video link has been copied to clipboard.");
+                ShowSharePopup(Localization.GetString("LinkCopied"), Localization.GetString("VideoLinkCopied"));
             }
         }
 
@@ -11397,7 +11397,7 @@ namespace YouTube
                 {
                     var request = args.Request;
                     request.Data.Properties.Title = title;
-                    request.Data.Properties.Description = "Share this YouTube video";
+                    request.Data.Properties.Description = Localization.GetString("ShareVideoDescription");
                     request.Data.SetWebLink(new Uri(shareUrl));
                 };
 
@@ -11854,7 +11854,7 @@ namespace YouTube
 
             var label = new TextBlock
             {
-                Text = quality,
+                Text = string.Equals(quality, "Auto", StringComparison.OrdinalIgnoreCase) ? Localization.GetString("Auto") : quality,
                 Foreground = (App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White)),
                 FontWeight = isCurrent ? Windows.UI.Text.FontWeights.SemiBold : Windows.UI.Text.FontWeights.Normal,
                 VerticalAlignment = VerticalAlignment.Center
@@ -12125,7 +12125,7 @@ namespace YouTube
             {
                 var source = _subtitleTracks.TranslationSource;
 
-                AddSubtitleOption("< Back", false, () =>
+                AddSubtitleOption(Localization.GetString("Back"), false, () =>
                 {
                     _showingSubtitleTranslations = false;
                     PopulateSubtitleOptions();
@@ -12147,20 +12147,20 @@ namespace YouTube
             // Sync adjustment, only meaningful while a track is on.
             if (_activeSubtitleTrack != null && CustomVideoPlayer != null)
             {
-                AddSubtitleOption("Sync: " + CustomVideoPlayer.SubtitleOffsetDisplayText, false, null);
-                AddSubtitleOption("   Earlier (+0.25s)", false, () =>
+                AddSubtitleOption(Localization.Format("SyncFormat", CustomVideoPlayer.SubtitleOffsetDisplayText), false, null);
+                AddSubtitleOption(Localization.GetString("SubtitleEarlier"), false, () =>
                 {
                     CustomVideoPlayer.AdjustSubtitleOffset(250);
                     PopulateSubtitleOptions();
                 });
-                AddSubtitleOption("   Later (-0.25s)", false, () =>
+                AddSubtitleOption(Localization.GetString("SubtitleLater"), false, () =>
                 {
                     CustomVideoPlayer.AdjustSubtitleOffset(-250);
                     PopulateSubtitleOptions();
                 });
             }
 
-            AddSubtitleOption("Off", _activeSubtitleTrack == null, () => ApplySubtitleTrack(null));
+            AddSubtitleOption(Localization.GetString("Off"), _activeSubtitleTrack == null, () => ApplySubtitleTrack(null));
 
             foreach (var track in _subtitleTracks.Tracks)
             {
@@ -12174,7 +12174,7 @@ namespace YouTube
 
             if (_subtitleTracks.CanTranslate)
             {
-                AddSubtitleOption("Auto-translate >", false, () =>
+                AddSubtitleOption(Localization.GetString("AutoTranslate"), false, () =>
                 {
                     _showingSubtitleTranslations = true;
                     PopulateSubtitleOptions();
@@ -12382,7 +12382,7 @@ namespace YouTube
             if (QualityValueText != null)
             {
                 var effective = GetEffectiveVideoQualityTag();
-                QualityValueText.Text = string.IsNullOrWhiteSpace(effective) ? "Auto" : effective + "p";
+                QualityValueText.Text = string.IsNullOrWhiteSpace(effective) ? Localization.GetString("Auto") : effective + "p";
             }
 
             if (SpeedValueText != null)
@@ -12418,7 +12418,7 @@ namespace YouTube
                     DescriptionTextBlock.Blocks.Clear();
                     var paragraph = new Paragraph();
                     var run = new Run();
-                    run.Text = "Description not available";
+                    run.Text = Localization.GetString("DescriptionNotAvailable");
                     paragraph.Inlines.Add(run);
                     DescriptionTextBlock.Blocks.Add(paragraph);
                 }

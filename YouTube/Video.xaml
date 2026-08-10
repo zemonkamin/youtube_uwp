@@ -345,13 +345,12 @@
                                 FontSize="13"
                                 Foreground="{ThemeResource PrimaryActionForegroundBrush}">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock
+                                    <TextBlock x:Uid="Loc_Subscribe_Text"
                                         x:Name="SubscribeButtonText"
                                         VerticalAlignment="Center"
                                         FontSize="13"
                                         FontWeight="SemiBold"
-                                        Foreground="{ThemeResource PrimaryActionForegroundBrush}"
-                                        Text="Subscribe" />
+                                        Foreground="{ThemeResource PrimaryActionForegroundBrush}" />
                                     <StackPanel
                                         x:Name="SubscribeSubscribedIconsPanel"
                                         Orientation="Horizontal"
@@ -457,11 +456,10 @@
                                             Width="20"
                                             Height="20"
                                             local:ThemeAsset.Path="Assets/player/send.png" />
-                                        <TextBlock
+                                        <TextBlock x:Uid="Loc_Share_Text"
                                             Margin="6,0,0,0"
                                             FontSize="14"
-                                            Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                            Text="Share" />
+                                            Foreground="{ThemeResource AppPrimaryTextBrush}" />
                                     </StackPanel>
                                 </Button>
                             </Border>
@@ -492,13 +490,12 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                        <TextBlock
+                                        <TextBlock x:Uid="Loc_Playlist_Text"
                                             x:Name="PlaylistQueueTitleText"
                                             FontSize="14"
                                             FontWeight="Bold"
                                             Foreground="{ThemeResource AppPrimaryTextBrush}"
                                             MaxLines="1"
-                                            Text="Playlist"
                                             TextTrimming="CharacterEllipsis" />
                                         <TextBlock
                                             x:Name="PlaylistQueuePositionText"
@@ -554,7 +551,7 @@
                                                         <Image
                                                             HorizontalAlignment="Stretch"
                                                             VerticalAlignment="Stretch"
-                                                            Source="{Binding thumbnail}"
+                                                            DataContextChanged="RelatedThumbnail_DataContextChanged"
                                                             Stretch="UniformToFill" />
                                                     </Border>
                                                     <!--  "Now playing" marker  -->
@@ -611,12 +608,11 @@
                             Background="{ThemeResource AppSurfaceBrush}"
                             CornerRadius="12">
                             <StackPanel>
-                                <TextBlock
+                                <TextBlock x:Uid="Loc_Comments_Text"
                                     Margin="0,0,0,8"
                                     FontSize="14"
                                     FontWeight="Bold"
-                                    Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                    Text="Comments" />
+                                    Foreground="{ThemeResource AppPrimaryTextBrush}" />
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -781,7 +777,7 @@
                                                         Stretch="UniformToFill" />
                                                 </Border>
                                             </Grid>
-                                            <Grid Grid.Row="1" Margin="12,12,12,0">
+                                            <Grid Grid.Row="1" Margin="0,12,0,0">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
@@ -824,13 +820,12 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                         <StackPanel x:Name="CommentsPanel" Visibility="Collapsed">
-                            <TextBlock
+                            <TextBlock x:Uid="Loc_Comments_Text"
                                 x:Name="CommentsHeader"
                                 Margin="0,20,0,10"
                                 FontSize="18"
                                 FontWeight="Bold"
-                                Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                Text="Comments" />
+                                Foreground="{ThemeResource AppPrimaryTextBrush}" />
                             <ItemsControl x:Name="CommentsList" HorizontalAlignment="Stretch">
                                 <ItemsControl.ItemContainerStyle>
                                     <Style TargetType="ContentPresenter">
@@ -1346,7 +1341,7 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Description"
+                            <TextBlock x:Uid="Loc_Description_Text"
                                        FontSize="22"
                                        FontWeight="Bold"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
@@ -1392,7 +1387,7 @@
                                             Foreground="{ThemeResource AppPrimaryTextBrush}"
                                             TextWrapping="NoWrap" />
                                     </Viewbox>
-                                    <TextBlock Text="Likes"
+                                    <TextBlock x:Uid="Loc_Likes_Text"
                                                FontSize="12"
                                                Foreground="{ThemeResource AppSecondaryTextBrush}"/>
                                 </StackPanel>
@@ -1411,7 +1406,7 @@
                                             Foreground="{ThemeResource AppPrimaryTextBrush}"
                                             TextWrapping="NoWrap" />
                                     </Viewbox>
-                                    <TextBlock Text="Views"
+                                    <TextBlock x:Uid="Loc_Views_Text"
                                                FontSize="12"
                                                Foreground="{ThemeResource AppSecondaryTextBrush}"/>
                                 </StackPanel>
@@ -1430,7 +1425,7 @@
                                             Foreground="{ThemeResource AppPrimaryTextBrush}"
                                             TextWrapping="NoWrap" />
                                     </Viewbox>
-                                    <TextBlock Text="Published"
+                                    <TextBlock x:Uid="Loc_Published_Text"
                                                FontSize="12"
                                                Foreground="{ThemeResource AppSecondaryTextBrush}"/>
                                 </StackPanel>
@@ -1601,7 +1596,7 @@
 
             <Grid Grid.Row="1" Margin="20,0,20,20">
                 <StackPanel>
-                    <TextBlock Text="Notifications"
+                    <TextBlock x:Uid="Loc_Notifications_Text"
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontWeight="SemiBold"
                                Margin="0,0,0,16"
@@ -1623,7 +1618,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" local:ThemeAsset.Path="Assets/all_notifications.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock Grid.Column="1" Text="All" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Uid="Loc_All_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
                             <FontIcon x:Name="NotificationAllCheckmark" Grid.Column="2" Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="{ThemeResource AppPrimaryTextBrush}" Margin="14,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
                         </Grid>
                     </Button>
@@ -1644,7 +1639,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" local:ThemeAsset.Path="Assets/notifications.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock Grid.Column="1" Text="Personalized" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Uid="Loc_Personalized_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
                             <FontIcon x:Name="NotificationPersonalizedCheckmark" Grid.Column="2" Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="{ThemeResource AppPrimaryTextBrush}" Margin="14,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
                         </Grid>
                     </Button>
@@ -1665,7 +1660,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" local:ThemeAsset.Path="Assets/none_notifications.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock Grid.Column="1" Text="None" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Uid="Loc_None_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
                             <FontIcon x:Name="NotificationNoneCheckmark" Grid.Column="2" Glyph="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="{ThemeResource AppPrimaryTextBrush}" Margin="14,0,0,0" VerticalAlignment="Center" Visibility="Collapsed"/>
                         </Grid>
                     </Button>
@@ -1685,7 +1680,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" local:ThemeAsset.Path="Assets/unsubscribe.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock Grid.Column="1" Text="Unsubscribe" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Uid="Loc_Unsubscribe_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
                         </Grid>
                     </Button>
                 </StackPanel>
@@ -1830,7 +1825,7 @@
                                             <Border Width="52" Height="52" Background="{ThemeResource AppSurfaceBrush}" CornerRadius="26" VerticalAlignment="Center">
                                                 <Image Width="24" Height="24" local:ThemeAsset.Path="Assets/copy.png" Stretch="Uniform"/>
                                             </Border>
-                                            <TextBlock Grid.Column="1" Text="Copy link" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="15" Margin="14,0,0,0"/>
+                                            <TextBlock x:Uid="Loc_CopyLink_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="15" Margin="14,0,0,0"/>
                                         </Grid>
                                     </Button>
 
@@ -1847,7 +1842,7 @@
                                             <Border Width="52" Height="52" Background="{ThemeResource AppSurfaceBrush}" CornerRadius="26" VerticalAlignment="Center">
                                                 <Image Width="24" Height="24" local:ThemeAsset.Path="Assets/qr.png" Stretch="Uniform"/>
                                             </Border>
-                                            <TextBlock Grid.Column="1" Text="Show QR code" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="15" Margin="14,0,0,0"/>
+                                            <TextBlock x:Uid="Loc_ShowQRCode_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="15" Margin="14,0,0,0"/>
                                         </Grid>
                                     </Button>
 
@@ -1863,7 +1858,7 @@
                                             <Border Width="52" Height="52" Background="{ThemeResource AppSurfaceBrush}" CornerRadius="26" VerticalAlignment="Center">
                                                 <Image Width="24" Height="24" local:ThemeAsset.Path="Assets/share.png" Stretch="Uniform"/>
                                             </Border>
-                                            <TextBlock Grid.Column="1" Text="Share via..." Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="15" Margin="14,0,0,0"/>
+                                            <TextBlock x:Uid="Loc_ShareVia_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="15" Margin="14,0,0,0"/>
                                         </Grid>
                                     </Button>
                                 </StackPanel>
@@ -1916,14 +1911,13 @@
                                    FontFamily="Segoe UI"
                                    TextWrapping="WrapWholeWords"
                                    Margin="0,0,0,16"/>
-                        <Button x:Name="SharePopupCloseButton"
+                        <Button x:Uid="Loc_Close_Content" x:Name="SharePopupCloseButton"
                                 Height="42"
                                 HorizontalAlignment="Stretch"
                                 Click="SharePopupCloseButton_Click"
                                 Background="{ThemeResource AppSurfaceBrush}"
                                 Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                BorderBrush="{ThemeResource AppSurfaceBrush}"
-                                Content="Close"/>
+                                BorderBrush="{ThemeResource AppSurfaceBrush}"/>
                     </StackPanel>
                 </Border>
             </Grid>
@@ -1988,7 +1982,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" local:ThemeAsset.Path="Assets/player/quality.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock Grid.Column="1" Text="Quality" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Uid="Loc_Quality_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
                             <TextBlock Grid.Column="2" x:Name="QualityValueText" Foreground="{ThemeResource AppSecondaryTextBrush}" VerticalAlignment="Center" FontSize="14" Margin="8,0,0,0"/>
                             <Image Grid.Column="3" local:ThemeAsset.Path="Assets/player/skip.png" Width="16" Height="16" Margin="14,0,0,0" Opacity="0.6"/>
                         </Grid>
@@ -2012,7 +2006,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" local:ThemeAsset.Path="Assets/player/speed.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock Grid.Column="1" Text="Playback speed" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Uid="Loc_PlaybackSpeed_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
                             <TextBlock Grid.Column="2" x:Name="SpeedValueText" Foreground="{ThemeResource AppSecondaryTextBrush}" VerticalAlignment="Center" FontSize="14" Margin="8,0,0,0"/>
                             <Image Grid.Column="3" local:ThemeAsset.Path="Assets/player/skip.png" Width="16" Height="16" Margin="14,0,0,0" Opacity="0.6"/>
                         </Grid>
@@ -2036,7 +2030,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" local:ThemeAsset.Path="Assets/player/speed.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock Grid.Column="1" Text="Audio track" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Uid="Loc_AudioTrack_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
                             <Image Grid.Column="2" local:ThemeAsset.Path="Assets/player/skip.png" Width="16" Height="16" Margin="14,0,0,0" Opacity="0.6"/>
                         </Grid>
                     </Button>
@@ -2058,7 +2052,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" local:ThemeAsset.Path="Assets/player/comments.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock Grid.Column="1" Text="Subtitles" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Uid="Loc_Subtitles_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
                             <Image Grid.Column="2" local:ThemeAsset.Path="Assets/player/skip.png" Width="16" Height="16" Margin="14,0,0,0" Opacity="0.6"/>
                         </Grid>
                     </Button>
@@ -2080,7 +2074,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" local:ThemeAsset.Path="Assets/player/reload.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock Grid.Column="1" Text="Reload video" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Uid="Loc_ReloadVideo_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
                             <!-- No skip.png indicator for this button -->
                         </Grid>
                     </Button>
@@ -2089,7 +2083,7 @@
                 <!-- Quality Settings Panel with ScrollViewer -->
                 <ScrollViewer x:Name="QualitySettingsPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock Text="Quality" Foreground="{ThemeResource AppPrimaryTextBrush}" FontWeight="SemiBold" Margin="0,0,0,16" FontSize="16"/>
+                        <TextBlock x:Uid="Loc_Quality_Text" Foreground="{ThemeResource AppPrimaryTextBrush}" FontWeight="SemiBold" Margin="0,0,0,16" FontSize="16"/>
 
                         <StackPanel x:Name="QualityOptionsPanel">
                             <!-- Quality options will be added here dynamically -->
@@ -2100,7 +2094,7 @@
                 <!-- Audio track Settings Panel with ScrollViewer -->
                 <ScrollViewer x:Name="AudioTrackSettingsPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock Text="Audio track" Foreground="{ThemeResource AppPrimaryTextBrush}" FontWeight="SemiBold" Margin="0,0,0,16" FontSize="16"/>
+                        <TextBlock x:Uid="Loc_AudioTrack_Text" Foreground="{ThemeResource AppPrimaryTextBrush}" FontWeight="SemiBold" Margin="0,0,0,16" FontSize="16"/>
                         <StackPanel x:Name="AudioTrackOptionsPanel"/>
                     </StackPanel>
                 </ScrollViewer>
@@ -2108,7 +2102,7 @@
                 <!-- Subtitles Settings Panel with ScrollViewer -->
                 <ScrollViewer x:Name="SubtitlesSettingsPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock Text="Subtitles" Foreground="{ThemeResource AppPrimaryTextBrush}" FontWeight="SemiBold" Margin="0,0,0,16" FontSize="16"/>
+                        <TextBlock x:Uid="Loc_Subtitles_Text" Foreground="{ThemeResource AppPrimaryTextBrush}" FontWeight="SemiBold" Margin="0,0,0,16" FontSize="16"/>
 
                         <StackPanel x:Name="SubtitlesOptionsPanel">
                             <!-- Subtitle options will be added here dynamically -->
@@ -2119,7 +2113,7 @@
                 <!-- Speed Settings Panel with ScrollViewer -->
                 <ScrollViewer x:Name="SpeedSettingsPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBlock Text="Playback speed" Foreground="{ThemeResource AppPrimaryTextBrush}" FontWeight="SemiBold" Margin="0,0,0,16" FontSize="16"/>
+                        <TextBlock x:Uid="Loc_PlaybackSpeed_Text" Foreground="{ThemeResource AppPrimaryTextBrush}" FontWeight="SemiBold" Margin="0,0,0,16" FontSize="16"/>
 
                         <StackPanel x:Name="SpeedOptionsPanel">
                             <!-- Speed options will be added here dynamically -->

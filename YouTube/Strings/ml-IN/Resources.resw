@@ -1,0 +1,850 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutText" xml:space="preserve">
+    <value>LegacyProjects ടീം വികസിപ്പിച്ചത്.
+YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
+
+പതിപ്പ് {0}</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>ഓട്ടോ</value>
+  </data>
+  <data name="AutoTranslate" xml:space="preserve">
+    <value>സ്വയമേവ വിവർത്തനം &gt;</value>
+  </data>
+  <data name="ChannelLoadingError" xml:space="preserve">
+    <value>ചാനൽ ലോഡ് പിശക്</value>
+  </data>
+  <data name="ChannelWasNotProvided" xml:space="preserve">
+    <value>ചാനൽ നൽകിയിട്ടില്ല</value>
+  </data>
+  <data name="CouldNotLoadChannel" xml:space="preserve">
+    <value>ചാനൽ ലോഡ് ചെയ്യാനായില്ല</value>
+  </data>
+  <data name="CouldNotLoadPlaylist" xml:space="preserve">
+    <value>പ്ലേലിസ്റ്റ് ലോഡ് ചെയ്യാനായില്ല</value>
+  </data>
+  <data name="DescriptionNotAvailable" xml:space="preserve">
+    <value>വിവരണം ലഭ്യമല്ല</value>
+  </data>
+  <data name="ErrorFormat" xml:space="preserve">
+    <value>പിശക്: {0}</value>
+  </data>
+  <data name="Every15Min" xml:space="preserve">
+    <value>ഓരോ 15 മിനിറ്റിലും</value>
+  </data>
+  <data name="Every2Hours" xml:space="preserve">
+    <value>ഓരോ 2 മണിക്കൂറിലും</value>
+  </data>
+  <data name="Every30Min" xml:space="preserve">
+    <value>ഓരോ 30 മിനിറ്റിലും</value>
+  </data>
+  <data name="Every6Hours" xml:space="preserve">
+    <value>ഓരോ 6 മണിക്കൂറിലും</value>
+  </data>
+  <data name="EveryHour" xml:space="preserve">
+    <value>ഓരോ മണിക്കൂറിലും</value>
+  </data>
+  <data name="EveryHours" xml:space="preserve">
+    <value>ഓരോ {0} മണിക്കൂറിലും</value>
+  </data>
+  <data name="EveryMinutes" xml:space="preserve">
+    <value>ഓരോ {0} മിനിറ്റിലും</value>
+  </data>
+  <data name="HistoryLoadFailed" xml:space="preserve">
+    <value>ചരിത്രം ലോഡ് ചെയ്യുന്നത് പരാജയപ്പെട്ടു</value>
+  </data>
+  <data name="HistorySignIn" xml:space="preserve">
+    <value>നിങ്ങളുടെ കണ്ട ചരിത്രം കാണാൻ സൈൻ ഇൻ ചെയ്യുക</value>
+  </data>
+  <data name="HomeAll" xml:space="preserve">
+    <value>എല്ലാം</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>ആപ്പ് ഭാഷ</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>ഇംഗ്ലീഷ്</value>
+  </data>
+  <data name="LanguageRestartHint" xml:space="preserve">
+    <value>ഇന്റർഫേസ് ഉടൻ അപ്ഡേറ്റ് ചെയ്യും.</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>റഷ്യൻ</value>
+  </data>
+  <data name="LanguageSection" xml:space="preserve">
+    <value>ഭാഷ</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>സിസ്റ്റം ഡിഫോൾട്ട്</value>
+  </data>
+  <data name="LinkCopied" xml:space="preserve">
+    <value>ലിങ്ക് പകർത്തി</value>
+  </data>
+  <data name="LoadingDescription" xml:space="preserve">
+    <value>വിവരണം ലോഡ് ചെയ്യുന്നു...</value>
+  </data>
+  <data name="LoadingFailed" xml:space="preserve">
+    <value>ലോഡ് പരാജയപ്പെട്ടു</value>
+  </data>
+  <data name="Loc_0Subscribers0Videos_Text.Text" xml:space="preserve">
+    <value>0 സബ്‌സ്‌ക്രൈബർമാർ • 0 വീഡിയോകൾ</value>
+  </data>
+  <data name="Loc_About_Text.Text" xml:space="preserve">
+    <value>കുറിച്ച്</value>
+  </data>
+  <data name="Loc_Account_Text.Text" xml:space="preserve">
+    <value>അക്കൗണ്ട്</value>
+  </data>
+  <data name="Loc_All_Text.Text" xml:space="preserve">
+    <value>എല്ലാം</value>
+  </data>
+  <data name="Loc_AudioTrack_Text.Text" xml:space="preserve">
+    <value>ഓഡിയോ ട്രാക്ക്</value>
+  </data>
+  <data name="Loc_Auto_Text.Text" xml:space="preserve">
+    <value>ഓട്ടോ</value>
+  </data>
+  <data name="Loc_AutoFullscreenInLandscape_Text.Text" xml:space="preserve">
+    <value>ലാൻഡ്‌സ്‌കേപ്പിൽ ഓട്ടോ ഫുൾസ്ക്രീൻ</value>
+  </data>
+  <data name="Loc_BackgroundToastsFromYouTubeNotifications_Text.Text" xml:space="preserve">
+    <value>YouTube അറിയിപ്പുകളിൽ നിന്നുള്ള പശ്ചാത്തല ടോസ്റ്റുകൾ</value>
+  </data>
+  <data name="Loc_Channel_Text.Text" xml:space="preserve">
+    <value>ചാനൽ</value>
+  </data>
+  <data name="Loc_Channels_Text.Text" xml:space="preserve">
+    <value>ചാനലുകൾ</value>
+  </data>
+  <data name="Loc_CheckYourConnectionAndTryAgain_Text.Text" xml:space="preserve">
+    <value>നിങ്ങളുടെ കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക</value>
+  </data>
+  <data name="Loc_Close_Content.Content" xml:space="preserve">
+    <value>അടയ്ക്കുക</value>
+  </data>
+  <data name="Loc_Comments_Text.Text" xml:space="preserve">
+    <value>അഭിപ്രായങ്ങൾ</value>
+  </data>
+  <data name="Loc_CopyLink_Text.Text" xml:space="preserve">
+    <value>ലിങ്ക് പകർത്തുക</value>
+  </data>
+  <data name="Loc_CouldNotLoadChannel_Text.Text" xml:space="preserve">
+    <value>ചാനൽ ലോഡ് ചെയ്യാനായില്ല</value>
+  </data>
+  <data name="Loc_CouldNotLoadPlaylist_Text.Text" xml:space="preserve">
+    <value>പ്ലേലിസ്റ്റ് ലോഡ് ചെയ്യാനായില്ല</value>
+  </data>
+  <data name="Loc_Description_Text.Text" xml:space="preserve">
+    <value>വിവരണം</value>
+  </data>
+  <data name="Loc_EveryHour_Text.Text" xml:space="preserve">
+    <value>ഓരോ മണിക്കൂറിലും</value>
+  </data>
+  <data name="Loc_ExpandTheVideoWhenThePhoneRotates_Text.Text" xml:space="preserve">
+    <value>ഫോൺ തിരിക്കുമ്പോൾ വീഡിയോ വിപുലീകരിക്കുക</value>
+  </data>
+  <data name="Loc_Frequency_Text.Text" xml:space="preserve">
+    <value>ആവൃത്തി</value>
+  </data>
+  <data name="Loc_History_Text.Text" xml:space="preserve">
+    <value>ചരിത്രം</value>
+  </data>
+  <data name="Loc_Home_Text.Text" xml:space="preserve">
+    <value>ഹോം</value>
+  </data>
+  <data name="Loc_Information_Text.Text" xml:space="preserve">
+    <value>വിവരങ്ങൾ</value>
+  </data>
+  <data name="Loc_Like_Text.Text" xml:space="preserve">
+    <value>ലൈക്ക്</value>
+  </data>
+  <data name="Loc_Likes_Text.Text" xml:space="preserve">
+    <value>ലൈക്കുകൾ</value>
+  </data>
+  <data name="Loc_LinkCopied_Text.Text" xml:space="preserve">
+    <value>ലിങ്ക് പകർത്തി</value>
+  </data>
+  <data name="Loc_Loading_Text.Text" xml:space="preserve">
+    <value>ലോഡ് ചെയ്യുന്നു...</value>
+  </data>
+  <data name="Loc_LoadingChannel_Text.Text" xml:space="preserve">
+    <value>ചാനൽ ലോഡ് ചെയ്യുന്നു...</value>
+  </data>
+  <data name="Loc_LoadingComments_Text.Text" xml:space="preserve">
+    <value>അഭിപ്രായങ്ങൾ ലോഡ് ചെയ്യുന്നു...</value>
+  </data>
+  <data name="Loc_LoadingMore_Text.Text" xml:space="preserve">
+    <value>കൂടുതൽ ലോഡ് ചെയ്യുന്നു...</value>
+  </data>
+  <data name="Loc_LoadingMoreHistory_Text.Text" xml:space="preserve">
+    <value>കൂടുതൽ ചരിത്രം ലോഡ് ചെയ്യുന്നു...</value>
+  </data>
+  <data name="Loc_LoadingMoreResults_Text.Text" xml:space="preserve">
+    <value>കൂടുതൽ ഫലങ്ങൾ ലോഡ് ചെയ്യുന്നു...</value>
+  </data>
+  <data name="Loc_LoadingMoreVideos_Text.Text" xml:space="preserve">
+    <value>കൂടുതൽ വീഡിയോകൾ ലോഡ് ചെയ്യുന്നു...</value>
+  </data>
+  <data name="Loc_LoadingPlaylist_Text.Text" xml:space="preserve">
+    <value>പ്ലേലിസ്റ്റ് ലോഡ് ചെയ്യുന്നു...</value>
+  </data>
+  <data name="Loc_LogOut_Text.Text" xml:space="preserve">
+    <value>ലോഗ് ഔട്ട്</value>
+  </data>
+  <data name="Loc_LooksLikeWeCanTLoadVideosForYou_Text.Text" xml:space="preserve">
+    <value>നിങ്ങൾക്കായി വീഡിയോകൾ ലോഡ് ചെയ്യാൻ കഴിയുന്നില്ലെന്ന് തോന്നുന്നു.</value>
+  </data>
+  <data name="Loc_More_Text.Text" xml:space="preserve">
+    <value>...കൂടുതൽ</value>
+  </data>
+  <data name="Loc_NewUpdatesFromYourSubscriptionsWillAppearHere_Text.Text" xml:space="preserve">
+    <value>നിങ്ങളുടെ സബ്‌സ്‌ക്രിപ്ഷനുകളിൽ നിന്നുള്ള പുതിയ അപ്ഡേറ്റുകൾ ഇവിടെ കാണിക്കും.</value>
+  </data>
+  <data name="Loc_NoCommentsFound_Text.Text" xml:space="preserve">
+    <value>അഭിപ്രായങ്ങളൊന്നും കണ്ടെത്തിയില്ല.</value>
+  </data>
+  <data name="Loc_NoConnectionToTheInternet_Text.Text" xml:space="preserve">
+    <value>ഇന്റർനെറ്റ് കണക്ഷൻ ഇല്ല</value>
+  </data>
+  <data name="Loc_NoData_Text.Text" xml:space="preserve">
+    <value>ഡാറ്റ ഇല്ല</value>
+  </data>
+  <data name="Loc_NoHistoryYet_Text.Text" xml:space="preserve">
+    <value>ഇതുവരെ ചരിത്രമില്ല</value>
+  </data>
+  <data name="Loc_None_Text.Text" xml:space="preserve">
+    <value>ഒന്നുമില്ല</value>
+  </data>
+  <data name="Loc_NoNotifications_Text.Text" xml:space="preserve">
+    <value>അറിയിപ്പുകളില്ല</value>
+  </data>
+  <data name="Loc_Notifications_Text.Text" xml:space="preserve">
+    <value>അറിയിപ്പുകൾ</value>
+  </data>
+  <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
+    <value>ഈ പ്ലേലിസ്റ്റിൽ വീഡിയോകളില്ല</value>
+  </data>
+  <data name="Loc_Personalized_Text.Text" xml:space="preserve">
+    <value>വ്യക്തിഗതമാക്കിയത്</value>
+  </data>
+  <data name="Loc_PlaybackSpeed_Text.Text" xml:space="preserve">
+    <value>പ്ലേബാക്ക് വേഗം</value>
+  </data>
+  <data name="Loc_Playlist_Text.Text" xml:space="preserve">
+    <value>പ്ലേലിസ്റ്റ്</value>
+  </data>
+  <data name="Loc_Playlists_Text.Text" xml:space="preserve">
+    <value>പ്ലേലിസ്റ്റുകൾ</value>
+  </data>
+  <data name="Loc_Posts_Text.Text" xml:space="preserve">
+    <value>പോസ്റ്റുകൾ</value>
+  </data>
+  <data name="Loc_PreferredShortsQuality_Text.Text" xml:space="preserve">
+    <value>ഇഷ്ടപ്പെട്ട Shorts നിലവാരം</value>
+  </data>
+  <data name="Loc_PreferredVideoQuality_Text.Text" xml:space="preserve">
+    <value>ഇഷ്ടപ്പെട്ട വീഡിയോ നിലവാരം</value>
+  </data>
+  <data name="Loc_Published_Text.Text" xml:space="preserve">
+    <value>പ്രസിദ്ധീകരിച്ചത്</value>
+  </data>
+  <data name="Loc_QRCode_Text.Text" xml:space="preserve">
+    <value>QR കോഡ്</value>
+  </data>
+  <data name="Loc_Quality_Text.Text" xml:space="preserve">
+    <value>നിലവാരം</value>
+  </data>
+  <data name="Loc_RefreshQRCode_Content.Content" xml:space="preserve">
+    <value>QR കോഡ് റിഫ്രഷ് ചെയ്യുക</value>
+  </data>
+  <data name="Loc_ReloadVideo_Text.Text" xml:space="preserve">
+    <value>വീഡിയോ വീണ്ടും ലോഡ് ചെയ്യുക</value>
+  </data>
+  <data name="Loc_Retry_Content.Content" xml:space="preserve">
+    <value>വീണ്ടും ശ്രമിക്കുക</value>
+  </data>
+  <data name="Loc_ScanTheQRCodeToSignIn_Text.Text" xml:space="preserve">
+    <value>സൈൻ ഇൻ ചെയ്യാൻ QR കോഡ് സ്കാൻ ചെയ്യുക</value>
+  </data>
+  <data name="Loc_Search_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>തിരയുക</value>
+  </data>
+  <data name="Loc_Searching_Text.Text" xml:space="preserve">
+    <value>തിരയുന്നു...</value>
+  </data>
+  <data name="Loc_SearchYouTube_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>YouTube തിരയുക</value>
+  </data>
+  <data name="Loc_SearchYouTube_Text.Text" xml:space="preserve">
+    <value>YouTube തിരയുക</value>
+  </data>
+  <data name="Loc_SeekPreview_Text.Text" xml:space="preserve">
+    <value>സീക്ക് പ്രിവ്യൂ</value>
+  </data>
+  <data name="Loc_SendNotifications_Text.Text" xml:space="preserve">
+    <value>അറിയിപ്പുകൾ അയയ്ക്കുക</value>
+  </data>
+  <data name="Loc_Settings_Text.Text" xml:space="preserve">
+    <value>ക്രമീകരണങ്ങൾ</value>
+  </data>
+  <data name="Loc_Share_Text.Text" xml:space="preserve">
+    <value>പങ്കിടുക</value>
+  </data>
+  <data name="Loc_ShareVia_Text.Text" xml:space="preserve">
+    <value>ഇതുവഴി പങ്കിടുക...</value>
+  </data>
+  <data name="Loc_Shorts_Text.Text" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="Loc_ShortsLinkHasBeenCopiedToClipboard_Text.Text" xml:space="preserve">
+    <value>Shorts ലിങ്ക് ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി</value>
+  </data>
+  <data name="Loc_ShowQRCode_Text.Text" xml:space="preserve">
+    <value>QR കോഡ് കാണിക്കുക</value>
+  </data>
+  <data name="Loc_ShowVideoThumbnailWhileSeeking_Text.Text" xml:space="preserve">
+    <value>സീക്ക് ചെയ്യുമ്പോൾ വീഡിയോ തംബ്നെയിൽ കാണിക്കുക</value>
+  </data>
+  <data name="Loc_Subscribe_Text.Text" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രൈബ് ചെയ്യുക</value>
+  </data>
+  <data name="Loc_Subscriptions_Text.Text" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രിപ്ഷനുകൾ</value>
+  </data>
+  <data name="Loc_Subtitles_Text.Text" xml:space="preserve">
+    <value>സബ്‌ടൈറ്റിലുകൾ</value>
+  </data>
+  <data name="Loc_TrendingSearches_Text.Text" xml:space="preserve">
+    <value>ട്രെൻഡിംഗ് തിരച്ചിലുകൾ</value>
+  </data>
+  <data name="Loc_TryAgain_Content.Content" xml:space="preserve">
+    <value>വീണ്ടും ശ്രമിക്കുക</value>
+  </data>
+  <data name="Loc_Type_Text.Text" xml:space="preserve">
+    <value>തരം</value>
+  </data>
+  <data name="Loc_Unsubscribe_Text.Text" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രിപ്ഷൻ ഒഴിവാക്കുക</value>
+  </data>
+  <data name="Loc_VerificationCode_Text.Text" xml:space="preserve">
+    <value>പരിശോധനാ കോഡ്</value>
+  </data>
+  <data name="Loc_Video_Text.Text" xml:space="preserve">
+    <value>വീഡിയോ</value>
+  </data>
+  <data name="Loc_Videos_Text.Text" xml:space="preserve">
+    <value>വീഡിയോകൾ</value>
+  </data>
+  <data name="Loc_ViewChannel_Text.Text" xml:space="preserve">
+    <value>ചാനൽ കാണുക</value>
+  </data>
+  <data name="Loc_Views_Text.Text" xml:space="preserve">
+    <value>കാഴ്ചകൾ</value>
+  </data>
+  <data name="Loc_You_Text.Text" xml:space="preserve">
+    <value>നിങ്ങൾ</value>
+  </data>
+  <data name="LoginLoadingQr" xml:space="preserve">
+    <value>QR കോഡ് ലോഡ് ചെയ്യുന്നു...</value>
+  </data>
+  <data name="LoginQrFailed" xml:space="preserve">
+    <value>QR കോഡ് ലോഡ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.</value>
+  </data>
+  <data name="LoginScanQr" xml:space="preserve">
+    <value>നിങ്ങളുടെ ഫോൺ ക്യാമറ തുറന്ന് QR കോഡ് സ്കാൻ ചെയ്യുക.</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>സൈൻ ഇൻ വിജയിച്ചു! തിരിച്ചുവിടുന്നു...</value>
+  </data>
+  <data name="MeSignIn" xml:space="preserve">
+    <value>നിങ്ങളുടെ ചരിത്രവും പ്ലേലിസ്റ്റുകളും കാണാൻ സൈൻ ഇൻ ചെയ്യുക</value>
+  </data>
+  <data name="Mix" xml:space="preserve">
+    <value>മിക്സ്</value>
+  </data>
+  <data name="NoCommentsFound" xml:space="preserve">
+    <value>അഭിപ്രായങ്ങളൊന്നും കണ്ടെത്തിയില്ല.</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>ഡാറ്റ ഇല്ല</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>വിവരണമില്ല.</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>വിവരണം ലഭ്യമല്ല.</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>പേരില്ല</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>അറിയിപ്പുകളില്ല</value>
+  </data>
+  <data name="NotificationPreferenceFailed" xml:space="preserve">
+    <value>അറിയിപ്പ് മുൻഗണന അപ്ഡേറ്റ് ചെയ്യാനായില്ല.</value>
+  </data>
+  <data name="NotificationsFailed" xml:space="preserve">
+    <value>അറിയിപ്പുകൾ പരാജയപ്പെട്ടു</value>
+  </data>
+  <data name="NotSignedIn" xml:space="preserve">
+    <value>സൈൻ ഇൻ ചെയ്തിട്ടില്ല</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>ഓഫ്</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>ശരി</value>
+  </data>
+  <data name="Older" xml:space="preserve">
+    <value>പഴയത്</value>
+  </data>
+  <data name="PlaybackError" xml:space="preserve">
+    <value>പ്ലേബാക്ക് പിശക്</value>
+  </data>
+  <data name="Playlist" xml:space="preserve">
+    <value>പ്ലേലിസ്റ്റ്</value>
+  </data>
+  <data name="QrCode" xml:space="preserve">
+    <value>QR കോഡ്</value>
+  </data>
+  <data name="QrDisplayErrorFormat" xml:space="preserve">
+    <value>QR പ്രദർശന പിശക്: {0}</value>
+  </data>
+  <data name="RatingFailed" xml:space="preserve">
+    <value>റേറ്റിംഗ് പരാജയപ്പെട്ടു</value>
+  </data>
+  <data name="SearchErrorFormat" xml:space="preserve">
+    <value>തിരച്ചിൽ പിശക്: {0}</value>
+  </data>
+  <data name="ShareShortDescription" xml:space="preserve">
+    <value>ഈ YouTube Short പങ്കിടുക</value>
+  </data>
+  <data name="ShareVideoDescription" xml:space="preserve">
+    <value>ഈ YouTube വീഡിയോ പങ്കിടുക</value>
+  </data>
+  <data name="SignInAgain" xml:space="preserve">
+    <value>TV റിഫ്രഷ് ടോക്കൺ ആക്സസ് ടോക്കണായി മാറ്റാനായില്ല. വീണ്ടും സൈൻ ഇൻ ചെയ്ത് റിഫ്രഷ് ടോക്കൺ ഇപ്പോഴും സാധുവാണോ പരിശോധിക്കുക.</value>
+  </data>
+  <data name="SignInRequired" xml:space="preserve">
+    <value>സൈൻ ഇൻ ആവശ്യമാണ്</value>
+  </data>
+  <data name="SubscribersVideosFormat" xml:space="preserve">
+    <value>{0} സബ്‌സ്‌ക്രൈബർമാർ • {1} വീഡിയോകൾ</value>
+  </data>
+  <data name="SubscriptionFailed" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രിപ്ഷൻ പരാജയപ്പെട്ടു</value>
+  </data>
+  <data name="SubscriptionRejected" xml:space="preserve">
+    <value>YouTube സബ്‌സ്‌ക്രിപ്ഷൻ അഭ്യർത്ഥന നിരസിച്ചു.</value>
+  </data>
+  <data name="SubtitleEarlier" xml:space="preserve">
+    <value>   നേരത്തെ (+0.25സെ)</value>
+  </data>
+  <data name="SubtitleLater" xml:space="preserve">
+    <value>   പിന്നീട് (-0.25സെ)</value>
+  </data>
+  <data name="SyncFormat" xml:space="preserve">
+    <value>സിങ്ക്: {0}</value>
+  </data>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>അഭിപ്രായങ്ങൾ ലോഡ് ചെയ്യാനായില്ല.</value>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>ശീർഷകമില്ല</value>
+  </data>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>വീഡിയോ ലിങ്ക് ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി.</value>
+  </data>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} വീഡിയോകൾ</value>
+  </data>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>ഭാഷ</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>ആപ്പ് ഭാഷ</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>ഭാഷ</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>ഡിഫോൾട്ടായി Windows ഭാഷ ഉപയോഗിക്കുന്നു.</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>സിസ്റ്റം ഡിഫോൾട്ട്</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>ഇംഗ്ലീഷ്</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>റഷ്യൻ</value>
+  </data>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube വീഡിയോ</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>ചാനൽ</value>
+  </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>അജ്ഞാതം</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>ശീർഷകമില്ല</value>
+  </data>
+  <data name="TvTokenMissing" xml:space="preserve">
+    <value>TV റിഫ്രഷ് ടോക്കൺ കണ്ടെത്തിയില്ല. വീണ്ടും സൈൻ ഇൻ ചെയ്ത് ശ്രമിക്കുക.</value>
+  </data>
+  <data name="TvTokenMissingDetailed" xml:space="preserve">
+    <value>TV റിഫ്രഷ് ടോക്കൺ കണ്ടെത്തിയില്ല. yt_refresh_token സേവ് ആകാൻ വീണ്ടും സൈൻ ഇൻ ചെയ്ത് പിന്നെ ശ്രമിക്കുക.</value>
+  </data>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>TV റിഫ്രഷ് ടോക്കൺ ആക്സസ് ടോക്കണായി മാറ്റാനായില്ല.</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>റിഫ്രഷ് ടോക്കൺ ആക്സസ് ടോക്കണായി മാറ്റാനായില്ല.</value>
+  </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>പ്ലേബാക്ക് പരാജയപ്പെട്ടു</value>
+  </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>ഈ Short പ്ലേ ചെയ്യാനായില്ല</value>
+  </data>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>വീഡിയോ ലോഡ് ചെയ്യാനുള്ള സമയം കഴിഞ്ഞു. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.</value>
+  </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>വീഡിയോ ലോഡ് ചെയ്യാനായില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>വീഡിയോ പ്ലേ ചെയ്യാനായില്ല. പ്ലെയർ ആരംഭിച്ചിട്ടില്ല.</value>
+  </data>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>വീഡിയോ ലോഡ് ചെയ്യാനായില്ല. ലിങ്ക് കാലഹരണപ്പെട്ടിരിക്കാം അല്ലെങ്കിൽ ഫോർമാറ്റ് പിന്തുണയ്ക്കാത്തതാകാം.</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>നെറ്റ്‌വർക്ക് പിശക്. നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.</value>
+  </data>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>വീഡിയോ പ്ലേബാക്ക് പിശക്. കുറഞ്ഞ നിലവാരം തിരഞ്ഞെടുത്ത് ശ്രമിക്കുക.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>വീഡിയോ പ്ലേ ചെയ്യാനായില്ല.</value>
+  </data>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>സംഗീത വീഡിയോകൾ</value>
+  </data>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>ഗെയിമിംഗ് ഹൈലൈറ്റുകൾ</value>
+  </data>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>പാചക പാചകക്കുറിപ്പുകൾ</value>
+  </data>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>ടെക് അവലോകനങ്ങൾ</value>
+  </data>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>സിനിമാ ട്രെയിലറുകൾ</value>
+  </data>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>കായിക ഹൈലൈറ്റുകൾ</value>
+  </data>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>കോമഡി സ്കെച്ചുകൾ</value>
+  </data>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>DIY ട്യൂട്ടോറിയലുകൾ</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>ശുപാർശ ചെയ്ത വീഡിയോ</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>നിങ്ങൾക്ക് സൈൻ ഔട്ട് ചെയ്യണമെന്ന് ഉറപ്പാണോ?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>സൈൻ ഔട്ട് സ്ഥിരീകരിക്കുക</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>അതെ</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>ഇല്ല</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>നിങ്ങളുടെ YouTube അറിയിപ്പുകൾ കാണാൻ സൈൻ ഇൻ ചെയ്യുക.</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>അറിയിപ്പുകൾ ലോഡ് ചെയ്യാനായില്ല</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>ഈ പേജ് പിന്നീട് വീണ്ടും തുറക്കുക.</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>പ്ലേലിസ്റ്റ് id ശൂന്യമാണ്</value>
+  </data>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} വീഡിയോകൾ</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>അജ്ഞാതം</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Shorts കാണാൻ സൈൻ ഇൻ ചെയ്യുക.</value>
+  </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts ഒന്നും കണ്ടെത്തിയില്ല.</value>
+  </data>
+  <data name="UnableLoadShorts" xml:space="preserve">
+    <value>Shorts ലോഡ് ചെയ്യാനായില്ല.</value>
+  </data>
+  <data name="UnablePlayShortPeriod" xml:space="preserve">
+    <value>ഈ Short പ്ലേ ചെയ്യാനായില്ല.</value>
+  </data>
+  <data name="Quality" xml:space="preserve">
+    <value>നിലവാരം</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>പ്ലേബാക്ക് വേഗം</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>ഓഡിയോ ട്രാക്ക്</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>സബ്‌ടൈറ്റിലുകൾ</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>വീഡിയോ പ്ലേ ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു: {0}</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>പിശക് കോഡ്: {0}</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>ഇന്ന്</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} ദിവസം മുമ്പ്</value>
+  </data>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} ആഴ്ച മുമ്പ്</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} മാസം മുമ്പ്</value>
+  </data>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} വർഷം മുമ്പ്</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; തിരികെ</value>
+  </data>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube വീഡിയോ</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രൈബർ</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രൈബർമാർ</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രൈബർമാർ</value>
+  </data>
+  <data name="VideoOne" xml:space="preserve">
+    <value>വീഡിയോ</value>
+  </data>
+  <data name="VideoFew" xml:space="preserve">
+    <value>വീഡിയോകൾ</value>
+  </data>
+  <data name="VideoMany" xml:space="preserve">
+    <value>വീഡിയോകൾ</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രൈബ് ചെയ്യുക</value>
+  </data>
+  <data name="Like" xml:space="preserve">
+    <value>ലൈക്ക്</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>അഭിപ്രായങ്ങൾ</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>നിങ്ങളുടെ സബ്‌സ്‌ക്രിപ്ഷനുകളിൽ നിന്നുള്ള പുതിയ അപ്ഡേറ്റുകൾ ഇവിടെ കാണിക്കും.</value>
+  </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube സബ്‌സ്‌ക്രിപ്ഷൻ അഭ്യർത്ഥന നിരസിച്ചു. TV ടോക്കൺ സാധുവാണെന്നും ചാനൽ id കണ്ടെത്തിയെന്നും പരിശോധിക്കുക.</value>
+  </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube റേറ്റിംഗ് അഭ്യർത്ഥന നിരസിച്ചു. TV ടോക്കൺ സാധുവാണെന്നും YouTube റേറ്റിംഗ് scope ഉണ്ടെന്നും പരിശോധിക്കുക.</value>
+  </data>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>TV റിഫ്രഷ് ടോക്കൺ ആക്സസ് ടോക്കണായി മാറ്റാനായില്ല. വീണ്ടും സൈൻ ഇൻ ചെയ്ത് റിഫ്രഷ് ടോക്കൺ ഇപ്പോഴും സാധുവാണോ പരിശോധിക്കുക.</value>
+  </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>ശരി</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>ഇന്നലെ</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>ഈ ആഴ്ച</value>
+  </data>
+  <data name="UploadedVideo" xml:space="preserve">
+    <value>ഒരു വീഡിയോ അപ്‌ലോഡ് ചെയ്തു</value>
+  </data>
+  <data name="UploadedVideoTitleFormat" xml:space="preserve">
+    <value>“{0}” വീഡിയോ അപ്‌ലോഡ് ചെയ്തു</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രിപ്ഷനുകളിൽ നിന്ന്</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>എല്ലാം</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>ഫിലിം &amp; ആനിമേഷൻ</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>ഓട്ടോകൾ &amp; വാഹനങ്ങൾ</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>സംഗീതം</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>വളർത്തുമൃഗങ്ങൾ &amp; മൃഗങ്ങൾ</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>കായികം</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>ഹ്രസ്വചിത്രങ്ങൾ</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>യാത്ര &amp; ഇവന്റുകൾ</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>ഗെയിമിംഗ്</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>വീഡിയോബ്ലോഗിംഗ്</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>ആളുകൾ &amp; ബ്ലോഗുകൾ</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>കോമഡി</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>വിനോദം</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>വാർത്ത &amp; രാഷ്ട്രീയം</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>ഹൗടു &amp; സ്റ്റൈൽ</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>വിദ്യാഭ്യാസം</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>ശാസ്ത്രം &amp; സാങ്കേതികവിദ്യ</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>ലാഭേച്ഛയില്ലാത്തവ &amp; പ്രവർത്തനം</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>സിനിമകൾ</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>അനിമെ/ആനിമേഷൻ</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>ആക്ഷൻ/അഡ്വഞ്ചർ</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>ക്ലാസിക്കുകൾ</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>ഡോക്യുമെന്ററി</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>ഡ്രാമ</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>കുടുംബം</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>വിദേശം</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>ഹൊറർ</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>സൈ-ഫൈ/ഫാന്റസി</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>ത്രില്ലർ</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>ഷോകൾ</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>ട്രെയിലറുകൾ</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>ലൈവ്</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>പഠനം</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>വീഡിയോ ഗെയിമുകൾ</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>വാർത്തകൾ</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>പോഡ്കാസ്റ്റുകൾ</value>
+  </data>
+
+  <data name="Appearance" xml:space="preserve">
+    <value>രൂപം</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>തീം</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>ലൈറ്റ്</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>ഡാർക്ക്</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>ലൈവ് ടൈൽ</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>സ്റ്റാർട്ട് സ്ക്രീനിൽ ശുപാർശകൾ കാണിക്കുക</value>
+  </data>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>തമ്പ്‌നെയിൽ ഗുണനിലവാരം</value>
+  </data>
+</root>

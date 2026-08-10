@@ -38,7 +38,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Notifications"
+            <TextBlock x:Uid="Loc_Notifications_Text"
                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                        FontSize="26"
                        FontWeight="SemiBold"
@@ -75,14 +75,12 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Margin="24">
-            <TextBlock x:Name="EmptyTitleText"
-                       Text="No notifications"
+            <TextBlock x:Uid="Loc_NoNotifications_Text" x:Name="EmptyTitleText"
                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                        FontSize="20"
                        FontWeight="SemiBold"
                        TextAlignment="Center"/>
-            <TextBlock x:Name="EmptySubtitleText"
-                       Text="New updates from your subscriptions will appear here."
+            <TextBlock x:Uid="Loc_NewUpdatesFromYourSubscriptionsWillAppearHere_Text" x:Name="EmptySubtitleText"
                        Foreground="{ThemeResource AppSecondaryTextBrush}"
                        FontSize="14"
                        TextWrapping="Wrap"

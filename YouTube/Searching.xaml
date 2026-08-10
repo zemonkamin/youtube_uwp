@@ -5,6 +5,98 @@
     xmlns:local="using:YouTube"
     Background="{ThemeResource AppBackgroundBrush}">
 
+    <Page.Resources>
+        <!-- The search field owns its pill background.  This replaces the old
+             separate Border behind a transparent TextBox and keeps the visual
+             identical without relying on the platform TextBox chrome. -->
+        <Style x:Key="SearchTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Padding" Value="16,0,40,0" />
+            <Setter Property="Background" Value="{ThemeResource AppDividerBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="{ThemeResource AppPrimaryTextBrush}" />
+            <Setter Property="FontFamily" Value="Roboto" />
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Focused" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+
+                            <!-- Border.CornerRadius exists from the original Windows 10
+                                 UWP contract (10240), so the rounded search field also works
+                                 on Windows 10 Mobile.  The Border is the TextBox chrome itself,
+                                 not a separate element placed behind the TextBox. -->
+                            <Border x:Name="SearchBoxBackground"
+                                    Background="{TemplateBinding Background}"
+                                    BorderThickness="0"
+                                    CornerRadius="20">
+                                <Grid>
+                                    <ScrollViewer x:Name="ContentElement"
+                                                  Padding="{TemplateBinding Padding}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                  HorizontalScrollBarVisibility="Hidden"
+                                                  VerticalScrollBarVisibility="Hidden"
+                                                  HorizontalScrollMode="Auto"
+                                                  VerticalScrollMode="Disabled"
+                                                  ZoomMode="Disabled"
+                                                  IsTabStop="False" />
+
+                                    <TextBlock x:Name="PlaceholderTextContentPresenter"
+                                               Padding="{TemplateBinding Padding}"
+                                               VerticalAlignment="Center"
+                                               IsHitTestVisible="False"
+                                               Text="{TemplateBinding PlaceholderText}"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                               FontFamily="{TemplateBinding FontFamily}"
+                                               FontSize="{TemplateBinding FontSize}" />
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- No system PointerOver/Pressed animation or background flash. -->
+        <Style x:Key="FlatIconButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Pressed" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
     <Grid Background="{ThemeResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -27,34 +119,24 @@
                 Grid.Column="1"
                 Margin="8,0"
                 VerticalAlignment="Center">
-                <Border
-                    Height="40"
-                    Background="{ThemeResource AppDividerBrush}"
-                    CornerRadius="20" />
-
-                <TextBox
+                <TextBox x:Uid="Loc_SearchYouTube_PlaceholderText"
                     x:Name="SearchInput"
-                    Padding="16,0,40,0"
+                    Style="{StaticResource SearchTextBoxStyle}"
                     VerticalAlignment="Center"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontFamily="Roboto"
-                    FontSize="16"
-                    Foreground="{ThemeResource AppPrimaryTextBrush}"
                     KeyUp="SearchInput_KeyUp"
-                    PlaceholderText="Search YouTube"
-                    TextChanged="SearchInput_TextChanged" Margin="0,0,0,-14"  />
+                    TextChanged="SearchInput_TextChanged" />
 
                 <Button
                     x:Name="ClearButton"
+                    Style="{StaticResource FlatIconButtonStyle}"
                     Width="40"
                     Height="40"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
-                    Background="Transparent"
+                    Click="ClearButton_Click"
                     Content="&#xE106;"
                     FontFamily="Segoe MDL2 Assets"
-                    Foreground="{ThemeResource AppSecondaryTextBrush}"
+                    Foreground="{ThemeResource AppPrimaryTextBrush}"
                     Visibility="Collapsed" />
             </Grid>
 
@@ -100,12 +182,13 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <FontIcon
+                            <Image
+                                Width="20"
+                                Height="20"
+                                HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                FontSize="18"
-                                Foreground="{ThemeResource AppSecondaryTextBrush}"
-                                Glyph="&#xE81C;" />
+                                local:ThemeAsset.Path="Assets/player/replay.png"
+                                Stretch="Uniform" />
 
                             <TextBlock
                                 Grid.Column="1"
@@ -120,12 +203,11 @@
                                 Grid.Column="2"
                                 Width="48"
                                 Height="48"
-                                Background="Transparent"
                                 Click="RemoveHistoryItem_Click"
                                 Content="&#xE106;"
                                 FontFamily="Segoe MDL2 Assets"
-                                Foreground="{ThemeResource AppMutedTextBrush}"
-                                Style="{StaticResource TextBlockButtonStyle}" />
+                                Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                Style="{StaticResource FlatIconButtonStyle}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -152,12 +234,13 @@
                                 <ColumnDefinition Width="56" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <FontIcon
+                            <Image
+                                Width="20"
+                                Height="20"
+                                HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                FontSize="18"
-                                Foreground="{ThemeResource AppSecondaryTextBrush}"
-                                Glyph="&#xE721;" />
+                                local:ThemeAsset.Path="Assets/search.png"
+                                Stretch="Uniform" />
 
                             <TextBlock
                                 Grid.Column="1"

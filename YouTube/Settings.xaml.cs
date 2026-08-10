@@ -23,12 +23,21 @@ namespace YouTube
         private const string AutoFullscreenLandscapeSettingKey = "AutoFullscreenLandscape";
         // The video and Shorts quality rows share one bottom sheet; this says which one opened it.
         private bool _editingShortsQuality;
+        private bool _editingThumbnailQuality;
         private bool _isQualitySheetOpen;
+        private bool _isLanguageSheetOpen;
+        private bool _isThemeSheetOpen;
         private bool _isAboutSheetOpen;
         private bool _isNotificationsSheetOpen;
         private double _qualityInitialY;
         private double _qualityInitialTransformY;
         private bool _qualityIsDragging;
+        private double _languageInitialY;
+        private double _languageInitialTransformY;
+        private bool _languageIsDragging;
+        private double _themeInitialY;
+        private double _themeInitialTransformY;
+        private bool _themeIsDragging;
         private double _aboutInitialY;
         private double _aboutInitialTransformY;
         private bool _aboutIsDragging;
@@ -38,6 +47,7 @@ namespace YouTube
         private Storyboard _notificationsToggleStoryboard;
         private Storyboard _scrubPreviewToggleStoryboard;
         private Storyboard _autoFullscreenLandscapeToggleStoryboard;
+        private Storyboard _liveTileToggleStoryboard;
 
         public Settings()
         {
@@ -64,6 +74,7 @@ namespace YouTube
 
             EnsurePreferredVideoQualityDefault();
             UpdatePreferredQualityText();
+            UpdateThumbnailQualityText();
             BuildQualityOptions();
             EnsureScrubPreviewDefault();
             UpdateScrubPreviewToggleVisual(IsScrubPreviewEnabled(), false);
@@ -73,6 +84,313 @@ namespace YouTube
             BuildNotificationOptions();
             UpdateNotificationToggleVisual(YouTubeNotificationService.AreNotificationsEnabled(), false);
             UpdateAboutText();
+            UpdateLanguageText();
+            BuildLanguageOptions();
+            UpdateAppearanceTexts();
+            UpdateThemeText();
+            BuildThemeOptions();
+            UpdateLiveTileToggleVisual(App.IsLiveTileEnabled(), false);
+        }
+
+        private void UpdateLanguageText()
+        {
+            if (LanguageValueText == null)
+                return;
+
+            var savedLanguage = Localization.GetSavedLanguage();
+            LanguageValueText.Text = string.IsNullOrEmpty(savedLanguage)
+                ? Localization.GetString("LanguageSystem")
+                : Localization.GetLanguageDisplayName(savedLanguage);
+        }
+
+        private void LanguageButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowLanguageBottomSheet();
+        }
+
+        private void BuildLanguageOptions()
+        {
+            if (LanguageOptionsPanel == null)
+            {
+                return;
+            }
+
+            LanguageOptionsPanel.Children.Clear();
+            var savedLanguage = Localization.GetSavedLanguage();
+            var options = Localization.SupportedLanguages;
+
+            LanguageOptionsPanel.Children.Add(CreateLanguageOptionButton(
+                Localization.GetString("LanguageSystem"),
+                string.Empty,
+                string.IsNullOrEmpty(savedLanguage)));
+
+            for (int i = 0; i < options.Length; i++)
+            {
+                var option = options[i];
+                LanguageOptionsPanel.Children.Add(CreateLanguageOptionButton(
+                    option.DisplayName,
+                    option.AppTag,
+                    string.Equals(savedLanguage, option.AppTag, StringComparison.OrdinalIgnoreCase)));
+            }
+        }
+
+        private Button CreateLanguageOptionButton(string displayName, string appTag, bool isSelected)
+        {
+            var button = new Button
+            {
+                Background = new SolidColorBrush(Colors.Transparent),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                Padding = new Thickness(0, 4, 0, 4),
+                MinHeight = 38,
+                Margin = new Thickness(0, 0, 0, 2),
+                Tag = appTag ?? string.Empty
+            };
+
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            var text = new TextBlock
+            {
+                Text = displayName,
+                Foreground = new SolidColorBrush(App.GetThemeColor("AppPrimaryTextBrush", Colors.White)),
+                FontSize = 14,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            Grid.SetColumn(text, 0);
+            grid.Children.Add(text);
+
+            var check = new FontIcon
+            {
+                Glyph = "\uE73E",
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                FontSize = 18,
+                Foreground = new SolidColorBrush(App.GetThemeColor("AppPrimaryTextBrush", Colors.White)),
+                Visibility = isSelected ? Visibility.Visible : Visibility.Collapsed,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(12, 0, 0, 0)
+            };
+            Grid.SetColumn(check, 1);
+            grid.Children.Add(check);
+
+            button.Content = grid;
+            button.Click += LanguageOptionButton_Click;
+            return button;
+        }
+
+        private void LanguageOptionButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var selectedLanguage = button != null && button.Tag != null ? button.Tag.ToString() : string.Empty;
+
+            if (string.Equals(Localization.GetSavedLanguage(), selectedLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                AnimateLanguageBottomSheet(false);
+                return;
+            }
+
+            Localization.SetLanguage(selectedLanguage);
+            UpdateLanguageText();
+            BuildLanguageOptions();
+            AnimateLanguageBottomSheet(false);
+
+            // Recreate this page so x:Uid resources are applied with the new language immediately.
+            if (Frame != null)
+            {
+                Frame.Navigate(typeof(Settings), null, new SuppressNavigationTransitionInfo());
+                if (Frame.BackStack.Count > 0)
+                    Frame.BackStack.RemoveAt(Frame.BackStack.Count - 1);
+            }
+        }
+
+        private void UpdateAppearanceTexts()
+        {
+            if (AppearanceSectionText != null)
+                AppearanceSectionText.Text = Localization.GetString("Appearance");
+            if (ThemeLabelText != null)
+                ThemeLabelText.Text = Localization.GetString("Theme");
+            if (ThemeSheetTitleText != null)
+                ThemeSheetTitleText.Text = Localization.GetString("Theme");
+            if (LiveTileLabelText != null)
+                LiveTileLabelText.Text = Localization.GetString("LiveTile");
+            if (LiveTileDescriptionText != null)
+                LiveTileDescriptionText.Text = Localization.GetString("LiveTileDescription");
+        }
+
+        private void UpdateThemeText()
+        {
+            if (ThemeValueText == null)
+                return;
+
+            var mode = App.GetSavedThemeMode();
+            if (string.Equals(mode, App.ThemeModeLight, StringComparison.OrdinalIgnoreCase))
+                ThemeValueText.Text = Localization.GetString("ThemeLight");
+            else if (string.Equals(mode, App.ThemeModeDark, StringComparison.OrdinalIgnoreCase))
+                ThemeValueText.Text = Localization.GetString("ThemeDark");
+            else
+                ThemeValueText.Text = Localization.GetString("LanguageSystem");
+        }
+
+        private void ThemeButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowThemeBottomSheet();
+        }
+
+        private void BuildThemeOptions()
+        {
+            if (ThemeOptionsPanel == null)
+                return;
+
+            ThemeOptionsPanel.Children.Clear();
+            var current = App.GetSavedThemeMode();
+            ThemeOptionsPanel.Children.Add(CreateThemeOptionButton(
+                Localization.GetString("LanguageSystem"),
+                App.ThemeModeSystem,
+                string.Equals(current, App.ThemeModeSystem, StringComparison.OrdinalIgnoreCase)));
+            ThemeOptionsPanel.Children.Add(CreateThemeOptionButton(
+                Localization.GetString("ThemeLight"),
+                App.ThemeModeLight,
+                string.Equals(current, App.ThemeModeLight, StringComparison.OrdinalIgnoreCase)));
+            ThemeOptionsPanel.Children.Add(CreateThemeOptionButton(
+                Localization.GetString("ThemeDark"),
+                App.ThemeModeDark,
+                string.Equals(current, App.ThemeModeDark, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        private Button CreateThemeOptionButton(string title, string mode, bool isSelected)
+        {
+            var button = new Button
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                Padding = new Thickness(0, 4, 0, 4),
+                MinHeight = 42,
+                Margin = new Thickness(0, 0, 0, 2),
+                Tag = mode
+            };
+
+            try
+            {
+                var style = Resources["SettingsIconButtonStyle"] as Style;
+                if (style != null)
+                    button.Style = style;
+            }
+            catch
+            {
+                button.Background = new SolidColorBrush(Colors.Transparent);
+            }
+
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            var text = new TextBlock
+            {
+                Text = title,
+                Foreground = new SolidColorBrush(App.GetThemeColor("AppPrimaryTextBrush", Colors.White)),
+                FontSize = 14,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            grid.Children.Add(text);
+
+            var check = new FontIcon
+            {
+                Glyph = "\uE73E",
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                FontSize = 18,
+                Foreground = new SolidColorBrush(App.GetThemeColor("AppPrimaryTextBrush", Colors.White)),
+                Visibility = isSelected ? Visibility.Visible : Visibility.Collapsed,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(12, 0, 0, 0)
+            };
+            Grid.SetColumn(check, 1);
+            grid.Children.Add(check);
+
+            button.Content = grid;
+            button.Click += ThemeOptionButton_Click;
+            return button;
+        }
+
+        private void ThemeOptionButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var mode = button != null && button.Tag != null ? button.Tag.ToString() : App.ThemeModeSystem;
+            if (string.Equals(App.GetSavedThemeMode(), mode, StringComparison.OrdinalIgnoreCase))
+            {
+                AnimateThemeBottomSheet(false);
+                return;
+            }
+
+            App.SetThemeMode(mode);
+            UpdateThemeText();
+            BuildThemeOptions();
+            AnimateThemeBottomSheet(false);
+
+            // Recreate the page so every code-created brush is rebuilt for the selected theme.
+            if (Frame != null)
+            {
+                Frame.Navigate(typeof(Settings), null, new SuppressNavigationTransitionInfo());
+                if (Frame.BackStack.Count > 0)
+                    Frame.BackStack.RemoveAt(Frame.BackStack.Count - 1);
+            }
+        }
+
+        private void LiveTileToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var enabled = !App.IsLiveTileEnabled();
+            App.SetLiveTileEnabled(enabled);
+            UpdateLiveTileToggleVisual(enabled, true);
+        }
+
+        private void UpdateLiveTileToggleVisual(bool isOn, bool animate)
+        {
+            if (LiveTileToggleTrack == null || LiveTileToggleThumbTransform == null)
+                return;
+
+            if (_liveTileToggleStoryboard != null)
+            {
+                _liveTileToggleStoryboard.Stop();
+                _liveTileToggleStoryboard = null;
+            }
+
+            var brush = LiveTileToggleTrack.Background as SolidColorBrush;
+            if (brush == null)
+            {
+                brush = new SolidColorBrush(
+                    isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155)));
+                LiveTileToggleTrack.Background = brush;
+            }
+
+            const double OnOffset = 20.0;
+            if (!animate)
+            {
+                brush.Color = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155));
+                LiveTileToggleThumbTransform.X = isOn ? OnOffset : 0;
+                return;
+            }
+
+            var thumbAnimation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? OnOffset : 0,
+                EnableDependentAnimation = true
+            };
+            var colorAnimation = new ColorAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155))
+            };
+
+            Storyboard.SetTarget(thumbAnimation, LiveTileToggleThumbTransform);
+            Storyboard.SetTargetProperty(thumbAnimation, "X");
+            Storyboard.SetTarget(colorAnimation, brush);
+            Storyboard.SetTargetProperty(colorAnimation, "Color");
+
+            _liveTileToggleStoryboard = new Storyboard();
+            _liveTileToggleStoryboard.Children.Add(thumbAnimation);
+            _liveTileToggleStoryboard.Children.Add(colorAnimation);
+            _liveTileToggleStoryboard.Begin();
         }
 
         private void Settings_Unloaded(object sender, RoutedEventArgs e)
@@ -91,6 +409,18 @@ namespace YouTube
             if (_isQualitySheetOpen)
             {
                 AnimateQualityBottomSheet(false);
+                return;
+            }
+
+            if (_isLanguageSheetOpen)
+            {
+                AnimateLanguageBottomSheet(false);
+                return;
+            }
+
+            if (_isThemeSheetOpen)
+            {
+                AnimateThemeBottomSheet(false);
                 return;
             }
 
@@ -159,12 +489,21 @@ namespace YouTube
         private void PreferredQualityButton_Click(object sender, RoutedEventArgs e)
         {
             _editingShortsQuality = false;
+            _editingThumbnailQuality = false;
             ShowQualityBottomSheet();
         }
 
         private void PreferredShortsQualityButton_Click(object sender, RoutedEventArgs e)
         {
             _editingShortsQuality = true;
+            _editingThumbnailQuality = false;
+            ShowQualityBottomSheet();
+        }
+
+        private void ThumbnailQualityButton_Click(object sender, RoutedEventArgs e)
+        {
+            _editingShortsQuality = false;
+            _editingThumbnailQuality = true;
             ShowQualityBottomSheet();
         }
 
@@ -409,6 +748,60 @@ namespace YouTube
             }
 
             QualityOptionsPanel.Children.Clear();
+
+            if (_editingThumbnailQuality)
+            {
+                var currentThumbnailQuality = VideoThumbnailController.GetSelectedQuality();
+                var thumbnailOptions = VideoThumbnailController.Options;
+                for (var i = 0; i < thumbnailOptions.Length; i++)
+                {
+                    var option = thumbnailOptions[i];
+                    var button = new Button
+                    {
+                        Background = new SolidColorBrush(Colors.Transparent),
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                        Padding = new Thickness(0, 4, 0, 4),
+                        MinHeight = 42,
+                        Margin = new Thickness(0, 0, 0, 2),
+                        Tag = option.Key
+                    };
+
+                    var grid = new Grid();
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+                    grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+                    var text = new TextBlock
+                    {
+                        Text = option.Key + "  (" + option.FileName + ")",
+                        Foreground = new SolidColorBrush(App.GetThemeColor("AppPrimaryTextBrush", Colors.White)),
+                        FontSize = 14,
+                        VerticalAlignment = VerticalAlignment.Center
+                    };
+                    grid.Children.Add(text);
+
+                    var check = new FontIcon
+                    {
+                        Glyph = "\uE73E",
+                        FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                        FontSize = 18,
+                        Foreground = new SolidColorBrush(App.GetThemeColor("AppPrimaryTextBrush", Colors.White)),
+                        Visibility = string.Equals(currentThumbnailQuality, option.Key, StringComparison.OrdinalIgnoreCase)
+                            ? Visibility.Visible
+                            : Visibility.Collapsed,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Margin = new Thickness(12, 0, 0, 0)
+                    };
+                    Grid.SetColumn(check, 1);
+                    grid.Children.Add(check);
+
+                    button.Content = grid;
+                    button.Click += QualityOptionButton_Click;
+                    QualityOptionsPanel.Children.Add(button);
+                }
+                return;
+            }
+
             // Shorts play as a single muxed file (no demuxer), so YouTube only offers up to 720p
             // for them — 1080p would never be available and is left out of that list.
             // Shorts now support the demuxer too, so they get the same heights up to 1080p as
@@ -436,7 +829,9 @@ namespace YouTube
 
                 var text = new TextBlock
                 {
-                    Text = quality,
+                    Text = string.Equals(quality, "Auto", StringComparison.OrdinalIgnoreCase)
+                        ? Localization.GetString("Auto")
+                        : quality,
                     Foreground = new Windows.UI.Xaml.Media.SolidColorBrush(App.GetThemeColor("AppPrimaryTextBrush", Windows.UI.Colors.White)),
                     FontSize = 14,
                     VerticalAlignment = VerticalAlignment.Center
@@ -471,6 +866,15 @@ namespace YouTube
             var quality = button != null ? button.Tag as string : null;
             if (string.IsNullOrWhiteSpace(quality))
             {
+                return;
+            }
+
+            if (_editingThumbnailQuality)
+            {
+                VideoThumbnailController.SetSelectedQuality(quality);
+                UpdateThumbnailQualityText();
+                BuildQualityOptions();
+                AnimateQualityBottomSheet(false);
                 return;
             }
 
@@ -529,11 +933,29 @@ namespace YouTube
         {
             if (PreferredQualityValueText != null)
             {
-                PreferredQualityValueText.Text = GetPreferredQualityDisplayText(PreferredVideoQualitySettingKey);
+                var value = GetPreferredQualityDisplayText(PreferredVideoQualitySettingKey);
+                PreferredQualityValueText.Text = string.Equals(value, "Auto", StringComparison.OrdinalIgnoreCase)
+                    ? Localization.GetString("Auto")
+                    : value;
             }
             if (PreferredShortsQualityValueText != null)
             {
-                PreferredShortsQualityValueText.Text = GetPreferredQualityDisplayText(PreferredShortsQualitySettingKey);
+                var value = GetPreferredQualityDisplayText(PreferredShortsQualitySettingKey);
+                PreferredShortsQualityValueText.Text = string.Equals(value, "Auto", StringComparison.OrdinalIgnoreCase)
+                    ? Localization.GetString("Auto")
+                    : value;
+            }
+        }
+
+        private void UpdateThumbnailQualityText()
+        {
+            if (ThumbnailQualityLabelText != null)
+                ThumbnailQualityLabelText.Text = Localization.GetString("ThumbnailQuality");
+
+            if (ThumbnailQualityValueText != null)
+            {
+                var option = VideoThumbnailController.GetSelectedOption();
+                ThumbnailQualityValueText.Text = option != null ? option.Key : VideoThumbnailController.DefaultQuality;
             }
         }
 
@@ -547,11 +969,11 @@ namespace YouTube
             NotificationFrequencyOptionsPanel.Children.Clear();
             var options = new[]
             {
-                new NotificationFrequencyOption { Title = "Every 15 min", Minutes = 15 },
-                new NotificationFrequencyOption { Title = "Every 30 min", Minutes = 30 },
-                new NotificationFrequencyOption { Title = "Every hour", Minutes = 60 },
-                new NotificationFrequencyOption { Title = "Every 2 hours", Minutes = 120 },
-                new NotificationFrequencyOption { Title = "Every 6 hours", Minutes = 360 }
+                new NotificationFrequencyOption { Title = Localization.GetString("Every15Min"), Minutes = 15 },
+                new NotificationFrequencyOption { Title = Localization.GetString("Every30Min"), Minutes = 30 },
+                new NotificationFrequencyOption { Title = Localization.GetString("EveryHour"), Minutes = 60 },
+                new NotificationFrequencyOption { Title = Localization.GetString("Every2Hours"), Minutes = 120 },
+                new NotificationFrequencyOption { Title = Localization.GetString("Every6Hours"), Minutes = 360 }
             };
             var current = YouTubeNotificationService.GetNotificationIntervalMinutes();
 
@@ -708,13 +1130,17 @@ namespace YouTube
                 version.Revision
             );
 
-            AboutText.Text = "Developed by the LegacyProjects team.\n"
-                + "Supported by YouTube API Legacy.\n\n"
-                + "Version " + versionText;
+            AboutText.Text = Localization.Format("AboutText", versionText);
         }
 
         private void ShowQualityBottomSheet()
         {
+            if (QualitySheetTitleText != null)
+            {
+                QualitySheetTitleText.Text = _editingThumbnailQuality
+                    ? Localization.GetString("ThumbnailQuality")
+                    : Localization.GetString("Quality");
+            }
             BuildQualityOptions();
             if (OverlayGrid != null)
             {
@@ -725,6 +1151,33 @@ namespace YouTube
                 QualityBottomSheetPanel.Visibility = Visibility.Visible;
             }
             AnimateQualityBottomSheet(true);
+        }
+
+        private void ShowLanguageBottomSheet()
+        {
+            UpdateLanguageText();
+            BuildLanguageOptions();
+            if (OverlayGrid != null)
+            {
+                OverlayGrid.Visibility = Visibility.Visible;
+            }
+            if (LanguageBottomSheetPanel != null)
+            {
+                LanguageBottomSheetPanel.Visibility = Visibility.Visible;
+            }
+            AnimateLanguageBottomSheet(true);
+        }
+
+        private void ShowThemeBottomSheet()
+        {
+            UpdateAppearanceTexts();
+            UpdateThemeText();
+            BuildThemeOptions();
+            if (OverlayGrid != null)
+                OverlayGrid.Visibility = Visibility.Visible;
+            if (ThemeBottomSheetPanel != null)
+                ThemeBottomSheetPanel.Visibility = Visibility.Visible;
+            AnimateThemeBottomSheet(true);
         }
 
         private void ShowAboutBottomSheet()
@@ -765,6 +1218,10 @@ namespace YouTube
                 return;
             }
 
+            if (show && LanguageBottomSheetPanel != null && LanguageBottomSheetPanel.Visibility == Visibility.Visible)
+            {
+                AnimateLanguageBottomSheet(false);
+            }
             if (show && AboutBottomSheetPanel != null && AboutBottomSheetPanel.Visibility == Visibility.Visible)
             {
                 AnimateAboutBottomSheet(false);
@@ -801,6 +1258,92 @@ namespace YouTube
             storyboard.Begin();
         }
 
+        private void AnimateLanguageBottomSheet(bool show)
+        {
+            _isLanguageSheetOpen = show;
+            if (LanguageBottomSheetTransform == null)
+            {
+                return;
+            }
+
+            if (show && QualityBottomSheetPanel != null && QualityBottomSheetPanel.Visibility == Visibility.Visible)
+            {
+                AnimateQualityBottomSheet(false);
+            }
+            if (show && AboutBottomSheetPanel != null && AboutBottomSheetPanel.Visibility == Visibility.Visible)
+            {
+                AnimateAboutBottomSheet(false);
+            }
+            if (show && NotificationsBottomSheetPanel != null && NotificationsBottomSheetPanel.Visibility == Visibility.Visible)
+            {
+                AnimateNotificationsBottomSheet(false);
+            }
+
+            var storyboard = new Storyboard();
+            var animation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(250),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
+                To = show ? 0 : 430
+            };
+
+            Storyboard.SetTarget(animation, LanguageBottomSheetTransform);
+            Storyboard.SetTargetProperty(animation, "Y");
+            storyboard.Children.Add(animation);
+
+            if (!show)
+            {
+                storyboard.Completed += (s, e) =>
+                {
+                    if (LanguageBottomSheetPanel != null)
+                    {
+                        LanguageBottomSheetPanel.Visibility = Visibility.Collapsed;
+                    }
+                    HideOverlayIfNoSheetOpen();
+                };
+            }
+
+            storyboard.Begin();
+        }
+
+        private void AnimateThemeBottomSheet(bool show)
+        {
+            _isThemeSheetOpen = show;
+            if (ThemeBottomSheetTransform == null)
+                return;
+
+            if (show)
+            {
+                if (_isQualitySheetOpen) AnimateQualityBottomSheet(false);
+                if (_isLanguageSheetOpen) AnimateLanguageBottomSheet(false);
+                if (_isAboutSheetOpen) AnimateAboutBottomSheet(false);
+                if (_isNotificationsSheetOpen) AnimateNotificationsBottomSheet(false);
+            }
+
+            var storyboard = new Storyboard();
+            var animation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(250),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
+                To = show ? 0 : 240
+            };
+            Storyboard.SetTarget(animation, ThemeBottomSheetTransform);
+            Storyboard.SetTargetProperty(animation, "Y");
+            storyboard.Children.Add(animation);
+
+            if (!show)
+            {
+                storyboard.Completed += (s, e) =>
+                {
+                    if (ThemeBottomSheetPanel != null)
+                        ThemeBottomSheetPanel.Visibility = Visibility.Collapsed;
+                    HideOverlayIfNoSheetOpen();
+                };
+            }
+
+            storyboard.Begin();
+        }
+
         private void AnimateAboutBottomSheet(bool show)
         {
             _isAboutSheetOpen = show;
@@ -812,6 +1355,10 @@ namespace YouTube
             if (show && QualityBottomSheetPanel != null && QualityBottomSheetPanel.Visibility == Visibility.Visible)
             {
                 AnimateQualityBottomSheet(false);
+            }
+            if (show && LanguageBottomSheetPanel != null && LanguageBottomSheetPanel.Visibility == Visibility.Visible)
+            {
+                AnimateLanguageBottomSheet(false);
             }
             if (show && NotificationsBottomSheetPanel != null && NotificationsBottomSheetPanel.Visibility == Visibility.Visible)
             {
@@ -857,6 +1404,10 @@ namespace YouTube
             {
                 AnimateQualityBottomSheet(false);
             }
+            if (show && LanguageBottomSheetPanel != null && LanguageBottomSheetPanel.Visibility == Visibility.Visible)
+            {
+                AnimateLanguageBottomSheet(false);
+            }
             if (show && AboutBottomSheetPanel != null && AboutBottomSheetPanel.Visibility == Visibility.Visible)
             {
                 AnimateAboutBottomSheet(false);
@@ -891,7 +1442,7 @@ namespace YouTube
 
         private void HideOverlayIfNoSheetOpen()
         {
-            if (OverlayGrid != null && !_isQualitySheetOpen && !_isAboutSheetOpen && !_isNotificationsSheetOpen)
+            if (OverlayGrid != null && !_isQualitySheetOpen && !_isLanguageSheetOpen && !_isThemeSheetOpen && !_isAboutSheetOpen && !_isNotificationsSheetOpen)
             {
                 OverlayGrid.Visibility = Visibility.Collapsed;
             }
@@ -902,6 +1453,14 @@ namespace YouTube
             if (_isQualitySheetOpen)
             {
                 AnimateQualityBottomSheet(false);
+            }
+            if (_isLanguageSheetOpen)
+            {
+                AnimateLanguageBottomSheet(false);
+            }
+            if (_isThemeSheetOpen)
+            {
+                AnimateThemeBottomSheet(false);
             }
             if (_isAboutSheetOpen)
             {
@@ -964,6 +1523,108 @@ namespace YouTube
                 {
                     AnimateQualityBottomSheet(true);
                 }
+                e.Handled = true;
+            }
+        }
+
+        private void LanguageDragArea_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            AnimateLanguageBottomSheet(false);
+        }
+
+        private void LanguageDragArea_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            var element = sender as UIElement;
+            if (element != null && element.CapturePointer(e.Pointer))
+            {
+                _languageInitialY = e.GetCurrentPoint(element).Position.Y;
+                _languageInitialTransformY = LanguageBottomSheetTransform != null ? LanguageBottomSheetTransform.Y : 0;
+                _languageIsDragging = true;
+                e.Handled = true;
+            }
+        }
+
+        private void LanguageDragArea_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (_languageIsDragging && LanguageBottomSheetTransform != null)
+            {
+                var element = sender as UIElement;
+                var currentPoint = e.GetCurrentPoint(element);
+                double newY = _languageInitialTransformY + currentPoint.Position.Y - _languageInitialY;
+                if (newY >= 0 && newY <= 430)
+                {
+                    LanguageBottomSheetTransform.Y = newY;
+                }
+                e.Handled = true;
+            }
+        }
+
+        private void LanguageDragArea_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (_languageIsDragging)
+            {
+                _languageIsDragging = false;
+                var element = sender as UIElement;
+                if (element != null)
+                {
+                    element.ReleasePointerCapture(e.Pointer);
+                }
+
+                if (LanguageBottomSheetTransform != null && LanguageBottomSheetTransform.Y > 190)
+                {
+                    AnimateLanguageBottomSheet(false);
+                }
+                else
+                {
+                    AnimateLanguageBottomSheet(true);
+                }
+                e.Handled = true;
+            }
+        }
+
+        private void ThemeDragArea_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            AnimateThemeBottomSheet(false);
+        }
+
+        private void ThemeDragArea_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            var element = sender as UIElement;
+            if (element != null && element.CapturePointer(e.Pointer))
+            {
+                _themeInitialY = e.GetCurrentPoint(element).Position.Y;
+                _themeInitialTransformY = ThemeBottomSheetTransform != null ? ThemeBottomSheetTransform.Y : 0;
+                _themeIsDragging = true;
+                e.Handled = true;
+            }
+        }
+
+        private void ThemeDragArea_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (_themeIsDragging && ThemeBottomSheetTransform != null)
+            {
+                var element = sender as UIElement;
+                var currentPoint = e.GetCurrentPoint(element);
+                double newY = _themeInitialTransformY + currentPoint.Position.Y - _themeInitialY;
+                if (newY >= 0 && newY <= 240)
+                    ThemeBottomSheetTransform.Y = newY;
+                e.Handled = true;
+            }
+        }
+
+        private void ThemeDragArea_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (_themeIsDragging)
+            {
+                _themeIsDragging = false;
+                var element = sender as UIElement;
+                if (element != null)
+                    element.ReleasePointerCapture(e.Pointer);
+
+                if (ThemeBottomSheetTransform != null && ThemeBottomSheetTransform.Y > 105)
+                    AnimateThemeBottomSheet(false);
+                else
+                    AnimateThemeBottomSheet(true);
                 e.Handled = true;
             }
         }

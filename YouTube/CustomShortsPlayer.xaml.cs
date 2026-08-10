@@ -144,7 +144,7 @@ namespace YouTube
             catch (Exception ex)
             {
                 ShowLoading(false);
-                ShowError("Playback failed");
+                ShowError(Localization.GetString("PlaybackFailed"));
                 System.Diagnostics.Debug.WriteLine("CustomShortsPlayer: SetSource error: " + ex.Message);
             }
         }
@@ -413,7 +413,7 @@ namespace YouTube
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 ShowLoading(false);
-                ShowError("Unable to play this Short");
+                ShowError(Localization.GetString("UnablePlayShort"));
                 _isPlaying = false;
                 _progressTimer.Stop();
                 System.Diagnostics.Debug.WriteLine("CustomShortsPlayer: MediaFailed: " + args.ErrorMessage);

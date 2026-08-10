@@ -164,17 +164,31 @@ namespace YouTube
             }
         }
 
+        private void RefreshSearchHistoryItems()
+        {
+            if (SearchHistoryListView == null)
+            {
+                return;
+            }
+
+            // List<T> does not notify ListView when an item is removed. Resetting the
+            // source keeps the existing persistence format while updating the UI now.
+            SearchHistoryListView.ItemsSource = null;
+            SearchHistoryListView.ItemsSource = _searchHistory;
+        }
+
         private void UpdateSearchHistoryVisibility()
         {
             if (string.IsNullOrWhiteSpace(SearchInput.Text))
             {
                 if (_searchHistory != null && _searchHistory.Any())
                 {
-                    SearchHistoryListView.ItemsSource = _searchHistory;
+                    RefreshSearchHistoryItems();
                     SearchHistoryListView.Visibility = Visibility.Visible;
                 }
                 else
                 {
+                    SearchHistoryListView.ItemsSource = null;
                     SearchHistoryListView.Visibility = Visibility.Collapsed;
                 }
                 SuggestionsListView.Visibility = Visibility.Collapsed;
@@ -249,6 +263,13 @@ namespace YouTube
             try
             {
                 var searchText = SearchInput != null ? SearchInput.Text : null;
+                if (ClearButton != null)
+                {
+                    ClearButton.Visibility = string.IsNullOrEmpty(searchText)
+                        ? Visibility.Collapsed
+                        : Visibility.Visible;
+                }
+
                 if (string.IsNullOrWhiteSpace(searchText))
                 {
                     UpdateSearchHistoryVisibility();
@@ -404,6 +425,18 @@ namespace YouTube
                 System.Diagnostics.Debug.WriteLine($"Error fetching search suggestions: {ex}");
                 return new List<string>();
             }
+        }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_suggestionsCancellationTokenSource != null)
+            {
+                try { _suggestionsCancellationTokenSource.Cancel(); } catch { }
+            }
+
+            SearchInput.Text = string.Empty;
+            SearchInput.Focus(FocusState.Programmatic);
+            UpdateSearchHistoryVisibility();
         }
 
         private void SearchInput_KeyUp(object sender, KeyRoutedEventArgs e)

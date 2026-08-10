@@ -54,7 +54,7 @@
                 Visibility="Collapsed"
                 Padding="16,8">
             <StackPanel>
-                <TextBlock Text="Trending Searches"
+                <TextBlock x:Uid="Loc_TrendingSearches_Text"
                            Foreground="White"
                            FontFamily="Roboto"
                            FontSize="15"
@@ -219,7 +219,7 @@
                                     </Grid>
 
                                     <!-- Title and Channel -->
-                                    <StackPanel Margin="12,12,12,0">
+                                    <StackPanel Margin="0,12,0,0">
                                         <TextBlock Text="{Binding Title}"
                                                  TextWrapping="NoWrap"
                                                  TextTrimming="CharacterEllipsis"
@@ -280,7 +280,7 @@
                                               IsActive="False"
                                               Width="30"
                                               Height="30"/>
-                    <TextBlock Text="Loading more videos..."
+                    <TextBlock x:Uid="Loc_LoadingMoreVideos_Text"
                                Foreground="{ThemeResource AppMutedTextBrush}"
                                FontSize="14"
                                HorizontalAlignment="Center"
@@ -382,7 +382,7 @@
                        Stretch="Uniform"
                        HorizontalAlignment="Center"
                        Margin="0,0,0,20"/>
-                <TextBlock Text="No connection to the Internet"
+                <TextBlock x:Uid="Loc_NoConnectionToTheInternet_Text"
                            Foreground="{ThemeResource AppPrimaryTextBrush}"
                            FontSize="22"
                            FontWeight="SemiBold"
@@ -390,7 +390,7 @@
                            TextWrapping="Wrap"
                            HorizontalAlignment="Center"
                            Margin="0,0,0,8"/>
-                <TextBlock Text="Looks like we can't load videos for you."
+                <TextBlock x:Uid="Loc_LooksLikeWeCanTLoadVideosForYou_Text"
                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                            FontSize="16"
                            TextAlignment="Center"
@@ -398,8 +398,7 @@
                            MaxWidth="340"
                            HorizontalAlignment="Center"
                            Margin="0,0,0,22"/>
-                <Button x:Name="OfflineShowListButton"
-                        Content="Try again"
+                <Button x:Uid="Loc_TryAgain_Content" x:Name="OfflineShowListButton"
                         Click="RetryButton_Click"
                         Background="#3EA6FF"
                         Foreground="{ThemeResource PrimaryActionForegroundBrush}"

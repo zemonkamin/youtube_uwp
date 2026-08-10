@@ -1,0 +1,850 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutText" xml:space="preserve">
+    <value>Αναπτύχθηκε από την ομάδα LegacyProjects.
+Υποστηρίζεται από το YouTube API Legacy.
+
+Έκδοση {0}</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Αυτόματα</value>
+  </data>
+  <data name="AutoTranslate" xml:space="preserve">
+    <value>Αυτόματη μετάφραση &gt;</value>
+  </data>
+  <data name="ChannelLoadingError" xml:space="preserve">
+    <value>Σφάλμα φόρτωσης καναλιού</value>
+  </data>
+  <data name="ChannelWasNotProvided" xml:space="preserve">
+    <value>Δεν δόθηκε κανάλι</value>
+  </data>
+  <data name="CouldNotLoadChannel" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση του καναλιού</value>
+  </data>
+  <data name="CouldNotLoadPlaylist" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση της λίστας αναπαραγωγής</value>
+  </data>
+  <data name="DescriptionNotAvailable" xml:space="preserve">
+    <value>Η περιγραφή δεν είναι διαθέσιμη</value>
+  </data>
+  <data name="ErrorFormat" xml:space="preserve">
+    <value>Σφάλμα: {0}</value>
+  </data>
+  <data name="Every15Min" xml:space="preserve">
+    <value>Κάθε 15 λεπτά</value>
+  </data>
+  <data name="Every2Hours" xml:space="preserve">
+    <value>Κάθε 2 ώρες</value>
+  </data>
+  <data name="Every30Min" xml:space="preserve">
+    <value>Κάθε 30 λεπτά</value>
+  </data>
+  <data name="Every6Hours" xml:space="preserve">
+    <value>Κάθε 6 ώρες</value>
+  </data>
+  <data name="EveryHour" xml:space="preserve">
+    <value>Κάθε ώρα</value>
+  </data>
+  <data name="EveryHours" xml:space="preserve">
+    <value>Κάθε {0} ώρες</value>
+  </data>
+  <data name="EveryMinutes" xml:space="preserve">
+    <value>Κάθε {0} λεπτά</value>
+  </data>
+  <data name="HistoryLoadFailed" xml:space="preserve">
+    <value>Αποτυχία φόρτωσης ιστορικού</value>
+  </data>
+  <data name="HistorySignIn" xml:space="preserve">
+    <value>Συνδεθείτε για να δείτε το ιστορικό παρακολούθησης</value>
+  </data>
+  <data name="HomeAll" xml:space="preserve">
+    <value>Όλα</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Γλώσσα εφαρμογής</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>Αγγλικά</value>
+  </data>
+  <data name="LanguageRestartHint" xml:space="preserve">
+    <value>Η διεπαφή θα ενημερωθεί αμέσως.</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Ρωσικά</value>
+  </data>
+  <data name="LanguageSection" xml:space="preserve">
+    <value>Γλώσσα</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>Προεπιλογή συστήματος</value>
+  </data>
+  <data name="LinkCopied" xml:space="preserve">
+    <value>Ο σύνδεσμος αντιγράφηκε</value>
+  </data>
+  <data name="LoadingDescription" xml:space="preserve">
+    <value>Φόρτωση περιγραφής...</value>
+  </data>
+  <data name="LoadingFailed" xml:space="preserve">
+    <value>Η φόρτωση απέτυχε</value>
+  </data>
+  <data name="Loc_0Subscribers0Videos_Text.Text" xml:space="preserve">
+    <value>0 συνδρομητές • 0 βίντεο</value>
+  </data>
+  <data name="Loc_About_Text.Text" xml:space="preserve">
+    <value>Σχετικά</value>
+  </data>
+  <data name="Loc_Account_Text.Text" xml:space="preserve">
+    <value>Λογαριασμός</value>
+  </data>
+  <data name="Loc_All_Text.Text" xml:space="preserve">
+    <value>Όλα</value>
+  </data>
+  <data name="Loc_AudioTrack_Text.Text" xml:space="preserve">
+    <value>Κομμάτι ήχου</value>
+  </data>
+  <data name="Loc_Auto_Text.Text" xml:space="preserve">
+    <value>Αυτόματα</value>
+  </data>
+  <data name="Loc_AutoFullscreenInLandscape_Text.Text" xml:space="preserve">
+    <value>Αυτόματη πλήρης οθόνη σε οριζόντια προβολή</value>
+  </data>
+  <data name="Loc_BackgroundToastsFromYouTubeNotifications_Text.Text" xml:space="preserve">
+    <value>Ειδοποιήσεις YouTube στο παρασκήνιο</value>
+  </data>
+  <data name="Loc_Channel_Text.Text" xml:space="preserve">
+    <value>Κανάλι</value>
+  </data>
+  <data name="Loc_Channels_Text.Text" xml:space="preserve">
+    <value>Κανάλια</value>
+  </data>
+  <data name="Loc_CheckYourConnectionAndTryAgain_Text.Text" xml:space="preserve">
+    <value>Ελέγξτε τη σύνδεσή σας και δοκιμάστε ξανά</value>
+  </data>
+  <data name="Loc_Close_Content.Content" xml:space="preserve">
+    <value>Κλείσιμο</value>
+  </data>
+  <data name="Loc_Comments_Text.Text" xml:space="preserve">
+    <value>Σχόλια</value>
+  </data>
+  <data name="Loc_CopyLink_Text.Text" xml:space="preserve">
+    <value>Αντιγραφή συνδέσμου</value>
+  </data>
+  <data name="Loc_CouldNotLoadChannel_Text.Text" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση του καναλιού</value>
+  </data>
+  <data name="Loc_CouldNotLoadPlaylist_Text.Text" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση της λίστας αναπαραγωγής</value>
+  </data>
+  <data name="Loc_Description_Text.Text" xml:space="preserve">
+    <value>Περιγραφή</value>
+  </data>
+  <data name="Loc_EveryHour_Text.Text" xml:space="preserve">
+    <value>Κάθε ώρα</value>
+  </data>
+  <data name="Loc_ExpandTheVideoWhenThePhoneRotates_Text.Text" xml:space="preserve">
+    <value>Μεγέθυνση του βίντεο όταν περιστρέφεται το τηλέφωνο</value>
+  </data>
+  <data name="Loc_Frequency_Text.Text" xml:space="preserve">
+    <value>Συχνότητα</value>
+  </data>
+  <data name="Loc_History_Text.Text" xml:space="preserve">
+    <value>Ιστορικό</value>
+  </data>
+  <data name="Loc_Home_Text.Text" xml:space="preserve">
+    <value>Αρχική</value>
+  </data>
+  <data name="Loc_Information_Text.Text" xml:space="preserve">
+    <value>Πληροφορίες</value>
+  </data>
+  <data name="Loc_Like_Text.Text" xml:space="preserve">
+    <value>Μου αρέσει</value>
+  </data>
+  <data name="Loc_Likes_Text.Text" xml:space="preserve">
+    <value>Μου αρέσει</value>
+  </data>
+  <data name="Loc_LinkCopied_Text.Text" xml:space="preserve">
+    <value>Ο σύνδεσμος αντιγράφηκε</value>
+  </data>
+  <data name="Loc_Loading_Text.Text" xml:space="preserve">
+    <value>Φόρτωση...</value>
+  </data>
+  <data name="Loc_LoadingChannel_Text.Text" xml:space="preserve">
+    <value>Φόρτωση καναλιού...</value>
+  </data>
+  <data name="Loc_LoadingComments_Text.Text" xml:space="preserve">
+    <value>Φόρτωση σχολίων...</value>
+  </data>
+  <data name="Loc_LoadingMore_Text.Text" xml:space="preserve">
+    <value>Φόρτωση περισσότερων...</value>
+  </data>
+  <data name="Loc_LoadingMoreHistory_Text.Text" xml:space="preserve">
+    <value>Φόρτωση περισσότερου ιστορικού...</value>
+  </data>
+  <data name="Loc_LoadingMoreResults_Text.Text" xml:space="preserve">
+    <value>Φόρτωση περισσότερων αποτελεσμάτων...</value>
+  </data>
+  <data name="Loc_LoadingMoreVideos_Text.Text" xml:space="preserve">
+    <value>Φόρτωση περισσότερων βίντεο...</value>
+  </data>
+  <data name="Loc_LoadingPlaylist_Text.Text" xml:space="preserve">
+    <value>Φόρτωση λίστας αναπαραγωγής...</value>
+  </data>
+  <data name="Loc_LogOut_Text.Text" xml:space="preserve">
+    <value>Αποσύνδεση</value>
+  </data>
+  <data name="Loc_LooksLikeWeCanTLoadVideosForYou_Text.Text" xml:space="preserve">
+    <value>Φαίνεται ότι δεν μπορούμε να φορτώσουμε βίντεο για εσάς.</value>
+  </data>
+  <data name="Loc_More_Text.Text" xml:space="preserve">
+    <value>...περισσότερα</value>
+  </data>
+  <data name="Loc_NewUpdatesFromYourSubscriptionsWillAppearHere_Text.Text" xml:space="preserve">
+    <value>Οι νέες ενημερώσεις από τις συνδρομές σας θα εμφανίζονται εδώ.</value>
+  </data>
+  <data name="Loc_NoCommentsFound_Text.Text" xml:space="preserve">
+    <value>Δεν βρέθηκαν σχόλια.</value>
+  </data>
+  <data name="Loc_NoConnectionToTheInternet_Text.Text" xml:space="preserve">
+    <value>Δεν υπάρχει σύνδεση στο Internet</value>
+  </data>
+  <data name="Loc_NoData_Text.Text" xml:space="preserve">
+    <value>Δεν υπάρχουν δεδομένα</value>
+  </data>
+  <data name="Loc_NoHistoryYet_Text.Text" xml:space="preserve">
+    <value>Δεν υπάρχει ακόμη ιστορικό</value>
+  </data>
+  <data name="Loc_None_Text.Text" xml:space="preserve">
+    <value>Κανένα</value>
+  </data>
+  <data name="Loc_NoNotifications_Text.Text" xml:space="preserve">
+    <value>Δεν υπάρχουν ειδοποιήσεις</value>
+  </data>
+  <data name="Loc_Notifications_Text.Text" xml:space="preserve">
+    <value>Ειδοποιήσεις</value>
+  </data>
+  <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
+    <value>Δεν υπάρχουν βίντεο σε αυτή τη λίστα αναπαραγωγής</value>
+  </data>
+  <data name="Loc_Personalized_Text.Text" xml:space="preserve">
+    <value>Εξατομικευμένες</value>
+  </data>
+  <data name="Loc_PlaybackSpeed_Text.Text" xml:space="preserve">
+    <value>Ταχύτητα αναπαραγωγής</value>
+  </data>
+  <data name="Loc_Playlist_Text.Text" xml:space="preserve">
+    <value>Λίστα αναπαραγωγής</value>
+  </data>
+  <data name="Loc_Playlists_Text.Text" xml:space="preserve">
+    <value>Λίστες αναπαραγωγής</value>
+  </data>
+  <data name="Loc_Posts_Text.Text" xml:space="preserve">
+    <value>Αναρτήσεις</value>
+  </data>
+  <data name="Loc_PreferredShortsQuality_Text.Text" xml:space="preserve">
+    <value>Προτιμώμενη ποιότητα Shorts</value>
+  </data>
+  <data name="Loc_PreferredVideoQuality_Text.Text" xml:space="preserve">
+    <value>Προτιμώμενη ποιότητα βίντεο</value>
+  </data>
+  <data name="Loc_Published_Text.Text" xml:space="preserve">
+    <value>Δημοσιεύτηκε</value>
+  </data>
+  <data name="Loc_QRCode_Text.Text" xml:space="preserve">
+    <value>Κωδικός QR</value>
+  </data>
+  <data name="Loc_Quality_Text.Text" xml:space="preserve">
+    <value>Ποιότητα</value>
+  </data>
+  <data name="Loc_RefreshQRCode_Content.Content" xml:space="preserve">
+    <value>Ανανέωση κωδικού QR</value>
+  </data>
+  <data name="Loc_ReloadVideo_Text.Text" xml:space="preserve">
+    <value>Επαναφόρτωση βίντεο</value>
+  </data>
+  <data name="Loc_Retry_Content.Content" xml:space="preserve">
+    <value>Επανάληψη</value>
+  </data>
+  <data name="Loc_ScanTheQRCodeToSignIn_Text.Text" xml:space="preserve">
+    <value>Σαρώστε τον κωδικό QR για να συνδεθείτε</value>
+  </data>
+  <data name="Loc_Search_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>Αναζήτηση</value>
+  </data>
+  <data name="Loc_Searching_Text.Text" xml:space="preserve">
+    <value>Αναζήτηση...</value>
+  </data>
+  <data name="Loc_SearchYouTube_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>Αναζήτηση στο YouTube</value>
+  </data>
+  <data name="Loc_SearchYouTube_Text.Text" xml:space="preserve">
+    <value>Αναζήτηση στο YouTube</value>
+  </data>
+  <data name="Loc_SeekPreview_Text.Text" xml:space="preserve">
+    <value>Προεπισκόπηση αναζήτησης</value>
+  </data>
+  <data name="Loc_SendNotifications_Text.Text" xml:space="preserve">
+    <value>Αποστολή ειδοποιήσεων</value>
+  </data>
+  <data name="Loc_Settings_Text.Text" xml:space="preserve">
+    <value>Ρυθμίσεις</value>
+  </data>
+  <data name="Loc_Share_Text.Text" xml:space="preserve">
+    <value>Κοινή χρήση</value>
+  </data>
+  <data name="Loc_ShareVia_Text.Text" xml:space="preserve">
+    <value>Κοινή χρήση μέσω...</value>
+  </data>
+  <data name="Loc_Shorts_Text.Text" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="Loc_ShortsLinkHasBeenCopiedToClipboard_Text.Text" xml:space="preserve">
+    <value>Ο σύνδεσμος του Short αντιγράφηκε στο πρόχειρο</value>
+  </data>
+  <data name="Loc_ShowQRCode_Text.Text" xml:space="preserve">
+    <value>Εμφάνιση κωδικού QR</value>
+  </data>
+  <data name="Loc_ShowVideoThumbnailWhileSeeking_Text.Text" xml:space="preserve">
+    <value>Εμφάνιση μικρογραφίας βίντεο κατά την αναζήτηση</value>
+  </data>
+  <data name="Loc_Subscribe_Text.Text" xml:space="preserve">
+    <value>Εγγραφή</value>
+  </data>
+  <data name="Loc_Subscriptions_Text.Text" xml:space="preserve">
+    <value>Συνδρομές</value>
+  </data>
+  <data name="Loc_Subtitles_Text.Text" xml:space="preserve">
+    <value>Υπότιτλοι</value>
+  </data>
+  <data name="Loc_TrendingSearches_Text.Text" xml:space="preserve">
+    <value>Δημοφιλείς αναζητήσεις</value>
+  </data>
+  <data name="Loc_TryAgain_Content.Content" xml:space="preserve">
+    <value>Δοκιμάστε ξανά</value>
+  </data>
+  <data name="Loc_Type_Text.Text" xml:space="preserve">
+    <value>Τύπος</value>
+  </data>
+  <data name="Loc_Unsubscribe_Text.Text" xml:space="preserve">
+    <value>Κατάργηση εγγραφής</value>
+  </data>
+  <data name="Loc_VerificationCode_Text.Text" xml:space="preserve">
+    <value>Κωδικός επαλήθευσης</value>
+  </data>
+  <data name="Loc_Video_Text.Text" xml:space="preserve">
+    <value>Βίντεο</value>
+  </data>
+  <data name="Loc_Videos_Text.Text" xml:space="preserve">
+    <value>Βίντεο</value>
+  </data>
+  <data name="Loc_ViewChannel_Text.Text" xml:space="preserve">
+    <value>Προβολή καναλιού</value>
+  </data>
+  <data name="Loc_Views_Text.Text" xml:space="preserve">
+    <value>Προβολές</value>
+  </data>
+  <data name="Loc_You_Text.Text" xml:space="preserve">
+    <value>Εσείς</value>
+  </data>
+  <data name="LoginLoadingQr" xml:space="preserve">
+    <value>Φόρτωση κωδικού QR...</value>
+  </data>
+  <data name="LoginQrFailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση του κωδικού QR.</value>
+  </data>
+  <data name="LoginScanQr" xml:space="preserve">
+    <value>Ανοίξτε την κάμερα του τηλεφώνου σας και σαρώστε τον κωδικό QR.</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>Επιτυχής σύνδεση! Ανακατεύθυνση...</value>
+  </data>
+  <data name="MeSignIn" xml:space="preserve">
+    <value>Συνδεθείτε για να δείτε το ιστορικό και τις λίστες αναπαραγωγής σας</value>
+  </data>
+  <data name="Mix" xml:space="preserve">
+    <value>Mix</value>
+  </data>
+  <data name="NoCommentsFound" xml:space="preserve">
+    <value>Δεν βρέθηκαν σχόλια.</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>Δεν υπάρχουν δεδομένα</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>Δεν υπάρχει περιγραφή.</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>Δεν υπάρχει διαθέσιμη περιγραφή.</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>Χωρίς όνομα</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>Δεν υπάρχουν ειδοποιήσεις</value>
+  </data>
+  <data name="NotificationPreferenceFailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η ενημέρωση της προτίμησης ειδοποιήσεων.</value>
+  </data>
+  <data name="NotificationsFailed" xml:space="preserve">
+    <value>Οι ειδοποιήσεις απέτυχαν</value>
+  </data>
+  <data name="NotSignedIn" xml:space="preserve">
+    <value>Δεν έχετε συνδεθεί</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Απενεργοποιημένο</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Older" xml:space="preserve">
+    <value>Παλαιότερα</value>
+  </data>
+  <data name="PlaybackError" xml:space="preserve">
+    <value>Σφάλμα αναπαραγωγής</value>
+  </data>
+  <data name="Playlist" xml:space="preserve">
+    <value>Λίστα αναπαραγωγής</value>
+  </data>
+  <data name="QrCode" xml:space="preserve">
+    <value>Κωδικός QR</value>
+  </data>
+  <data name="QrDisplayErrorFormat" xml:space="preserve">
+    <value>Σφάλμα εμφάνισης QR: {0}</value>
+  </data>
+  <data name="RatingFailed" xml:space="preserve">
+    <value>Η αξιολόγηση απέτυχε</value>
+  </data>
+  <data name="SearchErrorFormat" xml:space="preserve">
+    <value>Σφάλμα αναζήτησης: {0}</value>
+  </data>
+  <data name="ShareShortDescription" xml:space="preserve">
+    <value>Κοινή χρήση αυτού του YouTube Short</value>
+  </data>
+  <data name="ShareVideoDescription" xml:space="preserve">
+    <value>Κοινή χρήση αυτού του βίντεο YouTube</value>
+  </data>
+  <data name="SignInAgain" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η ανταλλαγή του διακριτικού ανανέωσης TV με διακριτικό πρόσβασης. Συνδεθείτε ξανά και ελέγξτε ότι το διακριτικό ανανέωσης εξακολουθεί να ισχύει.</value>
+  </data>
+  <data name="SignInRequired" xml:space="preserve">
+    <value>Απαιτείται σύνδεση</value>
+  </data>
+  <data name="SubscribersVideosFormat" xml:space="preserve">
+    <value>{0} συνδρομητές • {1} βίντεο</value>
+  </data>
+  <data name="SubscriptionFailed" xml:space="preserve">
+    <value>Η εγγραφή απέτυχε</value>
+  </data>
+  <data name="SubscriptionRejected" xml:space="preserve">
+    <value>Το YouTube απέρριψε το αίτημα εγγραφής.</value>
+  </data>
+  <data name="SubtitleEarlier" xml:space="preserve">
+    <value>   Νωρίτερα (+0.25s)</value>
+  </data>
+  <data name="SubtitleLater" xml:space="preserve">
+    <value>   Αργότερα (-0.25s)</value>
+  </data>
+  <data name="SyncFormat" xml:space="preserve">
+    <value>Συγχρονισμός: {0}</value>
+  </data>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση σχολίων.</value>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>Χωρίς τίτλο</value>
+  </data>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Ο σύνδεσμος του βίντεο αντιγράφηκε στο πρόχειρο.</value>
+  </data>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} βίντεο</value>
+  </data>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Γλώσσα</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Γλώσσα εφαρμογής</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Γλώσσα</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Χρησιμοποιεί τη γλώσσα των Windows από προεπιλογή.</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Προεπιλογή συστήματος</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Αγγλικά</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Ρωσικά</value>
+  </data>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>Βίντεο YouTube</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Κανάλι</value>
+  </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Άγνωστο</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Χωρίς τίτλο</value>
+  </data>
+  <data name="TvTokenMissing" xml:space="preserve">
+    <value>Δεν βρέθηκε διακριτικό ανανέωσης TV. Συνδεθείτε ξανά και δοκιμάστε πάλι.</value>
+  </data>
+  <data name="TvTokenMissingDetailed" xml:space="preserve">
+    <value>Δεν βρέθηκε διακριτικό ανανέωσης TV. Συνδεθείτε ξανά ώστε να αποθηκευτεί το yt_refresh_token και δοκιμάστε πάλι.</value>
+  </data>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η ανταλλαγή του διακριτικού ανανέωσης TV με διακριτικό πρόσβασης.</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η ανταλλαγή του διακριτικού ανανέωσης με διακριτικό πρόσβασης.</value>
+  </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Η αναπαραγωγή απέτυχε</value>
+  </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Δεν είναι δυνατή η αναπαραγωγή αυτού του Short</value>
+  </data>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Η φόρτωση του βίντεο έληξε. Ελέγξτε τη σύνδεσή σας στο Internet.</value>
+  </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση του βίντεο. Δοκιμάστε ξανά.</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η αναπαραγωγή του βίντεο. Το πρόγραμμα αναπαραγωγής δεν έχει αρχικοποιηθεί.</value>
+  </data>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση του βίντεο. Ο σύνδεσμος μπορεί να έχει λήξει ή η μορφή να μην υποστηρίζεται.</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Σφάλμα δικτύου. Ελέγξτε τη σύνδεσή σας στο Internet.</value>
+  </data>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Σφάλμα αναπαραγωγής βίντεο. Δοκιμάστε να επιλέξετε χαμηλότερη ποιότητα.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η αναπαραγωγή του βίντεο.</value>
+  </data>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Μουσικά βίντεο</value>
+  </data>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Στιγμιότυπα παιχνιδιών</value>
+  </data>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Συνταγές μαγειρικής</value>
+  </data>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Κριτικές τεχνολογίας</value>
+  </data>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Τρέιλερ ταινιών</value>
+  </data>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Αθλητικά στιγμιότυπα</value>
+  </data>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Κωμικά σκετς</value>
+  </data>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Οδηγοί DIY</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Προτεινόμενο βίντεο</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Είστε βέβαιοι ότι θέλετε να αποσυνδεθείτε;</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Επιβεβαίωση αποσύνδεσης</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ναι</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Όχι</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Συνδεθείτε για να δείτε τις ειδοποιήσεις YouTube.</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση των ειδοποιήσεων</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Ανοίξτε ξανά αυτή τη σελίδα αργότερα.</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Το αναγνωριστικό λίστας αναπαραγωγής είναι κενό</value>
+  </data>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} βίντεο</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Άγνωστο</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Συνδεθείτε για να παρακολουθήσετε Shorts.</value>
+  </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Δεν βρέθηκαν Shorts.</value>
+  </data>
+  <data name="UnableLoadShorts" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η φόρτωση των Shorts.</value>
+  </data>
+  <data name="UnablePlayShortPeriod" xml:space="preserve">
+    <value>Δεν είναι δυνατή η αναπαραγωγή αυτού του Short.</value>
+  </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Ποιότητα</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Ταχύτητα αναπαραγωγής</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Κομμάτι ήχου</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Υπότιτλοι</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Αποτυχία αναπαραγωγής βίντεο: {0}</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Κωδικός σφάλματος: {0}</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Σήμερα</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>πριν από {0} ημέρες</value>
+  </data>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>πριν από {0} εβδομάδες</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>πριν από {0} μήνες</value>
+  </data>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>πριν από {0} χρόνια</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Πίσω</value>
+  </data>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>Βίντεο YouTube</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>συνδρομητής</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>συνδρομητές</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>συνδρομητές</value>
+  </data>
+  <data name="VideoOne" xml:space="preserve">
+    <value>βίντεο</value>
+  </data>
+  <data name="VideoFew" xml:space="preserve">
+    <value>βίντεο</value>
+  </data>
+  <data name="VideoMany" xml:space="preserve">
+    <value>βίντεο</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Εγγραφή</value>
+  </data>
+  <data name="Like" xml:space="preserve">
+    <value>Μου αρέσει</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Σχόλια</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Οι νέες ενημερώσεις από τις συνδρομές σας θα εμφανίζονται εδώ.</value>
+  </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>Το YouTube απέρριψε το αίτημα εγγραφής. Ελέγξτε ότι το διακριτικό TV είναι έγκυρο και ότι βρέθηκε το αναγνωριστικό καναλιού.</value>
+  </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>Το YouTube απέρριψε το αίτημα αξιολόγησης. Ελέγξτε ότι το διακριτικό TV είναι έγκυρο και έχει δικαίωμα αξιολόγησης YouTube.</value>
+  </data>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η ανταλλαγή του διακριτικού ανανέωσης TV με διακριτικό πρόσβασης. Συνδεθείτε ξανά και ελέγξτε ότι το διακριτικό ανανέωσης εξακολουθεί να ισχύει.</value>
+  </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Χθες</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Αυτή την εβδομάδα</value>
+  </data>
+  <data name="UploadedVideo" xml:space="preserve">
+    <value>Μεταφόρτωσε ένα βίντεο</value>
+  </data>
+  <data name="UploadedVideoTitleFormat" xml:space="preserve">
+    <value>Μεταφόρτωσε ένα βίντεο «{0}»</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Από συνδρομές</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Όλα</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Ταινίες και κινούμενα σχέδια</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Αυτοκίνητα και οχήματα</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Μουσική</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Κατοικίδια και ζώα</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Αθλητισμός</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Ταινίες μικρού μήκους</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Ταξίδια και εκδηλώσεις</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Παιχνίδια</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Βιντεομπλόγκ</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Άνθρωποι και ιστολόγια</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Κωμωδία</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Ψυχαγωγία</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Ειδήσεις και πολιτική</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Οδηγοί και στυλ</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Εκπαίδευση</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Επιστήμη και τεχνολογία</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Μη κερδοσκοπικοί οργανισμοί και ακτιβισμός</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Ταινίες</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Κινούμενα σχέδια</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Δράση/Περιπέτεια</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Κλασικά</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Ντοκιμαντέρ</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Δράμα</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Οικογένεια</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Ξένες</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Τρόμου</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Επιστημονική φαντασία/Φαντασία</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Θρίλερ</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Εκπομπές</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Τρέιλερ</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Ζωντανά</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Μάθηση</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Βιντεοπαιχνίδια</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Ειδήσεις</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podcast</value>
+  </data>
+
+  <data name="Appearance" xml:space="preserve">
+    <value>Εμφάνιση</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Θέμα</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Φωτεινό</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Σκούρο</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Δυναμικό πλακίδιο</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Εμφάνιση προτάσεων στην οθόνη Έναρξης</value>
+  </data>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Ποιότητα μικρογραφίας</value>
+  </data>
+</root>

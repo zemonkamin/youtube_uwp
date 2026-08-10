@@ -72,8 +72,7 @@
                         <StackPanel Grid.Column="1"
                                     Margin="12,0,0,0"
                                     VerticalAlignment="Center">
-                            <TextBlock x:Name="DisplayNameText"
-                                       Text="Loading..."
+                            <TextBlock x:Uid="Loc_Loading_Text" x:Name="DisplayNameText"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="20"
                                        FontWeight="SemiBold"
@@ -98,7 +97,7 @@
                                         Padding="0"
                                         Click="GoToChannelButton_Click">
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="View channel"
+                                        <TextBlock x:Uid="Loc_ViewChannel_Text"
                                                    Foreground="{ThemeResource AppSecondaryTextBrush}"
                                                    FontSize="12"
                                                    VerticalAlignment="Center"/>
@@ -121,7 +120,7 @@
                             Margin="16,0,16,8"
                             Click="HistoryHeader_Click">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="History"
+                            <TextBlock x:Uid="Loc_History_Text"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="18"
                                        FontWeight="SemiBold"
@@ -159,10 +158,10 @@
                                         <StackPanel>
                                             <Grid Width="160" Height="90">
                                                 <Border CornerRadius="8">
-                                                    <Border.Background>
-                                                        <ImageBrush ImageSource="{Binding ThumbnailUrl}"
-                                                                    Stretch="UniformToFill"/>
-                                                    </Border.Background>
+                                                    <Image DataContextChanged="HistoryThumbnail_DataContextChanged"
+                                                           Stretch="UniformToFill"
+                                                           HorizontalAlignment="Stretch"
+                                                           VerticalAlignment="Stretch" />
                                                 </Border>
                                                 <Border HorizontalAlignment="Right"
                                                         VerticalAlignment="Bottom"
@@ -201,7 +200,7 @@
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center">
-                            <TextBlock Text="Playlists"
+                            <TextBlock x:Uid="Loc_Playlists_Text"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="18"
                                        FontWeight="SemiBold"
@@ -260,9 +259,8 @@
                         </ItemsControl>
                     </ScrollViewer>
 
-                    <TextBlock x:Name="EmptyText"
+                    <TextBlock x:Uid="Loc_NoData_Text" x:Name="EmptyText"
                                Visibility="Collapsed"
-                               Text="No data"
                                Foreground="{ThemeResource AppSecondaryTextBrush}"
                                FontSize="16"
                                HorizontalAlignment="Center"

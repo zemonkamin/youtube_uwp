@@ -168,7 +168,7 @@ namespace YouTube
         {
             if (string.IsNullOrWhiteSpace(_channelParameter))
             {
-                ShowErrorPanel("Channel was not provided");
+                ShowErrorPanel(Localization.GetString("ChannelWasNotProvided"));
                 return;
             }
 
@@ -194,7 +194,7 @@ namespace YouTube
                 var data = await FetchChannelDataAsync(_channelParameter, InitialVideoCount);
                 if (data == null || data.Info == null)
                 {
-                    ShowErrorPanel("Could not load channel");
+                    ShowErrorPanel(Localization.GetString("CouldNotLoadChannel"));
                     return;
                 }
 
@@ -222,7 +222,7 @@ namespace YouTube
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[Channel] Load error: " + ex.Message);
-                ShowErrorPanel("Channel loading error");
+                ShowErrorPanel(Localization.GetString("ChannelLoadingError"));
             }
         }
 
@@ -241,12 +241,12 @@ namespace YouTube
         private void ApplyChannelInfo(ChannelPageInfo info)
         {
             _currentChannelId = FirstNonEmpty(info.ChannelId, NormalizeChannelId(_channelParameter));
-            ChannelTitle.Text = FirstNonEmpty(info.Title, "Channel");
+            ChannelTitle.Text = FirstNonEmpty(info.Title, Localization.GetString("Channel"));
             ChannelHandle.Text = FirstNonEmpty(info.Handle, string.Empty);
             ChannelHandle.Visibility = string.IsNullOrWhiteSpace(ChannelHandle.Text) ? Visibility.Collapsed : Visibility.Visible;
 
             ChannelStats.Text = BuildStatsText(info.SubscriberCount, info.VideoCount);
-            _fullDescription = FirstNonEmpty(info.Description, "No description available.");
+            _fullDescription = FirstNonEmpty(info.Description, Localization.GetString("NoDescriptionAvailable"));
             ChannelDescription.Text = _fullDescription;
             FullDescriptionText.Text = _fullDescription;
             DescriptionButton.Visibility = string.IsNullOrWhiteSpace(info.Description) ? Visibility.Collapsed : Visibility.Visible;
@@ -996,7 +996,7 @@ namespace YouTube
                     "User-Agent",
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                     + "(KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36");
-                request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
 
                 using (var response = await _httpClient.SendAsync(
                     request,
@@ -2226,7 +2226,7 @@ namespace YouTube
         {
             var info = new ChannelPageInfo();
             var metadata = GetObject(GetObject(root, "metadata"), "channelMetadataRenderer");
-            info.Title = FirstNonEmpty(GetString(metadata, "title"), "Channel");
+            info.Title = FirstNonEmpty(GetString(metadata, "title"), Localization.GetString("Channel"));
             info.Description = GetString(metadata, "description");
 
             var externalId = FirstNonEmpty(GetString(metadata, "externalId"), channelId);
@@ -2494,7 +2494,7 @@ namespace YouTube
             return new VideoCardItem
             {
                 VideoId = videoId,
-                Title = FirstNonEmpty(ExtractText(GetObject(renderer, "title")), "No title"),
+                Title = FirstNonEmpty(ExtractText(GetObject(renderer, "title")), Localization.GetString("NoTitle")),
                 ChannelTitle = FirstNonEmpty(channelTitle, ExtractText(GetObject(renderer, "ownerText")), ExtractText(GetObject(renderer, "shortBylineText"))),
                 Duration = FirstNonEmpty(ExtractText(GetObject(renderer, "lengthText")), ExtractDurationFromOverlays(renderer), string.Empty),
                 ThumbnailUrl = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg"
@@ -2517,9 +2517,9 @@ namespace YouTube
             return new VideoCardItem
             {
                 VideoId = videoId,
-                Title = FirstNonEmpty(ExtractText(GetObject(renderer, "headline")), "Shorts"),
+                Title = FirstNonEmpty(ExtractText(GetObject(renderer, "headline")), Localization.GetString("Shorts")),
                 ChannelTitle = FirstNonEmpty(channelTitle, string.Empty),
-                Duration = "Shorts",
+                Duration = Localization.GetString("Shorts"),
                 ThumbnailUrl = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg"
             };
         }
@@ -2580,7 +2580,7 @@ namespace YouTube
             return new VideoCardItem
             {
                 VideoId = videoId,
-                Title = string.IsNullOrWhiteSpace(title) ? "Untitled" : title,
+                Title = string.IsNullOrWhiteSpace(title) ? Localization.GetString("Untitled") : title,
                 ChannelTitle = channelTitle,
                 Duration = ExtractDurationFromLockup(lockup),
                 ThumbnailUrl = "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg",
@@ -2948,7 +2948,15 @@ namespace YouTube
                 vids = "0";
             }
 
-            return subs + " " + Pluralize("subscriber", subsRaw) + " • " + vids + " " + Pluralize("video", vidsRaw);
+            ulong subsValue;
+            if (!ulong.TryParse(ParseNumberText(subsRaw), NumberStyles.Any, CultureInfo.InvariantCulture, out subsValue))
+                subsValue = 0;
+            ulong vidsValue;
+            if (!ulong.TryParse(ParseNumberText(vidsRaw), NumberStyles.Any, CultureInfo.InvariantCulture, out vidsValue))
+                vidsValue = 0;
+
+            return subs + " " + Localization.GetPluralString(subsValue, "SubscriberOne", "SubscriberFew", "SubscriberMany")
+                + " • " + vids + " " + Localization.GetPluralString(vidsValue, "VideoOne", "VideoFew", "VideoMany");
         }
 
         private static string FormatCompactNumber(string raw)
@@ -3053,7 +3061,7 @@ namespace YouTube
                 return;
             }
 
-            ThumbnailImageLoader.Assign(image, item.LargeThumbnailUrl, item.ThumbnailUrl, 360);
+            VideoThumbnailController.Assign(image, item.VideoId, item.ThumbnailUrl, 360);
         }
 
         private void VideoThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -3445,7 +3453,7 @@ namespace YouTube
                     _currentNotificationState = oldNotificationState;
                     UpdateSubscriptionVisualState();
                     UpdateSubscriptionMenuVisualState();
-                    await ShowMessageAsync("Subscription failed", "YouTube rejected the subscription request.");
+                    await ShowMessageAsync(Localization.GetString("SubscriptionFailed"), Localization.GetString("SubscriptionRejected"));
                     return;
                 }
 
@@ -3470,7 +3478,7 @@ namespace YouTube
                 }
 
                 System.Diagnostics.Debug.WriteLine("[Channel] Subscription update error: " + ex.Message);
-                await ShowMessageAsync("Subscription failed", ex.Message);
+                await ShowMessageAsync(Localization.GetString("SubscriptionFailed"), ex.Message);
             }
             finally
             {
@@ -3559,7 +3567,7 @@ namespace YouTube
                         UpdateSubscriptionVisualState();
                         UpdateSubscriptionMenuVisualState();
                         System.Diagnostics.Debug.WriteLine("[Channel] Notification update failed: " + (int)response.StatusCode + " " + response.ReasonPhrase + " " + body);
-                        await ShowMessageAsync("Notifications failed", "Could not update notification preference.");
+                        await ShowMessageAsync(Localization.GetString("NotificationsFailed"), Localization.GetString("NotificationPreferenceFailed"));
                         return false;
                     }
                 }
@@ -3584,7 +3592,7 @@ namespace YouTube
                 }
 
                 System.Diagnostics.Debug.WriteLine("[Channel] Notification update error: " + ex.Message);
-                await ShowMessageAsync("Notifications failed", ex.Message);
+                await ShowMessageAsync(Localization.GetString("NotificationsFailed"), ex.Message);
                 return false;
             }
             finally
@@ -3731,7 +3739,7 @@ namespace YouTube
                 using (var request = new HttpRequestMessage(HttpMethod.Get, url))
                 {
                     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-                    request.Headers.TryAddWithoutValidation("Accept-Language", "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7");
+                    request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
 
                     var response = await _httpClient.SendAsync(request);
                     var json = await response.Content.ReadAsStringAsync();
@@ -3906,7 +3914,7 @@ namespace YouTube
 
             if (SubscribeButtonText != null)
             {
-                SubscribeButtonText.Text = "Subscribe";
+                SubscribeButtonText.Text = Localization.GetString("Subscribe");
                 SubscribeButtonText.Visibility = isSubscribed ? Visibility.Collapsed : Visibility.Visible;
                 SubscribeButtonText.Foreground = App.GetThemeBrush("PrimaryActionForegroundBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 15, 15, 15));
             }
@@ -4116,8 +4124,8 @@ namespace YouTube
             var client = new JsonObject();
             client["clientName"] = JsonValue.CreateStringValue(TvClientName);
             client["clientVersion"] = JsonValue.CreateStringValue(TvClientVersion);
-            client["hl"] = JsonValue.CreateStringValue("ru");
-            client["gl"] = JsonValue.CreateStringValue("RU");
+            client["hl"] = JsonValue.CreateStringValue(Config.Hl);
+            client["gl"] = JsonValue.CreateStringValue(Config.Gl);
             client["platform"] = JsonValue.CreateStringValue("TV");
             client["clientFormFactor"] = JsonValue.CreateStringValue("UNKNOWN_FORM_FACTOR");
 
@@ -4140,8 +4148,8 @@ namespace YouTube
             var client = new JsonObject();
             client["clientName"] = JsonValue.CreateStringValue(MwebClientName);
             client["clientVersion"] = JsonValue.CreateStringValue(MwebClientVersion);
-            client["hl"] = JsonValue.CreateStringValue("ru");
-            client["gl"] = JsonValue.CreateStringValue("RU");
+            client["hl"] = JsonValue.CreateStringValue(Config.Hl);
+            client["gl"] = JsonValue.CreateStringValue(Config.Gl);
 
             var context = new JsonObject();
             context["client"] = client;
@@ -4226,7 +4234,7 @@ namespace YouTube
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             request.Headers.TryAddWithoutValidation("User-Agent", userAgent);
-            request.Headers.TryAddWithoutValidation("Accept-Language", "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", clientNameHeader);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
             request.Headers.TryAddWithoutValidation("X-Goog-AuthUser", "0");
@@ -4243,7 +4251,7 @@ namespace YouTube
             {
                 if (showErrors)
                 {
-                    await ShowStaticMessageAsync("Sign in required", "TV refresh token was not found. Sign in again so yt_refresh_token is saved, then retry.");
+                    await ShowStaticMessageAsync(Localization.GetString("SignInRequired"), Localization.GetString("TvTokenMissingDetailed"));
                 }
                 return string.Empty;
             }
@@ -4253,7 +4261,7 @@ namespace YouTube
             {
                 if (showErrors)
                 {
-                    await ShowStaticMessageAsync("Sign in required", "Could not exchange TV refresh token for access token.");
+                    await ShowStaticMessageAsync(Localization.GetString("SignInRequired"), Localization.GetString("TvTokenExchangeFailed"));
                 }
                 return string.Empty;
             }
@@ -4274,7 +4282,7 @@ namespace YouTube
                 {
                     Title = title,
                     Content = message,
-                    PrimaryButtonText = "OK"
+                    PrimaryButtonText = Localization.GetString("OK")
                 };
                 await dialog.ShowAsync();
             }

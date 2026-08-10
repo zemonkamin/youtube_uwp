@@ -37,7 +37,7 @@
                            Width="24" 
                            Height="24"
                            Stretch="Uniform"/>
-                    <TextBlock Text="Home" 
+                    <TextBlock x:Uid="Loc_Home_Text" 
                                Foreground="{ThemeResource AppPrimaryTextBrush}" 
                                Margin="0,0,0,0"
                                FontSize="12" HorizontalAlignment="Center"/>
@@ -58,7 +58,7 @@
                            Width="24" 
                            Height="24"
                            Stretch="Uniform"/>
-                    <TextBlock Text="Shorts" 
+                    <TextBlock x:Uid="Loc_Shorts_Text" 
                                Foreground="{ThemeResource AppPrimaryTextBrush}" 
                                 Margin="0,0,0,0"
                               FontSize="12" HorizontalAlignment="Center"/>
@@ -79,7 +79,7 @@
                            Width="24" 
                            Height="24"
                            Stretch="Uniform"/>
-                    <TextBlock Text="Subscriptions" 
+                    <TextBlock x:Uid="Loc_Subscriptions_Text" 
                                Foreground="{ThemeResource AppPrimaryTextBrush}" 
                                 Margin="0,0,0,0"
                               FontSize="12" HorizontalAlignment="Center"/>
@@ -110,7 +110,7 @@
                                  StrokeThickness="1.5"
                                  Visibility="Collapsed"/>
                     </Grid>
-                    <TextBlock Text="You" 
+                    <TextBlock x:Uid="Loc_You_Text" 
                                Foreground="{ThemeResource AppPrimaryTextBrush}" 
                                Margin="0,0,0,0"
                                FontSize="12" HorizontalAlignment="Center"/>

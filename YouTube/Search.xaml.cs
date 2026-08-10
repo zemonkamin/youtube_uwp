@@ -239,7 +239,7 @@ namespace YouTube
             catch (Exception ex)
             {
                 searchResults.Clear();
-                ErrorText.Text = "Search error: " + ex.Message;
+                ErrorText.Text = Localization.Format("SearchErrorFormat", ex.Message);
                 ErrorText.Visibility = Visibility.Visible;
             }
             finally
@@ -325,7 +325,11 @@ namespace YouTube
 
         private async Task<SearchPageResult> SearchInnertubeAsync(string query, int count, SearchContentType type, string continuation)
         {
-            var context = "{\"client\":{\"clientName\":\"WEB\",\"clientVersion\":\"2.20250101\",\"hl\":\"en\",\"gl\":\"US\"}}";
+            var context = "{\"client\":{\"clientName\":\"WEB\",\"clientVersion\":\"2.20250101\",\"hl\":\""
+                + JsonEscape(Config.Hl)
+                + "\",\"gl\":\""
+                + JsonEscape(Config.Gl)
+                + "\"}}";
             string payload;
 
             if (!string.IsNullOrWhiteSpace(continuation))
@@ -345,7 +349,7 @@ namespace YouTube
             using (var request = new HttpRequestMessage(HttpMethod.Post, url))
             {
                 request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
-                request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "1");
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "2.20250101");
                 request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
@@ -446,8 +450,8 @@ namespace YouTube
                 {
                     ResultType = "Video",
                     VideoId = videoId,
-                    Title = SimplifyText(renderer, "title", "Untitled"),
-                    Author = SimplifyText(renderer, "ownerText", "Unknown"),
+                    Title = SimplifyText(renderer, "title", Localization.GetString("Untitled")),
+                    Author = SimplifyText(renderer, "ownerText", Localization.GetString("Unknown")),
                     Views = SimplifyText(renderer, "viewCountText", string.Empty),
                     Duration = SimplifyText(renderer, "lengthText", string.Empty),
                     Thumbnail = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg"
@@ -487,7 +491,7 @@ namespace YouTube
                     Title = FirstNonEmpty(
                         SimplifyText(renderer, "headline", string.Empty),
                         SimplifyText(renderer, "title", string.Empty),
-                        "Shorts"),
+                        Localization.GetString("Shorts")),
                     Author = string.Empty,
                     Views = string.Empty,
                     Duration = string.Empty,
@@ -566,11 +570,11 @@ namespace YouTube
                 {
                     ResultType = "Playlist",
                     PlaylistId = playlistId,
-                    Title = SimplifyText(renderer, "title", "Playlist"),
+                    Title = SimplifyText(renderer, "title", Localization.GetString("Playlist")),
                     Author = FirstNonEmpty(
                         SimplifyText(renderer, "shortBylineText", string.Empty),
                         SimplifyText(renderer, "longBylineText", string.Empty),
-                        "Playlist"),
+                        Localization.GetString("Playlist")),
                     Views = videoCountText,
                     Duration = string.Empty,
                     Thumbnail = FirstNonEmpty(ExtractThumbnailUrl(renderer), App.GetThemeAssetUri("Assets/yt_skeleton/video.png").ToString())
@@ -599,8 +603,8 @@ namespace YouTube
                 {
                     ResultType = "Playlist",
                     PlaylistId = playlistId,
-                    Title = FirstNonEmpty(ExtractLockupTitle(renderer), "Playlist"),
-                    Author = FirstNonEmpty(ExtractLockupSubtitle(renderer), "Playlist"),
+                    Title = FirstNonEmpty(ExtractLockupTitle(renderer), Localization.GetString("Playlist")),
+                    Author = FirstNonEmpty(ExtractLockupSubtitle(renderer), Localization.GetString("Playlist")),
                     Views = FirstNonEmpty(ExtractLockupMetadata(renderer), string.Empty),
                     Duration = string.Empty,
                     Thumbnail = FirstNonEmpty(ExtractThumbnailUrl(renderer), App.GetThemeAssetUri("Assets/yt_skeleton/video.png").ToString())
@@ -640,7 +644,7 @@ namespace YouTube
                     ResultType = "Channel",
                     ChannelId = channelId,
                     Title = NormalizeChannelTitle(
-                        SimplifyText(renderer, "title", "Channel"),
+                        SimplifyText(renderer, "title", Localization.GetString("Channel")),
                         FirstNonEmpty(ExtractChannelHandle(renderer), ExtractChannelHandleFromBrowse(renderer))),
                     Author = FirstNonEmpty(
                         ExtractChannelHandle(renderer),
@@ -674,7 +678,7 @@ namespace YouTube
                     ResultType = "Channel",
                     ChannelId = channelId,
                     Title = NormalizeChannelTitle(
-                        FirstNonEmpty(ExtractLockupTitle(renderer), "Channel"),
+                        FirstNonEmpty(ExtractLockupTitle(renderer), Localization.GetString("Channel")),
                         FirstNonEmpty(ExtractChannelHandle(renderer), ExtractLockupSubtitle(renderer))),
                     Author = FirstNonEmpty(ExtractChannelHandle(renderer), ExtractLockupSubtitle(renderer)),
                     Views = BuildCleanChannelMetadata(
@@ -1146,7 +1150,7 @@ namespace YouTube
             var videoCount = GetJsonString(renderer, "videoCount");
             if (!string.IsNullOrWhiteSpace(videoCount))
             {
-                return videoCount + " videos";
+                return Localization.Format("VideosSuffixFormat", videoCount);
             }
 
             return string.Empty;
@@ -1455,6 +1459,32 @@ namespace YouTube
         private void CardsItemsControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdateResponsiveCardLayouts();
+        }
+
+        private void SearchThumbnail_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var image = sender as Image;
+            var item = args.NewValue as SearchVideoItem;
+            if (image == null || item == null)
+                return;
+
+            if (string.Equals(item.ResultType, "Video", StringComparison.OrdinalIgnoreCase)
+                && !string.IsNullOrWhiteSpace(item.VideoId))
+            {
+                VideoThumbnailController.Assign(image, item.VideoId, item.Thumbnail, 360);
+                return;
+            }
+
+            try
+            {
+                image.Source = string.IsNullOrWhiteSpace(item.Thumbnail)
+                    ? null
+                    : new BitmapImage(new Uri(item.Thumbnail, UriKind.RelativeOrAbsolute));
+            }
+            catch
+            {
+                image.Source = null;
+            }
         }
 
         private void VideoThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)

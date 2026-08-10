@@ -577,45 +577,45 @@ public static class Config
         var result = new List<HomeCategoryItem>();
         result.Add(new HomeCategoryItem
         {
-            Title = "All",
+            Title = Localization.GetString("CategoryAll"),
             IsAll = true,
             CategoryId = "all",
             UseWebClient = true,
             ClientName = "ALL"
         });
 
-        AddFixedHomeCategory(result, "1", "Film & Animation", "Film & Animation");
-        AddFixedHomeCategory(result, "2", "Autos & Vehicles", "Autos & Vehicles");
-        AddFixedHomeCategory(result, "10", "Music", "Music");
-        AddFixedHomeCategory(result, "15", "Pets & Animals", "Pets & Animals");
-        AddFixedHomeCategory(result, "17", "Sports", "Sports");
-        AddFixedHomeCategory(result, "18", "Short Movies", "Short Movies");
-        AddFixedHomeCategory(result, "19", "Travel & Events", "Travel & Events");
-        AddFixedHomeCategory(result, "20", "Gaming", "Gaming");
-        AddFixedHomeCategory(result, "21", "Videoblogging", "Videoblogging");
-        AddFixedHomeCategory(result, "22", "People & Blogs", "People & Blogs");
-        AddFixedHomeCategory(result, "23", "Comedy", "Comedy videos");
-        AddFixedHomeCategory(result, "24", "Entertainment", "Entertainment");
-        AddFixedHomeCategory(result, "25", "News & Politics", "News & Politics");
-        AddFixedHomeCategory(result, "26", "Howto & Style", "Howto & Style");
-        AddFixedHomeCategory(result, "27", "Education", "Education");
-        AddFixedHomeCategory(result, "28", "Science & Technology", "Science & Technology");
-        AddFixedHomeCategory(result, "29", "Nonprofits & Activism", "Nonprofits & Activism");
-        AddFixedHomeCategory(result, "30", "Movies", "Movies");
-        AddFixedHomeCategory(result, "31", "Anime/Animation", "Anime Animation");
-        AddFixedHomeCategory(result, "32", "Action/Adventure", "Action Adventure movies");
-        AddFixedHomeCategory(result, "33", "Classics", "Classic movies");
-        AddFixedHomeCategory(result, "34", "Comedy", "Comedy movies");
-        AddFixedHomeCategory(result, "35", "Documentary", "Documentary movies");
-        AddFixedHomeCategory(result, "36", "Drama", "Drama movies");
-        AddFixedHomeCategory(result, "37", "Family", "Family movies");
-        AddFixedHomeCategory(result, "38", "Foreign", "Foreign movies");
-        AddFixedHomeCategory(result, "39", "Horror", "Horror movies");
-        AddFixedHomeCategory(result, "40", "Sci-Fi/Fantasy", "Sci-Fi Fantasy movies");
-        AddFixedHomeCategory(result, "41", "Thriller", "Thriller movies");
-        AddFixedHomeCategory(result, "42", "Shorts", "YouTube Shorts");
-        AddFixedHomeCategory(result, "43", "Shows", "Shows");
-        AddFixedHomeCategory(result, "44", "Trailers", "Trailers");
+        AddFixedHomeCategory(result, "1", Localization.GetString("CategoryFilmAnimation"), "Film & Animation");
+        AddFixedHomeCategory(result, "2", Localization.GetString("CategoryAutosVehicles"), "Autos & Vehicles");
+        AddFixedHomeCategory(result, "10", Localization.GetString("CategoryMusic"), "Music");
+        AddFixedHomeCategory(result, "15", Localization.GetString("CategoryPetsAnimals"), "Pets & Animals");
+        AddFixedHomeCategory(result, "17", Localization.GetString("CategorySports"), "Sports");
+        AddFixedHomeCategory(result, "18", Localization.GetString("CategoryShortMovies"), "Short Movies");
+        AddFixedHomeCategory(result, "19", Localization.GetString("CategoryTravelEvents"), "Travel & Events");
+        AddFixedHomeCategory(result, "20", Localization.GetString("CategoryGaming"), "Gaming");
+        AddFixedHomeCategory(result, "21", Localization.GetString("CategoryVideoblogging"), "Videoblogging");
+        AddFixedHomeCategory(result, "22", Localization.GetString("CategoryPeopleBlogs"), "People & Blogs");
+        AddFixedHomeCategory(result, "23", Localization.GetString("CategoryComedy"), "Comedy videos");
+        AddFixedHomeCategory(result, "24", Localization.GetString("CategoryEntertainment"), "Entertainment");
+        AddFixedHomeCategory(result, "25", Localization.GetString("CategoryNewsPolitics"), "News & Politics");
+        AddFixedHomeCategory(result, "26", Localization.GetString("CategoryHowtoStyle"), "Howto & Style");
+        AddFixedHomeCategory(result, "27", Localization.GetString("CategoryEducation"), "Education");
+        AddFixedHomeCategory(result, "28", Localization.GetString("CategoryScienceTechnology"), "Science & Technology");
+        AddFixedHomeCategory(result, "29", Localization.GetString("CategoryNonprofitsActivism"), "Nonprofits & Activism");
+        AddFixedHomeCategory(result, "30", Localization.GetString("CategoryMovies"), "Movies");
+        AddFixedHomeCategory(result, "31", Localization.GetString("CategoryAnimeAnimation"), "Anime Animation");
+        AddFixedHomeCategory(result, "32", Localization.GetString("CategoryActionAdventure"), "Action Adventure movies");
+        AddFixedHomeCategory(result, "33", Localization.GetString("CategoryClassics"), "Classic movies");
+        AddFixedHomeCategory(result, "34", Localization.GetString("CategoryComedy"), "Comedy movies");
+        AddFixedHomeCategory(result, "35", Localization.GetString("CategoryDocumentary"), "Documentary movies");
+        AddFixedHomeCategory(result, "36", Localization.GetString("CategoryDrama"), "Drama movies");
+        AddFixedHomeCategory(result, "37", Localization.GetString("CategoryFamily"), "Family movies");
+        AddFixedHomeCategory(result, "38", Localization.GetString("CategoryForeign"), "Foreign movies");
+        AddFixedHomeCategory(result, "39", Localization.GetString("CategoryHorror"), "Horror movies");
+        AddFixedHomeCategory(result, "40", Localization.GetString("CategorySciFiFantasy"), "Sci-Fi Fantasy movies");
+        AddFixedHomeCategory(result, "41", Localization.GetString("CategoryThriller"), "Thriller movies");
+        AddFixedHomeCategory(result, "42", Localization.GetString("CategoryShorts"), "YouTube Shorts");
+        AddFixedHomeCategory(result, "43", Localization.GetString("CategoryShows"), "Shows");
+        AddFixedHomeCategory(result, "44", Localization.GetString("CategoryTrailers"), "Trailers");
 
         System.Diagnostics.Debug.WriteLine("[HomeCategories] Using fixed local category list: " + result.Count);
         return Task.FromResult(result);
@@ -748,7 +748,7 @@ public static class Config
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "85");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
             request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
-            request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
 
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -849,7 +849,7 @@ public static class Config
         using (var request = new HttpRequestMessage(HttpMethod.Post, url))
         {
             request.Headers.TryAddWithoutValidation("Accept", "application/json");
-            request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "1");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", HomeWebClientVersion);
             request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
@@ -925,7 +925,7 @@ public static class Config
                 request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
             }
             request.Headers.TryAddWithoutValidation("Accept", "application/json");
-            request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             request.Headers.TryAddWithoutValidation("User-Agent", "com.google.android.youtube/" + clientVersion + " (Linux; U; Android 11) gzip");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "3");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
@@ -972,7 +972,7 @@ public static class Config
             request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "85");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
-            request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
 
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -1022,7 +1022,7 @@ public static class Config
         using (var request = new HttpRequestMessage(HttpMethod.Post, url))
         {
             request.Headers.TryAddWithoutValidation("Accept", "application/json");
-            request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "1");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
             request.Headers.TryAddWithoutValidation("X-Goog-Visitor-Id", visitorData);
@@ -1063,14 +1063,14 @@ public static class Config
             }
         }
 
-        AddFallbackHomeCategoryChip(result, seen, "Video games", "video games");
-        AddFallbackHomeCategoryChip(result, seen, "Music", "music videos");
-        AddFallbackHomeCategoryChip(result, seen, "News", "news");
-        AddFallbackHomeCategoryChip(result, seen, "Live", "live streams");
-        AddFallbackHomeCategoryChip(result, seen, "Sports", "sports");
-        AddFallbackHomeCategoryChip(result, seen, "Learning", "learning videos");
-        AddFallbackHomeCategoryChip(result, seen, "Movies", "movies");
-        AddFallbackHomeCategoryChip(result, seen, "Podcasts", "podcasts");
+        AddFallbackHomeCategoryChip(result, seen, Localization.GetString("CategoryVideoGames"), "video games");
+        AddFallbackHomeCategoryChip(result, seen, Localization.GetString("CategoryMusic"), "music videos");
+        AddFallbackHomeCategoryChip(result, seen, Localization.GetString("CategoryNews"), "news");
+        AddFallbackHomeCategoryChip(result, seen, Localization.GetString("CategoryLive"), "live streams");
+        AddFallbackHomeCategoryChip(result, seen, Localization.GetString("CategorySports"), "sports");
+        AddFallbackHomeCategoryChip(result, seen, Localization.GetString("CategoryLearning"), "learning videos");
+        AddFallbackHomeCategoryChip(result, seen, Localization.GetString("CategoryMovies"), "movies");
+        AddFallbackHomeCategoryChip(result, seen, Localization.GetString("CategoryPodcasts"), "podcasts");
     }
 
     private static void AddFallbackHomeCategoryChip(List<HomeCategoryItem> result, HashSet<string> seen, string title, string query)
@@ -1625,9 +1625,9 @@ public static class Config
                 {
                     Title = channelTitle,
                     Message = string.IsNullOrWhiteSpace(video.Title)
-                        ? "Uploaded a video"
-                        : "Uploaded a video \"" + video.Title + "\"",
-                    TimeText = "From subscriptions",
+                        ? Localization.GetString("UploadedVideo")
+                        : Localization.Format("UploadedVideoTitleFormat", video.Title),
+                    TimeText = Localization.GetString("FromSubscriptions"),
                     AvatarUrl = avatarUrl,
                     ThumbnailUrl = video.ThumbnailUrl,
                     VideoId = video.VideoId,
@@ -1692,7 +1692,7 @@ public static class Config
             using (var request = new HttpRequestMessage(HttpMethod.Get, "https://www.youtube.com/sw.js_data"))
             {
                 request.Headers.TryAddWithoutValidation("Accept", "*/*");
-                request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                 request.Headers.TryAddWithoutValidation("User-Agent", WebUserAgent);
                 request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/sw.js");
                 request.Headers.TryAddWithoutValidation("Cookie", "PREF=tz=UTC;VISITOR_INFO1_LIVE=" + visitorId + ";");
@@ -2668,7 +2668,7 @@ public static class Config
                 }
                 if (string.IsNullOrWhiteSpace(details.MetadataText))
                 {
-                    details.MetadataText = dataApiVideos.Count.ToString(System.Globalization.CultureInfo.InvariantCulture) + " videos";
+                    details.MetadataText = Localization.Format("VideosSuffixFormat", dataApiVideos.Count);
                 }
             }
         }
@@ -2767,7 +2767,7 @@ public static class Config
         using (var request = new HttpRequestMessage(HttpMethod.Post, url))
         {
             request.Headers.TryAddWithoutValidation("User-Agent", userAgent);
-            request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", clientHeaderName);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
             if (!string.IsNullOrWhiteSpace(accessToken))
@@ -2811,7 +2811,7 @@ public static class Config
         using (var request = new HttpRequestMessage(HttpMethod.Get, url))
         {
             request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
-            request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
 
             try
             {
@@ -2888,7 +2888,7 @@ public static class Config
                 var itemCount = GetJsonString(contentDetails, "itemCount");
                 if (!string.IsNullOrWhiteSpace(itemCount))
                 {
-                    AddMetadata(metadataParts, itemCount + " videos");
+                    AddMetadata(metadataParts, Localization.Format("VideosSuffixFormat", itemCount));
                 }
             }
 
@@ -3060,11 +3060,11 @@ public static class Config
             return null;
         }
 
-        var title = snippet == null ? "Untitled" : FirstNonEmpty(GetJsonString(snippet, "title"), "Untitled");
-        var channelTitle = snippet == null ? "Unknown" : FirstNonEmpty(
+        var title = snippet == null ? Localization.GetString("Untitled") : FirstNonEmpty(GetJsonString(snippet, "title"), Localization.GetString("Untitled"));
+        var channelTitle = snippet == null ? Localization.GetString("Unknown") : FirstNonEmpty(
             GetJsonString(snippet, "videoOwnerChannelTitle"),
             GetJsonString(snippet, "channelTitle"),
-            "Unknown");
+            Localization.GetString("Unknown"));
 
         var thumbnailUrl = string.Empty;
         if (snippet != null && snippet.ContainsKey("thumbnails"))
@@ -3165,6 +3165,12 @@ public static class Config
     public static string Hl { get { EnsureLocale(); return _hl; } }
     public static string Gl { get { EnsureLocale(); return _gl; } }
 
+    public static void RefreshLocale()
+    {
+        _hl = null;
+        _gl = null;
+    }
+
     private static void EnsureLocale()
     {
         if (!string.IsNullOrEmpty(_hl) && !string.IsNullOrEmpty(_gl))
@@ -3177,17 +3183,23 @@ public static class Config
 
         try
         {
-            var languages = Windows.System.UserProfile.GlobalizationPreferences.Languages;
-            if (languages != null && languages.Count > 0 && !string.IsNullOrWhiteSpace(languages[0]))
+            // Follow the app language override when the user selected one; otherwise this
+            // resolves to the language chosen by Windows for the app.
+            var tag = Localization.EffectiveLanguageTag;
+            language = Localization.EffectiveYouTubeLanguageCode;
+            if (!string.IsNullOrWhiteSpace(tag))
             {
-                // e.g. "ru-RU" -> hl "ru"
-                var tag = languages[0];
-                var dash = tag.IndexOf('-');
-                language = dash > 0 ? tag.Substring(0, dash) : tag;
-
-                if (dash > 0)
+                // Use a real region subtag only as a fallback. Script tags such as sr-Latn
+                // must never become gl=LATN, and es-419 is a language variant rather than a
+                // YouTube country code. HomeGeographicRegion below remains authoritative.
+                var parts = tag.Split('-');
+                for (int i = 1; i < parts.Length; i++)
                 {
-                    region = tag.Substring(dash + 1);
+                    if (parts[i].Length == 2)
+                    {
+                        region = parts[i];
+                        break;
+                    }
                 }
             }
 
@@ -4162,7 +4174,7 @@ public static class Config
         using (var request = new HttpRequestMessage(HttpMethod.Post, url))
         {
             request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
-            request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "1");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "2.20250101");
             request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
@@ -4204,7 +4216,7 @@ public static class Config
                 using (var nextRequest = new HttpRequestMessage(HttpMethod.Post, nextUrl))
                 {
                     nextRequest.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
-                    nextRequest.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                    nextRequest.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                     nextRequest.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "1");
                     nextRequest.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "2.20250101");
                     nextRequest.Content = new StringContent(nextPayload, Encoding.UTF8, "application/json");
@@ -4241,7 +4253,7 @@ public static class Config
             using (var request = new HttpRequestMessage(HttpMethod.Post, url))
             {
                 request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
-                request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "1");
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "2.20250101");
                 request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
@@ -5797,7 +5809,7 @@ public static class Config
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "2");
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
                 request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1");
-                request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                 request.Headers.TryAddWithoutValidation("X-Goog-Visitor-Id", ShortsVisitorId);
                 request.Headers.TryAddWithoutValidation("Origin", "https://m.youtube.com");
                 request.Headers.TryAddWithoutValidation("Referer", "https://m.youtube.com/shorts/");
@@ -5807,7 +5819,7 @@ public static class Config
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "1");
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
                 request.Headers.TryAddWithoutValidation("User-Agent", WebUserAgent);
-                request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                 request.Headers.TryAddWithoutValidation("X-Goog-Visitor-Id", ShortsVisitorId);
                 request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
                 request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/shorts/");
@@ -6867,7 +6879,7 @@ public static class Config
 
                 if (string.IsNullOrWhiteSpace(item.Title))
                 {
-                    item.Title = "Playlist";
+                    item.Title = Localization.GetString("Playlist");
                 }
                 if (string.IsNullOrWhiteSpace(item.VideoCountText))
                 {
@@ -6875,7 +6887,7 @@ public static class Config
                 }
                 if (string.IsNullOrWhiteSpace(item.PrivacyText))
                 {
-                    item.PrivacyText = "Playlist";
+                    item.PrivacyText = Localization.GetString("Playlist");
                 }
 
                 seen.Add(item.PlaylistId);
@@ -7245,14 +7257,14 @@ public static class Config
                         continue;
                     }
 
-                    var channelName = "Unknown";
+                    var channelName = Localization.GetString("Unknown");
                     if (tileRenderer.ContainsKey("metadata"))
                     {
                         var metadata = tileRenderer.GetNamedObject("metadata");
                         if (metadata.ContainsKey("tileMetadataRenderer"))
                         {
                             var tileMetadata = metadata.GetNamedObject("tileMetadataRenderer");
-                            channelName = ExtractTextFromField(tileMetadata, "title", "Unknown");
+                            channelName = ExtractTextFromField(tileMetadata, "title", Localization.GetString("Unknown"));
                         }
                     }
 
@@ -7382,7 +7394,7 @@ public static class Config
 
             if (page.Groups.Count == 0)
             {
-                var fallback = new HistoryDateGroup { DateTitle = "Older" };
+                var fallback = new HistoryDateGroup { DateTitle = Localization.GetString("Older") };
                 ExtractHistoryVideosFromValue(root, seen, fallback.Videos, ref added, count);
                 if (fallback.Videos.Count > 0)
                 {
@@ -7581,7 +7593,7 @@ public static class Config
     {
         if (string.IsNullOrWhiteSpace(title))
         {
-            return "Older";
+            return Localization.GetString("Older");
         }
 
         var value = title.Replace("\r", " ").Replace("\n", " ").Trim();
@@ -7591,21 +7603,21 @@ public static class Config
         }
 
         var lower = value.ToLowerInvariant();
-        if (lower == "сегодня")
+        if (lower == "сегодня" || lower == "today")
         {
-            return "Today";
+            return Localization.GetString("Today");
         }
-        if (lower == "вчера")
+        if (lower == "вчера" || lower == "yesterday")
         {
-            return "Yesterday";
+            return Localization.GetString("Yesterday");
         }
-        if (lower.Contains("на этой неделе") || lower.Contains("эта неделя"))
+        if (lower == "this week" || lower.Contains("на этой неделе") || lower.Contains("эта неделя"))
         {
-            return "This week";
+            return Localization.GetString("ThisWeek");
         }
-        if (lower.Contains("ранее") || lower.Contains("старые"))
+        if (lower == "older" || lower.Contains("ранее") || lower.Contains("старые"))
         {
-            return "Older";
+            return Localization.GetString("Older");
         }
 
         return value;
@@ -7695,7 +7707,7 @@ public static class Config
 
                         if (string.IsNullOrWhiteSpace(item.Title) || item.Title == "Без названия")
                         {
-                            item.Title = "Untitled";
+                            item.Title = Localization.GetString("Untitled");
                         }
 
                         output.Add(item);
@@ -7971,12 +7983,12 @@ public static class Config
         var channelTitle = FirstNonEmpty(
             ExtractTextFromField(renderer, "shortBylineText", string.Empty),
             ExtractTextFromField(renderer, "ownerText", string.Empty),
-            "Unknown");
+            Localization.GetString("Unknown"));
 
         return new VideoCardItem
         {
             VideoId = videoId,
-            Title = ExtractTextFromField(renderer, "title", "Untitled"),
+            Title = ExtractTextFromField(renderer, "title", Localization.GetString("Untitled")),
             ChannelTitle = channelTitle,
             Duration = FirstNonEmpty(
                 ExtractTextFromField(renderer, "lengthText", string.Empty),

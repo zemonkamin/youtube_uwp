@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<default>
+  <qualifier name="Language" value="af-ZA;az-Latn-AZ;id-ID;ms-MY;bs-Latn-BA;ca-ES;cs-CZ;da-DK;de-DE;et-EE;en-IN;en-GB;en-US;es-ES;es-MX;es-US;eu-ES;fil-PH;fr-FR;fr-CA;gl-ES;hr-HR;zu-ZA;is-IS;it-IT;sw-KE;lv-LV;lt-LT;hu-HU;nl-NL;nb-NO;uz-Latn-UZ;pl-PL;pt-PT;pt-BR;ro-RO;sq-AL;sk-SK;sl-SI;sr-Latn-RS;fi-FI;sv-SE;vi-VN;tr-TR;be-BY;bg-BG;ky-KG;kk-KZ;mk-MK;mn-MN;ru-RU;sr-Cyrl-RS;uk-UA;el-GR;hy-AM;ne-NP;mr-IN;hi-IN;as-IN;bn-BD;pa-IN;gu-IN;or-IN;ta-IN;te-IN;kn-IN;ml-IN;si-LK;th-TH;lo-LA;my-MM;ka-GE;am-ET;km-KH;zh-CN;zh-TW;zh-HK;ja-JP;ko-KR" />
+  <qualifier name="Contrast" value="standard" />
+  <qualifier name="Scale" value="200" />
+  <qualifier name="HomeRegion" value="001" />
+  <qualifier name="TargetSize" value="256" />
+  <qualifier name="LayoutDirection" value="LTR" />
+  <qualifier name="DXFeatureLevel" value="DX9" />
+  <qualifier name="Configuration" value="" />
+  <qualifier name="AlternateForm" value="" />
+</default>

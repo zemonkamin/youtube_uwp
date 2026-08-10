@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" IgnorableNamespaces="uap mp uap3">
-  <Identity Name="d46c0ca2-0d75-4dff-af84-fa62cfdf49c0" Publisher="CN=zemonkamin" Version="3.1.0.0" />
+  <Identity Name="d46c0ca2-0d75-4dff-af84-fa62cfdf49c0" Publisher="CN=zemonkamin" Version="3.1.1.0" />
   <mp:PhoneIdentity PhoneProductId="d46c0ca2-0d75-4dff-af84-fa62cfdf49c0" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>YouTube</DisplayName>
@@ -31,6 +31,14 @@
         </uap:InitialRotationPreference>
       </uap:VisualElements>
       <Extensions>
+        <uap3:Extension Category="windows.appUriHandler">
+          <uap3:AppUriHandler>
+            <uap3:Host Name="www.youtube.com" />
+            <uap3:Host Name="youtube.com" />
+            <uap3:Host Name="m.youtube.com" />
+            <uap3:Host Name="youtu.be" />
+          </uap3:AppUriHandler>
+        </uap3:Extension>
         <Extension Category="windows.backgroundTasks" EntryPoint="YouTube.NotificationBackgroundTask">
           <BackgroundTasks>
             <Task Type="timer" />
@@ -41,14 +49,6 @@
             <uap:DisplayName>YouTube Link Handler</uap:DisplayName>
           </uap:Protocol>
         </uap:Extension>
-        <uap3:Extension Category="windows.appUriHandler">
-          <uap3:AppUriHandler>
-            <uap3:Host Name="www.youtube.com" />
-            <uap3:Host Name="youtube.com" />
-            <uap3:Host Name="m.youtube.com" />
-            <uap3:Host Name="youtu.be" />
-          </uap3:AppUriHandler>
-        </uap3:Extension>
       </Extensions>
     </Application>
   </Applications>

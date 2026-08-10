@@ -81,20 +81,20 @@ namespace YouTube
             authCancellation = new CancellationTokenSource();
             var token = authCancellation.Token;
             QrImage.Source = null;
-            StatusText.Text = "Loading QR code...";
+            StatusText.Text = Localization.GetString("LoginLoadingQr");
 
             try
             {
                 var flowState = await StartDeviceFlowAsync(token);
                 if (flowState == null || string.IsNullOrWhiteSpace(flowState.QrBase64))
                 {
-                    StatusText.Text = "Failed to load the QR code.";
+                    StatusText.Text = Localization.GetString("LoginQrFailed");
                     return;
                 }
 
                 await SetQrImageAsync(flowState.QrBase64);
                 UserCodeText.Text = flowState.UserCode ?? "";
-                StatusText.Text = "Open your phone camera and scan the QR code.";
+                StatusText.Text = Localization.GetString("LoginScanQr");
                 await PollTokenAsync(flowState, token);
             }
             catch (OperationCanceledException)
@@ -104,7 +104,7 @@ namespace YouTube
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Login error: " + ex.Message);
-                StatusText.Text = "Error: " + ex.Message;
+                StatusText.Text = Localization.Format("ErrorFormat", ex.Message);
             }
         }
 
@@ -133,7 +133,7 @@ namespace YouTube
                     // Save token using Config
                     Config.SetUserToken(refreshToken);
                     
-                    StatusText.Text = "Sign-in successful! Redirecting...";
+                    StatusText.Text = Localization.GetString("LoginSuccess");
                     
                     // Navigate to Home page
                     Frame.Navigate(typeof(Home));
@@ -334,7 +334,7 @@ namespace YouTube
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("SetQrImage error: " + ex.Message);
-                StatusText.Text = "QR display error: " + ex.Message;
+                StatusText.Text = Localization.Format("QrDisplayErrorFormat", ex.Message);
             }
         }
 

@@ -86,14 +86,14 @@ namespace YouTube
                 Config.LoadUserToken();
                 if (string.IsNullOrWhiteSpace(Config.UserToken))
                 {
-                    ShowEmpty("Sign in required", "Sign in to see your YouTube notifications.");
+                    ShowEmpty(Localization.GetString("SignInRequired"), Localization.GetString("NotificationsSignIn"));
                     return;
                 }
 
                 var items = await Config.GetNotificationsAsync(Config.UserToken, 60);
                 if (items == null || items.Count == 0)
                 {
-                    ShowEmpty("No notifications", "New updates from your subscriptions will appear here.");
+                    ShowEmpty(Localization.GetString("NoNotifications"), Localization.GetString("NotificationsNewUpdates"));
                     return;
                 }
 
@@ -102,7 +102,7 @@ namespace YouTube
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[Notifications] Load error: " + ex.Message);
-                ShowEmpty("Could not load notifications", "Pull up this page again later.");
+                ShowEmpty(Localization.GetString("CouldNotLoadNotifications"), Localization.GetString("NotificationsTryLater"));
             }
         }
 
@@ -141,7 +141,7 @@ namespace YouTube
                 MainScrollViewer.Visibility = Visibility.Collapsed;
 
             if (EmptyTitleText != null)
-                EmptyTitleText.Text = string.IsNullOrWhiteSpace(title) ? "No notifications" : title;
+                EmptyTitleText.Text = string.IsNullOrWhiteSpace(title) ? Localization.GetString("NoNotifications") : title;
 
             if (EmptySubtitleText != null)
                 EmptySubtitleText.Text = string.IsNullOrWhiteSpace(subtitle) ? string.Empty : subtitle;

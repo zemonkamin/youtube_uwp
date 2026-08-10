@@ -20,7 +20,7 @@
                           HorizontalScrollBarVisibility="Disabled"
                           ViewChanged="HistoryScroll_ViewChanged">
                 <StackPanel Padding="16,16,16,20">
-                    <TextBlock Text="History"
+                    <TextBlock x:Uid="Loc_History_Text"
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="28"
                                FontWeight="SemiBold"
@@ -55,10 +55,10 @@
                                                               Width="160"
                                                               Height="90">
                                                             <Border CornerRadius="8">
-                                                                <Border.Background>
-                                                                    <ImageBrush ImageSource="{Binding ThumbnailUrl}"
-                                                                                Stretch="UniformToFill"/>
-                                                                </Border.Background>
+                                                                <Image DataContextChanged="HistoryThumbnail_DataContextChanged"
+                                                                       Stretch="UniformToFill"
+                                                                       HorizontalAlignment="Stretch"
+                                                                       VerticalAlignment="Stretch" />
                                                             </Border>
 
                                                             <Border HorizontalAlignment="Right"
@@ -109,15 +109,14 @@
                                                   Width="34"
                                                   Height="34"
                                                   IsActive="False"/>
-                        <TextBlock Text="Loading more history..."
+                        <TextBlock x:Uid="Loc_LoadingMoreHistory_Text"
                                    Foreground="{ThemeResource AppSecondaryTextBrush}"
                                    FontSize="14"
                                    HorizontalAlignment="Center"
                                    Margin="0,8,0,0"/>
                     </StackPanel>
 
-                    <TextBlock x:Name="EmptyText"
-                               Text="No history yet"
+                    <TextBlock x:Uid="Loc_NoHistoryYet_Text" x:Name="EmptyText"
                                Foreground="{ThemeResource AppSecondaryTextBrush}"
                                FontSize="16"
                                HorizontalAlignment="Center"

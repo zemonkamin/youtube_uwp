@@ -1110,7 +1110,7 @@ namespace YouTube
                 SplitCombinedMetadataIfNeeded(ref fixedTitle, ref fixedAuthor);
 
                 _systemMediaVideoId = string.IsNullOrWhiteSpace(videoId) ? string.Empty : videoId.Trim();
-                _systemMediaTitle = string.IsNullOrWhiteSpace(fixedTitle) ? "YouTube video" : fixedTitle;
+                _systemMediaTitle = string.IsNullOrWhiteSpace(fixedTitle) ? Localization.GetString("YouTubeVideo") : fixedTitle;
                 _systemMediaAuthor = string.IsNullOrWhiteSpace(fixedAuthor) ? "YouTube" : fixedAuthor;
                 _systemMediaThumbnailUrl = string.IsNullOrWhiteSpace(_systemMediaVideoId)
                     ? string.Empty
@@ -1202,7 +1202,7 @@ namespace YouTube
                     return;
                 }
 
-                var title = string.IsNullOrWhiteSpace(_systemMediaTitle) ? "YouTube video" : NormalizeSystemMediaText(_systemMediaTitle);
+                var title = string.IsNullOrWhiteSpace(_systemMediaTitle) ? Localization.GetString("YouTubeVideo") : NormalizeSystemMediaText(_systemMediaTitle);
                 var author = string.IsNullOrWhiteSpace(_systemMediaAuthor) ? "YouTube" : NormalizeSystemMediaText(_systemMediaAuthor);
                 SplitCombinedMetadataIfNeeded(ref title, ref author);
 
@@ -1218,7 +1218,7 @@ namespace YouTube
                 catch { }
 
                 updater.Type = MediaPlaybackType.Music;
-                updater.MusicProperties.Title = string.IsNullOrWhiteSpace(title) ? "YouTube video" : title;
+                updater.MusicProperties.Title = string.IsNullOrWhiteSpace(title) ? Localization.GetString("YouTubeVideo") : title;
                 updater.MusicProperties.Artist = string.IsNullOrWhiteSpace(author) ? "YouTube" : author;
                 updater.MusicProperties.AlbumArtist = string.IsNullOrWhiteSpace(author) ? "YouTube" : author;
                 updater.MusicProperties.AlbumTitle = "YouTube";
@@ -5546,7 +5546,7 @@ namespace YouTube
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, masterUri);
                 req.Headers.TryAddWithoutValidation("User-Agent", YouTubeIosUserAgent);
-                req.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
+                req.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                 req.Headers.TryAddWithoutValidation("Referer", YouTubeReferer);
 
                 var resp = await _hlsHttpClient.SendAsync(req);
@@ -6349,7 +6349,7 @@ namespace YouTube
                     System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Timeout waiting for media to load");
                     if (ErrorMessageText != null)
                     {
-                        ErrorMessageText.Text = "Video loading timed out. Check your internet connection.";
+                        ErrorMessageText.Text = Localization.GetString("VideoLoadingTimedOut");
                         ErrorMessageText.Visibility = Visibility.Visible;
                     }
                 }
@@ -6363,7 +6363,7 @@ namespace YouTube
                 System.Diagnostics.Debug.WriteLine("Error in SetSource: " + ex.Message);
                 if (ErrorMessageText != null)
                 {
-                    ErrorMessageText.Text = "Could not load the video. Please try again.";
+                    ErrorMessageText.Text = Localization.GetString("CouldNotLoadVideoTryAgain");
                     ErrorMessageText.Visibility = Visibility.Visible;
                 }
                 if (PlayPauseButton != null)
@@ -6446,7 +6446,7 @@ namespace YouTube
                 {
                     if (ErrorMessageText != null)
                     {
-                        ErrorMessageText.Text = "Could not play the video. The player is not initialized.";
+                        ErrorMessageText.Text = Localization.GetString("PlayerNotInitialized");
                         ErrorMessageText.Visibility = Visibility.Visible;
                     }
                     return;
@@ -6753,7 +6753,7 @@ namespace YouTube
                     // Display user-friendly error message
                     if (ErrorMessageText != null)
                     {
-                        ErrorMessageText.Text = "Could not load the video. The link may have expired or the format is not supported.";
+                        ErrorMessageText.Text = Localization.GetString("VideoLinkExpired");
                         ErrorMessageText.Visibility = Visibility.Visible;
                     }
                     break;
@@ -6762,7 +6762,7 @@ namespace YouTube
                     // Display user-friendly error message
                     if (ErrorMessageText != null)
                     {
-                        ErrorMessageText.Text = "Network error. Check your internet connection.";
+                        ErrorMessageText.Text = Localization.GetString("NetworkError");
                         ErrorMessageText.Visibility = Visibility.Visible;
                     }
                     break;
@@ -6771,7 +6771,7 @@ namespace YouTube
                     // This is likely the issue on mobile devices where video isn't visible but audio works
                     if (ErrorMessageText != null)
                     {
-                        ErrorMessageText.Text = "Video playback error. Try selecting a lower quality.";
+                        ErrorMessageText.Text = Localization.GetString("VideoPlaybackLowerQuality");
                         ErrorMessageText.Visibility = Visibility.Visible;
                     }
                     break;
@@ -6780,7 +6780,7 @@ namespace YouTube
                     // Display generic error message
                     if (ErrorMessageText != null)
                     {
-                        ErrorMessageText.Text = "Could not play the video.";
+                        ErrorMessageText.Text = Localization.GetString("CouldNotPlayVideo");
                         ErrorMessageText.Visibility = Visibility.Visible;
                     }
                     break;

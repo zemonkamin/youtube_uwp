@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -67,7 +67,7 @@ namespace YouTube
         {
             if (string.IsNullOrWhiteSpace(_refreshToken))
             {
-                EmptyText.Text = "Sign in to see your watch history";
+                EmptyText.Text = Localization.GetString("HistorySignIn");
                 EmptyText.Visibility = Visibility.Visible;
                 return;
             }
@@ -117,7 +117,7 @@ namespace YouTube
                 System.Diagnostics.Debug.WriteLine("[History] LoadMore error: " + ex.Message);
                 if (_sections.Count == 0)
                 {
-                    EmptyText.Text = "Failed to load history";
+                    EmptyText.Text = Localization.GetString("HistoryLoadFailed");
                     EmptyText.Visibility = Visibility.Visible;
                 }
             }
@@ -138,7 +138,7 @@ namespace YouTube
                 if (group == null || group.Videos == null || group.Videos.Count == 0)
                     continue;
 
-                var title = string.IsNullOrWhiteSpace(group.DateTitle) ? "Older" : group.DateTitle;
+                var title = string.IsNullOrWhiteSpace(group.DateTitle) ? Localization.GetString("Older") : group.DateTitle;
                 var target = GetOrCreateSection(title);
 
                 foreach (var video in group.Videos)
@@ -185,6 +185,16 @@ namespace YouTube
             var distanceToBottom = HistoryScroll.ScrollableHeight - HistoryScroll.VerticalOffset;
             if (distanceToBottom <= LoadMoreDistance)
                 await LoadMoreAsync();
+        }
+
+        private void HistoryThumbnail_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var image = sender as Image;
+            var item = args.NewValue as VideoCardItem;
+            if (image == null || item == null)
+                return;
+
+            VideoThumbnailController.Assign(image, item.VideoId, item.ThumbnailUrl, 180);
         }
 
         private void VideoCard_Click(object sender, RoutedEventArgs e)

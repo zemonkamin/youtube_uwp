@@ -64,7 +64,7 @@ namespace YouTube
 
             if (string.IsNullOrWhiteSpace(_playlistId))
             {
-                ShowError("Playlist id is empty");
+                ShowError(Localization.GetString("PlaylistIdEmpty"));
                 return;
             }
 
@@ -105,7 +105,7 @@ namespace YouTube
             if (!string.IsNullOrWhiteSpace(item.PrivacyText) && item.PrivacyText != "Playlist")
                 parts.Add(item.PrivacyText);
             if (!string.IsNullOrWhiteSpace(item.VideoCountText))
-                parts.Add(item.VideoCountText.IndexOf("video", StringComparison.OrdinalIgnoreCase) >= 0 ? item.VideoCountText : item.VideoCountText + " videos");
+                parts.Add(item.VideoCountText.IndexOf("video", StringComparison.OrdinalIgnoreCase) >= 0 ? item.VideoCountText : Localization.Format("VideosSuffixFormat", item.VideoCountText));
 
             return string.Join(" • ", parts.ToArray());
         }
@@ -126,7 +126,7 @@ namespace YouTube
 
                 if (details == null)
                 {
-                    ShowError("Could not load playlist");
+                    ShowError(Localization.GetString("CouldNotLoadPlaylist"));
                     return;
                 }
 
@@ -136,7 +136,7 @@ namespace YouTube
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[Playlist] Load error: " + ex.Message);
-                ShowError("Could not load playlist");
+                ShowError(Localization.GetString("CouldNotLoadPlaylist"));
             }
             finally
             {
@@ -339,7 +339,7 @@ namespace YouTube
         private void ShowError(string message)
         {
             if (ErrorText != null)
-                ErrorText.Text = string.IsNullOrWhiteSpace(message) ? "Could not load playlist" : message;
+                ErrorText.Text = string.IsNullOrWhiteSpace(message) ? Localization.GetString("CouldNotLoadPlaylist") : message;
             if (MainContent != null)
                 MainContent.Visibility = Visibility.Collapsed;
             if (LoadingGrid != null)
@@ -480,7 +480,7 @@ namespace YouTube
                 return;
             }
 
-            ThumbnailImageLoader.Assign(image, item.LargeThumbnailUrl, item.ThumbnailUrl, 360);
+            VideoThumbnailController.Assign(image, item.VideoId, item.ThumbnailUrl, 360);
         }
 
         private void VideoThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)

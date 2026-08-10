@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Data.Json;
@@ -79,7 +79,7 @@ namespace YouTube
                 if (content.ContainsKey("videoMetadataRenderer"))
                 {
                     var metadata = content.GetNamedObject("videoMetadataRenderer");
-                    details.Title = ExtractTextFromField(metadata, "title", "Unknown");
+                    details.Title = ExtractTextFromField(metadata, "title", Localization.GetString("Unknown"));
                     details.Description = ExtractTextFromField(metadata, "description", "");
                     
                     if (metadata.ContainsKey("publishDate"))

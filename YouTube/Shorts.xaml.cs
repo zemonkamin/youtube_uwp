@@ -171,12 +171,12 @@ namespace YouTube
                     var seedShort = new ShortsVideoItem
                     {
                         VideoId = initialShortVideoId,
-                        Title = "Shorts",
+                        Title = Localization.GetString("Shorts"),
                         ChannelName = string.Empty,
                         ChannelThumbnailUrl = string.Empty,
                         ThumbnailUrl = "https://i.ytimg.com/vi/" + initialShortVideoId + "/oardefault.jpg",
-                        LikeCount = "Like",
-                        CommentCount = "Comments",
+                        LikeCount = Localization.GetString("Like"),
+                        CommentCount = Localization.GetString("Comments"),
                         RatingState = "none"
                     };
 
@@ -240,14 +240,14 @@ namespace YouTube
                 if (string.IsNullOrWhiteSpace(Config.UserToken))
                 {
                     SetLoading(false);
-                    ShowMessage("Sign in to watch Shorts.");
+                    ShowMessage(Localization.GetString("SignInWatchShorts"));
                     return;
                 }
 
                 var loaded = await LoadMoreShortsAsync();
                 if (!loaded || _shorts.Count == 0)
                 {
-                    ShowMessage("No Shorts found.");
+                    ShowMessage(Localization.GetString("NoShortsFound"));
                     return;
                 }
 
@@ -256,7 +256,7 @@ namespace YouTube
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[Shorts] Initial load error: " + ex.Message);
-                ShowMessage("Unable to load Shorts.");
+                ShowMessage(Localization.GetString("UnableLoadShorts"));
             }
             finally
             {
@@ -451,7 +451,7 @@ namespace YouTube
                     {
                         System.Diagnostics.Debug.WriteLine(
                             "[Shorts] Stream resolve TIMED OUT for " + item.VideoId);
-                        ShowMessage("Unable to play this Short.");
+                        ShowMessage(Localization.GetString("UnablePlayShortPeriod"));
                         return;
                     }
 
@@ -465,7 +465,7 @@ namespace YouTube
 
                 if (string.IsNullOrWhiteSpace(item.VideoUrl))
                 {
-                    ShowMessage("Unable to play this Short.");
+                    ShowMessage(Localization.GetString("UnablePlayShortPeriod"));
                     return;
                 }
 
@@ -539,7 +539,7 @@ namespace YouTube
                 System.Diagnostics.Debug.WriteLine("[Shorts] ShowShort error: " + ex.Message);
                 if (generation == _showGeneration)
                 {
-                    ShowMessage("Unable to play this Short.");
+                    ShowMessage(Localization.GetString("UnablePlayShortPeriod"));
                 }
             }
             finally
@@ -893,12 +893,12 @@ namespace YouTube
                 return;
             }
 
-            ShortTitleText.Text = string.IsNullOrWhiteSpace(item.Title) ? "Shorts" : item.Title;
+            ShortTitleText.Text = string.IsNullOrWhiteSpace(item.Title) ? Localization.GetString("Shorts") : item.Title;
             ChannelNameText.Text = string.IsNullOrWhiteSpace(item.ChannelName) ? "YouTube" : item.ChannelName;
-            LikeCountText.Text = string.IsNullOrWhiteSpace(item.LikeCount) ? "Like" : item.LikeCount;
+            LikeCountText.Text = string.IsNullOrWhiteSpace(item.LikeCount) ? Localization.GetString("Like") : item.LikeCount;
             if (CommentCountText != null)
             {
-                CommentCountText.Text = string.IsNullOrWhiteSpace(item.CommentCount) ? "Comments" : item.CommentCount;
+                CommentCountText.Text = string.IsNullOrWhiteSpace(item.CommentCount) ? Localization.GetString("Comments") : item.CommentCount;
             }
             item.RatingState = NormalizeShortRatingState(item.RatingState);
             if (item.RatingState == "none")
@@ -1970,9 +1970,9 @@ namespace YouTube
 
         private void ShortsQualityButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowShortsOptions("Quality");
+            ShowShortsOptions(Localization.GetString("Quality"));
 
-            ShortsSubOptionsPanel.Children.Add(MakeShortsOptionButton("Auto", _shortsQualityOverride == 0, () =>
+            ShortsSubOptionsPanel.Children.Add(MakeShortsOptionButton(Localization.GetString("Auto"), _shortsQualityOverride == 0, () =>
             {
                 _shortsQualityOverride = 0;
                 CloseShortsSettingsSheet();
@@ -1993,7 +1993,7 @@ namespace YouTube
 
         private void ShortsSpeedButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowShortsOptions("Playback speed");
+            ShowShortsOptions(Localization.GetString("PlaybackSpeed"));
 
             foreach (var s in new[] { 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0 })
             {
@@ -2011,7 +2011,7 @@ namespace YouTube
 
         private void ShortsAudioTrackButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowShortsOptions("Audio track");
+            ShowShortsOptions(Localization.GetString("AudioTrack"));
 
             foreach (var track in _currentShortAudioTracks)
             {
@@ -2031,10 +2031,10 @@ namespace YouTube
 
         private void ShortsSubtitlesButton_Click(object sender, RoutedEventArgs e)
         {
-            ShowShortsOptions("Subtitles");
+            ShowShortsOptions(Localization.GetString("Subtitles"));
             var videoId = CurrentShort != null ? CurrentShort.VideoId : null;
 
-            ShortsSubOptionsPanel.Children.Add(MakeShortsOptionButton("Off", _shortsSubtitleTrack == null, () =>
+            ShortsSubOptionsPanel.Children.Add(MakeShortsOptionButton(Localization.GetString("Off"), _shortsSubtitleTrack == null, () =>
             {
                 _shortsSubtitleTrack = null;
                 ShortsPlayer.SetSubtitleCues(null);
@@ -2658,7 +2658,7 @@ namespace YouTube
             {
                 if (showErrors)
                 {
-                    await ShowStaticShortsMessageAsync("Sign in required", "TV refresh token was not found. Sign in again and retry.");
+                    await ShowStaticShortsMessageAsync(Localization.GetString("SignInRequired"), Localization.GetString("TvTokenMissing"));
                 }
                 return string.Empty;
             }
@@ -2668,7 +2668,7 @@ namespace YouTube
             {
                 if (showErrors)
                 {
-                    await ShowStaticShortsMessageAsync("Sign in required", "Could not exchange refresh token for access token.");
+                    await ShowStaticShortsMessageAsync(Localization.GetString("SignInRequired"), Localization.GetString("RefreshTokenExchangeFailed"));
                 }
                 return string.Empty;
             }
@@ -2684,7 +2684,7 @@ namespace YouTube
                 {
                     Title = title,
                     Content = message,
-                    PrimaryButtonText = "OK"
+                    PrimaryButtonText = Localization.GetString("OK")
                 };
                 await dialog.ShowAsync();
             }
@@ -2705,8 +2705,8 @@ namespace YouTube
             var client = new JsonObject();
             client["clientName"] = JsonValue.CreateStringValue(mobileWebClient ? InnertubeMwebClientName : InnertubeTvClientName);
             client["clientVersion"] = JsonValue.CreateStringValue(mobileWebClient ? InnertubeMwebClientVersion : InnertubeTvClientVersion);
-            client["hl"] = JsonValue.CreateStringValue("ru");
-            client["gl"] = JsonValue.CreateStringValue("RU");
+            client["hl"] = JsonValue.CreateStringValue(Config.Hl);
+            client["gl"] = JsonValue.CreateStringValue(Config.Gl);
             if (!mobileWebClient)
             {
                 client["platform"] = JsonValue.CreateStringValue("TV");
@@ -2800,8 +2800,8 @@ namespace YouTube
             var client = new JsonObject();
             client["clientName"] = JsonValue.CreateStringValue(InnertubeWebClientName);
             client["clientVersion"] = JsonValue.CreateStringValue(InnertubeWebClientVersion);
-            client["hl"] = JsonValue.CreateStringValue("ru");
-            client["gl"] = JsonValue.CreateStringValue("RU");
+            client["hl"] = JsonValue.CreateStringValue(Config.Hl);
+            client["gl"] = JsonValue.CreateStringValue(Config.Gl);
             context["client"] = client;
 
             var payload = new JsonObject();
@@ -2820,7 +2820,7 @@ namespace YouTube
             }
 
             request.Headers.TryAddWithoutValidation("User-Agent", userAgent);
-            request.Headers.TryAddWithoutValidation("Accept-Language", "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Config.Hl + "," + Config.Hl + ";q=0.9,en;q=0.7");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", clientNameHeader);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
             request.Headers.TryAddWithoutValidation("X-Goog-AuthUser", "0");
@@ -3462,7 +3462,7 @@ namespace YouTube
             {
                 System.Diagnostics.Debug.WriteLine("[Shorts] Comments load error: " + ex.Message);
                 SetCommentsLoading(false);
-                SetCommentsEmpty(true, "Unable to load comments.");
+                SetCommentsEmpty(true, Localization.GetString("UnableLoadComments"));
             }
             finally
             {
@@ -3482,7 +3482,7 @@ namespace YouTube
 
             if (comments == null || comments.Count == 0)
             {
-                SetCommentsEmpty(true, "No comments found.");
+                SetCommentsEmpty(true, Localization.GetString("NoCommentsFound"));
             }
             else
             {
@@ -3513,7 +3513,7 @@ namespace YouTube
         {
             if (CommentsEmptyText != null)
             {
-                CommentsEmptyText.Text = string.IsNullOrWhiteSpace(text) ? "No comments found." : text;
+                CommentsEmptyText.Text = string.IsNullOrWhiteSpace(text) ? Localization.GetString("NoCommentsFound") : text;
                 CommentsEmptyText.Visibility = isVisible ? Visibility.Visible : Visibility.Collapsed;
             }
         }
@@ -3625,7 +3625,7 @@ namespace YouTube
 
             if (ShareVideoTitleText != null)
             {
-                ShareVideoTitleText.Text = string.IsNullOrWhiteSpace(item.Title) ? "YouTube Shorts" : item.Title;
+                ShareVideoTitleText.Text = string.IsNullOrWhiteSpace(item.Title) ? Localization.GetString("YouTubeShorts") : item.Title;
             }
 
             if (ShareChannelText != null)
@@ -3942,7 +3942,7 @@ namespace YouTube
 
             if (DescriptionTitleText != null)
             {
-                DescriptionTitleText.Text = string.IsNullOrWhiteSpace(item.Title) ? "YouTube Shorts" : item.Title;
+                DescriptionTitleText.Text = string.IsNullOrWhiteSpace(item.Title) ? Localization.GetString("YouTubeShorts") : item.Title;
             }
 
             if (DescriptionChannelText != null)
@@ -3952,7 +3952,7 @@ namespace YouTube
 
             if (DescriptionBodyText != null)
             {
-                DescriptionBodyText.Text = "Loading description...";
+                DescriptionBodyText.Text = Localization.GetString("LoadingDescription");
             }
 
             if (ShortsOverlayGrid != null)
@@ -3977,7 +3977,7 @@ namespace YouTube
 
             if (DescriptionBodyText != null)
             {
-                DescriptionBodyText.Text = string.IsNullOrWhiteSpace(description) ? "No description." : description;
+                DescriptionBodyText.Text = string.IsNullOrWhiteSpace(description) ? Localization.GetString("NoDescription") : description;
             }
         }
 
@@ -4500,7 +4500,7 @@ namespace YouTube
                 return;
             }
 
-            var title = string.IsNullOrWhiteSpace(item.Title) ? "YouTube Shorts" : item.Title;
+            var title = string.IsNullOrWhiteSpace(item.Title) ? Localization.GetString("YouTubeShorts") : item.Title;
 
             var dataTransferManager = Windows.ApplicationModel.DataTransfer.DataTransferManager.GetForCurrentView();
             Windows.Foundation.TypedEventHandler<Windows.ApplicationModel.DataTransfer.DataTransferManager, Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs> handler = null;
@@ -4509,7 +4509,7 @@ namespace YouTube
                 shareSender.DataRequested -= handler;
                 var request = args.Request;
                 request.Data.Properties.Title = title;
-                request.Data.Properties.Description = "Share this YouTube Short";
+                request.Data.Properties.Description = Localization.GetString("ShareShortDescription");
                 request.Data.SetWebLink(new Uri(url));
             };
             dataTransferManager.DataRequested += handler;

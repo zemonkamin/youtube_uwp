@@ -20,11 +20,13 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|arm</AppxBundlePlatforms>
+    <AppxBundleAutoResourcePackageQualifiers>Scale|DXFeatureLevel</AppxBundleAutoResourcePackageQualifiers>
+    <AppxDefaultResourceQualifiers>Language=af-ZA;az-Latn-AZ;id-ID;ms-MY;bs-Latn-BA;ca-ES;cs-CZ;da-DK;de-DE;et-EE;en-IN;en-GB;en-US;es-ES;es-MX;es-US;eu-ES;fil-PH;fr-FR;fr-CA;gl-ES;hr-HR;zu-ZA;is-IS;it-IT;sw-KE;lv-LV;lt-LT;hu-HU;nl-NL;nb-NO;uz-Latn-UZ;pl-PL;pt-PT;pt-BR;ro-RO;sq-AL;sk-SK;sl-SI;sr-Latn-RS;fi-FI;sv-SE;vi-VN;tr-TR;be-BY;bg-BG;ky-KG;kk-KZ;mk-MK;mn-MN;ru-RU;sr-Cyrl-RS;uk-UA;el-GR;hy-AM;ne-NP;mr-IN;hi-IN;as-IN;bn-BD;pa-IN;gu-IN;or-IN;ta-IN;te-IN;kn-IN;ml-IN;si-LK;th-TH;lo-LA;my-MM;ka-GE;am-ET;km-KH;zh-CN;zh-TW;zh-HK;ja-JP;ko-KR|Contrast=standard|Scale=200|HomeRegion=001|TargetSize=256|LayoutDirection=LTR|DXFeatureLevel=DX9|Configuration=|AlternateForm=</AppxDefaultResourceQualifiers>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
-    <PackageCertificateThumbprint>9B0F716323BC13695AB4A8516D06C9A3DAB4ED3D</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint></PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -111,6 +113,7 @@
       <DependentUpon>Channel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Config.cs" />
+    <Compile Include="Localization.cs" />
     <Compile Include="DashDemuxer.cs" />
     <Compile Include="Converters\VideoInfoConverters.cs" />
     <Compile Include="CustomMediaTransportControls.cs" />
@@ -127,6 +130,7 @@
       <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
     <Compile Include="ThumbnailImageLoader.cs" />
+    <Compile Include="VideoThumbnailController.cs" />
     <Compile Include="StoryboardThumbnails.cs" />
     <Compile Include="MiniPlayer.cs" />
     <Compile Include="SponsorBlock.cs" />
@@ -178,6 +182,87 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="YouTube_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="Strings\af-ZA\Resources.resw" />
+    <PRIResource Include="Strings\az-Latn-AZ\Resources.resw" />
+    <PRIResource Include="Strings\id-ID\Resources.resw" />
+    <PRIResource Include="Strings\ms-MY\Resources.resw" />
+    <PRIResource Include="Strings\bs-Latn-BA\Resources.resw" />
+    <PRIResource Include="Strings\ca-ES\Resources.resw" />
+    <PRIResource Include="Strings\cs-CZ\Resources.resw" />
+    <PRIResource Include="Strings\da-DK\Resources.resw" />
+    <PRIResource Include="Strings\de-DE\Resources.resw" />
+    <PRIResource Include="Strings\et-EE\Resources.resw" />
+    <PRIResource Include="Strings\en-IN\Resources.resw" />
+    <PRIResource Include="Strings\en-GB\Resources.resw" />
+    <PRIResource Include="Strings\en-US\Resources.resw" />
+    <PRIResource Include="Strings\es-ES\Resources.resw" />
+    <PRIResource Include="Strings\es-MX\Resources.resw" />
+    <PRIResource Include="Strings\es-US\Resources.resw" />
+    <PRIResource Include="Strings\eu-ES\Resources.resw" />
+    <PRIResource Include="Strings\fil-PH\Resources.resw" />
+    <PRIResource Include="Strings\fr-FR\Resources.resw" />
+    <PRIResource Include="Strings\fr-CA\Resources.resw" />
+    <PRIResource Include="Strings\gl-ES\Resources.resw" />
+    <PRIResource Include="Strings\hr-HR\Resources.resw" />
+    <PRIResource Include="Strings\zu-ZA\Resources.resw" />
+    <PRIResource Include="Strings\is-IS\Resources.resw" />
+    <PRIResource Include="Strings\it-IT\Resources.resw" />
+    <PRIResource Include="Strings\sw-KE\Resources.resw" />
+    <PRIResource Include="Strings\lv-LV\Resources.resw" />
+    <PRIResource Include="Strings\lt-LT\Resources.resw" />
+    <PRIResource Include="Strings\hu-HU\Resources.resw" />
+    <PRIResource Include="Strings\nl-NL\Resources.resw" />
+    <PRIResource Include="Strings\nb-NO\Resources.resw" />
+    <PRIResource Include="Strings\uz-Latn-UZ\Resources.resw" />
+    <PRIResource Include="Strings\pl-PL\Resources.resw" />
+    <PRIResource Include="Strings\pt-PT\Resources.resw" />
+    <PRIResource Include="Strings\pt-BR\Resources.resw" />
+    <PRIResource Include="Strings\ro-RO\Resources.resw" />
+    <PRIResource Include="Strings\sq-AL\Resources.resw" />
+    <PRIResource Include="Strings\sk-SK\Resources.resw" />
+    <PRIResource Include="Strings\sl-SI\Resources.resw" />
+    <PRIResource Include="Strings\sr-Latn-RS\Resources.resw" />
+    <PRIResource Include="Strings\fi-FI\Resources.resw" />
+    <PRIResource Include="Strings\sv-SE\Resources.resw" />
+    <PRIResource Include="Strings\vi-VN\Resources.resw" />
+    <PRIResource Include="Strings\tr-TR\Resources.resw" />
+    <PRIResource Include="Strings\be-BY\Resources.resw" />
+    <PRIResource Include="Strings\bg-BG\Resources.resw" />
+    <PRIResource Include="Strings\ky-KG\Resources.resw" />
+    <PRIResource Include="Strings\kk-KZ\Resources.resw" />
+    <PRIResource Include="Strings\mk-MK\Resources.resw" />
+    <PRIResource Include="Strings\mn-MN\Resources.resw" />
+    <PRIResource Include="Strings\ru-RU\Resources.resw" />
+    <PRIResource Include="Strings\sr-Cyrl-RS\Resources.resw" />
+    <PRIResource Include="Strings\uk-UA\Resources.resw" />
+    <PRIResource Include="Strings\el-GR\Resources.resw" />
+    <PRIResource Include="Strings\hy-AM\Resources.resw" />
+    <PRIResource Include="Strings\ne-NP\Resources.resw" />
+    <PRIResource Include="Strings\mr-IN\Resources.resw" />
+    <PRIResource Include="Strings\hi-IN\Resources.resw" />
+    <PRIResource Include="Strings\as-IN\Resources.resw" />
+    <PRIResource Include="Strings\bn-BD\Resources.resw" />
+    <PRIResource Include="Strings\pa-IN\Resources.resw" />
+    <PRIResource Include="Strings\gu-IN\Resources.resw" />
+    <PRIResource Include="Strings\or-IN\Resources.resw" />
+    <PRIResource Include="Strings\ta-IN\Resources.resw" />
+    <PRIResource Include="Strings\te-IN\Resources.resw" />
+    <PRIResource Include="Strings\kn-IN\Resources.resw" />
+    <PRIResource Include="Strings\ml-IN\Resources.resw" />
+    <PRIResource Include="Strings\si-LK\Resources.resw" />
+    <PRIResource Include="Strings\th-TH\Resources.resw" />
+    <PRIResource Include="Strings\lo-LA\Resources.resw" />
+    <PRIResource Include="Strings\my-MM\Resources.resw" />
+    <PRIResource Include="Strings\ka-GE\Resources.resw" />
+    <PRIResource Include="Strings\am-ET\Resources.resw" />
+    <PRIResource Include="Strings\km-KH\Resources.resw" />
+    <PRIResource Include="Strings\zh-CN\Resources.resw" />
+    <PRIResource Include="Strings\zh-TW\Resources.resw" />
+    <PRIResource Include="Strings\zh-HK\Resources.resw" />
+    <PRIResource Include="Strings\ja-JP\Resources.resw" />
+    <PRIResource Include="Strings\ko-KR\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\Default.rd.xml" />

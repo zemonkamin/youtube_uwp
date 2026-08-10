@@ -46,6 +46,9 @@ namespace YouTube
         private const int LoadMoreAttemptThrottleMs = 600;
 
         private const int LiveTileRecommendationCount = 5;
+        private const int LiveTileImageDisplaySeconds = 8;
+        private const int LiveTileInfoDisplaySeconds = 6;
+        private const int LiveTileScheduleCycles = 8;
         private const string LiveTileFolderName = "LiveTile";
         private const string LiveTileFallbackImage = "ms-appx:///Assets/Square150x150Logo.png";
         private static readonly HttpClient liveTileHttpClient = new HttpClient();
@@ -67,14 +70,14 @@ namespace YouTube
 
             trendingSuggestions = new ObservableCollection<string>
             {
-                "Music videos",
-                "Gaming highlights",
-                "Cooking recipes",
-                "Tech reviews",
-                "Movie trailers",
-                "Sports highlights",
-                "Comedy sketches",
-                "DIY tutorials"
+                Localization.GetString("TrendingMusicVideos"),
+                Localization.GetString("TrendingGamingHighlights"),
+                Localization.GetString("TrendingCookingRecipes"),
+                Localization.GetString("TrendingTechReviews"),
+                Localization.GetString("TrendingMovieTrailers"),
+                Localization.GetString("TrendingSportsHighlights"),
+                Localization.GetString("TrendingComedySketches"),
+                Localization.GetString("TrendingDiyTutorials")
             };
             TrendingSuggestionsList.ItemsSource = trendingSuggestions;
             if (SkeletonCardsList != null)
@@ -550,7 +553,7 @@ namespace YouTube
 
             return new HomeCategoryItem
             {
-                Title = "All",
+                Title = Localization.GetString("HomeAll"),
                 IsAll = true
             };
         }
@@ -742,6 +745,11 @@ namespace YouTube
 
         private async Task UpdateLiveTileFromLoadedRecommendationsAsync()
         {
+            if (!App.IsLiveTileEnabled())
+            {
+                return;
+            }
+
             if (isUpdatingLiveTile || recommendationVideos == null || recommendationVideos.Count == 0)
             {
                 return;
@@ -768,33 +776,57 @@ namespace YouTube
                     tileItems.Add(new LiveTileRecommendationItem
                     {
                         VideoId = video.VideoId,
-                        Title = FirstNonEmpty(video.Title, "Recommended video"),
+                        Title = FirstNonEmpty(video.Title, Localization.GetString("RecommendedVideo")),
                         Author = FirstNonEmpty(video.ChannelTitle, "YouTube"),
                         ViewCount = FirstNonEmpty(video.ViewCount, string.Empty),
                         ImageSource = FirstNonEmpty(localImage, LiveTileFallbackImage)
                     });
                 }
 
-                if (tileItems.Count == 0)
+                if (tileItems.Count == 0 || !App.IsLiveTileEnabled())
                 {
                     return;
                 }
 
                 var updater = TileUpdateManager.CreateTileUpdaterForApplication();
-                updater.EnableNotificationQueue(true);
-                updater.Clear();
+                ResetLiveTileSchedule(updater);
+                updater.EnableNotificationQueue(false);
 
-                foreach (var item in tileItems)
+                // Do not rely on the notification queue for timing. Windows chooses how long queued
+                // notifications stay visible, which can make peek/details appear very rarely.
+                // Instead, explicitly schedule image -> details -> next image -> details. The first
+                // image is applied immediately and the remaining states are scheduled for the next
+                // several minutes, so Start keeps moving even after the app is suspended.
+                var now = DateTimeOffset.Now;
+                var firstImageDocument = new XmlDocument();
+                firstImageDocument.LoadXml(BuildRecommendationImageTileXml(tileItems[0]));
+                var firstImageNotification = new TileNotification(firstImageDocument);
+                firstImageNotification.ExpirationTime = now.AddMinutes(15);
+                updater.Update(firstImageNotification);
+
+                var deliveryTime = now.AddSeconds(LiveTileImageDisplaySeconds);
+                var scheduleId = 0;
+                for (int cycle = 0; cycle < LiveTileScheduleCycles; cycle++)
                 {
-                    var document = new XmlDocument();
-                    document.LoadXml(BuildRecommendationTileXml(item));
+                    for (int i = 0; i < tileItems.Count; i++)
+                    {
+                        var item = tileItems[i];
 
-                    var notification = new TileNotification(document);
-                    notification.ExpirationTime = DateTimeOffset.Now.AddDays(1);
-                    updater.Update(notification);
+                        // The very first image is already visible. Every video receives a forced
+                        // details phase, then the following video gets a fresh full-bleed image.
+                        ScheduleLiveTileState(updater, BuildRecommendationInfoTileXml(item), deliveryTime, scheduleId++);
+                        deliveryTime = deliveryTime.AddSeconds(LiveTileInfoDisplaySeconds);
+
+                        var nextIndex = (i + 1) % tileItems.Count;
+                        var nextItem = tileItems[nextIndex];
+                        ScheduleLiveTileState(updater, BuildRecommendationImageTileXml(nextItem), deliveryTime, scheduleId++);
+                        deliveryTime = deliveryTime.AddSeconds(LiveTileImageDisplaySeconds);
+                    }
                 }
 
-                System.Diagnostics.Debug.WriteLine("[LiveTile] Updated recommendation queue: " + tileItems.Count);
+                System.Diagnostics.Debug.WriteLine(
+                    "[LiveTile] Scheduled explicit image/details rotation for "
+                    + tileItems.Count + " videos until " + deliveryTime.ToString("u"));
             }
             catch (Exception ex)
             {
@@ -808,21 +840,20 @@ namespace YouTube
 
         private async Task<string> GetLiveTileThumbnailAsync(VideoCardItem video)
         {
-            if (video == null || string.IsNullOrWhiteSpace(video.VideoId) || string.IsNullOrWhiteSpace(video.ThumbnailUrl))
+            if (video == null || string.IsNullOrWhiteSpace(video.VideoId))
             {
                 return LiveTileFallbackImage;
             }
 
-            var thumbnailUrl = NormalizeLiveTileImageUrl(video.ThumbnailUrl);
-            if (string.IsNullOrWhiteSpace(thumbnailUrl))
-            {
-                return LiveTileFallbackImage;
-            }
+            var videoId = video.VideoId.Trim();
+            var maxResolutionUrl = "https://img.youtube.com/vi/" + Uri.EscapeDataString(videoId) + "/maxresdefault.jpg";
+            var fallbackThumbnailUrl = NormalizeLiveTileImageUrl(video.ThumbnailUrl);
 
             try
             {
                 var folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(LiveTileFolderName, CreationCollisionOption.OpenIfExists);
-                var safeFileName = MakeSafeFileName(video.VideoId) + ".jpg";
+                // Use a new cache name so tiles created before this change cannot keep a lower-resolution thumbnail.
+                var safeFileName = MakeSafeFileName(videoId) + "_maxres.jpg";
                 var file = await folder.CreateFileAsync(safeFileName, CreationCollisionOption.OpenIfExists);
 
                 var properties = await file.GetBasicPropertiesAsync();
@@ -831,7 +862,30 @@ namespace YouTube
                     return "ms-appdata:///local/" + LiveTileFolderName + "/" + safeFileName;
                 }
 
-                var bytes = await liveTileHttpClient.GetByteArrayAsync(thumbnailUrl);
+                byte[] bytes = null;
+                try
+                {
+                    bytes = await liveTileHttpClient.GetByteArrayAsync(maxResolutionUrl);
+                }
+                catch (Exception maxResException)
+                {
+                    System.Diagnostics.Debug.WriteLine("[LiveTile] maxresdefault unavailable: " + maxResException.Message);
+                }
+
+                // Some older or low-resolution YouTube videos do not expose maxresdefault.jpg.
+                // Keep the tile functional by falling back only when the requested max-res image is unavailable.
+                if ((bytes == null || bytes.Length == 0) && !string.IsNullOrWhiteSpace(fallbackThumbnailUrl))
+                {
+                    try
+                    {
+                        bytes = await liveTileHttpClient.GetByteArrayAsync(fallbackThumbnailUrl);
+                    }
+                    catch (Exception fallbackException)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[LiveTile] Fallback thumbnail unavailable: " + fallbackException.Message);
+                    }
+                }
+
                 if (bytes == null || bytes.Length == 0)
                 {
                     return LiveTileFallbackImage;
@@ -843,7 +897,7 @@ namespace YouTube
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[LiveTile] Thumbnail cache error: " + ex.Message);
-                return FirstNonEmpty(thumbnailUrl, LiveTileFallbackImage);
+                return LiveTileFallbackImage;
             }
         }
 
@@ -863,36 +917,103 @@ namespace YouTube
             return value;
         }
 
-        private static string BuildRecommendationTileXml(LiveTileRecommendationItem item)
+        private static void ResetLiveTileSchedule(TileUpdater updater)
         {
-            var title = EscapeTileXml(TrimForTile(FirstNonEmpty(item.Title, "Recommended video"), 90));
-            var author = EscapeTileXml(TrimForTile(FirstNonEmpty(item.Author, "YouTube"), 42));
-            var views = EscapeTileXml(TrimForTile(FirstNonEmpty(item.ViewCount, string.Empty), 34));
+            if (updater == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var scheduled = updater.GetScheduledTileNotifications();
+                if (scheduled != null)
+                {
+                    foreach (var notification in scheduled.ToList())
+                    {
+                        updater.RemoveFromSchedule(notification);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[LiveTile] Could not clear old schedule: " + ex.Message);
+            }
+
+            try
+            {
+                updater.StopPeriodicUpdate();
+            }
+            catch
+            {
+            }
+
+            updater.Clear();
+        }
+
+        private static void ScheduleLiveTileState(TileUpdater updater, string xml, DateTimeOffset deliveryTime, int scheduleId)
+        {
+            if (updater == null || string.IsNullOrWhiteSpace(xml))
+            {
+                return;
+            }
+
+            var document = new XmlDocument();
+            document.LoadXml(xml);
+
+            // ScheduledTileNotification is available from the first Windows 10 UWP contract,
+            // including Windows 10 Mobile. Use an explicit delivery time instead of Shell queue
+            // heuristics so the details state appears regularly.
+            var scheduled = new ScheduledTileNotification(document, deliveryTime);
+            scheduled.Id = "YT" + scheduleId.ToString("D3");
+            scheduled.ExpirationTime = deliveryTime.AddMinutes(2);
+            updater.AddToSchedule(scheduled);
+        }
+
+        private static string BuildRecommendationImageTileXml(LiveTileRecommendationItem item)
+        {
+            var title = EscapeTileXml(TrimForTile(FirstNonEmpty(item.Title, Localization.GetString("RecommendedVideo")), 90));
             var image = EscapeTileXml(FirstNonEmpty(item.ImageSource, LiveTileFallbackImage));
             var launch = EscapeTileXml("youtubehandler:https://www.youtube.com/watch?v=" + FirstNonEmpty(item.VideoId, string.Empty));
-            var viewsLine = string.IsNullOrWhiteSpace(views)
-                ? string.Empty
-                : "<text hint-style=\"captionSubtle\" hint-wrap=\"false\">" + views + "</text>";
 
+            // Image phase: full-bleed artwork. On a wide tile the 16:9 YouTube maxres image fills
+            // the complete 310x150 surface. The next scheduled state is the information phase.
             return "<tile launch=\"" + launch + "\">"
-                + "<visual branding=\"nameAndLogo\" displayName=\"YouTube\">"
-                + "<binding template=\"TileMedium\" branding=\"none\">"
-                + "<image src=\"" + image + "\" placement=\"peek\" hint-crop=\"none\"/>"
-                + "<text hint-style=\"caption\" hint-wrap=\"true\" hint-maxLines=\"2\">" + title + "</text>"
-                + "<text hint-style=\"captionSubtle\" hint-wrap=\"false\">" + author + "</text>"
-                + viewsLine
+                + "<visual version=\"2\" branding=\"none\">"
+                + "<binding template=\"TileSquare150x150Image\" fallback=\"TileSquareImage\" branding=\"none\">"
+                + "<image id=\"1\" src=\"" + image + "\" alt=\"" + title + "\"/>"
                 + "</binding>"
-                + "<binding template=\"TileWide\" branding=\"none\">"
-                + "<group>"
-                + "<subgroup hint-weight=\"45\">"
-                + "<image src=\"" + image + "\" hint-crop=\"none\"/>"
-                + "</subgroup>"
-                + "<subgroup hint-weight=\"55\">"
-                + "<text hint-style=\"caption\" hint-wrap=\"true\" hint-maxLines=\"3\">" + title + "</text>"
-                + "<text hint-style=\"captionSubtle\" hint-wrap=\"false\">" + author + "</text>"
-                + viewsLine
-                + "</subgroup>"
-                + "</group>"
+                + "<binding template=\"TileWide310x150Image\" fallback=\"TileWideImage\" branding=\"none\">"
+                + "<image id=\"1\" src=\"" + image + "\" alt=\"" + title + "\"/>"
+                + "</binding>"
+                + "</visual>"
+                + "</tile>";
+        }
+
+        private static string BuildRecommendationInfoTileXml(LiveTileRecommendationItem item)
+        {
+            var title = EscapeTileXml(TrimForTile(FirstNonEmpty(item.Title, Localization.GetString("RecommendedVideo")), 78));
+            var author = EscapeTileXml(TrimForTile(FirstNonEmpty(item.Author, "YouTube"), 42));
+            var views = EscapeTileXml(TrimForTile(FirstNonEmpty(item.ViewCount, string.Empty), 34));
+            var launch = EscapeTileXml("youtubehandler:https://www.youtube.com/watch?v=" + FirstNonEmpty(item.VideoId, string.Empty));
+            var details = author;
+            if (!string.IsNullOrWhiteSpace(views))
+            {
+                details = string.IsNullOrWhiteSpace(details) ? views : details + " • " + views;
+            }
+
+            // Details phase is a separate scheduled notification. This guarantees that title and
+            // metadata become the visible face instead of waiting for the non-deterministic peek
+            // timer. On phone, tile content changes use the Start-screen transition animation.
+            return "<tile launch=\"" + launch + "\">"
+                + "<visual version=\"2\" branding=\"none\">"
+                + "<binding template=\"TileSquare150x150Text02\" fallback=\"TileSquareText02\" branding=\"none\">"
+                + "<text id=\"1\">" + title + "</text>"
+                + "<text id=\"2\">" + details + "</text>"
+                + "</binding>"
+                + "<binding template=\"TileWide310x150Text09\" fallback=\"TileWideText09\" branding=\"none\">"
+                + "<text id=\"1\">" + title + "</text>"
+                + "<text id=\"2\">" + details + "</text>"
                 + "</binding>"
                 + "</visual>"
                 + "</tile>";
@@ -1067,7 +1188,7 @@ namespace YouTube
                 return;
             }
 
-            ThumbnailImageLoader.Assign(image, item.LargeThumbnailUrl, item.ThumbnailUrl, 360);
+            VideoThumbnailController.Assign(image, item.VideoId, item.ThumbnailUrl, 360);
         }
 
         private void VideoThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)

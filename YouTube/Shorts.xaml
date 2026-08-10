@@ -200,8 +200,7 @@
                                 Click="LikeButton_Click">
                             <Image x:Name="LikeIconImage" local:ThemeAsset.Path="Assets/Dark/player/like.png" Width="28" Height="28"/>
                         </Button>
-                        <TextBlock x:Name="LikeCountText"
-                                   Text="Like"
+                        <TextBlock x:Uid="Loc_Like_Text" x:Name="LikeCountText"
                                    Margin="0,2,0,0"
                                    Foreground="White"
                                    FontSize="11"
@@ -226,8 +225,7 @@
                                 Click="CommentsButton_Click">
                             <Image local:ThemeAsset.Path="Assets/Dark/player/comments.png" Width="28" Height="28"/>
                         </Button>
-                        <TextBlock x:Name="CommentCountText"
-                                   Text="Comments"
+                        <TextBlock x:Uid="Loc_Comments_Text" x:Name="CommentCountText"
                                    Margin="0,2,0,0"
                                    Foreground="White"
                                    FontSize="11"
@@ -242,7 +240,7 @@
                                 Click="SendButton_Click">
                             <Image local:ThemeAsset.Path="Assets/Dark/player/send.png" Width="28" Height="28"/>
                         </Button>
-                        <TextBlock Text="Share"
+                        <TextBlock x:Uid="Loc_Share_Text"
                                    Margin="0,2,0,0"
                                    Foreground="White"
                                    FontSize="11"
@@ -321,8 +319,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock x:Name="CommentsSheetTitle"
-                                   Text="Comments"
+                        <TextBlock x:Uid="Loc_Comments_Text" x:Name="CommentsSheetTitle"
                                    Grid.Row="0"
                                    Foreground="{ThemeResource AppPrimaryTextBrush}"
                                    FontSize="17"
@@ -375,7 +372,7 @@
                                                               Width="36"
                                                               Height="36"
                                                               HorizontalAlignment="Center"/>
-                                    <TextBlock Text="Loading comments..."
+                                    <TextBlock x:Uid="Loc_LoadingComments_Text"
                                                Foreground="{ThemeResource AppSecondaryTextBrush}"
                                                FontSize="14"
                                                Margin="0,12,0,0"
@@ -383,8 +380,7 @@
                                 </StackPanel>
                             </Grid>
 
-                            <TextBlock x:Name="CommentsEmptyText"
-                                       Text="No comments found."
+                            <TextBlock x:Uid="Loc_NoCommentsFound_Text" x:Name="CommentsEmptyText"
                                        Foreground="{ThemeResource AppSecondaryTextBrush}"
                                        FontSize="14"
                                        TextAlignment="Center"
@@ -519,7 +515,7 @@
                                             <Border Width="42" Height="42" Background="#373737" CornerRadius="21" VerticalAlignment="Center">
                                                 <Image local:ThemeAsset.Path="Assets/copy.png" Width="22" Height="22" Stretch="Uniform"/>
                                             </Border>
-                                            <TextBlock Grid.Column="1" Text="Copy link" Foreground="White" VerticalAlignment="Center" FontSize="16" Margin="16,0,0,0"/>
+                                            <TextBlock x:Uid="Loc_CopyLink_Text" Grid.Column="1" Foreground="White" VerticalAlignment="Center" FontSize="16" Margin="16,0,0,0"/>
                                         </Grid>
                                     </Button>
 
@@ -536,7 +532,7 @@
                                             <Border Width="42" Height="42" Background="#373737" CornerRadius="21" VerticalAlignment="Center">
                                                 <Image local:ThemeAsset.Path="Assets/qr.png" Width="22" Height="22" Stretch="Uniform"/>
                                             </Border>
-                                            <TextBlock Grid.Column="1" Text="Show QR code" Foreground="White" VerticalAlignment="Center" FontSize="16" Margin="16,0,0,0"/>
+                                            <TextBlock x:Uid="Loc_ShowQRCode_Text" Grid.Column="1" Foreground="White" VerticalAlignment="Center" FontSize="16" Margin="16,0,0,0"/>
                                         </Grid>
                                     </Button>
 
@@ -553,7 +549,7 @@
                                             <Border Width="42" Height="42" Background="#373737" CornerRadius="21" VerticalAlignment="Center">
                                                 <Image local:ThemeAsset.Path="Assets/share.png" Width="22" Height="22" Stretch="Uniform"/>
                                             </Border>
-                                            <TextBlock Grid.Column="1" Text="Share via..." Foreground="White" VerticalAlignment="Center" FontSize="16" Margin="16,0,0,0"/>
+                                            <TextBlock x:Uid="Loc_ShareVia_Text" Grid.Column="1" Foreground="White" VerticalAlignment="Center" FontSize="16" Margin="16,0,0,0"/>
                                         </Grid>
                                     </Button>
                                 </StackPanel>
@@ -566,7 +562,7 @@
             <Border x:Name="DescriptionBottomSheetPanel"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
-                    Background="#222222"
+                    Background="{ThemeResource AppSurfaceBrush}"
                     CornerRadius="15"
                     Height="320"
                     Margin="10,0,10,8"
@@ -591,7 +587,7 @@
                           PointerCaptureLost="DescriptionDragArea_PointerReleased">
                         <Rectangle Width="36"
                                    Height="4"
-                                   Fill="#787878"
+                                   Fill="{ThemeResource AppMutedTextBrush}"
                                    RadiusX="2"
                                    RadiusY="2"
                                    HorizontalAlignment="Center"
@@ -601,24 +597,24 @@
                     <Grid Grid.Row="1" Margin="16,0,16,16">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel>
-                                <TextBlock Text="Description"
-                                           Foreground="White"
+                                <TextBlock x:Uid="Loc_Description_Text"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
                                            FontSize="17"
                                            FontWeight="SemiBold"
                                            Margin="0,0,0,10"/>
                                 <TextBlock x:Name="DescriptionTitleText"
-                                           Foreground="White"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
                                            FontSize="15"
                                            FontWeight="SemiBold"
                                            TextWrapping="Wrap"
                                            Margin="0,0,0,8"/>
                                 <TextBlock x:Name="DescriptionChannelText"
-                                           Foreground="#A0A0A0"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
                                            TextWrapping="Wrap"
                                            Margin="0,0,0,10"/>
                                 <TextBlock x:Name="DescriptionBodyText"
-                                           Foreground="#CFCFCF"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
                                            TextWrapping="Wrap"/>
                             </StackPanel>
@@ -636,20 +632,20 @@
                     Padding="18"
                     Visibility="Collapsed">
                 <StackPanel>
-                    <TextBlock Text="Link copied"
+                    <TextBlock x:Uid="Loc_LinkCopied_Text"
                                Foreground="White"
                                FontSize="18"
                                FontWeight="SemiBold"
                                TextAlignment="Center"
                                Margin="0,0,0,8"/>
-                    <TextBlock Text="Shorts link has been copied to clipboard"
+                    <TextBlock x:Uid="Loc_ShortsLinkHasBeenCopiedToClipboard_Text"
                                Foreground="#CFCFCF"
                                FontSize="13"
                                TextWrapping="Wrap"
                                TextAlignment="Center"
                                Margin="0,0,0,16"/>
                     <Button x:Name="CopiedPopupOkButton"
-                            Content="OK"
+                            x:Uid="Loc_OK_Content"
                             HorizontalAlignment="Stretch"
                             Click="CopiedPopupOkButton_Click"/>
                 </StackPanel>
@@ -664,7 +660,7 @@
                     Padding="18"
                     Visibility="Collapsed">
                 <StackPanel>
-                    <TextBlock Text="QR code"
+                    <TextBlock x:Uid="Loc_QRCode_Text"
                                Foreground="White"
                                FontSize="18"
                                FontWeight="SemiBold"
@@ -681,8 +677,7 @@
                             <Image x:Name="QrCodeImage" Stretch="Uniform"/>
                         </Border>
                     </Border>
-                    <Button x:Name="QrPopupCloseButton"
-                            Content="Close"
+                    <Button x:Uid="Loc_Close_Content" x:Name="QrPopupCloseButton"
                             HorizontalAlignment="Stretch"
                             Click="QrPopupCloseButton_Click"/>
                 </StackPanel>
@@ -758,7 +753,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" local:ThemeAsset.Path="Assets/player/quality.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock Grid.Column="1" Text="Quality" Foreground="White" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Uid="Loc_Quality_Text" Grid.Column="1" Foreground="White" VerticalAlignment="Center" FontSize="16"/>
                             <TextBlock Grid.Column="2" x:Name="ShortsQualityValueText" Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="14" Margin="8,0,0,0"/>
                             <Image Grid.Column="3" local:ThemeAsset.Path="Assets/Dark/player/skip.png" Width="16" Height="16" Margin="14,0,0,0" Opacity="0.6"/>
                         </Grid>
@@ -781,7 +776,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" local:ThemeAsset.Path="Assets/player/speed.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock Grid.Column="1" Text="Playback speed" Foreground="White" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Uid="Loc_PlaybackSpeed_Text" Grid.Column="1" Foreground="White" VerticalAlignment="Center" FontSize="16"/>
                             <TextBlock Grid.Column="2" x:Name="ShortsSpeedValueText" Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="14" Margin="8,0,0,0"/>
                             <Image Grid.Column="3" local:ThemeAsset.Path="Assets/Dark/player/skip.png" Width="16" Height="16" Margin="14,0,0,0" Opacity="0.6"/>
                         </Grid>
@@ -805,7 +800,7 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" local:ThemeAsset.Path="Assets/player/speed.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock Grid.Column="1" Text="Audio track" Foreground="White" VerticalAlignment="Center" FontSize="16"/>
+                            <TextBlock x:Uid="Loc_AudioTrack_Text" Grid.Column="1" Foreground="White" VerticalAlignment="Center" FontSize="16"/>
                             <TextBlock Grid.Column="2" x:Name="ShortsAudioValueText" Foreground="#AAAAAA" VerticalAlignment="Center" FontSize="14" Margin="8,0,0,0"/>
                             <Image Grid.Column="3" local:ThemeAsset.Path="Assets/Dark/player/skip.png" Width="16" Height="16" Margin="14,0,0,0" Opacity="0.6"/>
                         </Grid>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
@@ -38,7 +39,26 @@ namespace YouTube
         public Tabbar()
         {
             this.InitializeComponent();
-            InitializeTabBar();
+
+            // The VS2015 XAML designer instantiates this Page while rendering parent pages
+            // such as Settings.xaml. Do not touch LocalSettings/network-backed account state
+            // in design mode; older UWP designers can otherwise report
+            // "Cannot create an instance of Tabbar".
+            if (DesignMode.DesignModeEnabled)
+            {
+                return;
+            }
+
+            try
+            {
+                InitializeTabBar();
+            }
+            catch (Exception ex)
+            {
+                // A tab bar should never prevent its parent page from being constructed.
+                // Runtime state is refreshed again by the owning page when it loads.
+                System.Diagnostics.Debug.WriteLine("Tabbar initialization failed: " + ex.Message);
+            }
         }
 
         private void InitializeTabBar()
