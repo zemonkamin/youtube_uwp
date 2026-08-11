@@ -847,4 +847,10 @@ Verze {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Kvalita miniatury</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Ikony kanálů</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Zobrazit ikony kanálů na kartách videí</value>
+  </data>
 </root>

@@ -847,4 +847,10 @@ Versie {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Miniatuurkwaliteit</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Kanaalpictogrammen</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Kanaalpictogrammen op videokaarten weergeven</value>
+  </data>
 </root>

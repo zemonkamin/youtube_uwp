@@ -48,6 +48,7 @@ namespace YouTube
         private Storyboard _scrubPreviewToggleStoryboard;
         private Storyboard _autoFullscreenLandscapeToggleStoryboard;
         private Storyboard _liveTileToggleStoryboard;
+        private Storyboard _channelIconsToggleStoryboard;
 
         public Settings()
         {
@@ -75,6 +76,7 @@ namespace YouTube
             EnsurePreferredVideoQualityDefault();
             UpdatePreferredQualityText();
             UpdateThumbnailQualityText();
+            UpdateChannelIconsToggleVisual(ChannelIconController.IsEnabled(), false);
             BuildQualityOptions();
             EnsureScrubPreviewDefault();
             UpdateScrubPreviewToggleVisual(IsScrubPreviewEnabled(), false);
@@ -216,6 +218,10 @@ namespace YouTube
                 LiveTileLabelText.Text = Localization.GetString("LiveTile");
             if (LiveTileDescriptionText != null)
                 LiveTileDescriptionText.Text = Localization.GetString("LiveTileDescription");
+            if (ChannelIconsLabelText != null)
+                ChannelIconsLabelText.Text = Localization.GetString("ChannelIcons");
+            if (ChannelIconsDescriptionText != null)
+                ChannelIconsDescriptionText.Text = Localization.GetString("ChannelIconsDescription");
         }
 
         private void UpdateThemeText()
@@ -334,6 +340,65 @@ namespace YouTube
                 if (Frame.BackStack.Count > 0)
                     Frame.BackStack.RemoveAt(Frame.BackStack.Count - 1);
             }
+        }
+
+
+        private void ChannelIconsToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var enabled = !ChannelIconController.IsEnabled();
+            ChannelIconController.SetEnabled(enabled);
+            App.RefreshThemeAssets();
+            UpdateChannelIconsToggleVisual(enabled, true);
+        }
+
+        private void UpdateChannelIconsToggleVisual(bool isOn, bool animate)
+        {
+            if (ChannelIconsToggleTrack == null || ChannelIconsToggleThumbTransform == null)
+                return;
+
+            if (_channelIconsToggleStoryboard != null)
+            {
+                _channelIconsToggleStoryboard.Stop();
+                _channelIconsToggleStoryboard = null;
+            }
+
+            var brush = ChannelIconsToggleTrack.Background as SolidColorBrush;
+            if (brush == null)
+            {
+                brush = new SolidColorBrush(
+                    isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155)));
+                ChannelIconsToggleTrack.Background = brush;
+            }
+
+            const double OnOffset = 20.0;
+            if (!animate)
+            {
+                brush.Color = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155));
+                ChannelIconsToggleThumbTransform.X = isOn ? OnOffset : 0;
+                return;
+            }
+
+            var thumbAnimation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? OnOffset : 0,
+                EnableDependentAnimation = true
+            };
+            var colorAnimation = new ColorAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155))
+            };
+
+            Storyboard.SetTarget(thumbAnimation, ChannelIconsToggleThumbTransform);
+            Storyboard.SetTargetProperty(thumbAnimation, "X");
+            Storyboard.SetTarget(colorAnimation, brush);
+            Storyboard.SetTargetProperty(colorAnimation, "Color");
+
+            _channelIconsToggleStoryboard = new Storyboard();
+            _channelIconsToggleStoryboard.Children.Add(thumbAnimation);
+            _channelIconsToggleStoryboard.Children.Add(colorAnimation);
+            _channelIconsToggleStoryboard.Begin();
         }
 
         private void LiveTileToggleButton_Click(object sender, RoutedEventArgs e)

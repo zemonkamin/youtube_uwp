@@ -71,7 +71,7 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Background="Transparent"
+                            <Button Style="{StaticResource CardButtonStyle}" Background="Transparent"
                                    BorderThickness="0"
                                    Padding="0"
                                    HorizontalAlignment="Stretch"
@@ -86,9 +86,9 @@
                                           HorizontalAlignment="Stretch">
                                     <!-- Video Thumbnail -->
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged"
-                                          CornerRadius="8">
-                                        <Border Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="8" />
-                                        <Border CornerRadius="8">
+                                          Tag="VideoCardThumbnailChrome">
+                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="8" />
+                                        <Border Tag="VideoCardThumbnailChrome" CornerRadius="8">
                                             <Image DataContextChanged="CardThumbnail_DataContextChanged"
                                                    Stretch="UniformToFill"
                                                    VerticalAlignment="Stretch"
@@ -109,17 +109,31 @@
                                     </Grid>
 
                                     <!-- Title and Channel -->
-                                    <StackPanel Margin="0,12,0,0">
-                                        <TextBlock Text="{Binding Title}"
-                                                 TextWrapping="NoWrap"
-                                                 TextTrimming="CharacterEllipsis"
-                                                 Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                                 FontSize="14"/>
-                                        <TextBlock Text="{Binding ChannelTitle}"
-                                                 Foreground="{ThemeResource AppMutedTextBrush}"
-                                                 FontSize="12"
-                                                 Margin="0,4,0,0"/>
-                                    </StackPanel>
+                                    <Grid Tag="VideoCardMetadata" Margin="0,12,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid Grid.Column="0" Width="36" Height="36" VerticalAlignment="Top">
+                                            <Border Background="{ThemeResource AvatarPlaceholderBrush}" />
+                                            <Image Stretch="UniformToFill"
+                                                   DataContextChanged="ChannelIcon_DataContextChanged"
+                                                   Loaded="ChannelIcon_Loaded" />
+                                            <Image Stretch="Fill" IsHitTestVisible="False"
+                                                   local:ThemeAsset.Path="Assets/rounding.png" />
+                                        </Grid>
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                            <TextBlock Text="{Binding Title}"
+                                                     TextWrapping="NoWrap"
+                                                     TextTrimming="CharacterEllipsis"
+                                                     Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                                     FontSize="14"/>
+                                            <TextBlock Text="{Binding ChannelTitle}"
+                                                     Foreground="{ThemeResource AppMutedTextBrush}"
+                                                     FontSize="12"
+                                                     Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
                                 </StackPanel>
                             </Button>
                         </DataTemplate>

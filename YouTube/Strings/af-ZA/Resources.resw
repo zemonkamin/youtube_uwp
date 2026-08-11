@@ -847,4 +847,10 @@ Weergawe {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Duimnaelkwaliteit</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Kanaalikone</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Wys kanaalikone op videokaarte</value>
+  </data>
 </root>

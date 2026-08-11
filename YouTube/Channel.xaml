@@ -276,7 +276,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Background="Transparent"
+                            <Button Style="{StaticResource CardButtonStyle}" Background="Transparent"
                                     BorderThickness="0"
                                     Padding="0"
                                     HorizontalAlignment="Stretch"
@@ -288,9 +288,9 @@
                                     Click="VideoCard_Click">
                                 <StackPanel Orientation="Vertical" Background="{ThemeResource AppBackgroundBrush}"
                                             HorizontalAlignment="Stretch">
-                                    <Grid SizeChanged="VideoThumbnailHost_SizeChanged">
-                                        <Border CornerRadius="8" Background="{ThemeResource AppSurfaceAltBrush}" />
-                                        <Border CornerRadius="8">
+                                    <Grid SizeChanged="VideoThumbnailHost_SizeChanged" Tag="VideoCardThumbnailChrome">
+                                        <Border Tag="VideoCardThumbnailChrome" CornerRadius="8" Background="{ThemeResource AppSurfaceAltBrush}" />
+                                        <Border Tag="VideoCardThumbnailChrome" CornerRadius="8">
                                             <Image DataContextChanged="CardThumbnail_DataContextChanged"
                                                    Stretch="UniformToFill" />
                                         </Border>
@@ -301,14 +301,28 @@
                                                        FontSize="12" FontWeight="Medium" />
                                         </Border>
                                     </Grid>
-                                    <StackPanel Margin="0,12,0,0">
-                                        <TextBlock Text="{Binding Title}" TextWrapping="NoWrap"
-                                                   TextTrimming="CharacterEllipsis" Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                                   FontFamily="Roboto" FontSize="14" FontWeight="Medium" />
-                                        <TextBlock Text="{Binding StatsLine}" TextWrapping="NoWrap"
-                                                   TextTrimming="CharacterEllipsis" Foreground="{ThemeResource AppMutedTextBrush}"
-                                                   FontFamily="Roboto" FontSize="12" Margin="0,4,0,0" />
-                                    </StackPanel>
+                                    <Grid Tag="VideoCardMetadata" Margin="0,12,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid Grid.Column="0" Width="36" Height="36" VerticalAlignment="Top">
+                                            <Border Background="{ThemeResource AvatarPlaceholderBrush}" />
+                                            <Image Stretch="UniformToFill"
+                                                   DataContextChanged="ChannelIcon_DataContextChanged"
+                                                   Loaded="ChannelIcon_Loaded" />
+                                            <Image Stretch="Fill" IsHitTestVisible="False"
+                                                   local:ThemeAsset.Path="Assets/rounding.png" />
+                                        </Grid>
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                            <TextBlock Text="{Binding Title}" TextWrapping="NoWrap"
+                                                       TextTrimming="CharacterEllipsis" Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                                       FontFamily="Roboto" FontSize="14" FontWeight="Medium" />
+                                            <TextBlock Text="{Binding StatsLine}" TextWrapping="NoWrap"
+                                                       TextTrimming="CharacterEllipsis" Foreground="{ThemeResource AppMutedTextBrush}"
+                                                       FontFamily="Roboto" FontSize="12" Margin="0,4,0,0" />
+                                        </StackPanel>
+                                    </Grid>
                                 </StackPanel>
                             </Button>
                         </DataTemplate>
@@ -331,7 +345,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Background="Transparent" BorderThickness="0" Padding="0"
+                            <Button Style="{StaticResource CardButtonStyle}" Background="Transparent" BorderThickness="0" Padding="0"
                                     HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                                     Margin="6,0,6,22" Click="ShortCard_Click">
                                 <Grid SizeChanged="ShortThumbnailHost_SizeChanged">
@@ -377,7 +391,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Background="Transparent" BorderThickness="0" Padding="0"
+                            <Button Style="{StaticResource CardButtonStyle}" Background="Transparent" BorderThickness="0" Padding="0"
                                     HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                                     Tag="ResponsiveCard" Loaded="ResponsiveCard_Loaded"
                                     SizeChanged="ResponsiveCard_SizeChanged" Margin="0,0,0,16"

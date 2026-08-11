@@ -847,4 +847,10 @@ Različica {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Kakovost sličice</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Ikone kanalov</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Prikaži ikone kanalov na karticah videoposnetkov</value>
+  </data>
 </root>

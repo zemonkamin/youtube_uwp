@@ -847,4 +847,10 @@
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>ຄຸນນະພາບຮູບຕົວຢ່າງ</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>ໄອຄອນຊ່ອງ</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>ສະແດງໄອຄອນຊ່ອງໃນບັດວິດີໂອ</value>
+  </data>
 </root>

@@ -148,7 +148,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Width="160"
+                                    <Button Style="{StaticResource CardButtonStyle}" Width="160"
                                             Margin="0,0,16,0"
                                             Padding="0"
                                             Background="Transparent"
@@ -157,12 +157,14 @@
                                             Click="VideoCard_Click">
                                         <StackPanel>
                                             <Grid Width="160" Height="90">
-                                                <Border CornerRadius="8">
-                                                    <Image DataContextChanged="HistoryThumbnail_DataContextChanged"
-                                                           Stretch="UniformToFill"
-                                                           HorizontalAlignment="Stretch"
-                                                           VerticalAlignment="Stretch" />
-                                                </Border>
+                                                <Border Background="{ThemeResource AppSurfaceAltBrush}"/>
+                                                <Image DataContextChanged="HistoryThumbnail_DataContextChanged"
+                                                       Stretch="UniformToFill"
+                                                       HorizontalAlignment="Stretch"
+                                                       VerticalAlignment="Stretch" />
+                                                <Image Stretch="Fill"
+                                                       IsHitTestVisible="False"
+                                                       local:ThemeAsset.Path="Assets/rounding_up.png"/>
                                                 <Border HorizontalAlignment="Right"
                                                         VerticalAlignment="Bottom"
                                                         Margin="0,0,4,4"
@@ -178,9 +180,9 @@
                                             <TextBlock Text="{Binding Title}"
                                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                        FontSize="13"
-                                                       TextWrapping="Wrap"
+                                                       TextWrapping="NoWrap"
                                                        TextTrimming="CharacterEllipsis"
-                                                       MaxLines="2"
+                                                       MaxLines="1"
                                                        Margin="0,6,0,0"/>
                                             <TextBlock Text="{Binding ChannelTitle}"
                                                        Foreground="{ThemeResource AppSecondaryTextBrush}"
@@ -223,7 +225,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Width="160"
+                                    <Button Style="{StaticResource CardButtonStyle}" Width="160"
                                             Margin="0,0,16,0"
                                             Padding="0"
                                             Background="Transparent"
@@ -232,19 +234,23 @@
                                             Click="PlaylistCard_Click">
                                         <StackPanel>
                                             <Grid Width="160" Height="90">
-                                                <Border CornerRadius="8">
+                                                <Border Background="{ThemeResource AppSurfaceAltBrush}"/>
+                                                <Border>
                                                     <Border.Background>
                                                         <ImageBrush ImageSource="{Binding ThumbnailUrl}"
                                                                     Stretch="UniformToFill"/>
                                                     </Border.Background>
                                                 </Border>
+                                                <Image Stretch="Fill"
+                                                       IsHitTestVisible="False"
+                                                       local:ThemeAsset.Path="Assets/rounding_up.png"/>
                                             </Grid>
                                             <TextBlock Text="{Binding Title}"
                                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                        FontSize="13"
-                                                       TextWrapping="Wrap"
+                                                       TextWrapping="NoWrap"
                                                        TextTrimming="CharacterEllipsis"
-                                                       MaxLines="2"
+                                                       MaxLines="1"
                                                        Margin="0,6,0,0"/>
                                             <TextBlock Text="{Binding PrivacyText}"
                                                        Foreground="{ThemeResource AppSecondaryTextBrush}"

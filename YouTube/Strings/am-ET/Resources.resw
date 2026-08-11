@@ -847,4 +847,10 @@
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>የትንሽ ምስል ጥራት</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>የሰርጥ አዶዎች</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>በቪዲዮ ካርዶች ላይ የሰርጥ አዶዎችን አሳይ</value>
+  </data>
 </root>

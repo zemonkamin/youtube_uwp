@@ -847,4 +847,10 @@ Sürüm {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Küçük resim kalitesi</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Kanal simgeleri</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Video kartlarında kanal simgelerini göster</value>
+  </data>
 </root>

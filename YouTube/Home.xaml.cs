@@ -18,6 +18,8 @@ using Windows.UI.Xaml.Media.Imaging;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
+using Windows.UI.Xaml.Shapes;
+
 namespace YouTube
 {
     /// <summary>
@@ -1191,6 +1193,20 @@ namespace YouTube
             VideoThumbnailController.Assign(image, item.VideoId, item.ThumbnailUrl, 360);
         }
 
+        private void ChannelIcon_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var image = sender as Image;
+            var item = args.NewValue as VideoCardItem;
+            ChannelIconController.Assign(image, item == null ? string.Empty : item.ChannelThumbnailUrl);
+        }
+
+        private void ChannelIcon_Loaded(object sender, RoutedEventArgs e)
+        {
+            var image = sender as Image;
+            var item = image == null ? null : image.DataContext as VideoCardItem;
+            ChannelIconController.Assign(image, item == null ? string.Empty : item.ChannelThumbnailUrl);
+        }
+
         private void VideoThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             var host = sender as FrameworkElement;
@@ -1287,6 +1303,8 @@ namespace YouTube
             {
                 element.Margin = targetMargin;
             }
+
+            VideoCardController.ApplyResponsiveLayout(element, IsPortraitOrientation());
         }
 
         private void UpdateResponsiveCardMargins(DependencyObject root)

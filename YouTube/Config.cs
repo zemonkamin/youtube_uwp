@@ -59,6 +59,11 @@ public static class Config
     }
 
     private static readonly Dictionary<string, VideoListCacheEntry> _videoListCache = new Dictionary<string, VideoListCacheEntry>(StringComparer.Ordinal);
+    private static readonly Dictionary<string, string> _channelAvatarById = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, string> _channelAvatarByTitle = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+    private static readonly Dictionary<string, Task<string>> _channelAvatarLookupTasks = new Dictionary<string, Task<string>>(StringComparer.OrdinalIgnoreCase);
+    private static readonly SemaphoreSlim _channelAvatarNetworkGate = new SemaphoreSlim(4);
+    private static bool _channelDataApiUnavailable;
     private static SubscriptionsCacheEntry _subscriptionsCache;
     private static AccountCacheEntry _accountCache;
 
@@ -321,6 +326,7 @@ public static class Config
         List<SubscriptionChannel> cachedSubscriptions;
         if (TryGetCachedSubscriptions(refreshToken, out cachedSubscriptions))
         {
+            RememberSubscriptionChannelAvatars(cachedSubscriptions);
             return cachedSubscriptions;
         }
 
@@ -358,6 +364,7 @@ public static class Config
             System.Diagnostics.Debug.WriteLine($"[Subscriptions] Got response, length: {json.Length}");
             
             var parsed = ParseSubscribedChannels(json);
+            RememberSubscriptionChannelAvatars(parsed);
             SaveCachedSubscriptions(refreshToken, parsed);
             return parsed;
         }
@@ -384,6 +391,12 @@ public static class Config
         List<VideoCardItem> cachedVideos;
         if (TryGetCachedVideoList(refreshToken, cacheKey, out cachedVideos))
         {
+            ApplyKnownChannelIdToVideos(cachedVideos, channelId);
+            if (HasMissingChannelThumbnails(cachedVideos))
+            {
+                var cachedAccessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
+                await HydrateMissingChannelThumbnailsAsync(cachedVideos, cachedAccessToken).ConfigureAwait(false);
+            }
             return cachedVideos;
         }
 
@@ -420,6 +433,8 @@ public static class Config
             System.Diagnostics.Debug.WriteLine($"[ChannelVideos] Got response, length: {json.Length}");
             
             var videos = ParseVideoCards(json);
+            ApplyKnownChannelIdToVideos(videos, channelId);
+            await HydrateMissingChannelThumbnailsAsync(videos, accessToken).ConfigureAwait(false);
             SaveCachedVideoList(refreshToken, cacheKey, videos);
             System.Diagnostics.Debug.WriteLine($"[ChannelVideos] Total videos parsed: {videos.Count}");
             return videos;
@@ -487,6 +502,7 @@ public static class Config
         }
 
         page.Videos = ParseVideoCards(json, count);
+        await HydrateMissingChannelThumbnailsAsync(page.Videos, accessToken).ConfigureAwait(false);
 
         try
         {
@@ -652,7 +668,7 @@ public static class Config
 
         if (string.Equals(category.ClientName, "ANDROID", StringComparison.OrdinalIgnoreCase))
         {
-            return GetAndroidHomeCategoryVideosAsync(category, count);
+            return GetAndroidHomeCategoryVideosAsync(refreshToken, category, count);
         }
 
         if (category.UseWebClient || string.Equals(category.ClientName, "WEB", StringComparison.OrdinalIgnoreCase))
@@ -729,7 +745,18 @@ public static class Config
             return empty;
         }
 
-        return ParseHistoryFeedPage(json, count);
+        var page = ParseHistoryFeedPage(json, count);
+        if (page != null && page.Groups != null)
+        {
+            var allVideos = new List<VideoCardItem>();
+            foreach (var group in page.Groups)
+            {
+                if (group != null && group.Videos != null)
+                    allVideos.AddRange(group.Videos);
+            }
+            await HydrateMissingChannelThumbnailsAsync(allVideos, accessToken).ConfigureAwait(false);
+        }
+        return page;
     }
 
     private static async Task<string> PostHistoryBrowseAsync(string accessToken, string continuationToken)
@@ -777,6 +804,7 @@ public static class Config
         List<VideoCardItem> cachedVideos;
         if (TryGetCachedVideoList(anonymousCacheToken, cacheKey, out cachedVideos))
         {
+            await HydrateChannelThumbnailsWithRefreshTokenAsync(cachedVideos, refreshToken).ConfigureAwait(false);
             return cachedVideos;
         }
 
@@ -792,11 +820,12 @@ public static class Config
             System.Diagnostics.Debug.WriteLine("[HomeCategories] WEB category empty, falling back to anonymous search: " + category.Title);
             videos = await GetAnonymousSearchVideosAsync(category.Title, count).ConfigureAwait(false);
         }
+        await HydrateChannelThumbnailsWithRefreshTokenAsync(videos, refreshToken).ConfigureAwait(false);
         SaveCachedVideoList(anonymousCacheToken, cacheKey, videos);
         return videos;
     }
 
-    private static async Task<List<VideoCardItem>> GetAndroidHomeCategoryVideosAsync(HomeCategoryItem category, int count)
+    private static async Task<List<VideoCardItem>> GetAndroidHomeCategoryVideosAsync(string refreshToken, HomeCategoryItem category, int count)
     {
         if (category == null)
         {
@@ -808,6 +837,7 @@ public static class Config
         List<VideoCardItem> cachedVideos;
         if (TryGetCachedVideoList(anonymousCacheToken, cacheKey, out cachedVideos))
         {
+            await HydrateChannelThumbnailsWithRefreshTokenAsync(cachedVideos, refreshToken).ConfigureAwait(false);
             return cachedVideos;
         }
 
@@ -822,6 +852,7 @@ public static class Config
             System.Diagnostics.Debug.WriteLine("[HomeCategories] ANDROID category empty, falling back to anonymous search: " + category.Title);
             videos = await GetAnonymousSearchVideosAsync(category.Title, count).ConfigureAwait(false);
         }
+        await HydrateChannelThumbnailsWithRefreshTokenAsync(videos, refreshToken).ConfigureAwait(false);
         SaveCachedVideoList(anonymousCacheToken, cacheKey, videos);
         return videos;
     }
@@ -883,6 +914,7 @@ public static class Config
         List<VideoCardItem> cachedVideos;
         if (TryGetCachedVideoList(anonymousCacheToken, cacheKey, out cachedVideos))
         {
+            await HydrateChannelThumbnailsWithRefreshTokenAsync(cachedVideos, refreshToken).ConfigureAwait(false);
             return cachedVideos;
         }
 
@@ -894,6 +926,7 @@ public static class Config
             System.Diagnostics.Debug.WriteLine("[HomeCategories] TV category empty, falling back to anonymous search: " + browseId);
             videos = await GetAnonymousSearchVideosAsync(browseId, count).ConfigureAwait(false);
         }
+        await HydrateChannelThumbnailsWithRefreshTokenAsync(videos, refreshToken).ConfigureAwait(false);
         SaveCachedVideoList(anonymousCacheToken, cacheKey, videos);
         return videos;
     }
@@ -1447,6 +1480,11 @@ public static class Config
         var cacheKey = BuildVideoListCacheKey("browse", browseId, null, count);
         if (TryGetCachedVideoList(refreshToken, cacheKey, out cachedVideos))
         {
+            if (HasMissingChannelThumbnails(cachedVideos))
+            {
+                var cachedAccessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
+                await HydrateMissingChannelThumbnailsAsync(cachedVideos, cachedAccessToken).ConfigureAwait(false);
+            }
             return cachedVideos;
         }
 
@@ -1481,6 +1519,7 @@ public static class Config
             System.Diagnostics.Debug.WriteLine($"[GetBrowseVideos] Got response for {browseId}, length: {json.Length}");
             
             var videos = ParseVideoCards(json, count);
+            await HydrateMissingChannelThumbnailsAsync(videos, accessToken).ConfigureAwait(false);
             SaveCachedVideoList(refreshToken, cacheKey, videos);
             System.Diagnostics.Debug.WriteLine($"[GetBrowseVideos] Total videos parsed for {browseId}: {videos.Count}");
             return videos;
@@ -1505,6 +1544,15 @@ public static class Config
         System.Diagnostics.Debug.WriteLine("[HomeCategories] Loading TV continuation anonymously");
         var json = await PostTvBrowseAsync(null, null, null, continuationToken).ConfigureAwait(false);
         var videos = ParseVideoCards(json, count);
+        if (!string.IsNullOrWhiteSpace(refreshToken) && HasMissingChannelThumbnails(videos))
+        {
+            var accessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
+            await HydrateMissingChannelThumbnailsAsync(videos, accessToken).ConfigureAwait(false);
+        }
+        else
+        {
+            await HydrateMissingChannelThumbnailsAsync(videos, string.Empty).ConfigureAwait(false);
+        }
         SaveCachedVideoList(anonymousCacheToken, cacheKey, videos);
         return videos;
     }
@@ -2673,6 +2721,12 @@ public static class Config
             }
         }
 
+        if (details != null && details.Videos != null)
+        {
+            RememberChannelAvatar(string.Empty, details.OwnerName, details.OwnerThumbnailUrl);
+            await HydrateMissingChannelThumbnailsAsync(details.Videos, accessToken).ConfigureAwait(false);
+        }
+
         return details;
     }
 
@@ -2739,6 +2793,7 @@ public static class Config
             System.Diagnostics.Debug.WriteLine("[Playlist] Continuation token parse error: " + ex.Message);
         }
 
+        await HydrateMissingChannelThumbnailsAsync(details.Videos, accessToken).ConfigureAwait(false);
         System.Diagnostics.Debug.WriteLine("[Playlist] Continuation parsed videos: " + (details.Videos != null ? details.Videos.Count : 0) + ", has more: " + (!string.IsNullOrWhiteSpace(details.ContinuationToken)).ToString());
         return details;
     }
@@ -3081,6 +3136,9 @@ public static class Config
             VideoId = videoId,
             Title = title,
             ChannelTitle = channelTitle,
+            ChannelId = snippet == null ? string.Empty : FirstNonEmpty(
+                GetJsonString(snippet, "videoOwnerChannelId"),
+                GetJsonString(snippet, "channelId")),
             Duration = string.Empty,
             ThumbnailUrl = FirstNonEmpty(thumbnailUrl, BuildMqThumbnailUrl(videoId))
         };
@@ -7973,6 +8031,166 @@ public static class Config
         return result;
     }
 
+    internal static string ExtractVideoCardChannelId(JsonObject renderer)
+    {
+        if (renderer == null)
+            return string.Empty;
+
+        // The author/channel endpoint is normally attached to one of the byline text fields.
+        // Read those first so menu endpoints from unrelated actions cannot win.
+        var bylineKeys = new[]
+        {
+            "ownerText",
+            "shortBylineText",
+            "longBylineText",
+            "bylineText",
+            "shortBylineTextViewModel",
+            // TVHTML5 tileRenderer stores "Go to channel" under the long-press menu rather
+            // than next to the visible channel text. Keep it ahead of the broad fallback.
+            "onLongPressCommand",
+            "navigationEndpoint",
+            "metadata"
+        };
+
+        for (var i = 0; i < bylineKeys.Length; i++)
+        {
+            var key = bylineKeys[i];
+            if (!renderer.ContainsKey(key))
+                continue;
+
+            try
+            {
+                var id = ExtractChannelIdFromAnyValue(renderer.GetNamedValue(key), 240);
+                if (!string.IsNullOrWhiteSpace(id))
+                    return id;
+            }
+            catch
+            {
+            }
+        }
+
+        // New lockup view-models can place the author endpoint deeper in metadata. Keep the
+        // fallback bounded and only accept real UC channel ids.
+        return ExtractChannelIdFromAnyValue(renderer, 700);
+    }
+
+    private static string ExtractChannelIdFromAnyValue(IJsonValue value, int maxObjects)
+    {
+        if (value == null)
+            return string.Empty;
+
+        try
+        {
+            foreach (var obj in EnumerateObjects(value, maxObjects))
+            {
+                var id = GetJsonString(obj, "channelId");
+                if (IsYouTubeChannelId(id))
+                    return id;
+
+                id = GetJsonString(obj, "browseId");
+                if (IsYouTubeChannelId(id))
+                    return id;
+
+                if (obj.ContainsKey("browseEndpoint") && obj.GetNamedValue("browseEndpoint").ValueType == JsonValueType.Object)
+                {
+                    id = GetJsonString(obj.GetNamedObject("browseEndpoint"), "browseId");
+                    if (IsYouTubeChannelId(id))
+                        return id;
+                }
+            }
+        }
+        catch
+        {
+        }
+
+        return string.Empty;
+    }
+
+    private static bool IsYouTubeChannelId(string value)
+    {
+        return !string.IsNullOrWhiteSpace(value)
+            && value.Length >= 20
+            && value.StartsWith("UC", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string ExtractChannelThumbnailSupportedRenderer(JsonObject renderer)
+    {
+        if (renderer == null || !renderer.ContainsKey("channelThumbnailSupportedRenderers"))
+            return string.Empty;
+
+        try
+        {
+            var supported = renderer.GetNamedObject("channelThumbnailSupportedRenderers");
+            if (supported.ContainsKey("channelThumbnailWithLinkRenderer"))
+            {
+                var linked = supported.GetNamedObject("channelThumbnailWithLinkRenderer");
+                var url = ExtractBestThumbnailUrl(linked, "thumbnail");
+                if (!string.IsNullOrWhiteSpace(url))
+                    return url;
+            }
+
+            return ExtractFirstUrlFromAnyValue(supported);
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
+
+    internal static string ExtractVideoCardChannelThumbnail(JsonObject renderer)
+    {
+        if (renderer == null)
+            return string.Empty;
+
+        // Fast paths used by the renderer families seen in current WEB responses:
+        // videoRenderer -> channelThumbnailSupportedRenderers.channelThumbnailWithLinkRenderer.thumbnail
+        // compactVideoRenderer -> channelThumbnail
+        var url = FirstNonEmpty(
+            ExtractBestThumbnailUrl(renderer, "channelThumbnail"),
+            ExtractBestThumbnailUrl(renderer, "authorThumbnail"),
+            ExtractBestThumbnailUrl(renderer, "ownerThumbnail"),
+            ExtractChannelThumbnailSupportedRenderer(renderer));
+        if (!string.IsNullOrWhiteSpace(url))
+            return url;
+
+        // Newer WEB responses move the avatar into nested view-model objects. Walk the card
+        // once and only inspect channel/avatar-specific branches; never fall back to the main
+        // video thumbnail and never issue a separate channel request.
+        var keys = new[]
+        {
+            "channelThumbnail",
+            "authorThumbnail",
+            "channelThumbnailSupportedRenderers",
+            "decoratedAvatarViewModel",
+            "avatarViewModel",
+            "channelAvatar",
+            "ownerThumbnail",
+            "avatar"
+        };
+
+        foreach (var obj in EnumerateObjects(renderer, 320))
+        {
+            for (var i = 0; i < keys.Length; i++)
+            {
+                var key = keys[i];
+                if (!obj.ContainsKey(key))
+                    continue;
+
+                try
+                {
+                    url = ExtractFirstUrlFromAnyValue(obj.GetNamedValue(key));
+                    if (!string.IsNullOrWhiteSpace(url))
+                        return url;
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        return string.Empty;
+    }
+
     internal static VideoCardItem ParseVideoRenderer(JsonObject renderer)
     {
         if (renderer == null) return null;
@@ -7990,6 +8208,8 @@ public static class Config
             VideoId = videoId,
             Title = ExtractTextFromField(renderer, "title", Localization.GetString("Untitled")),
             ChannelTitle = channelTitle,
+            ChannelId = ExtractVideoCardChannelId(renderer),
+            ChannelThumbnailUrl = ExtractVideoCardChannelThumbnail(renderer),
             Duration = FirstNonEmpty(
                 ExtractTextFromField(renderer, "lengthText", string.Empty),
                 ExtractDurationFromOverlays(renderer),
@@ -8030,6 +8250,8 @@ public static class Config
                 ExtractTextFromField(renderer, "longBylineText", string.Empty),
                 ExtractTextFromField(renderer, "ownerText", string.Empty),
                 "Unknown"),
+            ChannelId = ExtractVideoCardChannelId(renderer),
+            ChannelThumbnailUrl = ExtractVideoCardChannelThumbnail(renderer),
             Duration = FirstNonEmpty(
                 ExtractTextFromField(renderer, "lengthText", string.Empty),
                 ExtractDurationFromOverlays(renderer),
@@ -8083,6 +8305,8 @@ public static class Config
                 ExtractLockupMetadataPart(renderer, 0, 0),
                 ExtractLockupChannelTitle(renderer),
                 "Unknown"),
+            ChannelId = ExtractVideoCardChannelId(renderer),
+            ChannelThumbnailUrl = ExtractVideoCardChannelThumbnail(renderer),
             Duration = FirstNonEmpty(ExtractDurationFromAnyValue(renderer), string.Empty),
             ThumbnailUrl = FirstNonEmpty(
                 ExtractBestThumbnailUrl(renderer, "thumbnail"),
@@ -8266,6 +8490,8 @@ public static class Config
                 ExtractTextFromField(renderer, "shortBylineText", string.Empty),
                 ExtractLockupChannelTitle(renderer),
                 "Unknown"),
+            ChannelId = ExtractVideoCardChannelId(renderer),
+            ChannelThumbnailUrl = ExtractVideoCardChannelThumbnail(renderer),
             Duration = string.Empty,
             ThumbnailUrl = FirstNonEmpty(
                 ExtractBestThumbnailUrl(renderer, "thumbnail"),
@@ -8304,6 +8530,8 @@ public static class Config
                 ExtractShortsLockupText(renderer, "secondaryText"),
                 ExtractLockupChannelTitle(renderer),
                 "Unknown"),
+            ChannelId = ExtractVideoCardChannelId(renderer),
+            ChannelThumbnailUrl = ExtractVideoCardChannelThumbnail(renderer),
             Duration = string.Empty,
             ThumbnailUrl = FirstNonEmpty(
                 ExtractBestThumbnailUrl(renderer, "thumbnail"),
@@ -8651,6 +8879,8 @@ public static class Config
             VideoId = videoId,
             Title = title,
             ChannelTitle = channelTitle,
+            ChannelId = ExtractVideoCardChannelId(renderer),
+            ChannelThumbnailUrl = ExtractVideoCardChannelThumbnail(renderer),
             Duration = FirstNonEmpty(
                 ExtractTextFromField(renderer, "lengthText", string.Empty),
                 ExtractDurationFromOverlays(renderer),
@@ -8782,6 +9012,8 @@ public static class Config
             VideoId = videoId,
             Title = title,
             ChannelTitle = channelTitle,
+            ChannelId = ExtractVideoCardChannelId(tileRenderer),
+            ChannelThumbnailUrl = ExtractVideoCardChannelThumbnail(tileRenderer),
             Duration = duration,
             ThumbnailUrl = BuildMqThumbnailUrl(videoId),
             ViewCount = viewCount,
@@ -9059,6 +9291,375 @@ public static class Config
         // separate accounts in memory and avoids keeping another full token copy.
         var tailLength = Math.Min(16, refreshToken.Length);
         return refreshToken.Length.ToString(System.Globalization.CultureInfo.InvariantCulture) + ":" + refreshToken.Substring(refreshToken.Length - tailLength, tailLength);
+    }
+
+    private static void RememberSubscriptionChannelAvatars(List<SubscriptionChannel> channels)
+    {
+        if (channels == null || channels.Count == 0)
+            return;
+
+        for (var i = 0; i < channels.Count; i++)
+        {
+            var channel = channels[i];
+            if (channel == null)
+                continue;
+
+            RememberChannelAvatar(channel.ChannelId, channel.ChannelName, channel.ThumbnailUrl);
+        }
+    }
+
+    private static void RememberChannelAvatar(string channelId, string channelTitle, string thumbnailUrl)
+    {
+        if (string.IsNullOrWhiteSpace(thumbnailUrl))
+            return;
+
+        var cleanUrl = thumbnailUrl.Trim();
+        lock (_cacheGate)
+        {
+            if (!string.IsNullOrWhiteSpace(channelId))
+                _channelAvatarById[channelId.Trim()] = cleanUrl;
+
+            if (!string.IsNullOrWhiteSpace(channelTitle))
+                _channelAvatarByTitle[channelTitle.Trim()] = cleanUrl;
+        }
+    }
+
+    private static void ApplyKnownChannelIdToVideos(List<VideoCardItem> videos, string channelId)
+    {
+        if (videos == null || videos.Count == 0 || !IsYouTubeChannelId(channelId))
+            return;
+
+        for (var i = 0; i < videos.Count; i++)
+        {
+            var item = videos[i];
+            if (item != null && string.IsNullOrWhiteSpace(item.ChannelId))
+                item.ChannelId = channelId;
+        }
+    }
+
+    private static void RememberChannelAvatar(VideoCardItem item)
+    {
+        if (item == null)
+            return;
+
+        RememberChannelAvatar(item.ChannelId, item.ChannelTitle, item.ChannelThumbnailUrl);
+    }
+
+    private static string GetRememberedChannelAvatar(VideoCardItem item)
+    {
+        if (item == null)
+            return string.Empty;
+
+        lock (_cacheGate)
+        {
+            string value;
+            if (!string.IsNullOrWhiteSpace(item.ChannelId)
+                && _channelAvatarById.TryGetValue(item.ChannelId.Trim(), out value))
+                return value;
+
+            if (!string.IsNullOrWhiteSpace(item.ChannelTitle)
+                && _channelAvatarByTitle.TryGetValue(item.ChannelTitle.Trim(), out value))
+                return value;
+        }
+
+        return string.Empty;
+    }
+
+    private static async Task HydrateChannelThumbnailsWithRefreshTokenAsync(List<VideoCardItem> videos, string refreshToken)
+    {
+        if (videos == null || videos.Count == 0 || !ChannelIconController.IsEnabled())
+            return;
+
+        // First use direct renderer URLs and the in-memory cache. Only ask the Data API when
+        // the renderer omitted an avatar but did provide a real UC channel id.
+        await HydrateMissingChannelThumbnailsAsync(videos, string.Empty).ConfigureAwait(false);
+        if (!HasMissingChannelThumbnails(videos) || string.IsNullOrWhiteSpace(refreshToken))
+            return;
+
+        var accessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
+        if (!string.IsNullOrWhiteSpace(accessToken))
+            await HydrateMissingChannelThumbnailsAsync(videos, accessToken).ConfigureAwait(false);
+    }
+
+    private static bool HasMissingChannelThumbnails(List<VideoCardItem> videos)
+    {
+        if (videos == null || videos.Count == 0 || !ChannelIconController.IsEnabled())
+            return false;
+
+        for (var i = 0; i < videos.Count; i++)
+        {
+            var item = videos[i];
+            if (item != null
+                && string.IsNullOrWhiteSpace(item.ChannelThumbnailUrl)
+                && IsYouTubeChannelId(item.ChannelId))
+                return true;
+        }
+
+        return false;
+    }
+
+    internal static async Task HydrateMissingChannelThumbnailsAsync(List<VideoCardItem> videos, string accessToken)
+    {
+        if (videos == null || videos.Count == 0 || !ChannelIconController.IsEnabled())
+            return;
+
+        // 1) Renderer URL / already-known channel cache. This is always the fastest path.
+        for (var i = 0; i < videos.Count; i++)
+        {
+            var item = videos[i];
+            if (item == null)
+                continue;
+
+            if (!string.IsNullOrWhiteSpace(item.ChannelThumbnailUrl))
+            {
+                RememberChannelAvatar(item);
+                continue;
+            }
+
+            var remembered = GetRememberedChannelAvatar(item);
+            if (!string.IsNullOrWhiteSpace(remembered))
+                item.ChannelThumbnailUrl = remembered;
+        }
+
+        var missingIds = CollectMissingChannelIds(videos);
+        if (missingIds.Count == 0)
+            return;
+
+        // 2) Keep the single-request Data API batch as an optional fast path when the current
+        // account token allows it. The TV device-flow token used by older installs commonly lacks
+        // a YouTube Data API v3 scope; after the first 401/403 we disable this path for the process
+        // instead of paying for the same rejected request on every feed.
+        var canTryDataApi = !string.IsNullOrWhiteSpace(accessToken);
+        lock (_cacheGate)
+        {
+            if (_channelDataApiUnavailable)
+                canTryDataApi = false;
+        }
+
+        if (canTryDataApi)
+        {
+            await TryHydrateChannelThumbnailsViaDataApiAsync(missingIds, accessToken).ConfigureAwait(false);
+            ApplyRememberedChannelAvatars(videos);
+            missingIds = CollectMissingChannelIds(videos);
+        }
+
+        if (missingIds.Count == 0)
+            return;
+
+        // 3) Reliable fallback for the TVHTML5 feeds used by Home/Subscriptions/Playlist.
+        // Those cards often keep the UC channel id but omit the avatar itself. Resolve channel
+        // metadata through anonymous WEB Innertube. Lookups are de-duplicated globally, cached,
+        // and limited to four simultaneous requests so Windows 10 Mobile is not flooded.
+        var tasks = new List<Task<string>>();
+        for (var i = 0; i < missingIds.Count; i++)
+            tasks.Add(GetChannelAvatarViaInnertubeAsync(missingIds[i]));
+
+        if (tasks.Count > 0)
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+
+        ApplyRememberedChannelAvatars(videos);
+    }
+
+    private static List<string> CollectMissingChannelIds(List<VideoCardItem> videos)
+    {
+        var result = new List<string>();
+        if (videos == null)
+            return result;
+
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        for (var i = 0; i < videos.Count; i++)
+        {
+            var item = videos[i];
+            if (item == null
+                || !string.IsNullOrWhiteSpace(item.ChannelThumbnailUrl)
+                || !IsYouTubeChannelId(item.ChannelId))
+                continue;
+
+            var id = item.ChannelId.Trim();
+            if (seen.Add(id))
+                result.Add(id);
+        }
+
+        return result;
+    }
+
+    private static void ApplyRememberedChannelAvatars(List<VideoCardItem> videos)
+    {
+        if (videos == null)
+            return;
+
+        for (var i = 0; i < videos.Count; i++)
+        {
+            var item = videos[i];
+            if (item == null || !string.IsNullOrWhiteSpace(item.ChannelThumbnailUrl))
+                continue;
+
+            var remembered = GetRememberedChannelAvatar(item);
+            if (!string.IsNullOrWhiteSpace(remembered))
+                item.ChannelThumbnailUrl = remembered;
+        }
+    }
+
+    private static async Task TryHydrateChannelThumbnailsViaDataApiAsync(List<string> channelIds, string accessToken)
+    {
+        if (channelIds == null || channelIds.Count == 0 || string.IsNullOrWhiteSpace(accessToken))
+            return;
+
+        for (var offset = 0; offset < channelIds.Count; offset += 50)
+        {
+            var take = Math.Min(50, channelIds.Count - offset);
+            var batch = new List<string>();
+            for (var i = 0; i < take; i++)
+                batch.Add(channelIds[offset + i]);
+
+            var url = "https://www.googleapis.com/youtube/v3/channels?part=snippet&id="
+                + Uri.EscapeDataString(string.Join(",", batch))
+                + "&maxResults=50&prettyPrint=false";
+
+            try
+            {
+                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+                {
+                    request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
+                    request.Headers.TryAddWithoutValidation("User-Agent", WebUserAgent);
+                    var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        if ((int)response.StatusCode == 401 || (int)response.StatusCode == 403)
+                        {
+                            lock (_cacheGate)
+                                _channelDataApiUnavailable = true;
+                        }
+
+                        System.Diagnostics.Debug.WriteLine("[ChannelIcons] Data API batch lookup failed: " + response.StatusCode);
+                        return;
+                    }
+
+                    var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var root = JsonObject.Parse(json);
+                    if (!root.ContainsKey("items") || root.GetNamedValue("items").ValueType != JsonValueType.Array)
+                        continue;
+
+                    var items = root.GetNamedArray("items");
+                    for (var i = 0; i < items.Count; i++)
+                    {
+                        if (items[i].ValueType != JsonValueType.Object)
+                            continue;
+
+                        var channel = items[i].GetObject();
+                        var channelId = GetJsonString(channel, "id");
+                        if (!IsYouTubeChannelId(channelId)
+                            || !channel.ContainsKey("snippet")
+                            || channel.GetNamedValue("snippet").ValueType != JsonValueType.Object)
+                            continue;
+
+                        var snippet = channel.GetNamedObject("snippet");
+                        var title = GetJsonString(snippet, "title");
+                        var avatarUrl = string.Empty;
+                        if (snippet.ContainsKey("thumbnails") && snippet.GetNamedValue("thumbnails").ValueType == JsonValueType.Object)
+                            avatarUrl = ExtractDataApiThumbnailUrl(snippet.GetNamedObject("thumbnails"));
+
+                        RememberChannelAvatar(channelId, title, avatarUrl);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[ChannelIcons] Data API batch lookup exception: " + ex.Message);
+                return;
+            }
+        }
+    }
+
+    private static Task<string> GetChannelAvatarViaInnertubeAsync(string channelId)
+    {
+        if (!IsYouTubeChannelId(channelId))
+            return Task.FromResult(string.Empty);
+
+        channelId = channelId.Trim();
+        lock (_cacheGate)
+        {
+            string cached;
+            if (_channelAvatarById.TryGetValue(channelId, out cached) && !string.IsNullOrWhiteSpace(cached))
+                return Task.FromResult(cached);
+
+            Task<string> pending;
+            if (_channelAvatarLookupTasks.TryGetValue(channelId, out pending))
+                return pending;
+
+            pending = ResolveChannelAvatarViaInnertubeCoreAsync(channelId);
+            _channelAvatarLookupTasks[channelId] = pending;
+            return pending;
+        }
+    }
+
+    private static async Task<string> ResolveChannelAvatarViaInnertubeCoreAsync(string channelId)
+    {
+        // Force an asynchronous boundary before this method can re-enter _cacheGate in finally.
+        // GetChannelAvatarViaInnertubeAsync creates the shared task while holding that lock.
+        await Task.Yield();
+        await _channelAvatarNetworkGate.WaitAsync().ConfigureAwait(false);
+        try
+        {
+            var json = await PostWebBrowseAsync(null, channelId, null, null).ConfigureAwait(false);
+            if (string.IsNullOrWhiteSpace(json))
+                return string.Empty;
+
+            var root = JsonValue.Parse(json);
+            var title = string.Empty;
+            var avatarUrl = string.Empty;
+
+            foreach (var obj in EnumerateObjects(root, 1800))
+            {
+                try
+                {
+                    if (obj.ContainsKey("channelMetadataRenderer")
+                        && obj.GetNamedValue("channelMetadataRenderer").ValueType == JsonValueType.Object)
+                    {
+                        var metadata = obj.GetNamedObject("channelMetadataRenderer");
+                        title = FirstNonEmpty(title, GetJsonString(metadata, "title"));
+                        avatarUrl = FirstNonEmpty(
+                            avatarUrl,
+                            ExtractBestThumbnailUrl(metadata, "avatar"),
+                            ExtractFirstUrlFromNamedValue(metadata, "avatar"));
+                    }
+
+                    if (string.IsNullOrWhiteSpace(avatarUrl) && obj.ContainsKey("avatar"))
+                    {
+                        var candidate = ExtractFirstUrlFromAnyValue(obj.GetNamedValue("avatar"));
+                        if (!string.IsNullOrWhiteSpace(candidate))
+                            avatarUrl = candidate;
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(avatarUrl) && !string.IsNullOrWhiteSpace(title))
+                        break;
+                }
+                catch
+                {
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(avatarUrl))
+            {
+                RememberChannelAvatar(channelId, title, avatarUrl);
+                System.Diagnostics.Debug.WriteLine("[ChannelIcons] Innertube avatar resolved for " + channelId);
+                return avatarUrl;
+            }
+
+            System.Diagnostics.Debug.WriteLine("[ChannelIcons] Innertube avatar missing for " + channelId);
+            return string.Empty;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("[ChannelIcons] Innertube avatar lookup exception: " + ex.Message);
+            return string.Empty;
+        }
+        finally
+        {
+            _channelAvatarNetworkGate.Release();
+            lock (_cacheGate)
+                _channelAvatarLookupTasks.Remove(channelId);
+        }
     }
 
     private static string BuildVideoListCacheKey(string kind, string browseId, string continuationToken, int count)
@@ -9434,6 +10035,8 @@ public sealed class VideoCardItem
     public string VideoId { get; set; }
     public string Title { get; set; }
     public string ChannelTitle { get; set; }
+    public string ChannelId { get; set; }
+    public string ChannelThumbnailUrl { get; set; }
     public string Duration { get; set; }
     public string ThumbnailUrl { get; set; }
 
@@ -10093,9 +10696,12 @@ public static class VideoParser
             // Extract published time
             var publishedTime = props.GetNamedString("publishedTime", "unknown");
             
-            // Extract thumbnail
-            var thumbnail = "";
-            if (payload.ContainsKey("avatar"))
+            // Newer commentEntityPayload variants often place the avatar URL directly on the
+            // author object. Prefer it because it is already the renderer's canonical 88px image.
+            // Older/current variants still expose avatar.image.sources[], so keep that as fallback.
+            var thumbnail = authorData.GetNamedString("avatarThumbnailUrl", "");
+            var bestAvatarArea = -1.0;
+            if (string.IsNullOrWhiteSpace(thumbnail) && payload.ContainsKey("avatar"))
             {
                 var avatar = payload.GetNamedObject("avatar");
                 if (avatar.ContainsKey("image"))
@@ -10104,9 +10710,29 @@ public static class VideoParser
                     if (image.ContainsKey("sources"))
                     {
                         var sources = image.GetNamedArray("sources");
-                        if (sources.Count > 0)
+                        for (uint i = 0; i < sources.Count; i++)
                         {
-                            thumbnail = sources[0].GetObject().GetNamedString("url", "");
+                            try
+                            {
+                                var source = sources[(int)i].GetObject();
+                                var url = source.GetNamedString("url", "");
+                                if (string.IsNullOrWhiteSpace(url))
+                                {
+                                    continue;
+                                }
+
+                                var width = source.GetNamedNumber("width", 0);
+                                var height = source.GetNamedNumber("height", 0);
+                                var area = width * height;
+                                if (string.IsNullOrWhiteSpace(thumbnail) || area >= bestAvatarArea)
+                                {
+                                    thumbnail = url;
+                                    bestAvatarArea = area;
+                                }
+                            }
+                            catch
+                            {
+                            }
                         }
                     }
                 }
@@ -10136,7 +10762,8 @@ public static class VideoParser
             var author = "";
             if (renderer.ContainsKey("authorText"))
             {
-                author = renderer.GetNamedString("authorText");
+                var authorValue = renderer.GetNamedValue("authorText");
+                author = ExtractTextFromJsonValue(authorValue);
             }
 
             var text = "";
@@ -10184,6 +10811,26 @@ public static class VideoParser
         {
             return null;
         }
+    }
+
+    private static string ExtractTextFromJsonValue(Windows.Data.Json.IJsonValue value)
+    {
+        try
+        {
+            if (value == null) return string.Empty;
+            if (value.ValueType == JsonValueType.String) return value.GetString();
+            if (value.ValueType != JsonValueType.Object) return string.Empty;
+
+            var obj = value.GetObject();
+            if (obj.ContainsKey("simpleText")) return obj.GetNamedString("simpleText", string.Empty);
+            if (obj.ContainsKey("content")) return obj.GetNamedString("content", string.Empty);
+            if (obj.ContainsKey("runs") && obj.GetNamedValue("runs").ValueType == JsonValueType.Array)
+                return ExtractFromRuns(obj.GetNamedArray("runs"));
+        }
+        catch
+        {
+        }
+        return string.Empty;
     }
 
     private static string ExtractFromRuns(Windows.Data.Json.JsonArray runs)

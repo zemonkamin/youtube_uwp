@@ -847,4 +847,10 @@
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Квалитет на сликичката</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Икони на канали</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Прикажи икони на канали на видео-картичките</value>
+  </data>
 </root>

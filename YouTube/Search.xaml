@@ -134,7 +134,7 @@
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button
+                            <Button Style="{StaticResource CardButtonStyle}"
                                 Margin="0,0,0,16"
                                 Padding="0"
                                 HorizontalAlignment="Stretch"
@@ -153,9 +153,9 @@
                                         Orientation="Vertical"
                                         Visibility="{Binding MediaCardVisibility}">
                                         <Grid SizeChanged="VideoThumbnailHost_SizeChanged"
-                                              CornerRadius="8">
-                                            <Border Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="8" />
-                                            <Border CornerRadius="8">
+                                              Tag="VideoCardThumbnailChrome">
+                                            <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="8" />
+                                            <Border Tag="VideoCardThumbnailChrome" CornerRadius="8">
                                                 <Image
                                                     HorizontalAlignment="Stretch"
                                                     VerticalAlignment="Stretch"
@@ -178,24 +178,38 @@
                                             </Border>
                                         </Grid>
 
-                                        <StackPanel Margin="0,12,0,0">
-                                            <TextBlock
-                                                FontFamily="Roboto"
-                                                FontSize="14"
-                                                FontWeight="Medium"
-                                                Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                                Text="{Binding Title}"
-                                                TextTrimming="CharacterEllipsis"
-                                                TextWrapping="NoWrap" />
-                                            <TextBlock
-                                                Margin="0,4,0,0"
-                                                FontFamily="Roboto"
-                                                FontSize="12"
-                                                Foreground="{ThemeResource AppMutedTextBrush}"
-                                                Text="{Binding MetadataLine}"
-                                                TextTrimming="CharacterEllipsis"
-                                                TextWrapping="NoWrap" />
-                                        </StackPanel>
+                                        <Grid Tag="VideoCardMetadata" Margin="0,12,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid Grid.Column="0" Width="36" Height="36" VerticalAlignment="Top">
+                                            <Border Background="{ThemeResource AvatarPlaceholderBrush}" />
+                                            <Image Stretch="UniformToFill"
+                                                   DataContextChanged="ChannelIcon_DataContextChanged"
+                                                   Loaded="ChannelIcon_Loaded" />
+                                            <Image Stretch="Fill" IsHitTestVisible="False"
+                                                   local:ThemeAsset.Path="Assets/rounding.png" />
+                                        </Grid>
+                                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                                <TextBlock
+                                                    FontFamily="Roboto"
+                                                    FontSize="14"
+                                                    FontWeight="Medium"
+                                                    Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                                    Text="{Binding Title}"
+                                                    TextTrimming="CharacterEllipsis"
+                                                    TextWrapping="NoWrap" />
+                                                <TextBlock
+                                                    Margin="0,4,0,0"
+                                                    FontFamily="Roboto"
+                                                    FontSize="12"
+                                                    Foreground="{ThemeResource AppMutedTextBrush}"
+                                                    Text="{Binding MetadataLine}"
+                                                    TextTrimming="CharacterEllipsis"
+                                                    TextWrapping="NoWrap" />
+                                            </StackPanel>
+                                        </Grid>
                                     </StackPanel>
 
                                     <!--  Shorts card: vertical poster with a two-line title overlay.  -->

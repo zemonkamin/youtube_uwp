@@ -847,4 +847,10 @@ YouTube API Legacy द्वारा समर्थित।
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>थम्बनेल गुणस्तर</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>च्यानल आइकनहरू</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>भिडियो कार्डहरूमा च्यानल आइकनहरू देखाउनुहोस्</value>
+  </data>
 </root>

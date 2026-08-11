@@ -847,4 +847,10 @@ Versi {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Kualiti lakaran kecil</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Ikon saluran</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Tunjukkan ikon saluran pada kad video</value>
+  </data>
 </root>

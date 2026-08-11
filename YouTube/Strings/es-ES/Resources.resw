@@ -847,4 +847,10 @@ Versión {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Calidad de la miniatura</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Iconos de canales</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Mostrar iconos de canales en las tarjetas de vídeo</value>
+  </data>
 </root>

@@ -847,4 +847,10 @@ YouTube API Legacy дэмжлэгтэй.
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Жижиг зургийн чанар</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Сувгийн дүрсүүд</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Видеоны карт дээр сувгийн дүрсүүдийг харуулах</value>
+  </data>
 </root>

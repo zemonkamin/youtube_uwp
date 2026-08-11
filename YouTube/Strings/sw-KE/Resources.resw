@@ -847,4 +847,10 @@ Toleo {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Ubora wa kijipicha</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Aikoni za vituo</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Onyesha aikoni za vituo kwenye kadi za video</value>
+  </data>
 </root>

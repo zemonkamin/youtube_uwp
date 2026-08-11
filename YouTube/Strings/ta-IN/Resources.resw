@@ -847,4 +847,10 @@ YouTube API Legacy ஆதரிக்கிறது.
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>சிறுபடத் தரம்</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>சேனல் ஐகான்கள்</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>வீடியோ அட்டைகளில் சேனல் ஐகான்களைக் காட்டு</value>
+  </data>
 </root>

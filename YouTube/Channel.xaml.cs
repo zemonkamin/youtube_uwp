@@ -18,6 +18,8 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
+using Windows.UI.Xaml.Shapes;
+
 namespace YouTube
 {
     public sealed partial class Channel : Page
@@ -819,6 +821,7 @@ namespace YouTube
             var visited = 0;
 
             ExtractVideosRecursively(videosContent ?? root, videos, info.Title, seen, count, ref visited);
+            ApplyKnownChannelAvatarToVideos(videos, info.ChannelId, info.ThumbnailUrl);
 
             return new ChannelPageData
             {
@@ -910,6 +913,7 @@ namespace YouTube
                 var visited = 0;
                 ExtractVideosRecursively(root, page.Videos, ChannelTitle != null ? ChannelTitle.Text : string.Empty,
                     seen, 60, ref visited);
+                ApplyKnownChannelAvatarToVideos(page.Videos, _currentChannelId, _channelAvatarUrl);
             }
             else if (tab == ChannelContentTab.Shorts)
             {
@@ -2408,6 +2412,24 @@ namespace YouTube
             return selected != null && selected.ValueType == JsonValueType.Boolean && selected.GetBoolean();
         }
 
+        private static void ApplyKnownChannelAvatarToVideos(List<VideoCardItem> videos, string channelId, string avatarUrl)
+        {
+            if (videos == null || videos.Count == 0)
+                return;
+
+            for (var i = 0; i < videos.Count; i++)
+            {
+                var item = videos[i];
+                if (item == null)
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(item.ChannelId))
+                    item.ChannelId = channelId ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(item.ChannelThumbnailUrl))
+                    item.ChannelThumbnailUrl = avatarUrl ?? string.Empty;
+            }
+        }
+
         private static void ExtractVideosRecursively(IJsonValue value, List<VideoCardItem> videos, string channelTitle, HashSet<string> seen, int maxCount, ref int visited)
         {
             if (value == null || videos.Count >= maxCount || visited >= MaxParserNodes)
@@ -2496,6 +2518,8 @@ namespace YouTube
                 VideoId = videoId,
                 Title = FirstNonEmpty(ExtractText(GetObject(renderer, "title")), Localization.GetString("NoTitle")),
                 ChannelTitle = FirstNonEmpty(channelTitle, ExtractText(GetObject(renderer, "ownerText")), ExtractText(GetObject(renderer, "shortBylineText"))),
+                ChannelId = Config.ExtractVideoCardChannelId(renderer),
+                ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer),
                 Duration = FirstNonEmpty(ExtractText(GetObject(renderer, "lengthText")), ExtractDurationFromOverlays(renderer), string.Empty),
                 ThumbnailUrl = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg"
             };
@@ -2519,6 +2543,8 @@ namespace YouTube
                 VideoId = videoId,
                 Title = FirstNonEmpty(ExtractText(GetObject(renderer, "headline")), Localization.GetString("Shorts")),
                 ChannelTitle = FirstNonEmpty(channelTitle, string.Empty),
+                ChannelId = Config.ExtractVideoCardChannelId(renderer),
+                ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer),
                 Duration = Localization.GetString("Shorts"),
                 ThumbnailUrl = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg"
             };
@@ -2582,6 +2608,8 @@ namespace YouTube
                 VideoId = videoId,
                 Title = string.IsNullOrWhiteSpace(title) ? Localization.GetString("Untitled") : title,
                 ChannelTitle = channelTitle,
+                ChannelId = Config.ExtractVideoCardChannelId(lockup),
+                ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(lockup),
                 Duration = ExtractDurationFromLockup(lockup),
                 ThumbnailUrl = "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg",
                 ViewCount = views,
@@ -3064,6 +3092,20 @@ namespace YouTube
             VideoThumbnailController.Assign(image, item.VideoId, item.ThumbnailUrl, 360);
         }
 
+        private void ChannelIcon_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var image = sender as Image;
+            var item = args.NewValue as VideoCardItem;
+            ChannelIconController.Assign(image, item == null ? string.Empty : item.ChannelThumbnailUrl);
+        }
+
+        private void ChannelIcon_Loaded(object sender, RoutedEventArgs e)
+        {
+            var image = sender as Image;
+            var item = image == null ? null : image.DataContext as VideoCardItem;
+            ChannelIconController.Assign(image, item == null ? string.Empty : item.ChannelThumbnailUrl);
+        }
+
         private void VideoThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             var host = sender as FrameworkElement;
@@ -3113,6 +3155,8 @@ namespace YouTube
             {
                 element.Margin = targetMargin;
             }
+
+            VideoCardController.ApplyResponsiveLayout(element, IsPortraitOrientation());
         }
 
         private void UpdateResponsiveCardMargins(DependencyObject root)

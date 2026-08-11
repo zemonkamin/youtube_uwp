@@ -107,6 +107,13 @@ namespace YouTube
                 return null;
             }
 
+            // The video-card skeleton follows the channel-icon preference globally, so every
+            // page automatically stays in sync without duplicating XAML conditionals.
+            if (string.Equals(normalized, "Assets/yt_skeleton/video.png", StringComparison.OrdinalIgnoreCase))
+            {
+                normalized = ChannelIconController.GetVideoSkeletonAssetPath();
+            }
+
             if (IsThemeAwareAsset(normalized))
             {
                 var relative = normalized.Substring("Assets/".Length);
@@ -462,6 +469,11 @@ namespace YouTube
             {
             }
 
+            RefreshRegisteredThemeAssets();
+        }
+
+        internal static void RefreshThemeAssets()
+        {
             RefreshRegisteredThemeAssets();
         }
 

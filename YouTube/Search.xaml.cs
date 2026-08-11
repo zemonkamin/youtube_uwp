@@ -15,6 +15,8 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
+using Windows.UI.Xaml.Shapes;
+
 namespace YouTube
 {
     public sealed partial class Search : Page
@@ -357,7 +359,92 @@ namespace YouTube
                 var response = await httpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
-                return ParseSearchPage(json, count, type);
+                var page = ParseSearchPage(json, count, type);
+                await HydrateSearchChannelThumbnailsAsync(page);
+                return page;
+            }
+        }
+
+        private static async Task HydrateSearchChannelThumbnailsAsync(SearchPageResult page)
+        {
+            if (page == null || page.Items == null || page.Items.Count == 0 || !ChannelIconController.IsEnabled())
+                return;
+
+            var cards = new List<VideoCardItem>();
+            var sourceItems = new List<SearchVideoItem>();
+            var needsLookup = false;
+
+            for (var i = 0; i < page.Items.Count; i++)
+            {
+                var item = page.Items[i];
+                if (item == null || string.Equals(item.ResultType, "Channel", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                // Direct renderer URL always wins. ChannelId is only the fallback key for renderer
+                // families such as playlistVideoRenderer that do not include an author avatar.
+                var card = new VideoCardItem
+                {
+                    ChannelId = item.ChannelId,
+                    ChannelTitle = item.Author,
+                    ChannelThumbnailUrl = item.ChannelThumbnailUrl
+                };
+                cards.Add(card);
+                sourceItems.Add(item);
+
+                if (string.IsNullOrWhiteSpace(item.ChannelThumbnailUrl)
+                    && !string.IsNullOrWhiteSpace(item.ChannelId)
+                    && item.ChannelId.StartsWith("UC", StringComparison.OrdinalIgnoreCase))
+                {
+                    needsLookup = true;
+                }
+            }
+
+            if (cards.Count == 0)
+                return;
+
+            // Populate/reuse the in-memory cache without a network request first.
+            await Config.HydrateMissingChannelThumbnailsAsync(cards, string.Empty);
+
+            if (needsLookup)
+            {
+                needsLookup = false;
+                for (var i = 0; i < cards.Count; i++)
+                {
+                    var card = cards[i];
+                    if (card != null
+                        && string.IsNullOrWhiteSpace(card.ChannelThumbnailUrl)
+                        && !string.IsNullOrWhiteSpace(card.ChannelId)
+                        && card.ChannelId.StartsWith("UC", StringComparison.OrdinalIgnoreCase))
+                    {
+                        needsLookup = true;
+                        break;
+                    }
+                }
+            }
+
+            if (needsLookup)
+            {
+                try
+                {
+                    Config.LoadUserToken();
+                    var refreshToken = Config.UserToken;
+                    if (!string.IsNullOrWhiteSpace(refreshToken))
+                    {
+                        var accessToken = await Config.RefreshAccessTokenAsync(refreshToken);
+                        if (!string.IsNullOrWhiteSpace(accessToken))
+                            await Config.HydrateMissingChannelThumbnailsAsync(cards, accessToken);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("[Search] Channel avatar hydration failed: " + ex.Message);
+                }
+            }
+
+            for (var i = 0; i < cards.Count && i < sourceItems.Count; i++)
+            {
+                if (!string.IsNullOrWhiteSpace(cards[i].ChannelThumbnailUrl))
+                    sourceItems[i].ChannelThumbnailUrl = cards[i].ChannelThumbnailUrl;
             }
         }
 
@@ -454,7 +541,9 @@ namespace YouTube
                     Author = SimplifyText(renderer, "ownerText", Localization.GetString("Unknown")),
                     Views = SimplifyText(renderer, "viewCountText", string.Empty),
                     Duration = SimplifyText(renderer, "lengthText", string.Empty),
-                    Thumbnail = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg"
+                    Thumbnail = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg",
+                    ChannelId = Config.ExtractVideoCardChannelId(renderer),
+                    ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer)
                 });
             }
 
@@ -498,7 +587,9 @@ namespace YouTube
                     Thumbnail = FirstNonEmpty(
                         ExtractThumbnailUrl(renderer),
                         "https://i.ytimg.com/vi/" + videoId + "/oardefault.jpg",
-                        "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg")
+                        "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg"),
+                    ChannelId = Config.ExtractVideoCardChannelId(renderer),
+                    ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer)
                 });
             }
 
@@ -532,7 +623,9 @@ namespace YouTube
                     Thumbnail = FirstNonEmpty(
                         ExtractThumbnailUrl(renderer),
                         "https://i.ytimg.com/vi/" + videoId + "/oardefault.jpg",
-                        "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg")
+                        "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg"),
+                    ChannelId = Config.ExtractVideoCardChannelId(renderer),
+                    ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer)
                 });
             }
 
@@ -577,7 +670,9 @@ namespace YouTube
                         Localization.GetString("Playlist")),
                     Views = videoCountText,
                     Duration = string.Empty,
-                    Thumbnail = FirstNonEmpty(ExtractThumbnailUrl(renderer), App.GetThemeAssetUri("Assets/yt_skeleton/video.png").ToString())
+                    Thumbnail = FirstNonEmpty(ExtractThumbnailUrl(renderer), App.GetThemeAssetUri("Assets/yt_skeleton/video.png").ToString()),
+                    ChannelId = Config.ExtractVideoCardChannelId(renderer),
+                    ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer)
                 });
             }
 
@@ -607,7 +702,9 @@ namespace YouTube
                     Author = FirstNonEmpty(ExtractLockupSubtitle(renderer), Localization.GetString("Playlist")),
                     Views = FirstNonEmpty(ExtractLockupMetadata(renderer), string.Empty),
                     Duration = string.Empty,
-                    Thumbnail = FirstNonEmpty(ExtractThumbnailUrl(renderer), App.GetThemeAssetUri("Assets/yt_skeleton/video.png").ToString())
+                    Thumbnail = FirstNonEmpty(ExtractThumbnailUrl(renderer), App.GetThemeAssetUri("Assets/yt_skeleton/video.png").ToString()),
+                    ChannelId = Config.ExtractVideoCardChannelId(renderer),
+                    ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer)
                 });
             }
 
@@ -1487,6 +1584,20 @@ namespace YouTube
             }
         }
 
+        private void ChannelIcon_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var image = sender as Image;
+            var item = args.NewValue as SearchVideoItem;
+            ChannelIconController.Assign(image, item == null ? string.Empty : item.ChannelThumbnailUrl);
+        }
+
+        private void ChannelIcon_Loaded(object sender, RoutedEventArgs e)
+        {
+            var image = sender as Image;
+            var item = image == null ? null : image.DataContext as SearchVideoItem;
+            ChannelIconController.Assign(image, item == null ? string.Empty : item.ChannelThumbnailUrl);
+        }
+
         private void VideoThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             var host = sender as FrameworkElement;
@@ -1570,6 +1681,8 @@ namespace YouTube
             {
                 element.Margin = targetMargin;
             }
+
+            VideoCardController.ApplyResponsiveLayout(element, IsPortraitOrientation());
         }
 
         private void UpdateResponsiveCardMargins(DependencyObject root)
@@ -1997,6 +2110,7 @@ namespace YouTube
         public string Views { get; set; }
         public string Duration { get; set; }
         public string Thumbnail { get; set; }
+        public string ChannelThumbnailUrl { get; set; }
 
         public ImageSource ChannelAvatarSource
         {

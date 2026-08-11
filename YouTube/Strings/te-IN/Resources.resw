@@ -847,4 +847,10 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>థంబ్‌నెయిల్ నాణ్యత</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>ఛానెల్ చిహ్నాలు</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>వీడియో కార్డ్‌లలో ఛానెల్ చిహ్నాలను చూపించు</value>
+  </data>
 </root>

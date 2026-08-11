@@ -847,4 +847,10 @@ YouTube API Legacy를 지원합니다.
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>썸네일 화질</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>채널 아이콘</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>동영상 카드에 채널 아이콘 표시</value>
+  </data>
 </root>

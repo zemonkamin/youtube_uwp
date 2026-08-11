@@ -847,4 +847,10 @@ Inguqulo {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Ikhwalithi yesithonjana</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Izithonjana zeziteshi</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Bonisa izithonjana zeziteshi emakhadini evidiyo</value>
+  </data>
 </root>

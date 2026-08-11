@@ -847,4 +847,10 @@ YouTube API Legacy မှ ပံ့ပိုးထားသည်။
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>ပုံသေး အရည်အသွေး</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>ချန်နယ် အိုင်ကွန်များ</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>ဗီဒီယိုကတ်များပေါ်တွင် ချန်နယ်အိုင်ကွန်များကို ပြပါ</value>
+  </data>
 </root>

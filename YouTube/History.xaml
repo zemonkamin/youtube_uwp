@@ -39,7 +39,7 @@
                                     <ItemsControl ItemsSource="{Binding Videos}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                <Button Background="Transparent"
+                                                <Button Style="{StaticResource CardButtonStyle}" Background="Transparent"
                                                         BorderThickness="0"
                                                         Padding="0"
                                                         HorizontalContentAlignment="Stretch"
@@ -54,12 +54,14 @@
                                                         <Grid Grid.Column="0"
                                                               Width="160"
                                                               Height="90">
-                                                            <Border CornerRadius="8">
-                                                                <Image DataContextChanged="HistoryThumbnail_DataContextChanged"
-                                                                       Stretch="UniformToFill"
-                                                                       HorizontalAlignment="Stretch"
-                                                                       VerticalAlignment="Stretch" />
-                                                            </Border>
+                                                            <Border Background="{ThemeResource AppSurfaceAltBrush}"/>
+                                                            <Image DataContextChanged="HistoryThumbnail_DataContextChanged"
+                                                                   Stretch="UniformToFill"
+                                                                   HorizontalAlignment="Stretch"
+                                                                   VerticalAlignment="Stretch" />
+                                                            <Image Stretch="Fill"
+                                                                   IsHitTestVisible="False"
+                                                                   local:ThemeAsset.Path="Assets/rounding_up.png"/>
 
                                                             <Border HorizontalAlignment="Right"
                                                                     VerticalAlignment="Bottom"
@@ -74,9 +76,7 @@
                                                             </Border>
                                                         </Grid>
 
-                                                        <StackPanel Grid.Column="1"
-                                                                    Margin="12,0,0,0"
-                                                                    VerticalAlignment="Top">
+                                                        <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Top">
                                                             <TextBlock Text="{Binding Title}"
                                                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                                        FontSize="14"

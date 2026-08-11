@@ -847,4 +847,10 @@
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>縮圖畫質</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>頻道圖示</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>在影片卡片上顯示頻道圖示</value>
+  </data>
 </root>

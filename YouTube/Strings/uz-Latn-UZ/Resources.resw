@@ -847,4 +847,10 @@ Versiya {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Eskiz sifati</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Kanal ikonkalari</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Video kartalarida kanal ikonkalari ko‘rsatilsin</value>
+  </data>
 </root>

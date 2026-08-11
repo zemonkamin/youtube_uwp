@@ -847,4 +847,10 @@ YouTube API Legacy-k onartua.
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Miniaturaren kalitatea</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Kanalaren ikonoak</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Erakutsi kanalaren ikonoak bideo-txarteletan</value>
+  </data>
 </root>

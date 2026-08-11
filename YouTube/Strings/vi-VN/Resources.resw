@@ -847,4 +847,10 @@ Phiên bản {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Chất lượng hình thu nhỏ</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Biểu tượng kênh</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Hiển thị biểu tượng kênh trên thẻ video</value>
+  </data>
 </root>

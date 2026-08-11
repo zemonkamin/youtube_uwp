@@ -847,4 +847,10 @@ YouTube API Legacy ಬೆಂಬಲಿಸುತ್ತದೆ.
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>ಥಂಬ್‌ನೇಲ್ ಗುಣಮಟ್ಟ</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>ಚಾನಲ್ ಐಕಾನ್‌ಗಳು</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>ವೀಡಿಯೊ ಕಾರ್ಡ್‌ಗಳಲ್ಲಿ ಚಾನಲ್ ಐಕಾನ್‌ಗಳನ್ನು ತೋರಿಸಿ</value>
+  </data>
 </root>

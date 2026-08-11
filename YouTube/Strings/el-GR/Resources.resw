@@ -847,4 +847,10 @@
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Ποιότητα μικρογραφίας</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Εικονίδια καναλιών</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Εμφάνιση εικονιδίων καναλιών στις κάρτες βίντεο</value>
+  </data>
 </root>

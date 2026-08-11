@@ -847,4 +847,10 @@
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>მინიატურის ხარისხი</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>არხის ხატულები</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>ვიდეო ბარათებზე არხის ხატულების ჩვენება</value>
+  </data>
 </root>

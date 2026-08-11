@@ -847,4 +847,10 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Нобай сапасы</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Арна белгішелері</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Бейне карточкаларында арна белгішелерін көрсету</value>
+  </data>
 </root>

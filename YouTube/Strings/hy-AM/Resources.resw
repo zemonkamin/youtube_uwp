@@ -847,4 +847,10 @@
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Մանրապատկերի որակ</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Ալիքների պատկերակներ</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Ցուցադրել ալիքների պատկերակները տեսանյութերի քարտերում</value>
+  </data>
 </root>

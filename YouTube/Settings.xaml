@@ -54,7 +54,10 @@
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
-                               Margin="18,0,18,10" />
+                               Margin="18,0,18,10" 
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"
+                               MaxLines="1" />
 
                     <Button Style="{StaticResource SettingsIconButtonStyle}"
                             Height="52"
@@ -75,7 +78,10 @@
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
-                                       Margin="18,0,0,0" />
+                                       Margin="18,0,0,0" 
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"
+                               MaxLines="1" />
                         </Grid>
                     </Button>
 
@@ -83,7 +89,10 @@
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
-                               Margin="18,22,18,10" />
+                               Margin="18,22,18,10" 
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"
+                               MaxLines="1" />
 
                     <Button Style="{StaticResource SettingsIconButtonStyle}"
                             Height="52"
@@ -106,7 +115,10 @@
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
-                                       Margin="18,0,0,0" />
+                                       Margin="18,0,0,0" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                             <StackPanel Grid.Column="2"
                                         Orientation="Horizontal"
                                         HorizontalAlignment="Right"
@@ -115,7 +127,11 @@
                                 <TextBlock x:Name="LanguageValueText"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
-                                           VerticalAlignment="Center" />
+                                           VerticalAlignment="Center" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" 
+                                           MaxWidth="110" />
                                 <Image local:ThemeAsset.Path="Assets/player/skip.png"
                                        Width="14"
                                        Height="14"
@@ -131,7 +147,10 @@
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
-                               Margin="18,22,18,10" />
+                               Margin="18,22,18,10" 
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"
+                               MaxLines="1" />
 
                     <Button Style="{StaticResource SettingsIconButtonStyle}"
                             Height="52"
@@ -154,7 +173,10 @@
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
-                                       Margin="18,0,0,0" />
+                                       Margin="18,0,0,0" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                             <StackPanel Grid.Column="2"
                                         Orientation="Horizontal"
                                         HorizontalAlignment="Right"
@@ -163,7 +185,11 @@
                                 <TextBlock x:Name="ThemeValueText"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
-                                           VerticalAlignment="Center" />
+                                           VerticalAlignment="Center" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" 
+                                           MaxWidth="110" />
                                 <Image local:ThemeAsset.Path="Assets/player/skip.png"
                                        Width="14"
                                        Height="14"
@@ -197,12 +223,18 @@
                                         Margin="18,0,12,0">
                                 <TextBlock x:Name="LiveTileLabelText"
                                            Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                           FontSize="16" />
+                                           FontSize="16" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                                 <TextBlock x:Name="LiveTileDescriptionText"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="12"
-                                           TextWrapping="Wrap"
-                                           Margin="0,2,0,0" />
+                                          
+                                           Margin="0,2,0,0" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                             </StackPanel>
                             <Grid Grid.Column="2"
                                   Width="46"
@@ -230,7 +262,10 @@
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
-                               Margin="18,22,18,10" />
+                               Margin="18,22,18,10" 
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"
+                               MaxLines="1" />
 
                     <Button Style="{StaticResource SettingsIconButtonStyle}"
                             Height="52"
@@ -252,7 +287,10 @@
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
-                                       Margin="18,0,0,0" />
+                                       Margin="18,0,0,0" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                             <StackPanel Grid.Column="2"
                                         Orientation="Horizontal"
                                         HorizontalAlignment="Right"
@@ -261,7 +299,11 @@
                                 <TextBlock x:Uid="Loc_Auto_Text" x:Name="PreferredQualityValueText"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
-                                           VerticalAlignment="Center" />
+                                           VerticalAlignment="Center" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" 
+                                           MaxWidth="110" />
                                 <Image local:ThemeAsset.Path="Assets/player/skip.png"
                                        Width="14"
                                        Height="14"
@@ -293,7 +335,10 @@
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
-                                       Margin="18,0,0,0" />
+                                       Margin="18,0,0,0" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                             <StackPanel Grid.Column="2"
                                         Orientation="Horizontal"
                                         HorizontalAlignment="Right"
@@ -302,7 +347,11 @@
                                 <TextBlock x:Uid="Loc_Auto_Text" x:Name="PreferredShortsQualityValueText"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
-                                           VerticalAlignment="Center" />
+                                           VerticalAlignment="Center" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" 
+                                           MaxWidth="110" />
                                 <Image local:ThemeAsset.Path="Assets/player/skip.png"
                                        Width="14"
                                        Height="14"
@@ -336,7 +385,10 @@
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
-                                       Margin="18,0,0,0" />
+                                       Margin="18,0,0,0" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                             <StackPanel Grid.Column="2"
                                         Orientation="Horizontal"
                                         HorizontalAlignment="Right"
@@ -345,7 +397,11 @@
                                 <TextBlock x:Name="ThumbnailQualityValueText"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
-                                           VerticalAlignment="Center" />
+                                           VerticalAlignment="Center" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" 
+                                           MaxWidth="110" />
                                 <Image local:ThemeAsset.Path="Assets/player/skip.png"
                                        Width="14"
                                        Height="14"
@@ -354,6 +410,65 @@
                                        VerticalAlignment="Center"
                                        Margin="6,0,0,0" />
                             </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <Button x:Name="ChannelIconsToggleButton"
+                            Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="62"
+                            HorizontalAlignment="Stretch"
+                            Click="ChannelIconsToggleButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <Image Grid.Column="0"
+                                   local:ThemeAsset.Path="Assets/tabbar/user-icon.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+
+                            <StackPanel Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Margin="18,0,12,0">
+                                <TextBlock x:Name="ChannelIconsLabelText"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                           FontSize="16" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                                <TextBlock x:Name="ChannelIconsDescriptionText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="12"
+                                           Margin="0,2,0,0" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                            </StackPanel>
+
+                            <Grid Grid.Column="2"
+                                  Width="46"
+                                  Height="26"
+                                  VerticalAlignment="Center">
+                                <Border x:Name="ChannelIconsToggleTrack"
+                                        Width="46"
+                                        Height="26"
+                                        Background="{ThemeResource AppMutedTextBrush}"
+                                        CornerRadius="13" />
+                                <Ellipse Width="20"
+                                         Height="20"
+                                         Fill="{ThemeResource ToggleKnobBrush}"
+                                         HorizontalAlignment="Left"
+                                         Margin="3,3,0,3">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="ChannelIconsToggleThumbTransform" X="0" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Grid>
                         </Grid>
                     </Button>
 
@@ -373,11 +488,17 @@
                                         Margin="0,0,12,0">
                                 <TextBlock x:Uid="Loc_SeekPreview_Text"
                                            Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                           FontSize="16" />
+                                           FontSize="16" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                                 <TextBlock x:Uid="Loc_ShowVideoThumbnailWhileSeeking_Text"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="12"
-                                           Margin="0,2,0,0" />
+                                           Margin="0,2,0,0" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                             </StackPanel>
 
                             <Grid Grid.Column="1"
@@ -419,11 +540,17 @@
                                         Margin="0,0,12,0">
                                 <TextBlock x:Uid="Loc_AutoFullscreenInLandscape_Text"
                                            Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                           FontSize="16" />
+                                           FontSize="16" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                                 <TextBlock x:Uid="Loc_ExpandTheVideoWhenThePhoneRotates_Text"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="12"
-                                           Margin="0,2,0,0" />
+                                           Margin="0,2,0,0" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                             </StackPanel>
 
                             <Grid Grid.Column="1"
@@ -455,7 +582,10 @@
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
-                               Margin="18,22,18,10" />
+                               Margin="18,22,18,10" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
 
                     <Button Style="{StaticResource SettingsIconButtonStyle}"
                             Height="52"
@@ -477,7 +607,10 @@
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
-                                       Margin="18,0,0,0" />
+                                       Margin="18,0,0,0" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                             <StackPanel Grid.Column="2"
                                         Orientation="Horizontal"
                                         HorizontalAlignment="Right"
@@ -486,7 +619,11 @@
                                 <TextBlock x:Uid="Loc_EveryHour_Text" x:Name="NotificationFrequencyValueText"
                                            Foreground="{ThemeResource AppSecondaryTextBrush}"
                                            FontSize="13"
-                                           VerticalAlignment="Center" />
+                                           VerticalAlignment="Center" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" 
+                                           MaxWidth="110" />
                                 <Image local:ThemeAsset.Path="Assets/player/skip.png"
                                        Width="14"
                                        Height="14"
@@ -502,7 +639,10 @@
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="17"
                                FontWeight="Bold"
-                               Margin="18,22,18,10" />
+                               Margin="18,22,18,10" 
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"
+                               MaxLines="1" />
 
                     <Button Style="{StaticResource SettingsIconButtonStyle}"
                             Height="52"
@@ -524,7 +664,10 @@
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        VerticalAlignment="Center"
-                                       Margin="18,0,0,0" />
+                                       Margin="18,0,0,0" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                             <Image Grid.Column="2"
                                    local:ThemeAsset.Path="Assets/player/skip.png"
                                    Width="14"
@@ -724,7 +867,10 @@
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontWeight="SemiBold"
                                        FontSize="15"
-                                       Margin="0,0,0,12" />
+                                       Margin="0,0,0,12" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
 
                             <Grid Height="48" Margin="0,0,0,12">
                                 <Grid.ColumnDefinitions>
@@ -814,7 +960,10 @@
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="16"
                                        FontWeight="SemiBold"
-                                       Margin="0,0,0,12" />
+                                       Margin="0,0,0,12" 
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
                             <TextBlock x:Name="AboutText"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        FontSize="13"

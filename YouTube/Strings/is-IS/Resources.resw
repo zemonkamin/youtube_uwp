@@ -847,4 +847,10 @@ Stutt af YouTube API Legacy.
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Gæði smámyndar</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Rásartákn</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Sýna rásartákn á myndbandsspjöldum</value>
+  </data>
 </root>

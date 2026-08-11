@@ -847,4 +847,10 @@
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Якість мініатюри</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Значки каналів</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Показувати значки каналів у картках відео</value>
+  </data>
 </root>

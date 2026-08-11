@@ -847,4 +847,10 @@ Bersyon {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Kalidad ng thumbnail</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Mga icon ng channel</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Ipakita ang mga icon ng channel sa mga video card</value>
+  </data>
 </root>

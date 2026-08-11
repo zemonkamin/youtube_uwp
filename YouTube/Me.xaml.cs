@@ -9,6 +9,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
+using Windows.UI.Xaml.Shapes;
+
 namespace YouTube
 {
     public sealed partial class Me : Page

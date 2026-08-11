@@ -15,6 +15,7 @@ using Windows.Media.Playback;
 using Windows.Storage;
 using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -24,6 +25,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+
+using Windows.UI.Xaml.Shapes;
 
 namespace YouTube
 {
@@ -107,6 +110,7 @@ namespace YouTube
         // latest rotation event is allowed to change fullscreen state after a short settle delay.
         private const string AutoFullscreenLandscapeSettingKey = "AutoFullscreenLandscape";
         private int _orientationFullscreenGeneration;
+        private bool _windowSizeChangedSubscribed;
         private string _currentVideoDescription = string.Empty;
         private const double RelatedThumbnailAspectRatio = 16.0 / 9.0;
         private const double DefaultVideoPlayerAspectRatio = 16.0 / 9.0;
@@ -179,6 +183,9 @@ namespace YouTube
         private double _shareInitialY;
         private double _shareInitialTransformY;
         private bool _shareIsDragging;
+        private double _sharePopupInitialY;
+        private double _sharePopupInitialTransformY;
+        private bool _sharePopupIsDragging;
         private bool _shareSheetIsOpen;
         private bool _shareWithTimestamp;
         private Storyboard _shareTimeToggleStoryboard;
@@ -242,25 +249,79 @@ namespace YouTube
             // disposes the control (see the teardown below), or reuse would get a dead player.
             this.NavigationCacheMode = Windows.UI.Xaml.Navigation.NavigationCacheMode.Required;
 
-            // Subscribe to window size changes for adaptive layout
+            // Window events are attached from Loaded and removed from Unloaded. This page is
+            // NavigationCacheMode.Required, so the constructor only runs once while the visual tree
+            // can be loaded/unloaded many times (especially around the mini-player).
+        }
+
+        private void SubscribeWindowSizeChanged()
+        {
+            if (_windowSizeChangedSubscribed || Window.Current == null)
+            {
+                return;
+            }
+
             Window.Current.SizeChanged += Window_SizeChanged;
+            _windowSizeChangedSubscribed = true;
+        }
+
+        private void UnsubscribeWindowSizeChanged()
+        {
+            if (!_windowSizeChangedSubscribed || Window.Current == null)
+            {
+                return;
+            }
+
+            Window.Current.SizeChanged -= Window_SizeChanged;
+            _windowSizeChangedSubscribed = false;
+        }
+
+        private static bool IsCurrentViewPortrait()
+        {
+            try
+            {
+                var view = ApplicationView.GetForCurrentView();
+                if (view != null)
+                {
+                    return view.Orientation == ApplicationViewOrientation.Portrait;
+                }
+            }
+            catch { }
+
+            // Old/mobile fallback if the ApplicationView query is temporarily unavailable.
+            if (Window.Current != null)
+            {
+                var bounds = Window.Current.Bounds;
+                return bounds.Height > bounds.Width;
+            }
+
+            return true;
+        }
+
+        private void ResetOrientationTrackingToCurrentWindow()
+        {
+            _orientationFullscreenGeneration++;
+            _wasPortrait = IsCurrentViewPortrait();
         }
 
         private void Video_Loaded(object sender, RoutedEventArgs e)
         {
-            // Initialize the orientation state before first layout update
-            var windowWidth = Window.Current.Bounds.Width;
-            var windowHeight = Window.Current.Bounds.Height;
-            _wasPortrait = windowHeight > windowWidth;
-
+            // A cached Video page is loaded again after returning from the mini-player, so
+            // restore the window handler every time and baseline orientation without causing an
+            // artificial fullscreen transition merely because the page became visible.
+            SubscribeWindowSizeChanged();
+            ResetOrientationTrackingToCurrentWindow();
             UpdateVideoPlayerLayout();
 
             // Reattach once per visual load. The helper first removes existing handlers so a
             // cached Video page cannot accumulate duplicate VideoEnded callbacks after restores.
             AttachPlayerEventHandlers();
 
-            // Register back button handler
-            SystemNavigationManager.GetForCurrentView().BackRequested += VideoPage_BackRequested;
+            // Cached pages are loaded more than once. De-duplicate the system back handler just
+            // like the player/window handlers so a mini-player restore cannot issue two Back actions.
+            var navigationManager = SystemNavigationManager.GetForCurrentView();
+            navigationManager.BackRequested -= VideoPage_BackRequested;
+            navigationManager.BackRequested += VideoPage_BackRequested;
 
             // Prevent device from going to sleep while watching video
             ActivateDisplayRequest();
@@ -563,7 +624,8 @@ namespace YouTube
 
         private void Video_Unloaded(object sender, RoutedEventArgs e)
         {
-            Window.Current.SizeChanged -= Window_SizeChanged;
+            _orientationFullscreenGeneration++;
+            UnsubscribeWindowSizeChanged();
             RestoreSettingsBottomSheetFromFullscreenPopup();
 
             // When minimized, the player was handed to the mini-player — leave it running.
@@ -617,8 +679,7 @@ namespace YouTube
                 return;
             }
 
-            var boundsAtEvent = Window.Current.Bounds;
-            var isPortraitAtEvent = boundsAtEvent.Height > boundsAtEvent.Width;
+            var isPortraitAtEvent = IsCurrentViewPortrait();
 
             // IMPORTANT: decide whether this is a real orientation transition BEFORE
             // UpdateVideoPlayerLayout() updates _wasPortrait. Ordinary SizeChanged events in
@@ -649,8 +710,7 @@ namespace YouTube
 
             try
             {
-                var bounds = Window.Current.Bounds;
-                var isPortraitNow = bounds.Height > bounds.Width;
+                var isPortraitNow = IsCurrentViewPortrait();
 
                 // Ignore a stale transition if the phone rotated back during the delay.
                 if (isPortraitNow != isPortraitAtEvent)
@@ -708,6 +768,139 @@ namespace YouTube
             }
 
             VideoThumbnailController.Assign(image, item.video_id, item.thumbnail, 360);
+        }
+
+        private void RelatedChannelIcon_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var image = sender as Image;
+            var item = args.NewValue as RelatedVideoCardItem;
+            ChannelIconController.Assign(image, item == null ? string.Empty : item.channel_thumbnail);
+        }
+
+        private void RelatedChannelIcon_Loaded(object sender, RoutedEventArgs e)
+        {
+            var image = sender as Image;
+            var item = image == null ? null : image.DataContext as RelatedVideoCardItem;
+            ChannelIconController.Assign(image, item == null ? string.Empty : item.channel_thumbnail);
+        }
+
+        private void CommentAuthorImage_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var ellipse = sender as Ellipse;
+            var brush = ellipse == null ? null : ellipse.Fill as ImageBrush;
+            var item = args.NewValue as CommentItem;
+            ChannelIconController.AssignAlways(brush, item == null ? string.Empty : item.AuthorThumbnail);
+        }
+
+        private void CommentAuthorImage_Loaded(object sender, RoutedEventArgs e)
+        {
+            var ellipse = sender as Ellipse;
+            var brush = ellipse == null ? null : ellipse.Fill as ImageBrush;
+            var item = ellipse == null ? null : ellipse.DataContext as CommentItem;
+            ChannelIconController.AssignAlways(brush, item == null ? string.Empty : item.AuthorThumbnail);
+        }
+
+        private void PlaylistQueueThumbnail_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var rectangle = sender as Rectangle;
+            AssignPlaylistQueueThumbnail(rectangle, args.NewValue as RelatedVideoCardItem);
+        }
+
+        private void PlaylistQueueThumbnail_Loaded(object sender, RoutedEventArgs e)
+        {
+            var rectangle = sender as Rectangle;
+            AssignPlaylistQueueThumbnail(rectangle, rectangle == null ? null : rectangle.DataContext as RelatedVideoCardItem);
+        }
+
+        private static void AssignPlaylistQueueThumbnail(Rectangle rectangle, RelatedVideoCardItem item)
+        {
+            if (rectangle == null)
+            {
+                return;
+            }
+
+            var brush = rectangle.Fill as ImageBrush;
+            if (brush == null)
+            {
+                brush = new ImageBrush { Stretch = Stretch.UniformToFill };
+                rectangle.Fill = brush;
+            }
+
+            var token = new object();
+            rectangle.Tag = token;
+            brush.ImageSource = null;
+
+            if (item == null)
+            {
+                return;
+            }
+
+            var candidates = new List<string>();
+            if (!string.IsNullOrWhiteSpace(item.large_thumbnail))
+            {
+                candidates.Add(item.large_thumbnail);
+            }
+            if (!string.IsNullOrWhiteSpace(item.thumbnail)
+                && !candidates.Any(url => string.Equals(url, item.thumbnail, StringComparison.OrdinalIgnoreCase)))
+            {
+                candidates.Add(item.thumbnail);
+            }
+
+            LoadPlaylistQueueThumbnailCandidate(rectangle, brush, candidates, 0, token);
+        }
+
+        private static void LoadPlaylistQueueThumbnailCandidate(
+            Rectangle rectangle,
+            ImageBrush brush,
+            IList<string> candidates,
+            int index,
+            object token)
+        {
+            if (rectangle == null || brush == null || !ReferenceEquals(rectangle.Tag, token))
+            {
+                return;
+            }
+
+            if (candidates == null || index >= candidates.Count)
+            {
+                brush.ImageSource = null;
+                return;
+            }
+
+            var url = candidates[index];
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                LoadPlaylistQueueThumbnailCandidate(rectangle, brush, candidates, index + 1, token);
+                return;
+            }
+
+            try
+            {
+                var bitmap = new BitmapImage
+                {
+                    DecodePixelType = DecodePixelType.Logical,
+                    DecodePixelWidth = 208
+                };
+                bitmap.ImageFailed += (bitmapSender, failedArgs) =>
+                {
+                    if (!ReferenceEquals(rectangle.Tag, token) || !ReferenceEquals(brush.ImageSource, bitmap))
+                    {
+                        return;
+                    }
+
+                    LoadPlaylistQueueThumbnailCandidate(rectangle, brush, candidates, index + 1, token);
+                };
+                bitmap.UriSource = new Uri(url, UriKind.Absolute);
+
+                if (ReferenceEquals(rectangle.Tag, token))
+                {
+                    brush.ImageSource = bitmap;
+                }
+            }
+            catch
+            {
+                LoadPlaylistQueueThumbnailCandidate(rectangle, brush, candidates, index + 1, token);
+            }
         }
 
         private void RelatedThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1096,7 +1289,7 @@ namespace YouTube
             return best;
         }
 
-        private void UpdateVideoPlayerLayout()
+        private void UpdateVideoPlayerLayout(bool updateOrientationState = true)
         {
             // While handing the player to the mini-player the window shrinks to the small
             // always-on-top size, which is technically landscape. Reacting to that would drag the
@@ -1107,8 +1300,7 @@ namespace YouTube
             }
 
             var windowWidth = Window.Current.Bounds.Width;
-            var windowHeight = Window.Current.Bounds.Height;
-            bool isPortrait = windowHeight > windowWidth;
+            bool isPortrait = IsCurrentViewPortrait();
 
             UpdateTitleDescriptionSkeletonLayout(isPortrait);
             MovePlaylistQueueForLayout(isPortrait);
@@ -1194,8 +1386,13 @@ namespace YouTube
             UpdateVideoPlayerHeight();
             var ignored = Dispatcher.RunAsync(CoreDispatcherPriority.Low, () => UpdateVideoPlayerHeight());
 
-            // Update the previous orientation state
-            _wasPortrait = isPortrait;
+            // Only the normal layout path advances the orientation baseline. Mini-player restore
+            // resyncs may run while the phone is physically rotating, so those must never swallow
+            // a real portrait/landscape transition.
+            if (updateOrientationState)
+            {
+                _wasPortrait = isPortrait;
+            }
         }
 
         // The queue is one live control so its expansion state, ItemsSource and current marker are
@@ -1296,10 +1493,11 @@ namespace YouTube
                 DetachPlayerEventHandlers();
                 AttachBackgroundPlaylistEventHandlers();
                 _minimizedToMiniPlayer = true;
+                _orientationFullscreenGeneration++;
 
                 // Video_Unloaded normally drops this, but it runs after the window has already
                 // been resized for the mini-player — too late to stop the layout reacting.
-                Window.Current.SizeChanged -= Window_SizeChanged;
+                UnsubscribeWindowSizeChanged();
 
                 var frame = this.Frame;
                 MiniPlayer.DetachFromParent(CustomVideoPlayer);
@@ -1420,8 +1618,8 @@ namespace YouTube
             }
         }
 
-        // Invoked when the user taps the mini-player's free area. GoForward returns to THIS cached
-        // page (see NavigationCacheMode); the reattach happens in OnNavigatedTo below.
+        // Invoked when the user taps the mini-player's free area. Prefer the original forward entry
+        // when it is still intact; otherwise navigate directly to this Required-cached Video page.
         private async void RestoreFromMiniPlayer()
         {
             try
@@ -1433,14 +1631,52 @@ namespace YouTube
                     await MiniPlayer.LeaveCompactOverlayAsync();
                 }
 
-                if (Frame != null && Frame.CanGoForward)
+                if (Frame != null)
                 {
                     _restoringFromMiniPlayer = true;
-                    Frame.GoForward();
+
+                    // GoForward is only safe when the next entry really is this Video page. Any
+                    // navigation performed while the mini-player is visible can replace/clear the
+                    // forward stack; blindly calling GoForward could then open a different page.
+                    var canReturnThroughForwardStack = false;
+                    try
+                    {
+                        // Immediately after minimizing there is exactly one forward entry: this
+                        // Video page. If the user navigated elsewhere while the mini-player was
+                        // visible, Frame.Navigate clears/replaces that forward history, so do not
+                        // trust GoForward unless this simple shape is still intact.
+                        if (Frame.CanGoForward && Frame.ForwardStack != null && Frame.ForwardStack.Count == 1)
+                        {
+                            var entry = Frame.ForwardStack[0];
+                            canReturnThroughForwardStack = entry != null && entry.SourcePageType == typeof(Video);
+                        }
+                    }
+                    catch { }
+
+                    if (canReturnThroughForwardStack)
+                    {
+                        Frame.GoForward();
+                    }
+                    else
+                    {
+                        // NavigationCacheMode.Required reuses this same Video instance, so this is a
+                        // deterministic restore even when the forward history has changed.
+                        var navigated = Frame.Navigate(typeof(Video), new VideoNavigationArgs
+                        {
+                            VideoId = currentVideoId,
+                            PlaylistId = currentPlaylistId,
+                            PlaylistTitle = _playlistQueueTitle
+                        });
+                        if (!navigated)
+                        {
+                            _restoringFromMiniPlayer = false;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
+                _restoringFromMiniPlayer = false;
                 System.Diagnostics.Debug.WriteLine("[Video] Restore from mini-player failed: " + ex.Message);
             }
         }
@@ -1521,9 +1757,9 @@ namespace YouTube
                     ticks++;
                     var width = Window.Current.Bounds.Width;
 
-                    // Force orientationChanged to false so this never toggles fullscreen by itself.
-                    _wasPortrait = Window.Current.Bounds.Height > width;
-                    UpdateVideoPlayerLayout();
+                    // Re-measure the restored page without advancing the orientation baseline.
+                    // A real rotation during this settle window must still be seen by Window_SizeChanged.
+                    UpdateVideoPlayerLayout(false);
 
                     // Stop once the size has held steady for one interval, or after ~1.2s.
                     if ((Math.Abs(width - lastWidth) < 0.5 && ticks > 1) || ticks >= 8)
@@ -2262,18 +2498,13 @@ namespace YouTube
                             : lastComment.Text;
                 }
 
-                // Load author thumbnail
-                if (LastCommentAuthorImage != null && !string.IsNullOrEmpty(lastComment.AuthorThumbnail))
+                // Load through the explicit 64px avatar loader. Direct string -> ImageBrush
+                // conversion is unreliable on older Windows 10 Mobile builds.
+                if (LastCommentAuthorImage != null)
                 {
-                    try
-                    {
-                        var bitmap = new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(lastComment.AuthorThumbnail));
-                        LastCommentAuthorImage.ImageSource = bitmap;
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine("[Video] Error loading comment avatar: " + ex.Message);
-                    }
+                    ChannelIconController.AssignAlways(
+                        LastCommentAuthorImage == null ? null : LastCommentAuthorImage.Fill as ImageBrush,
+                        lastComment.AuthorThumbnail);
                 }
 
                 System.Diagnostics.Debug.WriteLine("[Video] Last comment preview shown: " + lastComment.Author);
@@ -6275,6 +6506,14 @@ namespace YouTube
                     {
                         return obj.GetNamedString("simpleText");
                     }
+                    if (obj.ContainsKey("content"))
+                    {
+                        var content = obj.GetNamedValue("content");
+                        if (content != null && content.ValueType == JsonValueType.String)
+                        {
+                            return content.GetString();
+                        }
+                    }
                     if (obj.ContainsKey("runs"))
                     {
                         var runs = obj.GetNamedArray("runs");
@@ -9173,13 +9412,88 @@ namespace YouTube
             {
                 SharePopupOverlay.Visibility = Visibility.Visible;
             }
+
+            if (SharePopupPanel != null)
+            {
+                SharePopupPanel.UpdateLayout();
+            }
+            if (SharePopupTransform != null)
+            {
+                SharePopupTransform.Y = GetSharePopupDismissDistance();
+            }
+            AnimateSharePopup(true);
+        }
+
+        private double GetSharePopupDismissDistance()
+        {
+            var height = SharePopupPanel != null ? SharePopupPanel.ActualHeight : 0;
+            if (height <= 1)
+            {
+                height = 390;
+            }
+            return height + 20;
+        }
+
+        private void AnimateSharePopup(bool show)
+        {
+            if (SharePopupTransform == null)
+            {
+                return;
+            }
+
+            var animation = new DoubleAnimation
+            {
+                To = show ? 0 : GetSharePopupDismissDistance(),
+                Duration = TimeSpan.FromMilliseconds(220),
+                EasingFunction = new CubicEase
+                {
+                    EasingMode = show ? EasingMode.EaseOut : EasingMode.EaseIn
+                }
+            };
+
+            Storyboard.SetTarget(animation, SharePopupTransform);
+            Storyboard.SetTargetProperty(animation, "Y");
+            var storyboard = new Storyboard();
+            storyboard.Children.Add(animation);
+            if (!show)
+            {
+                storyboard.Completed += (sender, args) =>
+                {
+                    if (SharePopupOverlay != null)
+                    {
+                        SharePopupOverlay.Visibility = Visibility.Collapsed;
+                    }
+                    CollapseVideoOverlayIfNoSheetOpen();
+                };
+            }
+            storyboard.Begin();
         }
 
         private void HideSharePopup()
         {
-            if (SharePopupOverlay != null)
+            if (SharePopupOverlay != null && SharePopupOverlay.Visibility == Visibility.Visible)
             {
-                SharePopupOverlay.Visibility = Visibility.Collapsed;
+                AnimateSharePopup(false);
+            }
+        }
+
+        private void CollapseVideoOverlayIfNoSheetOpen()
+        {
+            if (OverlayGrid == null)
+            {
+                return;
+            }
+
+            var anyOpen =
+                (SharePopupOverlay != null && SharePopupOverlay.Visibility == Visibility.Visible)
+                || (ShareBottomSheetPanel != null && ShareBottomSheetPanel.Visibility == Visibility.Visible)
+                || (CommentsBottomSheetPanel != null && CommentsBottomSheetPanel.Visibility == Visibility.Visible)
+                || (SettingsBottomSheetPanel != null && SettingsBottomSheetPanel.Visibility == Visibility.Visible)
+                || (SubscriptionMenuBottomSheetPanel != null && SubscriptionMenuBottomSheetPanel.Visibility == Visibility.Visible);
+
+            if (!anyOpen)
+            {
+                OverlayGrid.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -9231,7 +9545,7 @@ namespace YouTube
 
                 if (ShareTimeToggleKnobTransform != null)
                 {
-                    ShareTimeToggleKnobTransform.X = isOn ? 28.0 : 0.0;
+                    ShareTimeToggleKnobTransform.X = isOn ? 22.0 : 0.0;
                 }
             }
             catch (Exception ex)
@@ -9289,7 +9603,7 @@ namespace YouTube
                 var targetColor = isOn
                     ? App.GetThemeColor("PrimaryActionBackgroundBrush", Windows.UI.Colors.White)
                     : App.GetThemeColor("AppMutedTextBrush", Windows.UI.Color.FromArgb(255, 168, 168, 168));
-                var targetX = isOn ? 28.0 : 0.0;
+                var targetX = isOn ? 22.0 : 0.0;
 
                 if (ShareTimeToggleKnob != null)
                 {
@@ -9392,11 +9706,13 @@ namespace YouTube
                 var encoded = Uri.EscapeDataString(shareUrl);
                 var qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=448x448&margin=0&data=" + encoded;
                 var bitmap = new BitmapImage(new Uri(qrUrl));
+                AnimateShareBottomSheet(false);
                 ShowSharePopup(Localization.GetString("QrCode"), shareUrl, bitmap);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[Video] Failed to show QR code: " + ex.Message);
+                AnimateShareBottomSheet(false);
                 ShowSharePopup(Localization.GetString("QrCode"), shareUrl);
             }
         }
@@ -9432,11 +9748,24 @@ namespace YouTube
                 if (ShareBottomSheetPanel != null)
                 {
                     ShareBottomSheetPanel.Visibility = Visibility.Visible;
+                    ShareBottomSheetPanel.UpdateLayout();
+                    if (ShareBottomSheetTransform != null)
+                        ShareBottomSheetTransform.Y = GetShareSheetDismissDistance();
+
                     ResetShareTimeToggleState();
                     AnimateShareBottomSheet(true);
                     ResetShareTimeToggleVisualSoon();
                 }
             }
+        }
+
+        private double GetShareSheetDismissDistance()
+        {
+            double height = ShareBottomSheetPanel != null ? ShareBottomSheetPanel.ActualHeight : 0;
+            if (height <= 0)
+                height = 330;
+
+            return height + 20;
         }
 
         private void AnimateShareBottomSheet(bool show)
@@ -9455,7 +9784,7 @@ namespace YouTube
             }
             else
             {
-                animation.To = 360;
+                animation.To = GetShareSheetDismissDistance();
                 _shareSheetIsOpen = false;
                 ResetShareTimeToggleState();
 
@@ -9465,6 +9794,7 @@ namespace YouTube
                         ShareBottomSheetPanel.Visibility = Visibility.Collapsed;
                     _shareSheetIsOpen = false;
                     ResetShareTimeToggleState();
+                    CollapseVideoOverlayIfNoSheetOpen();
                 };
             }
 
@@ -10282,6 +10612,7 @@ namespace YouTube
             item.video_id = videoId;
             item.playlist_id = GetJsonString(endpoint, "playlistId");
             item.thumbnail = "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg";
+            item.channel_thumbnail = ExtractChannelThumbnailFromRenderer(tile);
 
             if (tile.ContainsKey("metadata"))
             {
@@ -10603,7 +10934,13 @@ namespace YouTube
                     return string.Empty;
                 }
 
-                string url = string.Empty;
+                // Keep the same parser as every other video card so WEB compact/video renderer
+                // changes are handled in one place.
+                string url = Config.ExtractVideoCardChannelThumbnail(renderer);
+                if (!string.IsNullOrWhiteSpace(url))
+                {
+                    return url;
+                }
 
                 if (renderer.ContainsKey("channelThumbnail"))
                 {
@@ -10677,7 +11014,18 @@ namespace YouTube
         {
             try
             {
-                if (lockupVM == null || !lockupVM.ContainsKey("metadata"))
+                if (lockupVM == null)
+                {
+                    return string.Empty;
+                }
+
+                var direct = Config.ExtractVideoCardChannelThumbnail(lockupVM);
+                if (!string.IsNullOrWhiteSpace(direct))
+                {
+                    return direct;
+                }
+
+                if (!lockupVM.ContainsKey("metadata"))
                 {
                     return string.Empty;
                 }
@@ -10807,6 +11155,92 @@ namespace YouTube
                     if (!string.IsNullOrWhiteSpace(url))
                     {
                         return url;
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            return string.Empty;
+        }
+
+        private static string ExtractDurationFromLockupViewModel(JsonObject lockupVM)
+        {
+            if (lockupVM == null)
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                // Current lockupViewModel shape.
+                var thumbnailViewModel = GetObjectPath(lockupVM, "contentImage", "thumbnailViewModel");
+                if (thumbnailViewModel != null && thumbnailViewModel.ContainsKey("overlays"))
+                {
+                    var overlays = thumbnailViewModel.GetNamedArray("overlays");
+                    for (int i = 0; i < overlays.Count; i++)
+                    {
+                        if (overlays[i].ValueType != JsonValueType.Object)
+                        {
+                            continue;
+                        }
+
+                        var overlay = overlays[i].GetObject();
+                        if (!overlay.ContainsKey("thumbnailBottomOverlayViewModel"))
+                        {
+                            continue;
+                        }
+
+                        var bottomOverlay = overlay.GetNamedObject("thumbnailBottomOverlayViewModel");
+                        if (!bottomOverlay.ContainsKey("badges"))
+                        {
+                            continue;
+                        }
+
+                        var badges = bottomOverlay.GetNamedArray("badges");
+                        for (int b = 0; b < badges.Count; b++)
+                        {
+                            if (badges[b].ValueType != JsonValueType.Object)
+                            {
+                                continue;
+                            }
+
+                            var badgeContainer = badges[b].GetObject();
+                            if (!badgeContainer.ContainsKey("thumbnailBadgeViewModel"))
+                            {
+                                continue;
+                            }
+
+                            var badge = badgeContainer.GetNamedObject("thumbnailBadgeViewModel");
+                            if (!badge.ContainsKey("text"))
+                            {
+                                continue;
+                            }
+
+                            var duration = ExtractTextFromRunsOrSimpleText(badge.GetNamedValue("text"));
+                            if (!string.IsNullOrWhiteSpace(duration))
+                            {
+                                return duration;
+                            }
+                        }
+                    }
+                }
+
+                // Older lockupViewModel shape used by some TV/legacy clients.
+                var oldOverlay = GetObjectPath(
+                    lockupVM,
+                    "contentImage",
+                    "thumbnailOverlayViewModel",
+                    "renderer",
+                    "thumbnailOverlayTimeStatusViewModel"
+                );
+                if (oldOverlay != null && oldOverlay.ContainsKey("text"))
+                {
+                    var duration = ExtractTextFromRunsOrSimpleText(oldOverlay.GetNamedValue("text"));
+                    if (!string.IsNullOrWhiteSpace(duration))
+                    {
+                        return duration;
                     }
                 }
             }
@@ -11053,29 +11487,11 @@ namespace YouTube
                     }
                 }
 
-                // Extract duration from contentImage.thumbnailOverlayViewModel.renderer.thumbnailOverlayTimeStatusViewModel.text
-                if (lockupVM.ContainsKey("contentImage"))
-                {
-                    var contentImage = lockupVM.GetNamedObject("contentImage");
-                    if (contentImage.ContainsKey("thumbnailOverlayViewModel"))
-                    {
-                        var overlayVM = contentImage.GetNamedObject("thumbnailOverlayViewModel");
-                        if (overlayVM.ContainsKey("renderer"))
-                        {
-                            var renderer = overlayVM.GetNamedObject("renderer");
-                            if (renderer.ContainsKey("thumbnailOverlayTimeStatusViewModel"))
-                            {
-                                var timeStatusVM = renderer.GetNamedObject(
-                                    "thumbnailOverlayTimeStatusViewModel"
-                                );
-                                if (timeStatusVM.ContainsKey("text"))
-                                {
-                                    videoItem.duration = timeStatusVM.GetNamedString("text");
-                                }
-                            }
-                        }
-                    }
-                }
+                // Modern lockups moved duration into
+                // contentImage.thumbnailViewModel.overlays[].thumbnailBottomOverlayViewModel
+                // .badges[].thumbnailBadgeViewModel.text. Keep the older
+                // thumbnailOverlayTimeStatusViewModel path as a fallback.
+                videoItem.duration = ExtractDurationFromLockupViewModel(lockupVM);
 
                 if (lockupVM.ContainsKey("metadata"))
                 {
@@ -11333,7 +11749,8 @@ namespace YouTube
                 double dragOffset = currentPoint.Position.Y - _shareInitialY;
                 double newY = _shareInitialTransformY + dragOffset;
 
-                if (newY >= 0 && newY <= 360)
+                double dismissDistance = GetShareSheetDismissDistance();
+                if (newY >= 0 && newY <= dismissDistance)
                 {
                     ShareBottomSheetTransform.Y = newY;
                 }
@@ -11349,7 +11766,7 @@ namespace YouTube
                 _shareIsDragging = false;
                 (sender as UIElement).ReleasePointerCapture(e.Pointer);
 
-                if (ShareBottomSheetTransform.Y > 180)
+                if (ShareBottomSheetTransform.Y > GetShareSheetDismissDistance() * 0.5)
                 {
                     // Close the sheet
                     AnimateShareBottomSheet(false);
@@ -11406,13 +11823,70 @@ namespace YouTube
             }
         }
 
-        private void SharePopupCloseButton_Click(object sender, RoutedEventArgs e)
+        private void SharePopupDragArea_Tapped(object sender, TappedRoutedEventArgs e)
         {
             HideSharePopup();
-            if (OverlayGrid != null && ShareBottomSheetPanel != null && ShareBottomSheetPanel.Visibility != Visibility.Visible)
+            e.Handled = true;
+        }
+
+        private void SharePopupDragArea_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            var element = sender as UIElement;
+            if (element != null && element.CapturePointer(e.Pointer))
             {
-                OverlayGrid.Visibility = Visibility.Collapsed;
+                _sharePopupInitialY = e.GetCurrentPoint(element).Position.Y;
+                _sharePopupInitialTransformY = SharePopupTransform != null ? SharePopupTransform.Y : 0;
+                _sharePopupIsDragging = true;
+                e.Handled = true;
             }
+        }
+
+        private void SharePopupDragArea_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_sharePopupIsDragging || SharePopupTransform == null)
+            {
+                return;
+            }
+
+            var element = sender as UIElement;
+            if (element == null)
+            {
+                return;
+            }
+
+            var dragOffset = e.GetCurrentPoint(element).Position.Y - _sharePopupInitialY;
+            var newY = _sharePopupInitialTransformY + dragOffset;
+            var dismissDistance = GetSharePopupDismissDistance();
+            if (newY >= 0 && newY <= dismissDistance)
+            {
+                SharePopupTransform.Y = newY;
+            }
+            e.Handled = true;
+        }
+
+        private void SharePopupDragArea_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_sharePopupIsDragging)
+            {
+                return;
+            }
+
+            _sharePopupIsDragging = false;
+            var element = sender as UIElement;
+            if (element != null)
+            {
+                element.ReleasePointerCapture(e.Pointer);
+            }
+
+            if (SharePopupTransform != null && SharePopupTransform.Y > GetSharePopupDismissDistance() * 0.35)
+            {
+                HideSharePopup();
+            }
+            else
+            {
+                AnimateSharePopup(true);
+            }
+            e.Handled = true;
         }
 
         private void SharePopupOverlay_Tapped(object sender, TappedRoutedEventArgs e)
@@ -13113,6 +13587,19 @@ namespace YouTube
         public string views { get; set; }
         public string published { get; set; }
         public string duration { get; set; }
+
+        public string MetadataLine
+        {
+            get
+            {
+                var parts = new List<string>();
+                if (!string.IsNullOrWhiteSpace(author)) parts.Add(author.Trim());
+                if (!string.IsNullOrWhiteSpace(views)) parts.Add(views.Trim());
+                if (!string.IsNullOrWhiteSpace(published)) parts.Add(published.Trim());
+                return string.Join(" • ", parts);
+            }
+        }
+
         // Set when the card's watchEndpoint carries a playlist — this is what keeps an
         // auto-generated mix ("jam") alive when the card is tapped.
         public string playlist_id { get; set; }

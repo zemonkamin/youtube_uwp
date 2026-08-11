@@ -847,4 +847,10 @@
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>គុណភាពរូបភាពតូច</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>រូបតំណាងឆានែល</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>បង្ហាញរូបតំណាងឆានែលលើកាតវីដេអូ</value>
+  </data>
 </root>

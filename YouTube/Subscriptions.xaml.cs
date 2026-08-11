@@ -8,6 +8,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
+using Windows.UI.Xaml.Shapes;
+
 namespace YouTube
 {
     // Build fix: XAML SizeChanged handler for VideosItemsControl and VideosSkeletonCardsList is defined below.
@@ -142,6 +144,7 @@ namespace YouTube
                 var videos = await Config.GetSubscriptionsFeedVideosAsync(Config.UserToken, GeneralSubscriptionsFeedCount);
                 System.Diagnostics.Debug.WriteLine($"[Subscriptions] Got {videos?.Count ?? 0} videos from general subscriptions feed");
 
+                ApplySubscribedChannelAvatars(videos);
                 SetVideosSource(videos);
                 System.Diagnostics.Debug.WriteLine($"[Subscriptions] General feed ItemsSource set with {subscriptionVideos.Count} items");
             }
@@ -178,6 +181,7 @@ namespace YouTube
                 var videos = await Config.GetChannelVideosAsync(channel.ChannelId);
                 System.Diagnostics.Debug.WriteLine($"[Subscriptions] Got {videos?.Count ?? 0} videos for {channel.ChannelName}");
 
+                ApplyKnownChannelAvatar(videos, channel);
                 SetVideosSource(videos);
                 System.Diagnostics.Debug.WriteLine($"[Subscriptions] VideosItemsControl.ItemsSource set with {subscriptionVideos.Count} items");
             }
@@ -189,6 +193,61 @@ namespace YouTube
             finally
             {
                 HideVideoPlaceholders();
+            }
+        }
+
+        private void ApplySubscribedChannelAvatars(List<VideoCardItem> videos)
+        {
+            if (videos == null || subscribedChannels == null || subscribedChannels.Count == 0)
+                return;
+
+            for (var i = 0; i < videos.Count; i++)
+            {
+                var video = videos[i];
+                if (video == null || !string.IsNullOrWhiteSpace(video.ChannelThumbnailUrl))
+                    continue;
+
+                for (var j = 0; j < subscribedChannels.Count; j++)
+                {
+                    var channel = subscribedChannels[j];
+                    if (channel == null || string.IsNullOrWhiteSpace(channel.ThumbnailUrl))
+                        continue;
+
+                    var idMatches = !string.IsNullOrWhiteSpace(video.ChannelId)
+                        && !string.IsNullOrWhiteSpace(channel.ChannelId)
+                        && string.Equals(video.ChannelId.Trim(), channel.ChannelId.Trim(), StringComparison.OrdinalIgnoreCase);
+                    var titleMatches = !string.IsNullOrWhiteSpace(video.ChannelTitle)
+                        && !string.IsNullOrWhiteSpace(channel.ChannelName)
+                        && string.Equals(video.ChannelTitle.Trim(), channel.ChannelName.Trim(), StringComparison.OrdinalIgnoreCase);
+
+                    if (!idMatches && !titleMatches)
+                        continue;
+
+                    video.ChannelThumbnailUrl = channel.ThumbnailUrl;
+                    if (string.IsNullOrWhiteSpace(video.ChannelId))
+                        video.ChannelId = channel.ChannelId;
+                    break;
+                }
+            }
+        }
+
+        private static void ApplyKnownChannelAvatar(List<VideoCardItem> videos, SubscriptionChannel channel)
+        {
+            if (videos == null || channel == null)
+                return;
+
+            for (var i = 0; i < videos.Count; i++)
+            {
+                var video = videos[i];
+                if (video == null)
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(video.ChannelId))
+                    video.ChannelId = channel.ChannelId ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(video.ChannelTitle))
+                    video.ChannelTitle = channel.ChannelName ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(video.ChannelThumbnailUrl))
+                    video.ChannelThumbnailUrl = channel.ThumbnailUrl ?? string.Empty;
             }
         }
 
@@ -317,6 +376,20 @@ namespace YouTube
             VideoThumbnailController.Assign(image, item.VideoId, item.ThumbnailUrl, 360);
         }
 
+        private void ChannelIcon_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            var image = sender as Image;
+            var item = args.NewValue as VideoCardItem;
+            ChannelIconController.Assign(image, item == null ? string.Empty : item.ChannelThumbnailUrl);
+        }
+
+        private void ChannelIcon_Loaded(object sender, RoutedEventArgs e)
+        {
+            var image = sender as Image;
+            var item = image == null ? null : image.DataContext as VideoCardItem;
+            ChannelIconController.Assign(image, item == null ? string.Empty : item.ChannelThumbnailUrl);
+        }
+
         private void VideoThumbnailHost_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             UpdateHostHeight(sender as FrameworkElement, e.NewSize.Width, 1.0 / VideoThumbnailAspectRatio);
@@ -399,6 +472,8 @@ namespace YouTube
             {
                 element.Margin = targetMargin;
             }
+
+            VideoCardController.ApplyResponsiveLayout(element, IsPortraitOrientation());
         }
 
         private void UpdateResponsiveCardMargins(DependencyObject root)

@@ -847,4 +847,10 @@ Versioni {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Cilësia e miniaturës</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Ikonat e kanaleve</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Shfaq ikonat e kanaleve në kartat e videove</value>
+  </data>
 </root>

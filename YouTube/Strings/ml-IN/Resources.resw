@@ -847,4 +847,10 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>തമ്പ്‌നെയിൽ ഗുണനിലവാരം</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>ചാനൽ ഐക്കണുകൾ</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>വീഡിയോ കാർഡുകളിൽ ചാനൽ ഐക്കണുകൾ കാണിക്കുക</value>
+  </data>
 </root>

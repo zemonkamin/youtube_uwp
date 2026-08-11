@@ -195,10 +195,10 @@
                     <StackPanel HorizontalAlignment="Center">
                         <Button x:Name="LikeButton"
                                 Style="{StaticResource ShortsIconButtonStyle}"
-                                Width="42"
-                                Height="42"
+                                Width="34"
+                                Height="34"
                                 Click="LikeButton_Click">
-                            <Image x:Name="LikeIconImage" local:ThemeAsset.Path="Assets/Dark/player/like.png" Width="28" Height="28"/>
+                            <Image x:Name="LikeIconImage" local:ThemeAsset.Path="Assets/Dark/player/like.png" Width="24" Height="24"/>
                         </Button>
                         <TextBlock x:Uid="Loc_Like_Text" x:Name="LikeCountText"
                                    Margin="0,2,0,0"
@@ -210,20 +210,20 @@
                     <StackPanel HorizontalAlignment="Center" Margin="0,14,0,0">
                         <Button x:Name="DislikeButton"
                                 Style="{StaticResource ShortsIconButtonStyle}"
-                                Width="42"
-                                Height="42"
+                                Width="34"
+                                Height="34"
                                 Click="DislikeButton_Click">
-                            <Image x:Name="DislikeIconImage" local:ThemeAsset.Path="Assets/Dark/player/dislike.png" Width="28" Height="28"/>
+                            <Image x:Name="DislikeIconImage" local:ThemeAsset.Path="Assets/Dark/player/dislike.png" Width="24" Height="24"/>
                         </Button>
                     </StackPanel>
 
                     <StackPanel HorizontalAlignment="Center" Margin="0,14,0,0">
                         <Button x:Name="CommentsButton"
                                 Style="{StaticResource ShortsIconButtonStyle}"
-                                Width="42"
-                                Height="42"
+                                Width="34"
+                                Height="34"
                                 Click="CommentsButton_Click">
-                            <Image local:ThemeAsset.Path="Assets/Dark/player/comments.png" Width="28" Height="28"/>
+                            <Image local:ThemeAsset.Path="Assets/Dark/player/comments.png" Width="24" Height="24"/>
                         </Button>
                         <TextBlock x:Uid="Loc_Comments_Text" x:Name="CommentCountText"
                                    Margin="0,2,0,0"
@@ -235,10 +235,10 @@
                     <StackPanel HorizontalAlignment="Center" Margin="0,14,0,0">
                         <Button x:Name="SendButton"
                                 Style="{StaticResource ShortsIconButtonStyle}"
-                                Width="42"
-                                Height="42"
+                                Width="34"
+                                Height="34"
                                 Click="SendButton_Click">
-                            <Image local:ThemeAsset.Path="Assets/Dark/player/send.png" Width="28" Height="28"/>
+                            <Image local:ThemeAsset.Path="Assets/Dark/player/send.png" Width="24" Height="24"/>
                         </Button>
                         <TextBlock x:Uid="Loc_Share_Text"
                                    Margin="0,2,0,0"
@@ -306,7 +306,7 @@
                           PointerCaptureLost="CommentsDragArea_PointerReleased">
                         <Rectangle Width="40"
                                    Height="4"
-                                   Fill="{ThemeResource AppMutedTextBrush}"
+                                   Fill="Gray"
                                    RadiusX="2"
                                    RadiusY="2"
                                    HorizontalAlignment="Center"
@@ -399,40 +399,40 @@
                     HorizontalAlignment="Stretch"
                     Background="#222222"
                     CornerRadius="15"
-                    Height="356"
-                    Margin="10,0,10,8"
+                    MaxHeight="330"
+                    Margin="10,0,10,10"
                     Visibility="Collapsed">
                 <Border.RenderTransform>
-                    <TranslateTransform x:Name="ShareBottomSheetTransform" Y="366"/>
+                    <TranslateTransform x:Name="ShareBottomSheetTransform" Y="340"/>
                 </Border.RenderTransform>
 
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
                     <Grid Grid.Row="0"
                           Background="Transparent"
-                          Height="32"
+                          Height="40"
                           Tapped="ShareDragArea_Tapped"
                           PointerPressed="ShareDragArea_PointerPressed"
                           PointerMoved="ShareDragArea_PointerMoved"
                           PointerReleased="ShareDragArea_PointerReleased"
                           PointerCaptureLost="ShareDragArea_PointerReleased">
-                        <Rectangle Width="36"
+                        <Rectangle Width="40"
                                    Height="4"
-                                   Fill="#787878"
+                                   Fill="Gray"
                                    RadiusX="2"
                                    RadiusY="2"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center"/>
                     </Grid>
 
-                    <Grid Grid.Row="1" Margin="16,0,16,10">
+                    <Grid Grid.Row="1" Margin="20,0,20,10">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel>
-                                <Grid Margin="0,0,0,8">
+                                <Grid Margin="0,0,0,4">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
@@ -442,29 +442,29 @@
                                                TextWrapping="Wrap"
                                                Foreground="White"
                                                FontWeight="SemiBold"
-                                               FontSize="15"
+                                               FontSize="16"
                                                MaxLines="2"
                                                VerticalAlignment="Center"
                                                Margin="0,0,12,0"/>
                                     <Button x:Name="ShareTimeToggleButton"
                                             Grid.Column="1"
                                             Style="{StaticResource ShortsIconButtonStyle}"
-                                            Width="42"
-                                            Height="24"
+                                            Width="50"
+                                            Height="28"
                                             VerticalAlignment="Center"
                                             Click="ShareTimeToggleButton_Click">
-                                        <Grid Width="42" Height="24">
+                                        <Grid Width="50" Height="28">
                                             <Border x:Name="ShareTimeToggleTrack"
-                                                    Width="42"
-                                                    Height="24"
+                                                    Width="50"
+                                                    Height="28"
                                                     Background="#9B9B9B"
-                                                    CornerRadius="12"/>
+                                                    CornerRadius="14"/>
                                             <Ellipse x:Name="ShareTimeToggleThumb"
-                                                     Width="18"
-                                                     Height="18"
+                                                     Width="20"
+                                                     Height="20"
                                                      Fill="#222222"
                                                      HorizontalAlignment="Left"
-                                                     Margin="3,3,0,3">
+                                                     Margin="4,4,0,4">
                                                 <Ellipse.RenderTransform>
                                                     <TranslateTransform x:Name="ShareTimeToggleThumbTransform" X="0"/>
                                                 </Ellipse.RenderTransform>
@@ -475,36 +475,37 @@
 
                                 <TextBlock x:Name="ShareChannelText"
                                            Foreground="#9F9F9F"
-                                           FontSize="13"
-                                           Margin="0,0,0,10"/>
+                                           FontSize="14"
+                                           Margin="0,0,0,12"/>
 
                                 <Border Background="#323232"
                                         CornerRadius="12"
                                         Padding="12,10,12,10"
-                                        Margin="0,0,0,12">
+                                        Margin="0,0,0,8">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <Image local:ThemeAsset.Path="Assets/link.png"
-                                               Width="20"
-                                               Height="20"
+                                               Width="24"
+                                               Height="24"
+                                               Margin="0,0,16,0"
                                                VerticalAlignment="Center"/>
                                         <TextBlock x:Name="ShareUrlTextBlock"
                                                    Grid.Column="1"
-                                                   Margin="10,0,0,0"
                                                    Foreground="White"
                                                    FontSize="14"
                                                    VerticalAlignment="Center"
-                                                   TextWrapping="WrapWholeWords"/>
+                                                   TextTrimming="CharacterEllipsis"
+                                                   TextWrapping="NoWrap"/>
                                     </Grid>
                                 </Border>
 
                                 <StackPanel x:Name="ShareButtonsPanel">
                                     <Button x:Name="CopyLinkButton"
                                             Style="{StaticResource FlatActionButtonStyle}"
-                                            Height="54"
+                                            Height="44"
                                             Margin="0,0,0,4"
                                             Click="CopyLinkButton_Click">
                                         <Grid>
@@ -512,8 +513,8 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="42" Height="42" Background="#373737" CornerRadius="21" VerticalAlignment="Center">
-                                                <Image local:ThemeAsset.Path="Assets/copy.png" Width="22" Height="22" Stretch="Uniform"/>
+                                            <Border Width="36" Height="36" Background="#373737" CornerRadius="18" VerticalAlignment="Center">
+                                                <Image local:ThemeAsset.Path="Assets/copy.png" Width="24" Height="24" Stretch="Uniform"/>
                                             </Border>
                                             <TextBlock x:Uid="Loc_CopyLink_Text" Grid.Column="1" Foreground="White" VerticalAlignment="Center" FontSize="16" Margin="16,0,0,0"/>
                                         </Grid>
@@ -521,7 +522,7 @@
 
                                     <Button x:Name="ShowQrButton"
                                             Style="{StaticResource FlatActionButtonStyle}"
-                                            Height="54"
+                                            Height="44"
                                             Margin="0,0,0,4"
                                             Click="ShowQrButton_Click">
                                         <Grid>
@@ -529,8 +530,8 @@
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="42" Height="42" Background="#373737" CornerRadius="21" VerticalAlignment="Center">
-                                                <Image local:ThemeAsset.Path="Assets/qr.png" Width="22" Height="22" Stretch="Uniform"/>
+                                            <Border Width="36" Height="36" Background="#373737" CornerRadius="18" VerticalAlignment="Center">
+                                                <Image local:ThemeAsset.Path="Assets/qr.png" Width="24" Height="24" Stretch="Uniform"/>
                                             </Border>
                                             <TextBlock x:Uid="Loc_ShowQRCode_Text" Grid.Column="1" Foreground="White" VerticalAlignment="Center" FontSize="16" Margin="16,0,0,0"/>
                                         </Grid>
@@ -538,16 +539,15 @@
 
                                     <Button x:Name="ShareViaSystemButton"
                                             Style="{StaticResource FlatActionButtonStyle}"
-                                            Height="54"
-                                            Margin="0,0,0,2"
+                                            Height="44"
                                             Click="ShareViaSystemButton_Click">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <Border Width="42" Height="42" Background="#373737" CornerRadius="21" VerticalAlignment="Center">
-                                                <Image local:ThemeAsset.Path="Assets/share.png" Width="22" Height="22" Stretch="Uniform"/>
+                                            <Border Width="36" Height="36" Background="#373737" CornerRadius="18" VerticalAlignment="Center">
+                                                <Image local:ThemeAsset.Path="Assets/share.png" Width="24" Height="24" Stretch="Uniform"/>
                                             </Border>
                                             <TextBlock x:Uid="Loc_ShareVia_Text" Grid.Column="1" Foreground="White" VerticalAlignment="Center" FontSize="16" Margin="16,0,0,0"/>
                                         </Grid>
@@ -623,64 +623,72 @@
                 </Grid>
             </Border>
 
-            <Border x:Name="CopiedPopupPanel"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
+            <!-- Copy-link / QR result sheet. Same bottom-sheet shape and gesture as Share. -->
+            <Border x:Name="ShareResultPopupPanel"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
                     Background="#222222"
-                    CornerRadius="18"
-                    Width="280"
-                    Padding="18"
+                    CornerRadius="15"
+                    Margin="10,0,10,10"
+                    MaxHeight="390"
                     Visibility="Collapsed">
-                <StackPanel>
-                    <TextBlock x:Uid="Loc_LinkCopied_Text"
-                               Foreground="White"
-                               FontSize="18"
-                               FontWeight="SemiBold"
-                               TextAlignment="Center"
-                               Margin="0,0,0,8"/>
-                    <TextBlock x:Uid="Loc_ShortsLinkHasBeenCopiedToClipboard_Text"
-                               Foreground="#CFCFCF"
-                               FontSize="13"
-                               TextWrapping="Wrap"
-                               TextAlignment="Center"
-                               Margin="0,0,0,16"/>
-                    <Button x:Name="CopiedPopupOkButton"
-                            x:Uid="Loc_OK_Content"
-                            HorizontalAlignment="Stretch"
-                            Click="CopiedPopupOkButton_Click"/>
-                </StackPanel>
-            </Border>
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="ShareResultPopupTransform" Y="400"/>
+                </Border.RenderTransform>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-            <Border x:Name="QrPopupPanel"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Background="#222222"
-                    CornerRadius="18"
-                    Width="300"
-                    Padding="18"
-                    Visibility="Collapsed">
-                <StackPanel>
-                    <TextBlock x:Uid="Loc_QRCode_Text"
-                               Foreground="White"
-                               FontSize="18"
-                               FontWeight="SemiBold"
-                               TextAlignment="Center"
-                               Margin="0,0,0,12"/>
-                    <Border Width="220"
-                            Height="220"
-                            Background="#4C4C4C"
-                            CornerRadius="16"
-                            HorizontalAlignment="Center"
-                            Padding="12"
-                            Margin="0,0,0,14">
-                        <Border Background="White" CornerRadius="12" Padding="8">
-                            <Image x:Name="QrCodeImage" Stretch="Uniform"/>
+                    <Grid Grid.Row="0"
+                          Height="40"
+                          Background="Transparent"
+                          Tapped="ShareResultDragArea_Tapped"
+                          PointerPressed="ShareResultDragArea_PointerPressed"
+                          PointerMoved="ShareResultDragArea_PointerMoved"
+                          PointerReleased="ShareResultDragArea_PointerReleased"
+                          PointerCaptureLost="ShareResultDragArea_PointerReleased">
+                        <Rectangle Width="40"
+                                   Height="4"
+                                   Fill="{ThemeResource AppMutedTextBrush}"
+                                   RadiusX="2"
+                                   RadiusY="2"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <StackPanel Grid.Row="1" Margin="20,0,20,12">
+                        <TextBlock x:Uid="Loc_ShortsLinkHasBeenCopiedToClipboard_Text"
+                                   x:Name="ShareResultLocalizedCopiedText"
+                                   Visibility="Collapsed"/>
+                        <TextBlock x:Name="ShareResultTitleText"
+                                   Foreground="White"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   TextWrapping="WrapWholeWords"
+                                   Margin="0,0,0,10"/>
+
+                        <Border x:Name="ShareResultImageHolder"
+                                Width="224"
+                                Height="224"
+                                HorizontalAlignment="Center"
+                                Background="#4C4C4C"
+                                CornerRadius="15"
+                                Padding="10"
+                                Margin="0,0,0,12"
+                                Visibility="Collapsed">
+                            <Border Background="White" CornerRadius="12" Padding="8">
+                                <Image x:Name="QrCodeImage" Stretch="Uniform"/>
+                            </Border>
                         </Border>
-                    </Border>
-                    <Button x:Uid="Loc_Close_Content" x:Name="QrPopupCloseButton"
-                            HorizontalAlignment="Stretch"
-                            Click="QrPopupCloseButton_Click"/>
-                </StackPanel>
+
+                        <TextBlock x:Name="ShareResultMessageText"
+                                   Foreground="#CFCFCF"
+                                   FontSize="13"
+                                   TextWrapping="WrapWholeWords"/>
+                    </StackPanel>
+                </Grid>
             </Border>
         </Grid>
 

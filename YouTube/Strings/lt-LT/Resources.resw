@@ -847,4 +847,10 @@ Versija {0}</value>
   <data name="ThumbnailQuality" xml:space="preserve">
     <value>Miniatiūros kokybė</value>
   </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Kanalų piktogramos</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Rodyti kanalų piktogramas vaizdo įrašų kortelėse</value>
+  </data>
 </root>

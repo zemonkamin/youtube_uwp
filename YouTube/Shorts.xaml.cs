@@ -66,6 +66,9 @@ namespace YouTube
         private double _shareInitialY;
         private double _shareInitialTransformY;
         private bool _shareIsDragging;
+        private double _shareResultInitialY;
+        private double _shareResultInitialTransformY;
+        private bool _shareResultIsDragging;
         private double _descriptionInitialY;
         private double _descriptionInitialTransformY;
         private bool _descriptionIsDragging;
@@ -3646,6 +3649,11 @@ namespace YouTube
             if (ShareBottomSheetPanel != null)
             {
                 ShareBottomSheetPanel.Visibility = Visibility.Visible;
+                ShareBottomSheetPanel.UpdateLayout();
+                if (ShareBottomSheetTransform != null)
+                {
+                    ShareBottomSheetTransform.Y = GetShareSheetDismissDistance();
+                }
             }
 
             AnimateShareBottomSheet(true);
@@ -3795,7 +3803,7 @@ namespace YouTube
 
             var thumbAnimation = new DoubleAnimation();
             thumbAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(180));
-            thumbAnimation.To = isOn ? 18 : 0;
+            thumbAnimation.To = isOn ? 22 : 0;
             thumbAnimation.EnableDependentAnimation = true;
 
             var colorAnimation = new ColorAnimation();
@@ -3835,6 +3843,17 @@ namespace YouTube
             return Color.FromArgb(a, r, g, b);
         }
 
+        private double GetShareSheetDismissDistance()
+        {
+            double height = ShareBottomSheetPanel != null ? ShareBottomSheetPanel.ActualHeight : 0;
+            if (height <= 0)
+            {
+                height = 330;
+            }
+
+            return height + 20;
+        }
+
         private void AnimateShareBottomSheet(bool show)
         {
             if (ShareBottomSheetTransform == null)
@@ -3845,7 +3864,7 @@ namespace YouTube
             var animation = new DoubleAnimation();
             animation.Duration = new Duration(TimeSpan.FromMilliseconds(280));
             animation.EasingFunction = new CircleEase();
-            animation.To = show ? 0 : 366;
+            animation.To = show ? 0 : GetShareSheetDismissDistance();
 
             Storyboard.SetTarget(animation, ShareBottomSheetTransform);
             Storyboard.SetTargetProperty(animation, "Y");
@@ -3899,7 +3918,8 @@ namespace YouTube
                 double dragOffset = currentPoint.Position.Y - _shareInitialY;
                 double newY = _shareInitialTransformY + dragOffset;
 
-                if (newY >= 0 && newY <= 366)
+                double dismissDistance = GetShareSheetDismissDistance();
+                if (newY >= 0 && newY <= dismissDistance)
                 {
                     ShareBottomSheetTransform.Y = newY;
                 }
@@ -3919,7 +3939,7 @@ namespace YouTube
                     element.ReleasePointerCapture(e.Pointer);
                 }
 
-                if (ShareBottomSheetTransform != null && ShareBottomSheetTransform.Y > 160)
+                if (ShareBottomSheetTransform != null && ShareBottomSheetTransform.Y > GetShareSheetDismissDistance() * 0.5)
                 {
                     AnimateShareBottomSheet(false);
                 }
@@ -4004,7 +4024,18 @@ namespace YouTube
                 accessToken = string.Empty;
             }
 
-            var description = await TryLoadShortDescriptionFromNextClientAsync(videoId, accessToken, true);
+            // The exact /player response is the safest source for a Short description.
+            // videoDetails.shortDescription belongs to the requested video id and does not contain
+            // engagement-panel labels, tracking params or command ids.
+            var description = await TryLoadShortDescriptionFromPlayerAsync(videoId, accessToken);
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                description = await TryLoadShortDescriptionFromPlayerAsync(videoId, string.Empty);
+            }
+            if (string.IsNullOrWhiteSpace(description))
+            {
+                description = await TryLoadShortDescriptionFromNextClientAsync(videoId, accessToken, true);
+            }
             if (string.IsNullOrWhiteSpace(description))
             {
                 description = await TryLoadShortDescriptionFromNextClientAsync(videoId, accessToken, false);
@@ -4021,6 +4052,38 @@ namespace YouTube
             description = CleanShortDescription(description, videoId);
             _descriptionCache[videoId] = description ?? string.Empty;
             return _descriptionCache[videoId];
+        }
+
+
+        private async Task<string> TryLoadShortDescriptionFromPlayerAsync(string videoId, string accessToken)
+        {
+            try
+            {
+                var payload = BuildPlayerPayload(videoId);
+                var json = await LoadDirectShortPlayerJsonAsync(payload, accessToken);
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    return string.Empty;
+                }
+
+                var root = JsonObject.Parse(json);
+                if (root.ContainsKey("videoDetails"))
+                {
+                    var details = root.GetNamedObject("videoDetails");
+                    var description = ReadJsonString(details, "shortDescription");
+                    if (!string.IsNullOrWhiteSpace(description))
+                    {
+                        return description;
+                    }
+                }
+
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Shorts] /player description error: " + ex.Message);
+                return string.Empty;
+            }
         }
 
         private async Task<string> TryLoadShortDescriptionFromNextClientAsync(string videoId, string accessToken, bool mobileWebClient)
@@ -4142,7 +4205,6 @@ namespace YouTube
             }
 
             return lowerKey == "shortdescription"
-                || lowerKey == "description"
                 || lowerKey == "descriptiontext"
                 || lowerKey == "descriptionbodytext"
                 || lowerKey == "attributeddescription"
@@ -4194,20 +4256,11 @@ namespace YouTube
                         return builder.ToString();
                     }
 
-                    var nested = new StringBuilder();
-                    foreach (var pair in obj)
-                    {
-                        var text = ExtractDescriptionText(pair.Value);
-                        if (!string.IsNullOrWhiteSpace(text))
-                        {
-                            if (nested.Length > 0)
-                            {
-                                nested.AppendLine();
-                            }
-                            nested.Append(text);
-                        }
-                    }
-                    return nested.ToString();
+                    // Do not recursively concatenate arbitrary properties here. Modern
+                    // engagement-panel objects contain labels, panel identifiers and tracking
+                    // commands next to the actual text. Only explicit text/content/runs above
+                    // are valid description payloads.
+                    return string.Empty;
                 }
 
                 if (value.ValueType == JsonValueType.Array)
@@ -4249,7 +4302,19 @@ namespace YouTube
                 return false;
             }
 
-            if (string.Equals(normalized, "Description", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(normalized, "Description", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(normalized, "A description isn't available for this video", StringComparison.OrdinalIgnoreCase)
+                || normalized.IndexOf("expanded-description-engagement-panel", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return false;
+            }
+
+            // Tracking / command ids frequently start with CD and contain no spaces. They are
+            // metadata, not user-visible description text.
+            if (normalized.Length >= 20
+                && normalized.IndexOf(' ') < 0
+                && normalized.IndexOf('\n') < 0
+                && Regex.IsMatch(normalized, @"^[A-Za-z0-9_\-]+$"))
             {
                 return false;
             }
@@ -4281,7 +4346,8 @@ namespace YouTube
             result = Regex.Replace(result, @"https?://youtu\.be/[^\s]+", string.Empty, RegexOptions.IgnoreCase);
             result = Regex.Replace(result, @"[ \t]+\n", "\n");
             result = Regex.Replace(result, @"\n{3,}", "\n\n");
-            return result.Trim();
+            result = result.Trim();
+            return IsUsefulDescriptionCandidate(result) ? result : string.Empty;
         }
 
         private void AnimateDescriptionBottomSheet(bool show)
@@ -4377,69 +4443,183 @@ namespace YouTube
             }
         }
 
-        private void ShowCopiedPopup()
+        private void ShowShareResultPopup(string title, string message, bool showQr)
         {
+            if (ShareResultTitleText != null)
+            {
+                ShareResultTitleText.Text = title ?? string.Empty;
+            }
+            if (ShareResultMessageText != null)
+            {
+                ShareResultMessageText.Text = message ?? string.Empty;
+            }
+            if (ShareResultImageHolder != null)
+            {
+                ShareResultImageHolder.Visibility = showQr ? Visibility.Visible : Visibility.Collapsed;
+            }
+            if (!showQr && QrCodeImage != null)
+            {
+                QrCodeImage.Source = null;
+            }
+
             if (ShortsOverlayGrid != null)
             {
                 ShortsOverlayGrid.Visibility = Visibility.Visible;
             }
-
-            if (CopiedPopupPanel != null)
+            if (ShareResultPopupPanel != null)
             {
-                CopiedPopupPanel.Visibility = Visibility.Visible;
+                ShareResultPopupPanel.Visibility = Visibility.Visible;
+                ShareResultPopupPanel.UpdateLayout();
             }
+            if (ShareResultPopupTransform != null)
+            {
+                ShareResultPopupTransform.Y = GetShareResultDismissDistance();
+            }
+            AnimateShareResultPopup(true);
         }
 
-        private void HideCopiedPopup()
+        private void ShowCopiedPopup()
         {
-            if (CopiedPopupPanel != null)
-            {
-                CopiedPopupPanel.Visibility = Visibility.Collapsed;
-            }
-
-            HideOverlayIfNoPanelsOpen();
+            var message = ShareResultLocalizedCopiedText != null
+                ? ShareResultLocalizedCopiedText.Text
+                : Localization.GetString("VideoLinkCopied");
+            ShowShareResultPopup(Localization.GetString("LinkCopied"), message, false);
         }
 
         private void ShowQrPopup()
         {
-            if (QrCodeImage != null)
+            var url = BuildCurrentShareUrl();
+            if (QrCodeImage != null && !string.IsNullOrWhiteSpace(url))
             {
-                var url = BuildCurrentShareUrl();
                 var escaped = Uri.EscapeDataString(url);
                 QrCodeImage.Source = new BitmapImage(new Uri("https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + escaped));
             }
+            ShowShareResultPopup(Localization.GetString("QrCode"), url, true);
+        }
 
-            if (ShortsOverlayGrid != null)
+        private double GetShareResultDismissDistance()
+        {
+            var height = ShareResultPopupPanel != null ? ShareResultPopupPanel.ActualHeight : 0;
+            if (height <= 1)
             {
-                ShortsOverlayGrid.Visibility = Visibility.Visible;
+                height = 390;
+            }
+            return height + 20;
+        }
+
+        private void AnimateShareResultPopup(bool show)
+        {
+            if (ShareResultPopupTransform == null)
+            {
+                return;
             }
 
-            if (QrPopupPanel != null)
+            var animation = new DoubleAnimation
             {
-                QrPopupPanel.Visibility = Visibility.Visible;
+                To = show ? 0 : GetShareResultDismissDistance(),
+                Duration = TimeSpan.FromMilliseconds(220),
+                EasingFunction = new CubicEase
+                {
+                    EasingMode = show ? EasingMode.EaseOut : EasingMode.EaseIn
+                }
+            };
+            Storyboard.SetTarget(animation, ShareResultPopupTransform);
+            Storyboard.SetTargetProperty(animation, "Y");
+            var storyboard = new Storyboard();
+            storyboard.Children.Add(animation);
+            if (!show)
+            {
+                storyboard.Completed += (sender, args) =>
+                {
+                    if (ShareResultPopupPanel != null)
+                    {
+                        ShareResultPopupPanel.Visibility = Visibility.Collapsed;
+                    }
+                    HideOverlayIfNoPanelsOpen();
+                };
+            }
+            storyboard.Begin();
+        }
+
+        private void HideShareResultPopup()
+        {
+            if (ShareResultPopupPanel != null && ShareResultPopupPanel.Visibility == Visibility.Visible)
+            {
+                AnimateShareResultPopup(false);
             }
         }
 
-        private void HideQrPopup()
+        private void ShareResultDragArea_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (QrPopupPanel != null)
+            HideShareResultPopup();
+            e.Handled = true;
+        }
+
+        private void ShareResultDragArea_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            var element = sender as UIElement;
+            if (element != null && element.CapturePointer(e.Pointer))
             {
-                QrPopupPanel.Visibility = Visibility.Collapsed;
+                _shareResultInitialY = e.GetCurrentPoint(element).Position.Y;
+                _shareResultInitialTransformY = ShareResultPopupTransform != null ? ShareResultPopupTransform.Y : 0;
+                _shareResultIsDragging = true;
+                e.Handled = true;
+            }
+        }
+
+        private void ShareResultDragArea_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_shareResultIsDragging || ShareResultPopupTransform == null)
+            {
+                return;
             }
 
-            HideOverlayIfNoPanelsOpen();
+            var element = sender as UIElement;
+            if (element == null)
+            {
+                return;
+            }
+
+            var dragOffset = e.GetCurrentPoint(element).Position.Y - _shareResultInitialY;
+            var newY = _shareResultInitialTransformY + dragOffset;
+            var dismissDistance = GetShareResultDismissDistance();
+            if (newY >= 0 && newY <= dismissDistance)
+            {
+                ShareResultPopupTransform.Y = newY;
+            }
+            e.Handled = true;
+        }
+
+        private void ShareResultDragArea_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_shareResultIsDragging)
+            {
+                return;
+            }
+
+            _shareResultIsDragging = false;
+            var element = sender as UIElement;
+            if (element != null)
+            {
+                element.ReleasePointerCapture(e.Pointer);
+            }
+
+            if (ShareResultPopupTransform != null && ShareResultPopupTransform.Y > GetShareResultDismissDistance() * 0.35)
+            {
+                HideShareResultPopup();
+            }
+            else
+            {
+                AnimateShareResultPopup(true);
+            }
+            e.Handled = true;
         }
 
         private void ShortsOverlayGrid_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            if (CopiedPopupPanel != null && CopiedPopupPanel.Visibility == Visibility.Visible)
+            if (ShareResultPopupPanel != null && ShareResultPopupPanel.Visibility == Visibility.Visible)
             {
-                HideCopiedPopup();
-            }
-
-            if (QrPopupPanel != null && QrPopupPanel.Visibility == Visibility.Visible)
-            {
-                HideQrPopup();
+                HideShareResultPopup();
             }
 
             AnimateCommentsBottomSheet(false);
@@ -4453,10 +4633,9 @@ namespace YouTube
             bool commentsVisible = CommentsBottomSheetPanel != null && CommentsBottomSheetPanel.Visibility == Visibility.Visible;
             bool shareVisible = ShareBottomSheetPanel != null && ShareBottomSheetPanel.Visibility == Visibility.Visible;
             bool descriptionVisible = DescriptionBottomSheetPanel != null && DescriptionBottomSheetPanel.Visibility == Visibility.Visible;
-            bool copiedVisible = CopiedPopupPanel != null && CopiedPopupPanel.Visibility == Visibility.Visible;
-            bool qrVisible = QrPopupPanel != null && QrPopupPanel.Visibility == Visibility.Visible;
+            bool shareResultVisible = ShareResultPopupPanel != null && ShareResultPopupPanel.Visibility == Visibility.Visible;
 
-            if (!commentsVisible && !shareVisible && !descriptionVisible && !copiedVisible && !qrVisible && ShortsOverlayGrid != null)
+            if (!commentsVisible && !shareVisible && !descriptionVisible && !shareResultVisible && ShortsOverlayGrid != null)
             {
                 ShortsOverlayGrid.Visibility = Visibility.Collapsed;
             }
@@ -4473,22 +4652,14 @@ namespace YouTube
             var dataPackage = new Windows.ApplicationModel.DataTransfer.DataPackage();
             dataPackage.SetText(url);
             Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(dataPackage);
+            AnimateShareBottomSheet(false);
             ShowCopiedPopup();
-        }
-
-        private void CopiedPopupOkButton_Click(object sender, RoutedEventArgs e)
-        {
-            HideCopiedPopup();
         }
 
         private void ShowQrButton_Click(object sender, RoutedEventArgs e)
         {
+            AnimateShareBottomSheet(false);
             ShowQrPopup();
-        }
-
-        private void QrPopupCloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            HideQrPopup();
         }
 
         private void ShareViaSystemButton_Click(object sender, RoutedEventArgs e)
