@@ -59,20 +59,8 @@
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal" />
-                                    <VisualState x:Name="PointerOver">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AppSurfaceAltBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Pressed">
-                                        <Storyboard>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
-                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource AppSurfaceHoverBrush}" />
-                                            </ObjectAnimationUsingKeyFrames>
-                                        </Storyboard>
-                                    </VisualState>
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Pressed" />
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
                         </Grid>
@@ -187,14 +175,124 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <DataTemplate x:Key="CommentThreadTemplate">
+            <StackPanel Margin="0,10,0,10" HorizontalAlignment="Stretch">
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" Width="36" Height="36"
+                          Margin="0,0,10,0" VerticalAlignment="Top">
+                        <Ellipse Fill="{ThemeResource AvatarPlaceholderBrush}" />
+                        <Ellipse DataContextChanged="CommentAuthorImage_DataContextChanged"
+                                 Loaded="CommentAuthorImage_Loaded">
+                            <Ellipse.Fill>
+                                <ImageBrush Stretch="UniformToFill" />
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Grid>
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <TextBlock Text="{Binding Author}"
+                                       FontSize="13" FontWeight="Bold"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                       TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding PublishedAt}"
+                                       Margin="8,0,0,0" FontSize="12"
+                                       Foreground="{ThemeResource AppMutedTextBrush}" />
+                        </StackPanel>
+                        <RichTextBlock Margin="0,4,0,0" FontSize="14"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                       IsTextSelectionEnabled="False"
+                                       Loaded="CommentTextRichTextBlock_Loaded"
+                                       Tag="{Binding Text}" TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <Image Width="17" Height="17"
+                                   local:ThemeAsset.Path="Assets/player/like.png" />
+                            <TextBlock Text="{Binding LikeCount}"
+                                       Margin="6,0,0,0"
+                                       FontSize="12"
+                                       VerticalAlignment="Center"
+                                       Foreground="{ThemeResource AppSecondaryTextBrush}" />
+                            <Image Width="17" Height="17" Margin="14,0,0,0"
+                                   local:ThemeAsset.Path="Assets/player/dislike.png" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <Button Style="{StaticResource CardButtonStyle}"
+                        Visibility="{Binding RepliesButtonVisibility}"
+                        Margin="46,8,0,0" Padding="0"
+                        HorizontalAlignment="Left"
+                        Click="CommentRepliesButton_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding RepliesText}"
+                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   VerticalAlignment="Center" />
+                        <Image Width="16" Height="16" Margin="8,0,0,0"
+                               Stretch="Uniform" VerticalAlignment="Center"
+                               local:ThemeAsset.Path="Assets/down_arrow.png" />
+                    </StackPanel>
+                </Button>
+                <local:AndroidLoadingRing Width="20" Height="20"
+                                          Margin="46,8,0,0"
+                                          HorizontalAlignment="Left"
+                                          IsActive="{Binding RepliesLoadingActive}"
+                                          Visibility="{Binding RepliesLoadingVisibility}" />
+
+                <ItemsControl ItemsSource="{Binding Replies}" Margin="30,4,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,8,0,8" HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Width="34" Height="34" Margin="0,0,10,0" VerticalAlignment="Top">
+                                    <Ellipse Fill="{ThemeResource AvatarPlaceholderBrush}" />
+                                    <Ellipse DataContextChanged="CommentAuthorImage_DataContextChanged"
+                                             Loaded="CommentAuthorImage_Loaded">
+                                        <Ellipse.Fill>
+                                            <ImageBrush Stretch="UniformToFill" />
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+                                </Grid>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Stretch">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                        <TextBlock Text="{Binding Author}" FontWeight="Bold"
+                                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding PublishedAt}"
+                                                   Margin="8,0,0,0" FontSize="12"
+                                                   Foreground="{ThemeResource AppMutedTextBrush}" />
+                                    </StackPanel>
+                                    <RichTextBlock Margin="0,4,0,0" FontSize="14"
+                                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                                   IsTextSelectionEnabled="False"
+                                                   Loaded="CommentTextRichTextBlock_Loaded"
+                                                   Tag="{Binding Text}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </DataTemplate>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource AppBackgroundBrush}">
+    <Grid x:Name="VideoRoot" Background="{ThemeResource AppBackgroundBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition x:Name="VideoNavbarRow" Height="0" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
+            <RowDefinition x:Name="VideoTabbarRow" Height="0" />
         </Grid.RowDefinitions>
+
+        <local:Navbar x:Name="navbar"
+                      Grid.Row="0"
+                      Canvas.ZIndex="20"
+                      Visibility="Collapsed" />
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -218,6 +316,7 @@
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <!-- Playlist / mix queue -->
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -283,9 +382,11 @@
                         </StackPanel>
                     </Button>
 
-                    <Grid Grid.Row="2" Margin="16,0,16,16">
+                    <Grid x:Name="ChannelAndActionsRow" Grid.Row="2" Margin="16,0,16,16"
+                          SizeChanged="ChannelAndActionsRow_SizeChanged">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <!-- Channel info: a fixed avatar plus a flexible text column so a long
@@ -380,15 +481,21 @@
                                 </StackPanel>
                             </Button>
                         </Border>
+                        <Grid x:Name="LandscapeActionsHost"
+                              Grid.Column="2"
+                              Margin="12,0,0,0"
+                              VerticalAlignment="Center"
+                              Visibility="Collapsed" />
                     </Grid>
 
                     <ScrollViewer
+                        x:Name="VideoActionsScrollViewer"
                         Grid.Row="3"
                         Margin="16,2,16,16"
                         HorizontalScrollBarVisibility="Auto"
                         HorizontalScrollMode="Enabled"
                         VerticalScrollMode="Disabled">
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel x:Name="VideoActionsPanel" Orientation="Horizontal">
                             <Border
                                 x:Name="LikeDislikeContainer"
                                 Margin="0,0,8,0"
@@ -458,9 +565,68 @@
                                             Height="20"
                                             local:ThemeAsset.Path="Assets/player/send.png" />
                                         <TextBlock x:Uid="Loc_Share_Text"
+                                            x:Name="ShareActionText"
                                             Margin="6,0,0,0"
                                             FontSize="14"
                                             Foreground="{ThemeResource AppPrimaryTextBrush}" />
+                                    </StackPanel>
+                                </Button>
+                            </Border>
+                            <Border
+                                Margin="0,0,8,0"
+                                Background="{ThemeResource AppSurfaceBrush}"
+                                CornerRadius="18">
+                                <Button
+                                    x:Name="SaveButton"
+                                    Padding="16,8"
+                                    Background="Transparent"
+                                    Click="SaveButton_Click"
+                                    BorderThickness="0"
+                                    Foreground="{ThemeResource AppPrimaryTextBrush}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image
+                                            x:Name="SaveActionIcon"
+                                            Width="20"
+                                            Height="20"
+                                            local:ThemeAsset.Path="Assets/save.png" />
+                                        <TextBlock x:Name="SaveActionText"
+                                            Margin="6,0,0,0"
+                                            FontSize="14"
+                                            Foreground="{ThemeResource AppPrimaryTextBrush}" />
+                                    </StackPanel>
+                                </Button>
+                            </Border>
+                            <Border
+                                Margin="0,0,8,0"
+                                Background="{ThemeResource AppSurfaceBrush}"
+                                CornerRadius="18">
+                                <Button x:Name="DownloadButton"
+                                        Padding="16,8"
+                                        Background="Transparent"
+                                        Click="DownloadButton_Click"
+                                        BorderThickness="0"
+                                        Foreground="{ThemeResource AppPrimaryTextBrush}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Grid Width="20" Height="20">
+                                            <Image x:Name="DownloadActionIcon"
+                                                   Width="20" Height="20"
+                                                   local:ThemeAsset.Path="Assets/download.png" />
+                                            <Grid x:Name="DownloadProgressIcon"
+                                                  Width="20" Height="20"
+                                                  Visibility="Collapsed">
+                                                <Ellipse Stroke="{ThemeResource AppMutedTextBrush}"
+                                                         StrokeThickness="2" />
+                                                <Path x:Name="DownloadProgressArc"
+                                                      Stroke="{ThemeResource AppPrimaryTextBrush}"
+                                                      StrokeThickness="2"
+                                                      StrokeStartLineCap="Round"
+                                                      StrokeEndLineCap="Round" />
+                                            </Grid>
+                                        </Grid>
+                                        <TextBlock x:Name="DownloadActionText"
+                                                   Margin="6,0,0,0"
+                                                   FontSize="14"
+                                                   Foreground="{ThemeResource AppPrimaryTextBrush}" />
                                     </StackPanel>
                                 </Button>
                             </Border>
@@ -560,6 +726,12 @@
                                                             <ImageBrush Stretch="UniformToFill" />
                                                         </Rectangle.Fill>
                                                     </Rectangle>
+                                                    <ProgressBar Style="{StaticResource VideoWatchedProgressStyle}"
+                                                                 Value="{Binding WatchedPercent}"
+                                                                 Visibility="{Binding WatchedProgressVisibility}" />
+                                                    <Image Stretch="Fill"
+                                                           IsHitTestVisible="False"
+                                                           local:ThemeAsset.Path="Assets/playlist_rounding.png" />
                                                     <!-- Only the thumbnail carries the now-playing marker; the row itself stays neutral. -->
                                                     <Border Width="30"
                                                             Height="30"
@@ -603,9 +775,62 @@
                         </StackPanel>
                     </Border>
 
+                    <!-- Full desktop-style description shown only in landscape. It uses the same
+                         source text and link parser as the description bottom sheet. -->
+                    <Border x:Name="LandscapeDescriptionContainer"
+                            Grid.Row="5"
+                            Margin="16,0,16,14"
+                            Padding="12,10"
+                            Background="{ThemeResource AppSurfaceBrush}"
+                            CornerRadius="12"
+                            Visibility="Collapsed">
+                        <StackPanel>
+                            <StackPanel x:Name="LandscapeDescriptionStats"
+                                        Orientation="Horizontal" Margin="0,0,0,5">
+                                <TextBlock Text="{Binding ElementName=VideoViewsText, Path=Text}"
+                                           FontSize="13"
+                                           FontWeight="Bold"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}" />
+                                <TextBlock x:Uid="Loc_Views_Text"
+                                           Margin="4,0,0,0"
+                                           FontSize="13"
+                                           FontWeight="Bold"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}" />
+                                <TextBlock Text="{Binding ElementName=VideoUploadDateText, Path=Text}"
+                                           Margin="8,0,0,0"
+                                           FontSize="13"
+                                           FontWeight="Bold"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}" />
+                            </StackPanel>
+                            <Grid>
+                                <RichTextBlock x:Name="LandscapeDescriptionTextBlock"
+                                               MaxHeight="58"
+                                               Margin="0,0,0,2"
+                                               FontSize="14"
+                                               Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                               IsTextSelectionEnabled="False"
+                                               LayoutUpdated="LandscapeDescriptionTextBlock_LayoutUpdated"
+                                               TextWrapping="Wrap" />
+                                <Button x:Name="LandscapeDescriptionToggleButton"
+                                        Padding="5,0,0,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        Background="{ThemeResource AppSurfaceBrush}"
+                                        BorderThickness="0"
+                                        Visibility="Collapsed"
+                                        Click="LandscapeDescriptionToggleButton_Click">
+                                    <TextBlock x:Name="LandscapeDescriptionToggleText"
+                                               FontSize="13"
+                                               FontWeight="Bold"
+                                               Foreground="{ThemeResource AppPrimaryTextBrush}" />
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
                     <Button
                         x:Name="CommentsContainerButton"
-                        Grid.Row="5"
+                        Grid.Row="6"
                         Margin="16,0,16,16"
                         Padding="0"
                         HorizontalAlignment="Stretch"
@@ -678,9 +903,26 @@
                         </Border>
                     </Button>
 
+                    <!-- Landscape keeps comments directly below the description. The same
+                         thread template and reply-loading command are shared with the bottom sheet. -->
+                    <StackPanel x:Name="LandscapeCommentsPanel"
+                                Grid.Row="6"
+                                Margin="16,0,16,18"
+                                Visibility="Collapsed">
+                        <ItemsControl x:Name="LandscapeCommentsList"
+                                      HorizontalAlignment="Stretch"
+                                      ItemTemplate="{StaticResource CommentThreadTemplate}">
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                        </ItemsControl>
+                    </StackPanel>
+
                     <StackPanel
                         x:Name="RelatedPanelVertical"
-                        Grid.Row="6"
+                        Grid.Row="7"
                         Visibility="Collapsed">
                         <ProgressRing
                             x:Name="RelatedVideosLoadingRingVertical"
@@ -782,6 +1024,9 @@
                                                            DataContextChanged="RelatedThumbnail_DataContextChanged"
                                                            Stretch="UniformToFill" />
                                                 </Border>
+                                                <ProgressBar Style="{StaticResource VideoWatchedProgressStyle}"
+                                                             Value="{Binding WatchedPercent}"
+                                                             Visibility="{Binding WatchedProgressVisibility}" />
                                                 <Border HorizontalAlignment="Right"
                                                         VerticalAlignment="Bottom"
                                                         Margin="0,0,8,8"
@@ -838,69 +1083,13 @@
                                 FontSize="18"
                                 FontWeight="Bold"
                                 Foreground="{ThemeResource AppPrimaryTextBrush}" />
-                            <ItemsControl x:Name="CommentsList" HorizontalAlignment="Stretch">
+                            <ItemsControl x:Name="CommentsList" HorizontalAlignment="Stretch"
+                                          ItemTemplate="{StaticResource CommentThreadTemplate}">
                                 <ItemsControl.ItemContainerStyle>
                                     <Style TargetType="ContentPresenter">
                                         <Setter Property="HorizontalAlignment" Value="Stretch" />
                                     </Style>
                                 </ItemsControl.ItemContainerStyle>
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="0,12" HorizontalAlignment="Stretch">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <Grid
-                                                Grid.Column="0"
-                                                Width="36"
-                                                Height="36"
-                                                Margin="0,0,12,0"
-                                                VerticalAlignment="Top">
-                                                <Ellipse Fill="{ThemeResource AvatarPlaceholderBrush}" />
-                                                <Ellipse DataContextChanged="CommentAuthorImage_DataContextChanged"
-                                                         Loaded="CommentAuthorImage_Loaded">
-                                                    <Ellipse.Fill>
-                                                        <ImageBrush Stretch="UniformToFill" />
-                                                    </Ellipse.Fill>
-                                                </Ellipse>
-                                            </Grid>
-                                            <StackPanel
-                                                Grid.Column="1"
-                                                HorizontalAlignment="Stretch"
-                                                VerticalAlignment="Top">
-                                                <Grid HorizontalAlignment="Stretch">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*" />
-                                                        <ColumnDefinition Width="Auto" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock
-                                                        Grid.Column="0"
-                                                        FontSize="13"
-                                                        FontWeight="Bold"
-                                                        Foreground="{ThemeResource AppSecondaryTextBrush}"
-                                                        Text="{Binding Author}"
-                                                        TextTrimming="CharacterEllipsis" />
-                                                    <TextBlock
-                                                        Grid.Column="1"
-                                                        Margin="8,0,0,0"
-                                                        FontSize="12"
-                                                        Foreground="{ThemeResource AppMutedTextBrush}"
-                                                        Text="{Binding PublishedAt}" />
-                                                </Grid>
-                                                <RichTextBlock
-                                                    Margin="0,4,0,0"
-                                                    FontSize="14"
-                                                    Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                                    HorizontalAlignment="Stretch"
-                                                    IsTextSelectionEnabled="False"
-                                                    Loaded="CommentTextRichTextBlock_Loaded"
-                                                    Tag="{Binding Text}"
-                                                    TextWrapping="Wrap" />
-                                            </StackPanel>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </StackPanel>
                     </StackPanel>
@@ -1006,13 +1195,19 @@
                                                 Background="{ThemeResource AppBackgroundBrush}"
                                                 HorizontalAlignment="Stretch">
                                         <Grid HorizontalAlignment="Stretch"
-                                              SizeChanged="RelatedThumbnailHost_SizeChanged">
-                                            <Border Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="8" />
-                                            <Border CornerRadius="8">
-                                                <Image HorizontalAlignment="Stretch"
-                                                       VerticalAlignment="Stretch"
-                                                       DataContextChanged="RelatedThumbnail_DataContextChanged"
-                                                       Stretch="UniformToFill" />
+                                              SizeChanged="RelatedThumbnailHost_SizeChanged"
+                                              Tag="VideoCardThumbnailChrome">
+                                            <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" />
+                                            <Border Tag="VideoCardThumbnailChrome">
+                                                <Grid>
+                                                    <Image HorizontalAlignment="Stretch"
+                                                           VerticalAlignment="Stretch"
+                                                           DataContextChanged="RelatedThumbnail_DataContextChanged"
+                                                           Stretch="UniformToFill" />
+                                                    <ProgressBar Style="{StaticResource VideoWatchedProgressStyle}"
+                                                                 Value="{Binding WatchedPercent}"
+                                                                 Visibility="{Binding WatchedProgressVisibility}" />
+                                                </Grid>
                                             </Border>
                                             <Border HorizontalAlignment="Right"
                                                     VerticalAlignment="Bottom"
@@ -1300,19 +1495,23 @@
 
         <Grid
             x:Name="OverlayGrid"
-            Grid.Row="1"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Canvas.ZIndex="100"
             Background="#80000000"
             Tapped="OverlayGrid_Tapped"
             Visibility="Collapsed" />
         <Grid
             x:Name="DescriptionOverlayGrid"
-            Grid.Row="1"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Canvas.ZIndex="100"
             Background="Transparent"
             Tapped="DescriptionOverlayGrid_Tapped"
             Visibility="Collapsed" />
 
         <!-- Bottom Sheet Panel for Description -->
-        <Grid x:Name="DescriptionBottomSheetPanel" Grid.Row="1" 
+        <Grid x:Name="DescriptionBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
               VerticalAlignment="Bottom" 
               HorizontalAlignment="Stretch"
               Background="{ThemeResource AppSurfaceAltBrush}"
@@ -1484,7 +1683,7 @@
         </Grid>
 
         <!-- Bottom Sheet Panel for Comments -->
-        <Grid x:Name="CommentsBottomSheetPanel" Grid.Row="1" 
+        <Grid x:Name="CommentsBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
               VerticalAlignment="Bottom" 
               HorizontalAlignment="Stretch"
               Background="{ThemeResource AppDividerBrush}"
@@ -1527,75 +1726,20 @@
                     HorizontalScrollBarVisibility="Disabled"
                     HorizontalScrollMode="Disabled"
                     VerticalScrollBarVisibility="Auto">
-                    <ItemsControl x:Name="CommentsItemsControl" HorizontalAlignment="Stretch">
+                    <ItemsControl x:Name="CommentsItemsControl" HorizontalAlignment="Stretch"
+                                  ItemTemplate="{StaticResource CommentThreadTemplate}">
                         <ItemsControl.ItemContainerStyle>
                             <Style TargetType="ContentPresenter">
                                 <Setter Property="HorizontalAlignment" Value="Stretch" />
                             </Style>
                         </ItemsControl.ItemContainerStyle>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Margin="0,10,0,10" HorizontalAlignment="Stretch">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid
-                                        Grid.Column="0"
-                                        Width="36"
-                                        Height="36"
-                                        Margin="0,0,10,0"
-                                        VerticalAlignment="Top">
-                                        <Ellipse Fill="{ThemeResource AvatarPlaceholderBrush}" />
-                                        <Ellipse DataContextChanged="CommentAuthorImage_DataContextChanged"
-                                                 Loaded="CommentAuthorImage_Loaded">
-                                            <Ellipse.Fill>
-                                                <ImageBrush Stretch="UniformToFill" />
-                                            </Ellipse.Fill>
-                                        </Ellipse>
-                                    </Grid>
-                                    <StackPanel
-                                        Grid.Column="1"
-                                        HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Top">
-                                        <Grid HorizontalAlignment="Stretch">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock
-                                                Grid.Column="0"
-                                                Foreground="{ThemeResource AppSecondaryTextBrush}"
-                                                FontWeight="Bold"
-                                                Text="{Binding Author}"
-                                                TextTrimming="CharacterEllipsis" />
-                                            <TextBlock
-                                                Grid.Column="1"
-                                                Margin="8,0,0,0"
-                                                FontSize="12"
-                                                Foreground="{ThemeResource AppMutedTextBrush}"
-                                                Text="{Binding PublishedAt}" />
-                                        </Grid>
-                                        <RichTextBlock
-                                            Margin="0,4,0,0"
-                                            FontSize="14"
-                                            Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                            HorizontalAlignment="Stretch"
-                                            IsTextSelectionEnabled="False"
-                                            Loaded="CommentTextRichTextBlock_Loaded"
-                                            Tag="{Binding Text}"
-                                            TextWrapping="Wrap" />
-                                    </StackPanel>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
             </Grid>
         </Grid>
 
         <!-- Bottom Sheet Panel for Subscription / Notification Menu -->
-        <Grid x:Name="SubscriptionMenuBottomSheetPanel" Grid.Row="1"
+        <Grid x:Name="SubscriptionMenuBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
               VerticalAlignment="Bottom"
               HorizontalAlignment="Stretch"
               Background="{ThemeResource AppDividerBrush}"
@@ -1723,7 +1867,7 @@
         </Grid>
 
         <!-- Bottom Sheet Panel for Share -->
-        <Grid x:Name="ShareBottomSheetPanel" Grid.Row="1"
+        <Grid x:Name="ShareBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
               VerticalAlignment="Bottom"
               HorizontalAlignment="Stretch"
               Background="Transparent"
@@ -1904,9 +2048,174 @@
             </Border>
         </Grid>
 
+        <!-- Playlist picker for the Save action. It deliberately has no "New" button. -->
+        <Grid x:Name="SaveBottomSheetPanel"
+              Grid.Row="0"
+              Grid.RowSpan="3"
+              Canvas.ZIndex="101"
+              VerticalAlignment="Bottom"
+              HorizontalAlignment="Stretch"
+              Background="Transparent"
+              MaxHeight="540"
+              Margin="10,0,10,10"
+              Visibility="Collapsed">
+            <Grid.RenderTransform>
+                <TranslateTransform x:Name="SaveBottomSheetTransform" Y="560"/>
+            </Grid.RenderTransform>
+
+            <Border Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="15">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="40"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0"
+                          Height="40"
+                          Background="Transparent"
+                          Tapped="SaveDragArea_Tapped"
+                          PointerPressed="SaveDragArea_PointerPressed"
+                          PointerMoved="SaveDragArea_PointerMoved"
+                          PointerReleased="SaveDragArea_PointerReleased"
+                          PointerCaptureLost="SaveDragArea_PointerReleased">
+                        <Border Width="40"
+                                Height="4"
+                                Background="Gray"
+                                CornerRadius="2"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <TextBlock x:Name="SaveSheetTitleText"
+                               Grid.Row="1"
+                               Margin="20,0,20,12"
+                               Foreground="{ThemeResource AppPrimaryTextBrush}"
+                               FontSize="20"
+                               FontWeight="SemiBold"/>
+
+                    <Grid Grid.Row="2" Margin="12,0,12,14">
+                        <Grid x:Name="SavePlaylistsLoadingPanel" Height="110">
+                            <local:AndroidLoadingRing x:Name="SavePlaylistsLoadingRing"
+                                                      Width="38"
+                                                      Height="38"
+                                                      IsActive="False"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <TextBlock x:Name="SavePlaylistsEmptyText"
+                                   Height="96"
+                                   Visibility="Collapsed"
+                                   Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                   FontSize="14"
+                                   TextAlignment="Center"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+
+                        <ScrollViewer x:Name="SavePlaylistsScrollViewer"
+                                      MaxHeight="400"
+                                      Visibility="Collapsed"
+                                      VerticalScrollBarVisibility="Auto">
+                            <ItemsControl x:Name="SavePlaylistsList"
+                                          HorizontalAlignment="Stretch"
+                                          HorizontalContentAlignment="Stretch">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Style="{StaticResource ShareActionButtonStyle}"
+                                                Height="76"
+                                                Margin="0,0,0,4"
+                                                HorizontalAlignment="Stretch"
+                                                HorizontalContentAlignment="Stretch"
+                                                IsEnabled="{Binding IsEnabled}"
+                                                Opacity="{Binding RowOpacity}"
+                                                Click="SavePlaylistRow_Click">
+                                            <Grid Height="76" HorizontalAlignment="Stretch">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="108"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="42"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Grid Grid.Column="0" Width="108" Height="70"
+                                                      VerticalAlignment="Center">
+                                                    <Border Width="92" Height="52"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Top"
+                                                            Background="{Binding AccentBackColor}"
+                                                            CornerRadius="7" Opacity="0.72"/>
+                                                    <Border Width="100" Height="56" Margin="0,3,0,0"
+                                                            HorizontalAlignment="Center"
+                                                            VerticalAlignment="Top"
+                                                            Background="{Binding AccentFrontColor}"
+                                                            CornerRadius="7" Opacity="0.86"/>
+                                                    <Border Height="61" VerticalAlignment="Bottom"
+                                                            Background="{ThemeResource AppSurfaceBrush}"
+                                                            CornerRadius="7">
+                                                        <Grid>
+                                                            <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill"/>
+                                                            <Image Stretch="Fill" IsHitTestVisible="False"
+                                                                   local:ThemeAsset.Path="Assets/rounding_up.png"/>
+                                                        </Grid>
+                                                    </Border>
+                                                    <Border HorizontalAlignment="Right"
+                                                            VerticalAlignment="Bottom"
+                                                            Margin="0,0,5,5"
+                                                            Padding="5,2"
+                                                            Visibility="{Binding VideoCountVisibility}"
+                                                            CornerRadius="4"
+                                                            Background="#CC000000">
+                                                        <TextBlock Text="{Binding VideoCountText}"
+                                                                   Foreground="White"
+                                                                   FontSize="10"
+                                                                   FontWeight="SemiBold" />
+                                                    </Border>
+                                                </Grid>
+
+                                                <StackPanel Grid.Column="1" Margin="14,0,8,0"
+                                                            VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Title}"
+                                                               Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                                               FontSize="16"
+                                                               FontWeight="SemiBold"
+                                                               TextWrapping="NoWrap"
+                                                               TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding MetadataText}"
+                                                               Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                                               FontSize="12"
+                                                               Margin="0,4,0,0"
+                                                               TextWrapping="NoWrap"
+                                                               TextTrimming="CharacterEllipsis"/>
+                                                </StackPanel>
+
+                                                <Image Grid.Column="2"
+                                                       Width="24"
+                                                       Height="24"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"
+                                                       Stretch="Uniform"
+                                                       local:ThemeAsset.Path="{Binding IconPath}"/>
+                                            </Grid>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
         <!-- Copy-link / QR result sheet. Uses the same floating bottom-sheet geometry as Share. -->
         <Grid x:Name="SharePopupOverlay"
-              Grid.Row="1"
+              Grid.Row="0"
+              Grid.RowSpan="3"
+              Canvas.ZIndex="102"
               Background="Transparent"
               Visibility="Collapsed"
               Tapped="SharePopupOverlay_Tapped">
@@ -1978,16 +2287,16 @@
         </Grid>
 
         <!-- Bottom Sheet Panel for Settings -->
-        <Grid x:Name="SettingsBottomSheetPanel" Grid.Row="1" 
+        <Grid x:Name="SettingsBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
               VerticalAlignment="Bottom" 
               HorizontalAlignment="Stretch"
               Background="{ThemeResource AppDividerBrush}"
               CornerRadius="15"
-              Height="195"
+              Height="Auto"
               Margin="10,0,10,10"
               Visibility="Collapsed">
             <Grid.RenderTransform>
-                <TranslateTransform x:Name="SettingsBottomSheetTransform" Y="205"/>
+                <TranslateTransform x:Name="SettingsBottomSheetTransform" Y="260"/>
             </Grid.RenderTransform>
 
             <Grid.RowDefinitions>
@@ -2082,10 +2391,20 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" local:ThemeAsset.Path="Assets/player/speed.png" Width="24" Height="24" Margin="0,0,16,0"/>
+                            <Image Grid.Column="0" local:ThemeAsset.Path="Assets/audio_track.png" Width="24" Height="24" Margin="0,0,16,0"/>
                             <TextBlock x:Uid="Loc_AudioTrack_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
-                            <Image Grid.Column="2" local:ThemeAsset.Path="Assets/player/skip.png" Width="16" Height="16" Margin="14,0,0,0" Opacity="0.6"/>
+                            <TextBlock Grid.Column="2"
+                                       x:Name="AudioTrackValueText"
+                                       Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                       VerticalAlignment="Center"
+                                       FontSize="14"
+                                       Margin="8,0,0,0"
+                                       MaxWidth="130"
+                                       TextWrapping="NoWrap"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <Image Grid.Column="3" local:ThemeAsset.Path="Assets/player/skip.png" Width="16" Height="16" Margin="14,0,0,0" Opacity="0.6"/>
                         </Grid>
                     </Button>
 
@@ -2111,27 +2430,6 @@
                         </Grid>
                     </Button>
 
-                    <!-- Reload Button -->
-                    <Button x:Name="ReloadButton"
-                            Background="Transparent"
-                            HorizontalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            Padding="0,4,0,4"
-                            Height="Auto"
-                            MinHeight="44"
-                            Margin="0,0,0,4"
-                            Click="ReloadButton_Click">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" local:ThemeAsset.Path="Assets/player/reload.png" Width="24" Height="24" Margin="0,0,16,0"/>
-                            <TextBlock x:Uid="Loc_ReloadVideo_Text" Grid.Column="1" Foreground="{ThemeResource AppPrimaryTextBrush}" VerticalAlignment="Center" FontSize="16"/>
-                            <!-- No skip.png indicator for this button -->
-                        </Grid>
-                    </Button>
                 </StackPanel>
 
                 <!-- Quality Settings Panel with ScrollViewer -->
@@ -2142,6 +2440,27 @@
                         <StackPanel x:Name="QualityOptionsPanel">
                             <!-- Quality options will be added here dynamically -->
                         </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <ScrollViewer x:Name="DownloadSettingsPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock x:Name="DownloadQualityTitleText"
+                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,16"
+                                   FontSize="16" />
+                        <local:AndroidLoadingRing x:Name="DownloadQualityLoadingRing"
+                                                  Width="28" Height="28"
+                                                  HorizontalAlignment="Center"
+                                                  IsActive="False"
+                                                  Visibility="Collapsed" />
+                        <StackPanel x:Name="DownloadQualityOptionsPanel" />
+                        <TextBlock x:Name="DownloadUnavailableText"
+                                   Visibility="Collapsed"
+                                   TextWrapping="Wrap"
+                                   Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                   FontSize="13" />
                     </StackPanel>
                 </ScrollViewer>
 
@@ -2176,6 +2495,11 @@
                 </ScrollViewer>
             </Grid>
         </Grid>
+        <local:Tabbar x:Name="tabbar"
+                      Grid.Row="2"
+                      Canvas.ZIndex="20"
+                      Visibility="Collapsed" />
+
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="LayoutStates">
                 <VisualState x:Name="NarrowState">

@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>በLegacyProjects ቡድን የተዘጋጀ።
@@ -18,11 +45,146 @@
 
 ስሪት {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>መለያዎች</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>መልክ</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>የድምጽ ትራክ</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>ራስ-ሰር</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>ራስ-ሰር ትርጉም &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; ተመለስ</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>አክሽን/ጀብዱ</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>ሁሉም</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>አኒሜ/አኒሜሽን</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>መኪናዎች &amp; ተሽከርካሪዎች</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>ክላሲክ</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>ኮሜዲ</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>ዶክመንተሪ</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>ድራማ</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>ትምህርት</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>መዝናኛ</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>ቤተሰብ</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>ፊልም &amp; አኒሜሽን</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>የውጭ</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>ጨዋታ</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>ሆረር</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>እንዴት &amp; ስታይል</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>መማር</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>ቀጥታ</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>ፊልሞች</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>ሙዚቃ</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>ዜና</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>ዜና &amp; ፖለቲካ</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>ትርፍ ያልሆነ &amp; እንቅስቃሴ</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>ሰዎች &amp; ብሎጎች</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>የቤት እንስሳት &amp; እንስሳት</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>ፖድካስቶች</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>ሳይንስ &amp; ቴክኖሎጂ</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>ሳይ-ፋይ/ፋንታሲ</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>አጭር ፊልሞች</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>ትዕይንቶች</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>ስፖርት</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>ትሪለር</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>ማስታወቂያዎች</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>ጉዞ &amp; ዝግጅቶች</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>ቪዲዮ ብሎግ</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>የቪዲዮ ጨዋታዎች</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>ቻናል</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>የሰርጥ አዶዎች</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>በቪዲዮ ካርዶች ላይ የሰርጥ አዶዎችን አሳይ</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>ቻናል ማስጫን ስህተት</value>
@@ -30,14 +192,71 @@
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>ቻናል አልተሰጠም</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>አስተያየቶች</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>በእርግጥ መውጣት ይፈልጋሉ?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>መውጣትን አረጋግጥ</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>ቻናሉን መጫን አልተቻለም</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>ማሳወቂያዎችን መጫን አልተቻለም</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>የማጫወቻ ዝርዝሩን መጫን አልተቻለም</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>ቪዲዮውን መጫን አልተቻለም። እባክዎ እንደገና ይሞክሩ።</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>ቪዲዮውን ማጫወት አልተቻለም።</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>ከ{0} ቀናት በፊት</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>መግለጫ የለም</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>አውርድ</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>ወርዷል</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>የእርስዎ ውርዶች</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>የውርድ አቃፊ</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>የወረዱ ቪዲዮዎች የሚቀመጡበትን ይምረጡ</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>የማውረድ ጥራት</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>ውርዶች</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>የሚያወርዷቸው ቪዲዮዎች እዚህ ይታያሉ።</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>የእርስዎ ውርዶች</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>ውርዶች</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>ይህን ቪዲዮ ማውረድ አይቻልም</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>የስህተት ኮድ፦ {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>ስህተት፦ {0}</value>
@@ -62,6 +281,18 @@
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>በየ{0} ደቂቃው</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>ቪዲዮ ማጫወት አልተሳካም፦ {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>ከምዝገባዎች</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>የመስታወት ውጤት</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>የአሰሳ አሞሌዎችን አደብዝዝ</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>ታሪክ መጫን አልተሳካም</value>
@@ -90,8 +321,17 @@
   <data name="LanguageSystem" xml:space="preserve">
     <value>የስርዓት ነባሪ</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>ወድጄዋለሁ</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>አገናኝ ተቀድቷል</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>ቀጥታ ሰድር</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>ምክሮችን በመነሻ ማያ ገጽ ላይ አሳይ</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>መግለጫ በመጫን ላይ...</value>
@@ -237,6 +477,9 @@
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>በዚህ የማጫወቻ ዝርዝር ውስጥ ቪዲዮ የለም</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>እሺ</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>ለግል የተበጀ</value>
   </data>
@@ -375,6 +618,15 @@
   <data name="Mix" xml:space="preserve">
     <value>ሚክስ</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>ከ{0} ወራት በፊት</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>የአውታረመረብ ስህተት። የበይነመረብ ግንኙነትዎን ያረጋግጡ።</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>አይ</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>ምንም አስተያየት አልተገኘም።</value>
   </data>
@@ -393,11 +645,26 @@
   <data name="NoNotifications" xml:space="preserve">
     <value>ማሳወቂያዎች የሉም</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>ምንም Shorts አልተገኘም።</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>የማሳወቂያ ምርጫን ማዘመን አልተቻለም።</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>ማሳወቂያዎች አልተሳኩም</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>ከምዝገባዎችዎ አዲስ ዝማኔዎች እዚህ ይታያሉ።</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>የYouTube ማሳወቂያዎችዎን ለማየት ይግቡ።</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>ይህን ገጽ በኋላ እንደገና ይክፈቱ።</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>ርዕስ የለም</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>አልገቡም</value>
@@ -414,8 +681,23 @@
   <data name="PlaybackError" xml:space="preserve">
     <value>የማጫወቻ ስህተት</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>ማጫወት አልተሳካም</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>የማጫወቻ ፍጥነት</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>ቪዲዮውን ማጫወት አልተቻለም። ማጫወቻው አልተጀመረም።</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>የማጫወቻ ዝርዝር</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>የplaylist id ባዶ ነው</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>የማጫወቻ ዝርዝሩን ማዘመን አልተቻለም</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR ኮድ</value>
@@ -423,11 +705,62 @@
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>የQR ማሳያ ስህተት፦ {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>ጥራት</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>ደረጃ መስጠት አልተሳካም</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube የደረጃ አሰጣጥ ጥያቄውን ውድቅ አደረገ። TV token ትክክለኛ እና YouTube rating scope ያለው መሆኑን ያረጋግጡ።</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>የተመከረ ቪዲዮ</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>refresh tokenን ወደ access token መቀየር አልተቻለም።</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>ምላሾች</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} ምላሾች</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>አስቀምጥ</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>የፍለጋ ስህተት፦ {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>ያልታወቀ</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>መለያ ይምረጡ</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>የማጫወቻ ዝርዝር ይምረጡ</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>እንግሊዝኛ</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>በነባሪ የWindows ቋንቋን ይጠቀማል።</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>የመተግበሪያ ቋንቋ</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>ሩሲያኛ</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>ቋንቋ</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>ቋንቋ</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>የስርዓት ነባሪ</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>ይህን YouTube Short አጋራ</value>
@@ -435,11 +768,47 @@
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>ይህን YouTube ቪዲዮ አጋራ</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>በመተግበሪያው ውስጥ Shorts አሳይ</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>ያነሰ አሳይ</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>ተጨማሪ</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>የTV refresh tokenን ወደ access token መቀየር አልተቻለም። እንደገና ይግቡና refresh token አሁንም ትክክለኛ መሆኑን ያረጋግጡ።</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>መግባት ያስፈልጋል</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Shortsን ለማየት ይግቡ።</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>በማሸብለያ አሞሌው ላይ የማስታወቂያ ክፍሎች</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>ባለቀለም የSponsorBlock ክልሎችን አሳይ</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>ተመዝገብ</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>ተመዝጋቢዎች</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>ተመዝጋቢዎች</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>ተመዝጋቢ</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} ተመዝጋቢዎች • {1} ቪዲዮዎች</value>
@@ -450,65 +819,71 @@
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube የምዝገባ ጥያቄውን ውድቅ አደረገ።</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube የምዝገባ ጥያቄውን ውድቅ አደረገ። TV token ትክክለኛ እና channel id የተገኘ መሆኑን ያረጋግጡ።</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   ቀደም (+0.25ሰ)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   ዘግይቶ (-0.25ሰ)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>መደበኛውን ማካካሻ መልስ (0.00 ሰ)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>ንዑስ ርዕሶች</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>አስማማ፦ {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>አስተያየቶችን መጫን አልተቻለም።</value>
+  <data name="Theme" xml:space="preserve">
+    <value>ገጽታ</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>ርዕስ የሌለው</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>ጨለማ</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>የቪዲዮ አገናኝ ወደ ክሊፕቦርድ ተቀድቷል።</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>ብርሃን</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} ቪዲዮዎች</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>በዚህ ሳምንት</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>የትንሽ ምስል ጥራት</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>ቋንቋ</value>
+  <data name="Today" xml:space="preserve">
+    <value>ዛሬ</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>የመተግበሪያ ቋንቋ</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>የኮሜዲ ትዕይንቶች</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>ቋንቋ</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>የምግብ አዘገጃጀቶች</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>በነባሪ የWindows ቋንቋን ይጠቀማል።</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>የDIY ትምህርቶች</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>የስርዓት ነባሪ</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>የጨዋታ ድምቀቶች</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>እንግሊዝኛ</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>የፊልም ማስታወቂያዎች</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>ሩሲያኛ</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>የሙዚቃ ቪዲዮዎች</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube ቪዲዮ</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>የስፖርት ድምቀቶች</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>ቻናል</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>የቴክኖሎጂ ግምገማዎች</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>የTV refresh tokenን ወደ access token መቀየር አልተቻለም።</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>ያልታወቀ</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>ርዕስ የለም</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>የTV refresh tokenን ወደ access token መቀየር አልተቻለም። እንደገና ይግቡና refresh token አሁንም ትክክለኛ መሆኑን ያረጋግጡ።</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>የTV refresh token አልተገኘም። እንደገና ይግቡና ይሞክሩ።</value>
@@ -516,194 +891,23 @@
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>የTV refresh token አልተገኘም። yt_refresh_token እንዲቀመጥ እንደገና ይግቡ፣ ከዚያ ይሞክሩ።</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>የTV refresh tokenን ወደ access token መቀየር አልተቻለም።</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>refresh tokenን ወደ access token መቀየር አልተቻለም።</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>ማጫወት አልተሳካም</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>ይህን Short ማጫወት አልተቻለም</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>የቪዲዮ መጫኛ ጊዜ አልፏል። የበይነመረብ ግንኙነትዎን ያረጋግጡ።</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>ቪዲዮውን መጫን አልተቻለም። እባክዎ እንደገና ይሞክሩ።</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>ቪዲዮውን ማጫወት አልተቻለም። ማጫወቻው አልተጀመረም።</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>ቪዲዮውን መጫን አልተቻለም። አገናኙ ጊዜው አልፎ ሊሆን ይችላል ወይም ቅርጸቱ አይደገፍም።</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>የአውታረመረብ ስህተት። የበይነመረብ ግንኙነትዎን ያረጋግጡ።</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>የቪዲዮ ማጫወቻ ስህተት። ዝቅተኛ ጥራት በመምረጥ ይሞክሩ።</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>ቪዲዮውን ማጫወት አልተቻለም።</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>የሙዚቃ ቪዲዮዎች</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>የጨዋታ ድምቀቶች</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>የምግብ አዘገጃጀቶች</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>የቴክኖሎጂ ግምገማዎች</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>የፊልም ማስታወቂያዎች</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>የስፖርት ድምቀቶች</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>የኮሜዲ ትዕይንቶች</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>የDIY ትምህርቶች</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>የተመከረ ቪዲዮ</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>በእርግጥ መውጣት ይፈልጋሉ?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>መውጣትን አረጋግጥ</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>አዎ</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>አይ</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>የYouTube ማሳወቂያዎችዎን ለማየት ይግቡ።</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>ማሳወቂያዎችን መጫን አልተቻለም</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>ይህን ገጽ በኋላ እንደገና ይክፈቱ።</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>የplaylist id ባዶ ነው</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} ቪዲዮዎች</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>ያልታወቀ</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Shortsን ለማየት ይግቡ።</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>ምንም Shorts አልተገኘም።</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>አስተያየቶችን መጫን አልተቻለም።</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Shortsን መጫን አልተቻለም።</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>ይህን Short ማጫወት አልተቻለም</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>ይህን Short ማጫወት አልተቻለም።</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>ጥራት</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>ያልታወቀ</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>የማጫወቻ ፍጥነት</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>የድምጽ ትራክ</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>ንዑስ ርዕሶች</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>ቪዲዮ ማጫወት አልተሳካም፦ {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>የስህተት ኮድ፦ {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>ዛሬ</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>ከ{0} ቀናት በፊት</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>ከ{0} ሳምንታት በፊት</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>ከ{0} ወራት በፊት</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>ከ{0} ዓመታት በፊት</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; ተመለስ</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube ቪዲዮ</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>ተመዝጋቢ</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>ተመዝጋቢዎች</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>ተመዝጋቢዎች</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>ቪዲዮ</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>ቪዲዮዎች</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>ቪዲዮዎች</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>ተመዝገብ</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>ወድጄዋለሁ</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>አስተያየቶች</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>ከምዝገባዎችዎ አዲስ ዝማኔዎች እዚህ ይታያሉ።</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube የምዝገባ ጥያቄውን ውድቅ አደረገ። TV token ትክክለኛ እና channel id የተገኘ መሆኑን ያረጋግጡ።</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube የደረጃ አሰጣጥ ጥያቄውን ውድቅ አደረገ። TV token ትክክለኛ እና YouTube rating scope ያለው መሆኑን ያረጋግጡ።</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>የTV refresh tokenን ወደ access token መቀየር አልተቻለም። እንደገና ይግቡና refresh token አሁንም ትክክለኛ መሆኑን ያረጋግጡ።</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>እሺ</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>ትናንት</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>በዚህ ሳምንት</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>ርዕስ የሌለው</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>ቪዲዮ ሰቅሏል</value>
@@ -711,146 +915,73 @@
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>“{0}” ቪዲዮ ሰቅሏል</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>ከምዝገባዎች</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>ቪዲዮው ወደ «{0}» ታክሏል</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>ሁሉም</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>ቪዲዮዎች</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>ፊልም &amp; አኒሜሽን</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>የቪዲዮ አገናኝ ወደ ክሊፕቦርድ ተቀድቷል።</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>መኪናዎች &amp; ተሽከርካሪዎች</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>ቪዲዮውን መጫን አልተቻለም። አገናኙ ጊዜው አልፎ ሊሆን ይችላል ወይም ቅርጸቱ አይደገፍም።</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>ሙዚቃ</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>የቪዲዮ መጫኛ ጊዜ አልፏል። የበይነመረብ ግንኙነትዎን ያረጋግጡ።</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>የቤት እንስሳት &amp; እንስሳት</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>ቪዲዮዎች</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>ስፖርት</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>ቪዲዮ</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>አጭር ፊልሞች</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>የቪዲዮ ማጫወቻ ስህተት። ዝቅተኛ ጥራት በመምረጥ ይሞክሩ።</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>ጉዞ &amp; ዝግጅቶች</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>ቪዲዮው ከ«{0}» ተወግዷል</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>ጨዋታ</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} ቪዲዮዎች</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>ቪዲዮ ብሎግ</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} ቪዲዮዎች</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>ሰዎች &amp; ብሎጎች</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>ከ{0} ሳምንታት በፊት</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>ኮሜዲ</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>ከ{0} ዓመታት በፊት</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>መዝናኛ</value>
+  <data name="Yes" xml:space="preserve">
+    <value>አዎ</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>ዜና &amp; ፖለቲካ</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>ትናንት</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>እንዴት &amp; ስታይል</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>ትምህርት</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube ቪዲዮ</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>ሳይንስ &amp; ቴክኖሎጂ</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube ቪዲዮ</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>ትርፍ ያልሆነ &amp; እንቅስቃሴ</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>የወረዱ ቪዲዮዎችን ያጽዱ</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>ፊልሞች</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>ሁሉንም የወረዱ ቪዲዮዎችን እና የታሸጉ ጣቶች ይሰርዙ</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>አኒሜ/አኒሜሽን</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>ሁሉም የወረዱ ቪዲዮዎች እና ጣቶቻቸው በቋሚነት ይሰረዛሉ ።</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>አክሽን/ጀብዱ</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>አጥፋ</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>ክላሲክ</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>ዶክመንተሪ</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>ድራማ</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>ቤተሰብ</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>የውጭ</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>ሆረር</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>ሳይ-ፋይ/ፋንታሲ</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>ትሪለር</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>ትዕይንቶች</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>ማስታወቂያዎች</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>ቀጥታ</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>መማር</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>የቪዲዮ ጨዋታዎች</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>ዜና</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>ፖድካስቶች</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>መልክ</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>ገጽታ</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>ብርሃን</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>ጨለማ</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>ቀጥታ ሰድር</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>ምክሮችን በመነሻ ማያ ገጽ ላይ አሳይ</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>የትንሽ ምስል ጥራት</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>የሰርጥ አዶዎች</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>በቪዲዮ ካርዶች ላይ የሰርጥ አዶዎችን አሳይ</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>ሰርዝ</value>
   </data>
 </root>

@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>Dezvoltat de echipa LegacyProjects.
@@ -18,11 +45,146 @@ Acceptat de YouTube API Legacy.
 
 Versiunea {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Conturi</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Aspect</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Pistă audio</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Automat</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Traducere automată &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Înapoi</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Acțiune/Aventură</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Toate</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Animație</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Mașini și vehicule</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Clasice</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Comedie</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Documentar</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Dramă</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Educație</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Divertisment</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Familie</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Film și animație</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Străin</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Jocuri</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Horror</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Tutoriale și stil</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Învățare</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Filme</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Muzică</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Știri</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Știri și politică</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Organizații non-profit și activism</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Oameni și bloguri</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Animale de companie și animale</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podcasturi</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Știință și tehnologie</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>SF/Fantezie</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Scurtmetraje</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Emisiuni</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Sport</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Thriller</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Trailere</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Călătorii și evenimente</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Videoblogging</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Jocuri video</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Canal</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Pictograme de canal</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Afișează pictogramele canalelor pe cardurile video</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Eroare la încărcarea canalului</value>
@@ -30,14 +192,71 @@ Versiunea {0}</value>
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Canalul nu a fost furnizat</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Comentarii</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Sigur vrei să te deconectezi?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Confirmă deconectarea</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Canalul nu a putut fi încărcat</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Notificările nu au putut fi încărcate</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Playlistul nu a putut fi încărcat</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Videoclipul nu a putut fi încărcat. Încearcă din nou.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Videoclipul nu a putut fi redat.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>acum {0} zile</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Descriere indisponibilă</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Descarcă</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Descărcat</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Videoclipuri descărcate</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Folder de descărcări</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Alege unde se salvează videoclipurile descărcate</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Calitatea descărcării</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Descărcări</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Videoclipurile descărcate vor apărea aici.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Descărcările tale</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Descărcări</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Acest videoclip nu poate fi descărcat</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Cod de eroare: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Eroare: {0}</value>
@@ -62,6 +281,18 @@ Versiunea {0}</value>
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>La fiecare {0} min</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Redarea videoclipului a eșuat: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Din abonamente</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Efect de sticlă</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Estompează barele de navigare</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Istoricul nu a putut fi încărcat</value>
@@ -90,8 +321,17 @@ Versiunea {0}</value>
   <data name="LanguageSystem" xml:space="preserve">
     <value>Prestabilit de sistem</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Apreciază</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Link copiat</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Dală dinamică</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Afișează recomandări pe ecranul Start</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Se încarcă descrierea...</value>
@@ -237,6 +477,9 @@ Versiunea {0}</value>
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Nu există videoclipuri în acest playlist</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Personalizate</value>
   </data>
@@ -375,6 +618,15 @@ Versiunea {0}</value>
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>acum {0} luni</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Eroare de rețea. Verifică conexiunea la internet.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nu</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Nu s-au găsit comentarii.</value>
   </data>
@@ -393,11 +645,26 @@ Versiunea {0}</value>
   <data name="NoNotifications" xml:space="preserve">
     <value>Nicio notificare</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Nu s-au găsit Shorts.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Preferința pentru notificări nu a putut fi actualizată.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Notificările au eșuat</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Noile actualizări din abonamentele tale vor apărea aici.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Conectează-te pentru a vedea notificările YouTube.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Deschide din nou această pagină mai târziu.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Fără titlu</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Neconectat</value>
@@ -414,8 +681,23 @@ Versiunea {0}</value>
   <data name="PlaybackError" xml:space="preserve">
     <value>Eroare de redare</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Redarea a eșuat</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Viteză de redare</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Videoclipul nu a putut fi redat. Playerul nu este inițializat.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Playlist</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>ID-ul playlistului este gol</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Playlistul nu a putut fi actualizat</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>Cod QR</value>
@@ -423,11 +705,62 @@ Versiunea {0}</value>
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>Eroare la afișarea QR: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Calitate</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Evaluarea a eșuat</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube a respins solicitarea de evaluare. Verifică dacă tokenul TV este valid și are permisiunea de evaluare YouTube.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Videoclip recomandat</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Tokenul de reîmprospătare nu a putut fi schimbat cu un token de acces.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>răspunsuri</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} răspunsuri</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Salvează</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Eroare de căutare: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Necunoscut</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Selectați un cont</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Selectați playlistul</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Engleză</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Folosește implicit limba Windows.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Limba aplicației</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Rusă</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Limbă</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Limbă</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Prestabilit de sistem</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Distribuie acest YouTube Short</value>
@@ -435,11 +768,47 @@ Versiunea {0}</value>
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Distribuie acest videoclip YouTube</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Afișează Shorts în aplicație</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Afișează mai puțin</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Mai multe</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>Tokenul de reîmprospătare TV nu a putut fi schimbat cu un token de acces. Conectează-te din nou și verifică dacă tokenul de reîmprospătare este încă valid.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Este necesară conectarea</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Conectează-te pentru a viziona Shorts.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Segmente publicitare pe bara de derulare</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Afișează intervalele SponsorBlock colorate</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Abonează-te</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>abonați</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>abonați</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>abonat</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} abonați • {1} videoclipuri</value>
@@ -450,65 +819,71 @@ Versiunea {0}</value>
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube a respins solicitarea de abonare.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube a respins solicitarea de abonare. Verifică dacă tokenul TV este valid și dacă ID-ul canalului a fost găsit.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Mai devreme (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Mai târziu (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Restabilește decalajul normal (0,00 s)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Subtitrări</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Sincronizare: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Comentariile nu au putut fi încărcate.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Temă</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Fără titlu</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Întunecată</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Linkul videoclipului a fost copiat în clipboard.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Luminoasă</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} videoclipuri</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Săptămâna aceasta</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Calitatea miniaturii</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Limbă</value>
+  <data name="Today" xml:space="preserve">
+    <value>Astăzi</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Limba aplicației</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Schițe de comedie</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Limbă</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Rețete de gătit</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Folosește implicit limba Windows.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Tutoriale DIY</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Prestabilit de sistem</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Momente din jocuri</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Engleză</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Trailere de filme</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Rusă</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Videoclipuri muzicale</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>Videoclip YouTube</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Momente sportive</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Canal</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Recenzii tehnice</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Tokenul de reîmprospătare TV nu a putut fi schimbat cu un token de acces.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Necunoscut</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Fără titlu</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Tokenul de reîmprospătare TV nu a putut fi schimbat cu un token de acces. Conectează-te din nou și verifică dacă tokenul de reîmprospătare este încă valid.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>Tokenul de reîmprospătare TV nu a fost găsit. Conectează-te din nou și reîncearcă.</value>
@@ -516,194 +891,23 @@ Versiunea {0}</value>
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>Tokenul de reîmprospătare TV nu a fost găsit. Conectează-te din nou pentru a salva yt_refresh_token, apoi reîncearcă.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>Tokenul de reîmprospătare TV nu a putut fi schimbat cu un token de acces.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Tokenul de reîmprospătare nu a putut fi schimbat cu un token de acces.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Redarea a eșuat</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Acest Short nu poate fi redat</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Încărcarea videoclipului a expirat. Verifică conexiunea la internet.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Videoclipul nu a putut fi încărcat. Încearcă din nou.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Videoclipul nu a putut fi redat. Playerul nu este inițializat.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Videoclipul nu a putut fi încărcat. Este posibil ca linkul să fi expirat sau formatul să nu fie acceptat.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Eroare de rețea. Verifică conexiunea la internet.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Eroare la redarea videoclipului. Încearcă să selectezi o calitate mai mică.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Videoclipul nu a putut fi redat.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Videoclipuri muzicale</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Momente din jocuri</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Rețete de gătit</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Recenzii tehnice</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Trailere de filme</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Momente sportive</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Schițe de comedie</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>Tutoriale DIY</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Videoclip recomandat</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Sigur vrei să te deconectezi?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Confirmă deconectarea</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Da</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Nu</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>Conectează-te pentru a vedea notificările YouTube.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Notificările nu au putut fi încărcate</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Deschide din nou această pagină mai târziu.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>ID-ul playlistului este gol</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} videoclipuri</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Necunoscut</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Conectează-te pentru a viziona Shorts.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Nu s-au găsit Shorts.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Comentariile nu au putut fi încărcate.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Shorts nu au putut fi încărcate.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Acest Short nu poate fi redat</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Acest Short nu poate fi redat.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Calitate</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Necunoscut</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Viteză de redare</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Pistă audio</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Subtitrări</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Redarea videoclipului a eșuat: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Cod de eroare: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Astăzi</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>acum {0} zile</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>acum {0} săptămâni</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>acum {0} luni</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>acum {0} ani</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Înapoi</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>Videoclip YouTube</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>abonat</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>abonați</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>abonați</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>videoclip</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>videoclipuri</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>videoclipuri</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Abonează-te</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Apreciază</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Comentarii</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Noile actualizări din abonamentele tale vor apărea aici.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube a respins solicitarea de abonare. Verifică dacă tokenul TV este valid și dacă ID-ul canalului a fost găsit.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube a respins solicitarea de evaluare. Verifică dacă tokenul TV este valid și are permisiunea de evaluare YouTube.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>Tokenul de reîmprospătare TV nu a putut fi schimbat cu un token de acces. Conectează-te din nou și verifică dacă tokenul de reîmprospătare este încă valid.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Ieri</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Săptămâna aceasta</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Fără titlu</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>A încărcat un videoclip</value>
@@ -711,146 +915,73 @@ Versiunea {0}</value>
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>A încărcat un videoclip „{0}”</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Din abonamente</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Videoclipul a fost adăugat în „{0}”</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Toate</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>videoclipuri</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Film și animație</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Linkul videoclipului a fost copiat în clipboard.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Mașini și vehicule</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Videoclipul nu a putut fi încărcat. Este posibil ca linkul să fi expirat sau formatul să nu fie acceptat.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Muzică</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Încărcarea videoclipului a expirat. Verifică conexiunea la internet.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Animale de companie și animale</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>videoclipuri</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Sport</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>videoclip</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Scurtmetraje</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Eroare la redarea videoclipului. Încearcă să selectezi o calitate mai mică.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Călătorii și evenimente</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Videoclipul a fost eliminat din „{0}”</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Jocuri</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} videoclipuri</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Videoblogging</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} videoclipuri</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Oameni și bloguri</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>acum {0} săptămâni</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Comedie</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>acum {0} ani</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Divertisment</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Da</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Știri și politică</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Ieri</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Tutoriale și stil</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Educație</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>Videoclip YouTube</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Știință și tehnologie</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>Videoclip YouTube</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Organizații non-profit și activism</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Șterge videoclipurile descărcate</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Filme</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Șterge toate videoclipurile descărcate și miniaturile din cache</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Anime/Animație</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Toate videoclipurile descărcate și miniaturile lor vor fi șterse definitiv.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Acțiune/Aventură</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Șterge</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Clasice</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Documentar</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Dramă</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Familie</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Străin</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Horror</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>SF/Fantezie</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Thriller</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Emisiuni</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Trailere</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Live</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Învățare</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Jocuri video</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Știri</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Podcasturi</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Aspect</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Temă</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Luminoasă</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Întunecată</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Dală dinamică</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Afișează recomandări pe ecranul Start</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Calitatea miniaturii</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Pictograme de canal</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Afișează pictogramele canalelor pe cardurile video</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Anulează</value>
   </data>
 </root>

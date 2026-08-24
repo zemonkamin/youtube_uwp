@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Navigation;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.Data.Xml.Dom;
+using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
 using Windows.UI.Notifications;
 using Windows.UI;
@@ -68,8 +69,10 @@ namespace YouTube
         private static readonly HashSet<string> ThemeAwareRootAssets = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "all_notifications.png",
+            "audio_track.png",
             "copy.png",
             "down_arrow.png",
+            "download.png",
             "info.png",
             "link.png",
             "log_out.png",
@@ -78,14 +81,19 @@ namespace YouTube
             "microphone.png",
             "more.png",
             "none_notifications.png",
+            "none_downloads.png",
             "notifications.png",
             "qr.png",
             "rounding.png",
             "rounding_up.png",
+            "playlist_rounding.png",
+            "save.png",
+            "save_clicked.png",
             "search.png",
             "share.png",
             "theme.png",
             "unsubscribe.png",
+            "video_rounding.png",
             "ytlogo.png"
         };
 
@@ -98,6 +106,8 @@ namespace YouTube
         private static UISettings _uiSettings;
         private static CoreDispatcher _uiDispatcher;
         private static bool _useLightThemeAssets;
+
+        internal static event EventHandler ThemeChanged;
 
         public static Uri GetThemeAssetUri(string assetPath)
         {
@@ -142,6 +152,26 @@ namespace YouTube
 
             try
             {
+                // Application.Resources is outside the Frame whose RequestedTheme we change at
+                // runtime. Asking it directly for a ThemeResource-backed brush can therefore
+                // resolve against the system theme instead of the theme selected in Settings.
+                // Read the concrete color from the matching theme dictionary so controls created
+                // in C# receive the same color as XAML elements on every Windows 10 build.
+                if (resourceKey.EndsWith("Brush", StringComparison.Ordinal))
+                {
+                    var colorKey = resourceKey.Substring(0, resourceKey.Length - "Brush".Length) + "Color";
+                    var themeKey = _useLightThemeAssets ? "Light" : "Dark";
+                    var dictionary = Current.Resources.ThemeDictionaries[themeKey] as ResourceDictionary;
+                    if (dictionary != null && dictionary.ContainsKey(colorKey))
+                    {
+                        var color = dictionary[colorKey];
+                        if (color is Color)
+                        {
+                            return new SolidColorBrush((Color)color);
+                        }
+                    }
+                }
+
                 return Current.Resources[resourceKey] as SolidColorBrush;
             }
             catch
@@ -329,6 +359,20 @@ namespace YouTube
             return DetectLightSystemTheme(_uiSettings) ? ElementTheme.Light : ElementTheme.Dark;
         }
 
+        internal static ElementTheme GetCurrentElementTheme()
+        {
+            return GetElementTheme(GetSavedThemeMode());
+        }
+
+        private static void RaiseThemeChanged()
+        {
+            var handler = ThemeChanged;
+            if (handler != null)
+            {
+                handler(null, EventArgs.Empty);
+            }
+        }
+
         private static void ApplySavedTheme(FrameworkElement root)
         {
             if (root != null)
@@ -363,6 +407,7 @@ namespace YouTube
 
             _useLightThemeAssets = ResolveLightThemeAssets(_uiSettings);
             RefreshRegisteredThemeAssets();
+            RaiseThemeChanged();
         }
 
         internal static bool IsLiveTileEnabled()
@@ -397,6 +442,133 @@ namespace YouTube
             {
                 ClearLiveTile();
             }
+            else
+            {
+                // Give Start a valid tile immediately. Home replaces this text with the first
+                // recommendation as soon as its feed is available.
+                UpdateSimpleLiveTile("YouTube", Localization.GetString("RecommendedVideo"), string.Empty);
+            }
+        }
+
+        internal static void UpdateSimpleLiveTile(string title, string subtitle, string videoId)
+        {
+            UpdateLiveTileTextQueue(new[]
+            {
+                new LiveTileTextItem { Title = title, Subtitle = subtitle, VideoId = videoId }
+            });
+        }
+
+        internal static void UpdateRecommendationLiveTile(IEnumerable<VideoCardItem> videos)
+        {
+            var items = new List<LiveTileTextItem>();
+            if (videos != null)
+            {
+                foreach (var video in videos)
+                {
+                    if (video == null
+                        || string.IsNullOrWhiteSpace(video.VideoId)
+                        || string.IsNullOrWhiteSpace(video.Title))
+                    {
+                        continue;
+                    }
+
+                    items.Add(new LiveTileTextItem
+                    {
+                        Title = video.Title,
+                        Subtitle = !string.IsNullOrWhiteSpace(video.ChannelTitle)
+                            ? video.ChannelTitle
+                            : (!string.IsNullOrWhiteSpace(video.ViewCount) ? video.ViewCount : "YouTube"),
+                        VideoId = video.VideoId
+                    });
+                    if (items.Count == 5)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (items.Count > 0)
+            {
+                UpdateLiveTileTextQueue(items);
+            }
+        }
+
+        private sealed class LiveTileTextItem
+        {
+            public string Title;
+            public string Subtitle;
+            public string VideoId;
+        }
+
+        private static void UpdateLiveTileTextQueue(IEnumerable<LiveTileTextItem> source)
+        {
+            if (!IsLiveTileEnabled() || source == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var items = source.Where(i => i != null).Take(5).ToList();
+                if (items.Count == 0)
+                {
+                    return;
+                }
+
+                // A queue of at most five local text notifications gives Start something real to
+                // flip between, without image downloads or dozens of fragile scheduled entries.
+                ClearLiveTile();
+                var updater = TileUpdateManager.CreateTileUpdaterForApplication();
+                updater.EnableNotificationQueue(items.Count > 1);
+                foreach (var item in items)
+                {
+                    updater.Update(BuildLiveTileNotification(item));
+                }
+                System.Diagnostics.Debug.WriteLine(
+                    "[LiveTile] Queued " + items.Count + " text tile state(s)");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[LiveTile] Queue update failed: " + ex.Message);
+            }
+        }
+
+        private static TileNotification BuildLiveTileNotification(LiveTileTextItem item)
+        {
+            var cleanTitle = EscapeLiveTileXml(
+                string.IsNullOrWhiteSpace(item.Title) ? "YouTube" : item.Title.Trim());
+            var cleanSubtitle = EscapeLiveTileXml(
+                string.IsNullOrWhiteSpace(item.Subtitle) ? "YouTube" : item.Subtitle.Trim());
+            var launch = string.IsNullOrWhiteSpace(item.VideoId)
+                ? string.Empty
+                : " launch=\"" + EscapeLiveTileXml(
+                    "youtubehandler:https://www.youtube.com/watch?v=" + item.VideoId.Trim()) + "\"";
+            var xml = "<tile" + launch + ">"
+                + "<visual version=\"2\" branding=\"name\">"
+                + "<binding template=\"TileSquare150x150Text02\" fallback=\"TileSquareText02\" branding=\"name\">"
+                + "<text id=\"1\">" + cleanTitle + "</text>"
+                + "<text id=\"2\">" + cleanSubtitle + "</text>"
+                + "</binding>"
+                + "<binding template=\"TileWide310x150Text09\" fallback=\"TileWideText09\" branding=\"name\">"
+                + "<text id=\"1\">" + cleanTitle + "</text>"
+                + "<text id=\"2\">" + cleanSubtitle + "</text>"
+                + "</binding>"
+                + "</visual>"
+                + "</tile>";
+
+            var document = new XmlDocument();
+            document.LoadXml(xml);
+            return new TileNotification(document);
+        }
+
+        private static string EscapeLiveTileXml(string value)
+        {
+            return (value ?? string.Empty)
+                .Replace("&", "&amp;")
+                .Replace("<", "&lt;")
+                .Replace(">", "&gt;")
+                .Replace("\"", "&quot;")
+                .Replace("'", "&apos;");
         }
 
         internal static void ClearLiveTile()
@@ -470,6 +642,7 @@ namespace YouTube
             }
 
             RefreshRegisteredThemeAssets();
+            RaiseThemeChanged();
         }
 
         internal static void RefreshThemeAssets()
@@ -577,6 +750,9 @@ namespace YouTube
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+            // Do not replace the queued recommendation tile with a single text notification on
+            // every launch. Home refreshes the queue after its feed loads; until then Windows can
+            // keep animating the last valid peek notification while the app is suspended.
             var target = ParseYouTubeNavigationTarget(e != null ? e.Arguments : null);
             InitializeRootFrame(target, e != null ? e.PrelaunchActivated : false, e != null ? e.Arguments : null);
         }
@@ -609,6 +785,35 @@ namespace YouTube
             base.OnActivated(args);
         }
 
+        protected override async void OnBackgroundActivated(BackgroundActivatedEventArgs args)
+        {
+            base.OnBackgroundActivated(args);
+            var instance = args == null ? null : args.TaskInstance;
+            if (instance == null || instance.Task == null
+                || !DownloadManager.IsCompletionTaskName(instance.Task.Name))
+                return;
+
+            var deferral = instance.GetDeferral();
+            try
+            {
+                Localization.InitializeLanguage();
+                var details = instance.TriggerDetails
+                    as BackgroundTransferCompletionGroupTriggerDetails;
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] In-process completion trigger started");
+                await DownloadManager.ProcessCompletionGroupAsync(details);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] In-process completion task failed: " + ex.Message);
+            }
+            finally
+            {
+                deferral.Complete();
+            }
+        }
+
         private void InitializeRootFrame(YouTubeNavigationTarget target, bool prelaunchActivated, string launchArguments)
         {
             _uiDispatcher = Window.Current.Dispatcher;
@@ -631,6 +836,7 @@ namespace YouTube
                 Config.LoadUserToken();
 #pragma warning disable 4014
                 YouTubeNotificationService.InitializeAsync();
+                DownloadManager.InitializeAsync();
 #pragma warning restore 4014
 
                 if (target != null)
@@ -715,19 +921,8 @@ namespace YouTube
                 };
             }
 
-            videoId = ExtractYouTubeVideoId(url);
-            if (!string.IsNullOrWhiteSpace(videoId))
-            {
-                return new YouTubeNavigationTarget
-                {
-                    PageType = typeof(Video),
-                    Parameter = videoId,
-                    DebugName = "Video"
-                };
-            }
-
             string playlistId = ExtractYouTubePlaylistId(url);
-            if (!string.IsNullOrWhiteSpace(playlistId))
+            if (IsYouTubePlaylistPage(url) && !string.IsNullOrWhiteSpace(playlistId))
             {
                 return new YouTubeNavigationTarget
                 {
@@ -745,6 +940,29 @@ namespace YouTube
                     PageType = typeof(Channel),
                     Parameter = channelTarget,
                     DebugName = "Channel"
+                };
+            }
+
+            videoId = ExtractYouTubeVideoId(url);
+            if (!string.IsNullOrWhiteSpace(videoId))
+            {
+                return new YouTubeNavigationTarget
+                {
+                    PageType = typeof(Video),
+                    Parameter = videoId,
+                    DebugName = "Video"
+                };
+            }
+
+            // A list parameter without /playlist (for example a shared mix URL without v)
+            // is still a playlist target. A normal watch?v=...&list=... remains a Video link.
+            if (!string.IsNullOrWhiteSpace(playlistId))
+            {
+                return new YouTubeNavigationTarget
+                {
+                    PageType = typeof(Playlist),
+                    Parameter = playlistId,
+                    DebugName = "Playlist"
                 };
             }
 
@@ -798,12 +1016,6 @@ namespace YouTube
                 }
 
                 var videoId = GetQueryParameter(input, "videoId");
-                if (IsYouTubeVideoId(videoId))
-                {
-                    return videoId;
-                }
-
-                videoId = GetQueryParameter(input, "v");
                 if (IsYouTubeVideoId(videoId))
                 {
                     return videoId;
@@ -896,6 +1108,15 @@ namespace YouTube
             }
 
             return string.Empty;
+        }
+
+        private static bool IsYouTubePlaylistPage(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url)) return false;
+            return Regex.IsMatch(
+                url,
+                @"(?:youtube\.com|m\.youtube\.com|www\.youtube\.com)/playlist(?:[/?#]|$)",
+                RegexOptions.IgnoreCase);
         }
 
         // https://www.youtube.com/results?search_query=...

@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>Arendanud LegacyProjectsi meeskond.
@@ -18,11 +45,146 @@ Toetab YouTube API Legacy.
 
 Versioon {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Kontod</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Välimus</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Heliriba</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Automaatne</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Automaattõlge &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Tagasi</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Märul/Seiklus</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Kõik</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Animatsioon</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Autod ja sõidukid</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Klassika</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Komöödia</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Dokumentaal</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Draama</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Haridus</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Meelelahutus</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Pere</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Film ja animatsioon</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Välismaine</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Mängud</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Õudus</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Õpetused ja stiil</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Õppimine</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Otse</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Filmid</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Muusika</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Uudised</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Uudised ja poliitika</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Mittetulundus ja aktivism</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Inimesed ja blogid</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Lemmikloomad ja loomad</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podcastid</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Teadus ja tehnoloogia</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Ulme/Fantaasia</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Lühifilmid</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Saated</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Sport</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Põnevik</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Treilerid</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Reisimine ja üritused</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Videoblogimine</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Videomängud</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Kanal</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Kanaliikoonid</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Kuva videokaartidel kanaliikoonid</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Kanali laadimise viga</value>
@@ -30,14 +192,71 @@ Versioon {0}</value>
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Kanalit ei määratud</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Kommentaarid</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Kas soovite kindlasti välja logida?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Kinnita väljalogimine</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Kanalit ei saanud laadida</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Teavitusi ei saanud laadida</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Esitusloendit ei saanud laadida</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Videot ei saanud laadida. Proovige uuesti.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Videot ei saanud esitada.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} päeva tagasi</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Kirjeldus pole saadaval</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Laadi alla</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Alla laaditud</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Teie allalaadimised</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Allalaadimiste kaust</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Valige allalaaditud videote salvestuskoht</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Allalaadimise kvaliteet</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Allalaadimised</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Allalaaditud videod kuvatakse siin.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Teie allalaadimised</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Allalaadimised</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Seda videot ei saa alla laadida</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Veakood: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Viga: {0}</value>
@@ -62,6 +281,18 @@ Versioon {0}</value>
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Iga {0} min järel</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Video esitamine ebaõnnestus: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Tellimustest</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Klaasiefekt</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Hägusta navigeerimisribad</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Ajaloo laadimine ebaõnnestus</value>
@@ -90,8 +321,17 @@ Versioon {0}</value>
   <data name="LanguageSystem" xml:space="preserve">
     <value>Süsteemi vaikeseade</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Meeldib</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Link kopeeritud</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Reaalajas paan</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Kuva soovitused avakuval</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Kirjelduse laadimine...</value>
@@ -237,6 +477,9 @@ Versioon {0}</value>
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Selles esitusloendis pole videoid</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Isikupärastatud</value>
   </data>
@@ -375,6 +618,15 @@ Versioon {0}</value>
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} kuud tagasi</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Võrguviga. Kontrollige internetiühendust.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ei</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Kommentaare ei leitud.</value>
   </data>
@@ -393,11 +645,26 @@ Versioon {0}</value>
   <data name="NoNotifications" xml:space="preserve">
     <value>Teavitusi pole</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shortse ei leitud.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Teavituseelistust ei saanud värskendada.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Teavitused ebaõnnestusid</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Teie tellimuste uued värskendused kuvatakse siin.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>YouTube'i teavituste nägemiseks logige sisse.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Avage see leht hiljem uuesti.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Pealkiri puudub</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Pole sisse logitud</value>
@@ -414,8 +681,23 @@ Versioon {0}</value>
   <data name="PlaybackError" xml:space="preserve">
     <value>Taasesituse viga</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Taasesitus ebaõnnestus</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Taasesituse kiirus</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Videot ei saanud esitada. Mängija pole lähtestatud.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Esitusloend</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Esitusloendi ID on tühi</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Esitusloendit ei saanud värskendada</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR-kood</value>
@@ -423,11 +705,62 @@ Versioon {0}</value>
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>QR-i kuvamise viga: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Kvaliteet</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Hindamine ebaõnnestus</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube lükkas hindamistaotluse tagasi. Kontrollige, et TV-token oleks kehtiv ja sellel oleks YouTube'i hindamisõigus.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Soovitatud video</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Värskendustokenit ei saanud juurdepääsutokeni vastu vahetada.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>vastust</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} vastust</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Salvesta</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Otsingu viga: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Tundmatu</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Valige konto</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Valige esitusloend</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Inglise</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Kasutab vaikimisi Windowsi keelt.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Rakenduse keel</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Vene</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Keel</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Keel</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Süsteemi vaikeseade</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Jaga seda YouTube Shortsi</value>
@@ -435,11 +768,47 @@ Versioon {0}</value>
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Jaga seda YouTube'i videot</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Kuva rakenduses Shortse</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Kuva vähem</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Rohkem</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>TV värskendustokenit ei saanud juurdepääsutokeni vastu vahetada. Logige uuesti sisse ja kontrollige, et värskendustoken oleks endiselt kehtiv.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Sisselogimine on nõutav</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Shortsi vaatamiseks logige sisse.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Reklaamilõigud otsinguribal</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Kuva värvilised SponsorBlocki vahemikud</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Telli</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>tellijad</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>tellijad</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>tellija</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} tellijat • {1} videot</value>
@@ -450,65 +819,71 @@ Versioon {0}</value>
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube lükkas tellimistaotluse tagasi.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube lükkas tellimistaotluse tagasi. Kontrollige, et TV-token oleks kehtiv ja kanali ID leitud.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Varem (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Hiljem (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Taasta tavaline nihe (0,00 s)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Subtiitrid</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Sünkroonimine: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Kommentaare ei saanud laadida.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Teema</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Pealkirjata</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Tume</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Video link kopeeriti lõikelauale.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Hele</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} videot</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Sel nädalal</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Pisipildi kvaliteet</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Keel</value>
+  <data name="Today" xml:space="preserve">
+    <value>Täna</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Rakenduse keel</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Komöödia sketšid</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Keel</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Toiduretseptid</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Kasutab vaikimisi Windowsi keelt.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Isetegemise õpetused</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Süsteemi vaikeseade</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Mängude tipphetked</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Inglise</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Filmitreilerid</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Vene</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Muusikavideod</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube'i video</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Spordi tipphetked</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Kanal</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Tehnoloogiaarvustused</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>TV värskendustokenit ei saanud juurdepääsutokeni vastu vahetada.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Tundmatu</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Pealkiri puudub</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>TV värskendustokenit ei saanud juurdepääsutokeni vastu vahetada. Logige uuesti sisse ja kontrollige, et värskendustoken oleks endiselt kehtiv.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>TV värskendustokenit ei leitud. Logige uuesti sisse ja proovige uuesti.</value>
@@ -516,194 +891,23 @@ Versioon {0}</value>
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>TV värskendustokenit ei leitud. Logige uuesti sisse, et yt_refresh_token salvestataks, ja proovige uuesti.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>TV värskendustokenit ei saanud juurdepääsutokeni vastu vahetada.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Värskendustokenit ei saanud juurdepääsutokeni vastu vahetada.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Taasesitus ebaõnnestus</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Seda Shortsi ei saa esitada</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Video laadimine aegus. Kontrollige internetiühendust.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Videot ei saanud laadida. Proovige uuesti.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Videot ei saanud esitada. Mängija pole lähtestatud.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Videot ei saanud laadida. Link võib olla aegunud või vorming pole toetatud.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Võrguviga. Kontrollige internetiühendust.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Video taasesituse viga. Proovige valida madalam kvaliteet.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Videot ei saanud esitada.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Muusikavideod</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Mängude tipphetked</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Toiduretseptid</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Tehnoloogiaarvustused</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Filmitreilerid</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Spordi tipphetked</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Komöödia sketšid</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>Isetegemise õpetused</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Soovitatud video</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Kas soovite kindlasti välja logida?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Kinnita väljalogimine</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Jah</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Ei</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>YouTube'i teavituste nägemiseks logige sisse.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Teavitusi ei saanud laadida</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Avage see leht hiljem uuesti.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>Esitusloendi ID on tühi</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} videot</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Tundmatu</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Shortsi vaatamiseks logige sisse.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Shortse ei leitud.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Kommentaare ei saanud laadida.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Shortse ei saanud laadida.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Seda Shortsi ei saa esitada</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Seda Shortsi ei saa esitada.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Kvaliteet</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Tundmatu</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Taasesituse kiirus</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Heliriba</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Subtiitrid</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Video esitamine ebaõnnestus: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Veakood: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Täna</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} päeva tagasi</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} nädalat tagasi</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} kuud tagasi</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} aastat tagasi</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Tagasi</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube'i video</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>tellija</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>tellijad</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>tellijad</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>videod</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>videod</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Telli</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Meeldib</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Kommentaarid</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Teie tellimuste uued värskendused kuvatakse siin.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube lükkas tellimistaotluse tagasi. Kontrollige, et TV-token oleks kehtiv ja kanali ID leitud.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube lükkas hindamistaotluse tagasi. Kontrollige, et TV-token oleks kehtiv ja sellel oleks YouTube'i hindamisõigus.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>TV värskendustokenit ei saanud juurdepääsutokeni vastu vahetada. Logige uuesti sisse ja kontrollige, et värskendustoken oleks endiselt kehtiv.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Eile</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Sel nädalal</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Pealkirjata</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Laadis video üles</value>
@@ -711,146 +915,73 @@ Versioon {0}</value>
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>Laadis üles video „{0}”</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Tellimustest</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Video lisati esitusloendisse „{0}“</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Kõik</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>videod</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Film ja animatsioon</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Video link kopeeriti lõikelauale.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Autod ja sõidukid</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Videot ei saanud laadida. Link võib olla aegunud või vorming pole toetatud.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Muusika</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Video laadimine aegus. Kontrollige internetiühendust.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Lemmikloomad ja loomad</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>videod</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Sport</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Lühifilmid</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Video taasesituse viga. Proovige valida madalam kvaliteet.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Reisimine ja üritused</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Video eemaldati esitusloendist „{0}“</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Mängud</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} videot</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Videoblogimine</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} videot</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Inimesed ja blogid</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} nädalat tagasi</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Komöödia</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} aastat tagasi</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Meelelahutus</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Jah</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Uudised ja poliitika</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Eile</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Õpetused ja stiil</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Haridus</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube'i video</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Teadus ja tehnoloogia</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube'i video</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Mittetulundus ja aktivism</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Kustuta allalaaditud videod</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Filmid</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Kustuta kõik allalaaditud videod ja vahemällu talletatud pisipildid</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Anime/Animatsioon</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Kõik allalaaditud videod ja nende pisipildid kustutatakse jäädavalt.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Märul/Seiklus</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Eemalda</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Klassika</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Dokumentaal</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Draama</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Pere</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Välismaine</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Õudus</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Ulme/Fantaasia</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Põnevik</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Saated</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Treilerid</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Otse</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Õppimine</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Videomängud</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Uudised</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Podcastid</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Välimus</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Teema</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Hele</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Tume</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Reaalajas paan</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Kuva soovitused avakuval</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Pisipildi kvaliteet</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Kanaliikoonid</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Kuva videokaartidel kanaliikoonid</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Saab sisse lülitada</value>
   </data>
 </root>

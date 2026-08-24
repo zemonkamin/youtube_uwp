@@ -4,6 +4,7 @@ using System.Net.Http;
 using Windows.Data.Json;
 using Windows.Security.Cryptography;
 using Windows.Security.Cryptography.Core;
+using Windows.Storage;
 
 namespace YouTube
 {
@@ -15,6 +16,52 @@ namespace YouTube
     // answer covers every video sharing that prefix and is filtered locally.
     public static class SponsorBlock
     {
+        public const string ShowTimelineMarkersSettingKey = "ShowSponsorBlockTimelineMarkers";
+        public static event Action TimelineMarkerVisibilityChanged;
+
+        // Marker visibility is independent from automatic skipping. It defaults to enabled and
+        // the Settings switch only hides the coloured ranges on the seek bar.
+        public static bool AreTimelineMarkersEnabled()
+        {
+            try
+            {
+                object raw;
+                if (!ApplicationData.Current.LocalSettings.Values.TryGetValue(
+                    ShowTimelineMarkersSettingKey, out raw) || raw == null)
+                {
+                    return true;
+                }
+                if (raw is bool)
+                {
+                    return (bool)raw;
+                }
+                bool parsed;
+                return !bool.TryParse(raw.ToString(), out parsed) || parsed;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
+        public static void SetTimelineMarkersEnabled(bool enabled)
+        {
+            try
+            {
+                ApplicationData.Current.LocalSettings.Values[
+                    ShowTimelineMarkersSettingKey] = enabled;
+            }
+            catch
+            {
+            }
+
+            var changed = TimelineMarkerVisibilityChanged;
+            if (changed != null)
+            {
+                changed();
+            }
+        }
+
         public sealed class Segment
         {
             public TimeSpan Start { get; set; }

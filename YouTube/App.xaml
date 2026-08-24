@@ -59,6 +59,17 @@
             <SolidColorBrush x:Key="PrimaryActionBackgroundBrush" Color="{ThemeResource PrimaryActionBackgroundColor}" />
             <SolidColorBrush x:Key="PrimaryActionForegroundBrush" Color="{ThemeResource PrimaryActionForegroundColor}" />
 
+            <Style x:Key="VideoWatchedProgressStyle" TargetType="ProgressBar">
+                <Setter Property="Height" Value="4" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="VerticalAlignment" Value="Bottom" />
+                <Setter Property="Foreground" Value="#FFFF0033" />
+                <Setter Property="Background" Value="#FF4A4A4A" />
+                <Setter Property="IsHitTestVisible" Value="False" />
+                <Setter Property="Maximum" Value="100" />
+                <Setter Property="IsTabStop" Value="False" />
+            </Style>
+
             <FontFamily x:Key="RobotoFont">/Assets/Roboto.ttf#Roboto</FontFamily>
             <Style TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
@@ -68,11 +79,59 @@
             </Style>
             <Style TargetType="Button">
                 <Setter Property="FontFamily" Value="{StaticResource RobotoFont}"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    Padding="{TemplateBinding Padding}">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="PointerOver" />
+                                        <VisualState x:Name="Pressed" />
+                                        <VisualState x:Name="Disabled">
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="ButtonContent"
+                                                                 Storyboard.TargetProperty="Opacity"
+                                                                 To="0.45"
+                                                                 Duration="0" />
+                                            </Storyboard>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <ContentPresenter Content="{TemplateBinding Content}"
+                                                  x:Name="ButtonContent"
+                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
             <Style x:Key="CardButtonStyle" TargetType="Button">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="BorderThickness" Value="0"/>
                 <Setter Property="Padding" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="ShortsNoPressButtonStyle" TargetType="Button">
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Padding" Value="0"/>
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="UseSystemFocusVisuals" Value="False"/>
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">

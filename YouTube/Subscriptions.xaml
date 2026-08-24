@@ -32,16 +32,18 @@
         </Grid.RowDefinitions>
 
         <!-- Navbar at the top -->
-        <local:Navbar x:Name="navbar" Grid.Row="0"/>
+        <local:Navbar x:Name="navbar" Grid.Row="0" Canvas.ZIndex="20"/>
 
         <!-- Content area with both subscriptions and videos -->
         <ScrollViewer x:Name="MainScrollViewer"
-                      Grid.Row="1"
+                      Grid.Row="0"
+                      Grid.RowSpan="3"
                       VerticalScrollMode="Auto"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollMode="Disabled"
-                      HorizontalScrollBarVisibility="Disabled">
-            <StackPanel>
+                      HorizontalScrollBarVisibility="Disabled"
+                      ViewChanged="MainScrollViewer_ViewChanged">
+            <StackPanel Padding="0,56,0,52">
                 <!-- Horizontal scrolling area for subscriptions -->
                 <ScrollViewer x:Name="SubscriptionsScrollViewer" 
                               HorizontalScrollMode="Enabled" 
@@ -87,12 +89,17 @@
                                     <!-- Video Thumbnail -->
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged"
                                           Tag="VideoCardThumbnailChrome">
-                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="8" />
-                                        <Border Tag="VideoCardThumbnailChrome" CornerRadius="8">
-                                            <Image DataContextChanged="CardThumbnail_DataContextChanged"
-                                                   Stretch="UniformToFill"
-                                                   VerticalAlignment="Stretch"
-                                                   HorizontalAlignment="Stretch"/>
+                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" />
+                                        <Border Tag="VideoCardThumbnailChrome">
+                                            <Grid>
+                                                <Image DataContextChanged="CardThumbnail_DataContextChanged"
+                                                       Stretch="UniformToFill"
+                                                       VerticalAlignment="Stretch"
+                                                       HorizontalAlignment="Stretch"/>
+                                                <ProgressBar Style="{StaticResource VideoWatchedProgressStyle}"
+                                                             Value="{Binding WatchedPercent}"
+                                                             Visibility="{Binding WatchedProgressVisibility}" />
+                                            </Grid>
                                         </Border>
                                         <!-- Duration overlay -->
                                         <Border HorizontalAlignment="Right"
@@ -172,11 +179,27 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
                 </Grid>
+
+                <!-- Bottom loading indicator for subscriptions continuation pages -->
+                <StackPanel x:Name="BottomLoadingPanel"
+                            Visibility="Collapsed"
+                            HorizontalAlignment="Center"
+                            Margin="0,20,0,40">
+                    <local:AndroidLoadingRing x:Name="BottomLoadingRing"
+                                              IsActive="False"
+                                              Width="30"
+                                              Height="30"/>
+                    <TextBlock x:Uid="Loc_LoadingMoreVideos_Text"
+                               Foreground="{ThemeResource AppMutedTextBrush}"
+                               FontSize="14"
+                               HorizontalAlignment="Center"
+                               Margin="0,8,0,0"/>
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
 
         <!-- Tabbar at the bottom -->
-        <local:Tabbar x:Name="tabbar" Grid.Row="2"/>
+        <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20"/>
         
         <!-- Loading indicator -->
         <Grid Grid.Row="1">

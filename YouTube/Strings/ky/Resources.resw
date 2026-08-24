@@ -1,28 +1,987 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
           </xsd:element>
-          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
-          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /><xsd:element name="comment" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
-          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
         </xsd:choice>
       </xsd:complexType>
     </xsd:element>
   </xsd:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutText" xml:space="preserve">
+    <value>LegacyProjects командасы тарабынан иштелип чыккан.
+YouTube API Legacy тарабынан колдоого алынат.
+
+Версия {0}</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Аккаунттар</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Көрүнүш</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Аудио трек</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Авто</value>
+  </data>
+  <data name="AutoTranslate" xml:space="preserve">
+    <value>Автоматтык котормо &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Артка</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Экшн/Укмуштуу окуя</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Баары</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Аниме/Анимация</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Унаалар жана транспорт</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Классика</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Комедия</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Документалдык</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Драма</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Билим берүү</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Көңүл ачуу</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Үй-бүлө</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Тасма жана анимация</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Чет элдик</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Оюндар</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Коркунучтуу</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Кантип жасоо жана стиль</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Үйрөнүү</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Түз эфир</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Тасмалар</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Музыка</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Жаңылыктар</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Жаңылыктар жана саясат</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Коммерциялык эмес уюмдар жана активдүүлүк</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Адамдар жана блогдор</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Үй жаныбарлары жана жаныбарлар</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Подкасттар</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Илим жана технология</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Илимий фантастика/Фэнтези</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Кыска тасмалар</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Шоулар</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Спорт</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Триллер</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Трейлерлер</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Саякат жана иш-чаралар</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Видеоблог</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Видео оюндар</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Канал</value>
+  </data>
   <data name="ChannelIcons" xml:space="preserve">
     <value>Канал сүрөтчөлөрү</value>
   </data>
   <data name="ChannelIconsDescription" xml:space="preserve">
     <value>Видео карталарында канал сүрөтчөлөрүн көрсөтүү</value>
+  </data>
+  <data name="ChannelLoadingError" xml:space="preserve">
+    <value>Каналды жүктөө катасы</value>
+  </data>
+  <data name="ChannelWasNotProvided" xml:space="preserve">
+    <value>Канал берилген жок</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Комментарийлер</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Чыгууну каалаганыңызга ишенесизби?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Чыгууну ырастоо</value>
+  </data>
+  <data name="CouldNotLoadChannel" xml:space="preserve">
+    <value>Каналды жүктөө мүмкүн болгон жок</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Эскертмелерди жүктөө мүмкүн болгон жок</value>
+  </data>
+  <data name="CouldNotLoadPlaylist" xml:space="preserve">
+    <value>Плейлистти жүктөө мүмкүн болгон жок</value>
+  </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Видеону жүктөө мүмкүн болгон жок. Кайра аракет кылыңыз.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Видеону ойнотуу мүмкүн болгон жок.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} күн мурун</value>
+  </data>
+  <data name="DescriptionNotAvailable" xml:space="preserve">
+    <value>Сүрөттөмө жеткиликсиз</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Жүктөп алуу</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Жүктөлдү</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Жүктөп алгандарыңыз</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Жүктөөлөр папкасы</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Жүктөлгөн видеолор сакталуучу жерди тандаңыз</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Жүктөп алуу сапаты</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Жүктөлгөндөр</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Жүктөп алган видеолоруңуз бул жерде көрүнөт.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Жүктөп алгандарыңыз</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Жүктөлгөндөр</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Бул видеону жүктөп алуу мүмкүн эмес</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Ката коду: {0}</value>
+  </data>
+  <data name="ErrorFormat" xml:space="preserve">
+    <value>Ката: {0}</value>
+  </data>
+  <data name="Every15Min" xml:space="preserve">
+    <value>Ар 15 мүнөттө</value>
+  </data>
+  <data name="Every2Hours" xml:space="preserve">
+    <value>Ар 2 саатта</value>
+  </data>
+  <data name="Every30Min" xml:space="preserve">
+    <value>Ар 30 мүнөттө</value>
+  </data>
+  <data name="Every6Hours" xml:space="preserve">
+    <value>Ар 6 саатта</value>
+  </data>
+  <data name="EveryHour" xml:space="preserve">
+    <value>Ар саатта</value>
+  </data>
+  <data name="EveryHours" xml:space="preserve">
+    <value>Ар {0} саатта</value>
+  </data>
+  <data name="EveryMinutes" xml:space="preserve">
+    <value>Ар {0} мүнөттө</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Видео ойнотулбай калды: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Жазылуулардан</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Айнек эффекти</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Багыттоо тилкелерин бүдөмүктөтүү</value>
+  </data>
+  <data name="HistoryLoadFailed" xml:space="preserve">
+    <value>Тарыхты жүктөө ишке ашкан жок</value>
+  </data>
+  <data name="HistorySignIn" xml:space="preserve">
+    <value>Көрүү тарыхыңызды көрүү үчүн кириңиз</value>
+  </data>
+  <data name="HomeAll" xml:space="preserve">
+    <value>Баары</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Колдонмонун тили</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>Англисче</value>
+  </data>
+  <data name="LanguageRestartHint" xml:space="preserve">
+    <value>Интерфейс дароо жаңыртылат.</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Орусча</value>
+  </data>
+  <data name="LanguageSection" xml:space="preserve">
+    <value>Тил</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>Системанын демейкиси</value>
+  </data>
+  <data name="Like" xml:space="preserve">
+    <value>Жакты</value>
+  </data>
+  <data name="LinkCopied" xml:space="preserve">
+    <value>Шилтеме көчүрүлдү</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Жандуу плитка</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Сунуштарды Баштоо экранында көрсөтүү</value>
+  </data>
+  <data name="LoadingDescription" xml:space="preserve">
+    <value>Сүрөттөмө жүктөлүүдө...</value>
+  </data>
+  <data name="LoadingFailed" xml:space="preserve">
+    <value>Жүктөө ишке ашкан жок</value>
+  </data>
+  <data name="Loc_0Subscribers0Videos_Text.Text" xml:space="preserve">
+    <value>0 жазылуучу • 0 видео</value>
+  </data>
+  <data name="Loc_About_Text.Text" xml:space="preserve">
+    <value>Жөнүндө</value>
+  </data>
+  <data name="Loc_Account_Text.Text" xml:space="preserve">
+    <value>Каттоо эсеби</value>
+  </data>
+  <data name="Loc_All_Text.Text" xml:space="preserve">
+    <value>Баары</value>
+  </data>
+  <data name="Loc_AudioTrack_Text.Text" xml:space="preserve">
+    <value>Аудио трек</value>
+  </data>
+  <data name="Loc_Auto_Text.Text" xml:space="preserve">
+    <value>Авто</value>
+  </data>
+  <data name="Loc_AutoFullscreenInLandscape_Text.Text" xml:space="preserve">
+    <value>Көлдөңкү режимде автоматтык толук экран</value>
+  </data>
+  <data name="Loc_BackgroundToastsFromYouTubeNotifications_Text.Text" xml:space="preserve">
+    <value>YouTube эскертмелеринен фондук билдирүүлөр</value>
+  </data>
+  <data name="Loc_Channel_Text.Text" xml:space="preserve">
+    <value>Канал</value>
+  </data>
+  <data name="Loc_Channels_Text.Text" xml:space="preserve">
+    <value>Каналдар</value>
+  </data>
+  <data name="Loc_CheckYourConnectionAndTryAgain_Text.Text" xml:space="preserve">
+    <value>Байланышыңызды текшерип, кайра аракет кылыңыз</value>
+  </data>
+  <data name="Loc_Close_Content.Content" xml:space="preserve">
+    <value>Жабуу</value>
+  </data>
+  <data name="Loc_Comments_Text.Text" xml:space="preserve">
+    <value>Комментарийлер</value>
+  </data>
+  <data name="Loc_CopyLink_Text.Text" xml:space="preserve">
+    <value>Шилтемени көчүрүү</value>
+  </data>
+  <data name="Loc_CouldNotLoadChannel_Text.Text" xml:space="preserve">
+    <value>Каналды жүктөө мүмкүн болгон жок</value>
+  </data>
+  <data name="Loc_CouldNotLoadPlaylist_Text.Text" xml:space="preserve">
+    <value>Плейлистти жүктөө мүмкүн болгон жок</value>
+  </data>
+  <data name="Loc_Description_Text.Text" xml:space="preserve">
+    <value>Сүрөттөмө</value>
+  </data>
+  <data name="Loc_EveryHour_Text.Text" xml:space="preserve">
+    <value>Ар саатта</value>
+  </data>
+  <data name="Loc_ExpandTheVideoWhenThePhoneRotates_Text.Text" xml:space="preserve">
+    <value>Телефон айланганда видеону кеңейтүү</value>
+  </data>
+  <data name="Loc_Frequency_Text.Text" xml:space="preserve">
+    <value>Жыштык</value>
+  </data>
+  <data name="Loc_History_Text.Text" xml:space="preserve">
+    <value>Тарых</value>
+  </data>
+  <data name="Loc_Home_Text.Text" xml:space="preserve">
+    <value>Башкы бет</value>
+  </data>
+  <data name="Loc_Information_Text.Text" xml:space="preserve">
+    <value>Маалымат</value>
+  </data>
+  <data name="Loc_Like_Text.Text" xml:space="preserve">
+    <value>Жакты</value>
+  </data>
+  <data name="Loc_Likes_Text.Text" xml:space="preserve">
+    <value>Жактыруулар</value>
+  </data>
+  <data name="Loc_LinkCopied_Text.Text" xml:space="preserve">
+    <value>Шилтеме көчүрүлдү</value>
+  </data>
+  <data name="Loc_Loading_Text.Text" xml:space="preserve">
+    <value>Жүктөлүүдө...</value>
+  </data>
+  <data name="Loc_LoadingChannel_Text.Text" xml:space="preserve">
+    <value>Канал жүктөлүүдө...</value>
+  </data>
+  <data name="Loc_LoadingComments_Text.Text" xml:space="preserve">
+    <value>Комментарийлер жүктөлүүдө...</value>
+  </data>
+  <data name="Loc_LoadingMore_Text.Text" xml:space="preserve">
+    <value>Дагы жүктөлүүдө...</value>
+  </data>
+  <data name="Loc_LoadingMoreHistory_Text.Text" xml:space="preserve">
+    <value>Көбүрөөк тарых жүктөлүүдө...</value>
+  </data>
+  <data name="Loc_LoadingMoreResults_Text.Text" xml:space="preserve">
+    <value>Көбүрөөк натыйжа жүктөлүүдө...</value>
+  </data>
+  <data name="Loc_LoadingMoreVideos_Text.Text" xml:space="preserve">
+    <value>Көбүрөөк видео жүктөлүүдө...</value>
+  </data>
+  <data name="Loc_LoadingPlaylist_Text.Text" xml:space="preserve">
+    <value>Плейлист жүктөлүүдө...</value>
+  </data>
+  <data name="Loc_LogOut_Text.Text" xml:space="preserve">
+    <value>Чыгуу</value>
+  </data>
+  <data name="Loc_LooksLikeWeCanTLoadVideosForYou_Text.Text" xml:space="preserve">
+    <value>Сиз үчүн видеолорду жүктөй албай жатабыз окшойт.</value>
+  </data>
+  <data name="Loc_More_Text.Text" xml:space="preserve">
+    <value>...дагы</value>
+  </data>
+  <data name="Loc_NewUpdatesFromYourSubscriptionsWillAppearHere_Text.Text" xml:space="preserve">
+    <value>Жазылууларыңыздагы жаңы жаңыртуулар бул жерде көрүнөт.</value>
+  </data>
+  <data name="Loc_NoCommentsFound_Text.Text" xml:space="preserve">
+    <value>Комментарий табылган жок.</value>
+  </data>
+  <data name="Loc_NoConnectionToTheInternet_Text.Text" xml:space="preserve">
+    <value>Интернет байланышы жок</value>
+  </data>
+  <data name="Loc_NoData_Text.Text" xml:space="preserve">
+    <value>Маалымат жок</value>
+  </data>
+  <data name="Loc_NoHistoryYet_Text.Text" xml:space="preserve">
+    <value>Азырынча тарых жок</value>
+  </data>
+  <data name="Loc_None_Text.Text" xml:space="preserve">
+    <value>Жок</value>
+  </data>
+  <data name="Loc_NoNotifications_Text.Text" xml:space="preserve">
+    <value>Эскертме жок</value>
+  </data>
+  <data name="Loc_Notifications_Text.Text" xml:space="preserve">
+    <value>Эскертмелер</value>
+  </data>
+  <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
+    <value>Бул плейлистте видео жок</value>
+  </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Loc_Personalized_Text.Text" xml:space="preserve">
+    <value>Жекелештирилген</value>
+  </data>
+  <data name="Loc_PlaybackSpeed_Text.Text" xml:space="preserve">
+    <value>Ойнотуу ылдамдыгы</value>
+  </data>
+  <data name="Loc_Playlist_Text.Text" xml:space="preserve">
+    <value>Плейлист</value>
+  </data>
+  <data name="Loc_Playlists_Text.Text" xml:space="preserve">
+    <value>Плейлисттер</value>
+  </data>
+  <data name="Loc_Posts_Text.Text" xml:space="preserve">
+    <value>Посттор</value>
+  </data>
+  <data name="Loc_PreferredShortsQuality_Text.Text" xml:space="preserve">
+    <value>Тандалган Shorts сапаты</value>
+  </data>
+  <data name="Loc_PreferredVideoQuality_Text.Text" xml:space="preserve">
+    <value>Тандалган видео сапаты</value>
+  </data>
+  <data name="Loc_Published_Text.Text" xml:space="preserve">
+    <value>Жарыяланды</value>
+  </data>
+  <data name="Loc_QRCode_Text.Text" xml:space="preserve">
+    <value>QR код</value>
+  </data>
+  <data name="Loc_Quality_Text.Text" xml:space="preserve">
+    <value>Сапат</value>
+  </data>
+  <data name="Loc_RefreshQRCode_Content.Content" xml:space="preserve">
+    <value>QR кодду жаңыртуу</value>
+  </data>
+  <data name="Loc_ReloadVideo_Text.Text" xml:space="preserve">
+    <value>Видеону кайра жүктөө</value>
+  </data>
+  <data name="Loc_Retry_Content.Content" xml:space="preserve">
+    <value>Кайра аракет кылуу</value>
+  </data>
+  <data name="Loc_ScanTheQRCodeToSignIn_Text.Text" xml:space="preserve">
+    <value>Кирүү үчүн QR кодду скандаңыз</value>
+  </data>
+  <data name="Loc_Search_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>Издөө</value>
+  </data>
+  <data name="Loc_Searching_Text.Text" xml:space="preserve">
+    <value>Изделүүдө...</value>
+  </data>
+  <data name="Loc_SearchYouTube_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>YouTube'дан издөө</value>
+  </data>
+  <data name="Loc_SearchYouTube_Text.Text" xml:space="preserve">
+    <value>YouTube'дан издөө</value>
+  </data>
+  <data name="Loc_SeekPreview_Text.Text" xml:space="preserve">
+    <value>Издөө алдын ала көрүү</value>
+  </data>
+  <data name="Loc_SendNotifications_Text.Text" xml:space="preserve">
+    <value>Эскертме жөнөтүү</value>
+  </data>
+  <data name="Loc_Settings_Text.Text" xml:space="preserve">
+    <value>Жөндөөлөр</value>
+  </data>
+  <data name="Loc_Share_Text.Text" xml:space="preserve">
+    <value>Бөлүшүү</value>
+  </data>
+  <data name="Loc_ShareVia_Text.Text" xml:space="preserve">
+    <value>...аркылуу бөлүшүү</value>
+  </data>
+  <data name="Loc_Shorts_Text.Text" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="Loc_ShortsLinkHasBeenCopiedToClipboard_Text.Text" xml:space="preserve">
+    <value>Shorts шилтемеси алмашуу буферине көчүрүлдү</value>
+  </data>
+  <data name="Loc_ShowQRCode_Text.Text" xml:space="preserve">
+    <value>QR кодду көрсөтүү</value>
+  </data>
+  <data name="Loc_ShowVideoThumbnailWhileSeeking_Text.Text" xml:space="preserve">
+    <value>Издөөдө видео эскизин көрсөтүү</value>
+  </data>
+  <data name="Loc_Subscribe_Text.Text" xml:space="preserve">
+    <value>Жазылуу</value>
+  </data>
+  <data name="Loc_Subscriptions_Text.Text" xml:space="preserve">
+    <value>Жазылуулар</value>
+  </data>
+  <data name="Loc_Subtitles_Text.Text" xml:space="preserve">
+    <value>Субтитрлер</value>
+  </data>
+  <data name="Loc_TrendingSearches_Text.Text" xml:space="preserve">
+    <value>Популярдуу издөөлөр</value>
+  </data>
+  <data name="Loc_TryAgain_Content.Content" xml:space="preserve">
+    <value>Кайра аракет кылуу</value>
+  </data>
+  <data name="Loc_Type_Text.Text" xml:space="preserve">
+    <value>Түрү</value>
+  </data>
+  <data name="Loc_Unsubscribe_Text.Text" xml:space="preserve">
+    <value>Жазылууну токтотуу</value>
+  </data>
+  <data name="Loc_VerificationCode_Text.Text" xml:space="preserve">
+    <value>Ырастоо коду</value>
+  </data>
+  <data name="Loc_Video_Text.Text" xml:space="preserve">
+    <value>Видео</value>
+  </data>
+  <data name="Loc_Videos_Text.Text" xml:space="preserve">
+    <value>Видеолор</value>
+  </data>
+  <data name="Loc_ViewChannel_Text.Text" xml:space="preserve">
+    <value>Каналды көрүү</value>
+  </data>
+  <data name="Loc_Views_Text.Text" xml:space="preserve">
+    <value>Көрүүлөр</value>
+  </data>
+  <data name="Loc_You_Text.Text" xml:space="preserve">
+    <value>Сиз</value>
+  </data>
+  <data name="LoginLoadingQr" xml:space="preserve">
+    <value>QR код жүктөлүүдө...</value>
+  </data>
+  <data name="LoginQrFailed" xml:space="preserve">
+    <value>QR кодду жүктөө мүмкүн болгон жок.</value>
+  </data>
+  <data name="LoginScanQr" xml:space="preserve">
+    <value>Телефондун камерасын ачып, QR кодду скандаңыз.</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>Кирүү ийгиликтүү! Багытталууда...</value>
+  </data>
+  <data name="MeSignIn" xml:space="preserve">
+    <value>Тарых жана плейлисттерди көрүү үчүн кириңиз</value>
+  </data>
+  <data name="Mix" xml:space="preserve">
+    <value>Mix</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} ай мурун</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Тармак катасы. Интернет байланышын текшериңиз.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Жок</value>
+  </data>
+  <data name="NoCommentsFound" xml:space="preserve">
+    <value>Комментарий табылган жок.</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>Маалымат жок</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>Сүрөттөмө жок.</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>Сүрөттөмө жеткиликсиз.</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>Аты жок</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>Эскертме жок</value>
+  </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts табылган жок.</value>
+  </data>
+  <data name="NotificationPreferenceFailed" xml:space="preserve">
+    <value>Эскертме параметрин жаңыртуу мүмкүн болгон жок.</value>
+  </data>
+  <data name="NotificationsFailed" xml:space="preserve">
+    <value>Эскертмелер ишке ашкан жок</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Жазылууларыңыздагы жаңы жаңыртуулар бул жерде көрүнөт.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>YouTube эскертмелерин көрүү үчүн кириңиз.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Бул баракты кийин кайра ачыңыз.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Аталышы жок</value>
+  </data>
+  <data name="NotSignedIn" xml:space="preserve">
+    <value>Кирген жоксуз</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Өчүк</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Older" xml:space="preserve">
+    <value>Эскирээк</value>
+  </data>
+  <data name="PlaybackError" xml:space="preserve">
+    <value>Ойнотуу катасы</value>
+  </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Ойнотуу ишке ашкан жок</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Ойнотуу ылдамдыгы</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Видеону ойнотуу мүмкүн болгон жок. Ойноткуч инициализацияланган эмес.</value>
+  </data>
+  <data name="Playlist" xml:space="preserve">
+    <value>Плейлист</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Плейлист ID-си бош</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Ойнотмо тизмесин жаңыртуу мүмкүн болгон жок</value>
+  </data>
+  <data name="QrCode" xml:space="preserve">
+    <value>QR код</value>
+  </data>
+  <data name="QrDisplayErrorFormat" xml:space="preserve">
+    <value>QR көрсөтүү катасы: {0}</value>
+  </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Сапат</value>
+  </data>
+  <data name="RatingFailed" xml:space="preserve">
+    <value>Баалоо ишке ашкан жок</value>
+  </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube баалоо өтүнүчүн четке какты. TV токени жарактуу экенин жана YouTube баалоо уруксаты бар экенин текшериңиз.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Сунушталган видео</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Жаңыртуу токенин кирүү токенине алмаштыруу мүмкүн болгон жок.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>жооп</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} жооп</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Сактоо</value>
+  </data>
+  <data name="SearchErrorFormat" xml:space="preserve">
+    <value>Издөө катасы: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Белгисиз</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Аккаунт тандаңыз</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Ойнотмо тизмесин тандаңыз</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Англисче</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Демейки боюнча Windows тилин колдонот.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Колдонмонун тили</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Орусча</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Тил</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Тил</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Системанын демейкиси</value>
+  </data>
+  <data name="ShareShortDescription" xml:space="preserve">
+    <value>Бул YouTube Short менен бөлүшүү</value>
+  </data>
+  <data name="ShareVideoDescription" xml:space="preserve">
+    <value>Бул YouTube видеосу менен бөлүшүү</value>
+  </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Колдонмодо Shorts көрсөтүү</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Азыраак көрсөтүү</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Дагы</value>
+  </data>
+  <data name="SignInAgain" xml:space="preserve">
+    <value>TV жаңыртуу токенин кирүү токенине алмаштыруу мүмкүн болгон жок. Кайра кирип, жаңыртуу токени дагы эле жарактуу экенин текшериңиз.</value>
+  </data>
+  <data name="SignInRequired" xml:space="preserve">
+    <value>Кирүү талап кылынат</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Shorts көрүү үчүн кириңиз.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Издөө тилкесиндеги жарнама сегменттери</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>SponsorBlock түстүү аралыктарын көрсөтүү</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Жазылуу</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>жазылуучулар</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>жазылуучулар</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>жазылуучу</value>
+  </data>
+  <data name="SubscribersVideosFormat" xml:space="preserve">
+    <value>{0} жазылуучу • {1} видео</value>
+  </data>
+  <data name="SubscriptionFailed" xml:space="preserve">
+    <value>Жазылуу ишке ашкан жок</value>
+  </data>
+  <data name="SubscriptionRejected" xml:space="preserve">
+    <value>YouTube жазылуу өтүнүчүн четке какты.</value>
+  </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube жазылуу өтүнүчүн четке какты. TV токени жарактуу экенин жана канал ID-си табылганын текшериңиз.</value>
+  </data>
+  <data name="SubtitleEarlier" xml:space="preserve">
+    <value>   Эртерээк (+0.25s)</value>
+  </data>
+  <data name="SubtitleLater" xml:space="preserve">
+    <value>   Кийинчерээк (-0.25s)</value>
+  </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Кадимки жылышты калыбына келтирүү (0,00 с)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Субтитрлер</value>
+  </data>
+  <data name="SyncFormat" xml:space="preserve">
+    <value>Шайкештештирүү: {0}</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Тема</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Караңгы</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Жарык</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Бул аптада</value>
+  </data>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Эскиздин сапаты</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Бүгүн</value>
+  </data>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Комедиялык скетчтер</value>
+  </data>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Тамак бышыруу рецепттери</value>
+  </data>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>DIY сабактары</value>
+  </data>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Оюндагы мыкты учурлар</value>
+  </data>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Кино трейлерлер</value>
+  </data>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Музыкалык видеолор</value>
+  </data>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Спорттогу мыкты учурлар</value>
+  </data>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Технологиялык серептер</value>
+  </data>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>TV жаңыртуу токенин кирүү токенине алмаштыруу мүмкүн болгон жок.</value>
+  </data>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>TV жаңыртуу токенин кирүү токенине алмаштыруу мүмкүн болгон жок. Кайра кирип, жаңыртуу токени дагы эле жарактуу экенин текшериңиз.</value>
+  </data>
+  <data name="TvTokenMissing" xml:space="preserve">
+    <value>TV жаңыртуу токени табылган жок. Кайра кирип, аракет кылыңыз.</value>
+  </data>
+  <data name="TvTokenMissingDetailed" xml:space="preserve">
+    <value>TV жаңыртуу токени табылган жок. yt_refresh_token сакталсын үчүн кайра кирип, аракет кылыңыз.</value>
+  </data>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Комментарийлерди жүктөө мүмкүн болгон жок.</value>
+  </data>
+  <data name="UnableLoadShorts" xml:space="preserve">
+    <value>Shorts жүктөлгөн жок.</value>
+  </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Бул Short ойнотулбайт</value>
+  </data>
+  <data name="UnablePlayShortPeriod" xml:space="preserve">
+    <value>Бул Short ойнотулбайт.</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Белгисиз</value>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>Аталышсыз</value>
+  </data>
+  <data name="UploadedVideo" xml:space="preserve">
+    <value>Видео жүктөдү</value>
+  </data>
+  <data name="UploadedVideoTitleFormat" xml:space="preserve">
+    <value>“{0}” видеосун жүктөдү</value>
+  </data>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Видео «{0}» тизмесине кошулду</value>
+  </data>
+  <data name="VideoFew" xml:space="preserve">
+    <value>видеолор</value>
+  </data>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Видео шилтемеси алмашуу буферине көчүрүлдү.</value>
+  </data>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Видеону жүктөө мүмкүн болгон жок. Шилтеменин мөөнөтү бүтүшү же формат колдоого алынбашы мүмкүн.</value>
+  </data>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Видеону жүктөө убактысы бүттү. Интернет байланышын текшериңиз.</value>
+  </data>
+  <data name="VideoMany" xml:space="preserve">
+    <value>видеолор</value>
+  </data>
+  <data name="VideoOne" xml:space="preserve">
+    <value>видео</value>
+  </data>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Видео ойнотуу катасы. Төмөнүрөөк сапатты тандап көрүңүз.</value>
+  </data>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Видео «{0}» тизмесинен өчүрүлдү</value>
+  </data>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} видео</value>
+  </data>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} видео</value>
+  </data>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} жума мурун</value>
+  </data>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} жыл мурун</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ооба</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Кечээ</value>
+  </data>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
+  </data>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube видеосу</value>
+  </data>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube видеосу</value>
+  </data>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Жүктөлгөн видеолорду тазалоо</value>
+  </data>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Бардык жүктөлгөн видеолорду жана кэштелген эскиздерди жок кылуу</value>
+  </data>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Бардык жүктөлгөн видеолор жана алардын эскиздери биротоло жок кылынат.</value>
+  </data>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Жокко чыгаруу</value>
   </data>
 </root>

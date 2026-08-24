@@ -24,7 +24,9 @@ namespace YouTube
     internal static class VideoThumbnailController
     {
         public const string SettingKey = "VideoThumbnailQuality";
-        public const string DefaultQuality = "maxres";
+        // hqdefault.jpg is available for every YouTube video and is a better default for old
+        // phones than optional maxres/sd images. Users can still choose any other tier.
+        public const string DefaultQuality = "high";
 
         private static readonly VideoThumbnailQualityOption[] _options =
         {

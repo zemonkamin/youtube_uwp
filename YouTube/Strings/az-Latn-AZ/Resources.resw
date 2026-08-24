@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>LegacyProjects komandası tərəfindən hazırlanıb.
@@ -18,11 +45,146 @@ YouTube API Legacy tərəfindən dəstəklənir.
 
 Versiya {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Hesablar</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Görünüş</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Audio trek</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Avtomatik</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Avtomatik tərcümə &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Geri</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Aksiya/Macəra</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Hamısı</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Animasiya</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Avtomobil və Nəqliyyat</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Klassiklər</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Komediya</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Sənədli</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Dram</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Təhsil</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Əyləncə</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Ailə</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Film və Animasiya</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Xarici</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Oyun</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Dəhşət</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Necə etməli və Stil</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Öyrənmə</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Canlı</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Filmlər</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Musiqi</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Xəbərlər</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Xəbərlər və Siyasət</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Qeyri-kommersiya və Fəallıq</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>İnsanlar və Bloqlar</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Ev heyvanları və Heyvanlar</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podkastlar</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Elm və Texnologiya</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Elmi fantastika/Fantaziya</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Qısa Filmlər</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Şoular</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>İdman</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Triller</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Treylerlər</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Səyahət və Tədbirlər</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Videobloq</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Video oyunlar</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Kanal</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Kanal nişanları</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Video kartlarında kanal nişanlarını göstər</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Kanal yükləmə xətası</value>
@@ -30,14 +192,71 @@ Versiya {0}</value>
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Kanal göstərilməyib</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Şərhlər</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Çıxmaq istədiyinizə əminsiniz?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Çıxışı təsdiqlə</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Kanalı yükləmək mümkün olmadı</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Bildirişləri yükləmək mümkün olmadı</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Pleylisti yükləmək mümkün olmadı</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Videonu yükləmək mümkün olmadı. Yenidən cəhd edin.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Videonu oynatmaq mümkün olmadı.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} gün əvvəl</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Təsvir əlçatan deyil</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Endir</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Endirildi</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Endirmələriniz</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Endirmə qovluğu</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Endirilmiş videoların saxlanacağı yeri seçin</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Endirmə keyfiyyəti</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Endirmələr</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Endirdiyiniz videolar burada görünəcək.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Endirmələriniz</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Endirmələr</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Bu videonu endirmək mümkün deyil</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Xəta kodu: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Xəta: {0}</value>
@@ -62,6 +281,18 @@ Versiya {0}</value>
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Hər {0} dəq</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Video oynadıla bilmədi: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Abunəliklərdən</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Şüşə effekti</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Naviqasiya panellərini bulanıqlaşdır</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Tarixçə yüklənə bilmədi</value>
@@ -90,8 +321,17 @@ Versiya {0}</value>
   <data name="LanguageSystem" xml:space="preserve">
     <value>Sistem standartı</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Bəyən</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Keçid kopyalandı</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Canlı plitə</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Tövsiyələri Başlanğıc ekranında göstər</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Təsvir yüklənir...</value>
@@ -237,6 +477,9 @@ Versiya {0}</value>
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Bu pleylistdə video yoxdur</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Fərdiləşdirilmiş</value>
   </data>
@@ -375,6 +618,15 @@ Versiya {0}</value>
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} ay əvvəl</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Şəbəkə xətası. İnternet bağlantınızı yoxlayın.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Xeyr</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Şərh tapılmadı.</value>
   </data>
@@ -393,11 +645,26 @@ Versiya {0}</value>
   <data name="NoNotifications" xml:space="preserve">
     <value>Bildiriş yoxdur</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts tapılmadı.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Bildiriş seçimini yeniləmək mümkün olmadı.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Bildirişlər uğursuz oldu</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Abunəliklərinizdən yeni yeniliklər burada görünəcək.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>YouTube bildirişlərinizi görmək üçün daxil olun.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Bu səhifəni sonra yenidən açın.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Başlıq yoxdur</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Daxil olmamısınız</value>
@@ -414,8 +681,23 @@ Versiya {0}</value>
   <data name="PlaybackError" xml:space="preserve">
     <value>Oynatma xətası</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Oynatma uğursuz oldu</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Oynatma sürəti</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Videonu oynatmaq mümkün olmadı. Oynadıcı başladılmayıb.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Pleylist</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Pleylist ID-si boşdur</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Pleylisti yeniləmək mümkün olmadı</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR kod</value>
@@ -423,11 +705,62 @@ Versiya {0}</value>
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>QR göstərmə xətası: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Keyfiyyət</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Qiymətləndirmə uğursuz oldu</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube qiymətləndirmə sorğusunu rədd etdi. TV tokeninin etibarlı olduğunu və YouTube qiymətləndirmə icazəsinin olduğunu yoxlayın.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Tövsiyə olunan video</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Yeniləmə tokenini giriş tokeni ilə dəyişmək mümkün olmadı.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>cavab</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} cavab</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Yadda saxla</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Axtarış xətası: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Naməlum</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Hesab seçin</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Pleylist seçin</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>İngilis</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Standart olaraq Windows dilindən istifadə edir.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Tətbiq dili</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Rus</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Dil</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Dil</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Sistem standartı</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Bu YouTube Short-u paylaş</value>
@@ -435,11 +768,47 @@ Versiya {0}</value>
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Bu YouTube videosunu paylaş</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Tətbiqdə Shorts göstərin</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Daha az göstər</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Daha çox</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>TV yeniləmə tokenini giriş tokeni ilə dəyişmək mümkün olmadı. Yenidən daxil olun və yeniləmə tokeninin hələ də etibarlı olduğunu yoxlayın.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Giriş tələb olunur</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Shorts izləmək üçün daxil olun.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Axtarış zolağında reklam seqmentləri</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Rəngli SponsorBlock aralıqlarını göstər</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Abunə ol</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>abunəçilər</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>abunəçilər</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>abunəçi</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} abunəçi • {1} video</value>
@@ -450,65 +819,71 @@ Versiya {0}</value>
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube abunəlik sorğusunu rədd etdi.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube abunəlik sorğusunu rədd etdi. TV tokeninin etibarlı olduğunu və kanal ID-sinin tapıldığını yoxlayın.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Daha əvvəl (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Daha sonra (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Normal sürüşməni bərpa et (0,00 san)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Altyazılar</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Sinxronizasiya: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Şərhləri yükləmək mümkün olmadı.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Tema</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Adsız</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Tünd</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Video keçidi mübadilə buferinə kopyalandı.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Açıq</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} video</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Bu həftə</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Miniatür keyfiyyəti</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Dil</value>
+  <data name="Today" xml:space="preserve">
+    <value>Bu gün</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Tətbiq dili</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Komediya səhnəcikləri</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Dil</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Yemək reseptləri</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Standart olaraq Windows dilindən istifadə edir.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>DIY dərsləri</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Sistem standartı</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Oyun məqamları</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>İngilis</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Film treylerləri</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Rus</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Musiqi videoları</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube videosu</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>İdman məqamları</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Kanal</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Texnologiya icmalları</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>TV yeniləmə tokenini giriş tokeni ilə dəyişmək mümkün olmadı.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Naməlum</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Başlıq yoxdur</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>TV yeniləmə tokenini giriş tokeni ilə dəyişmək mümkün olmadı. Yenidən daxil olun və yeniləmə tokeninin hələ də etibarlı olduğunu yoxlayın.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>TV yeniləmə tokeni tapılmadı. Yenidən daxil olun və cəhd edin.</value>
@@ -516,194 +891,23 @@ Versiya {0}</value>
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>TV yeniləmə tokeni tapılmadı. yt_refresh_token saxlanılsın deyə yenidən daxil olun və cəhd edin.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>TV yeniləmə tokenini giriş tokeni ilə dəyişmək mümkün olmadı.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Yeniləmə tokenini giriş tokeni ilə dəyişmək mümkün olmadı.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Oynatma uğursuz oldu</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Bu Short-u oynatmaq mümkün deyil</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Video yükləmə vaxtı bitdi. İnternet bağlantınızı yoxlayın.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Videonu yükləmək mümkün olmadı. Yenidən cəhd edin.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Videonu oynatmaq mümkün olmadı. Oynadıcı başladılmayıb.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Videonu yükləmək mümkün olmadı. Keçidin vaxtı bitmiş ola bilər və ya format dəstəklənmir.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Şəbəkə xətası. İnternet bağlantınızı yoxlayın.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Video oynatma xətası. Daha aşağı keyfiyyət seçməyə çalışın.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Videonu oynatmaq mümkün olmadı.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Musiqi videoları</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Oyun məqamları</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Yemək reseptləri</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Texnologiya icmalları</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Film treylerləri</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>İdman məqamları</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Komediya səhnəcikləri</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>DIY dərsləri</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Tövsiyə olunan video</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Çıxmaq istədiyinizə əminsiniz?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Çıxışı təsdiqlə</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Bəli</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Xeyr</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>YouTube bildirişlərinizi görmək üçün daxil olun.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Bildirişləri yükləmək mümkün olmadı</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Bu səhifəni sonra yenidən açın.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>Pleylist ID-si boşdur</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} video</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Naməlum</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Shorts izləmək üçün daxil olun.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Shorts tapılmadı.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Şərhləri yükləmək mümkün olmadı.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Shorts yüklənə bilmədi.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Bu Short-u oynatmaq mümkün deyil</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Bu Short-u oynatmaq mümkün deyil.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Keyfiyyət</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Naməlum</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Oynatma sürəti</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Audio trek</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Altyazılar</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Video oynadıla bilmədi: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Xəta kodu: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Bu gün</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} gün əvvəl</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} həftə əvvəl</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} ay əvvəl</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} il əvvəl</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Geri</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube videosu</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>abunəçi</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>abunəçilər</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>abunəçilər</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>videolar</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>videolar</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Abunə ol</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Bəyən</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Şərhlər</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Abunəliklərinizdən yeni yeniliklər burada görünəcək.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube abunəlik sorğusunu rədd etdi. TV tokeninin etibarlı olduğunu və kanal ID-sinin tapıldığını yoxlayın.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube qiymətləndirmə sorğusunu rədd etdi. TV tokeninin etibarlı olduğunu və YouTube qiymətləndirmə icazəsinin olduğunu yoxlayın.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>TV yeniləmə tokenini giriş tokeni ilə dəyişmək mümkün olmadı. Yenidən daxil olun və yeniləmə tokeninin hələ də etibarlı olduğunu yoxlayın.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Dünən</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Bu həftə</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Adsız</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Video yüklədi</value>
@@ -711,146 +915,73 @@ Versiya {0}</value>
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>“{0}” videosunu yüklədi</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Abunəliklərdən</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Video “{0}” pleylistinə əlavə edildi</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Hamısı</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>videolar</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Film və Animasiya</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Video keçidi mübadilə buferinə kopyalandı.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Avtomobil və Nəqliyyat</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Videonu yükləmək mümkün olmadı. Keçidin vaxtı bitmiş ola bilər və ya format dəstəklənmir.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Musiqi</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Video yükləmə vaxtı bitdi. İnternet bağlantınızı yoxlayın.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Ev heyvanları və Heyvanlar</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>videolar</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>İdman</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Qısa Filmlər</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Video oynatma xətası. Daha aşağı keyfiyyət seçməyə çalışın.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Səyahət və Tədbirlər</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Video “{0}” pleylistindən silindi</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Oyun</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} video</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Videobloq</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} video</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>İnsanlar və Bloqlar</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} həftə əvvəl</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Komediya</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} il əvvəl</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Əyləncə</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Bəli</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Xəbərlər və Siyasət</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Dünən</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Necə etməli və Stil</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Təhsil</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube videosu</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Elm və Texnologiya</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube videosu</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Qeyri-kommersiya və Fəallıq</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Endirilən videoları silin</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Filmlər</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Bütün endirilən videoları və kiçik rəsmləri silin</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Anime/Animasiya</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Bütün endirilən videolar və onların kiçik rəsmləri həmişəlik silinəcək.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Aksiya/Macəra</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Təmizlə</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Klassiklər</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Sənədli</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Dram</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Ailə</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Xarici</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Dəhşət</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Elmi fantastika/Fantaziya</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Triller</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Şoular</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Treylerlər</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Canlı</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Öyrənmə</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Video oyunlar</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Xəbərlər</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Podkastlar</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Görünüş</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Tema</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Açıq</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Tünd</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Canlı plitə</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Tövsiyələri Başlanğıc ekranında göstər</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Miniatür keyfiyyəti</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Kanal nişanları</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Video kartlarında kanal nişanlarını göstər</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Ləğv et</value>
   </data>
 </root>

@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>Được phát triển bởi nhóm LegacyProjects.
@@ -18,11 +45,146 @@
 
 Phiên bản {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Tài khoản</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Giao diện</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Bản âm thanh</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Tự động</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Tự động dịch &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Quay lại</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Hành động/Phiêu lưu</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Tất cả</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Hoạt hình</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Ô tô &amp; Xe cộ</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Kinh điển</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Hài</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Phim tài liệu</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Chính kịch</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Giáo dục</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Giải trí</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Gia đình</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Phim &amp; Hoạt hình</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Nước ngoài</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Trò chơi</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Kinh dị</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Hướng dẫn &amp; Phong cách</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Học tập</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Trực tiếp</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Phim</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Âm nhạc</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Tin tức</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Tin tức &amp; Chính trị</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Phi lợi nhuận &amp; Hoạt động xã hội</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Con người &amp; Blog</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Thú cưng &amp; Động vật</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podcast</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Khoa học &amp; Công nghệ</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Khoa học viễn tưởng/Giả tưởng</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Phim ngắn</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Chương trình</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Thể thao</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Ly kỳ</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Đoạn giới thiệu</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Du lịch &amp; Sự kiện</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Video blog</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Trò chơi điện tử</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Kênh</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Biểu tượng kênh</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Hiển thị biểu tượng kênh trên thẻ video</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Lỗi tải kênh</value>
@@ -30,14 +192,71 @@ Phiên bản {0}</value>
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Chưa cung cấp kênh</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Bình luận</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Bạn có chắc muốn đăng xuất không?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Xác nhận đăng xuất</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Không thể tải kênh</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Không thể tải thông báo</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Không thể tải danh sách phát</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Không thể tải video. Vui lòng thử lại.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Không thể phát video.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} ngày trước</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Không có mô tả</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Tải xuống</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Đã tải xuống</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Video đã tải xuống</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Thư mục tải xuống</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Chọn nơi lưu video đã tải xuống</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Chất lượng tải xuống</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Video tải xuống</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Các video bạn tải xuống sẽ xuất hiện ở đây.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Video tải xuống của bạn</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Video tải xuống</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Không thể tải video này xuống</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Mã lỗi: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Lỗi: {0}</value>
@@ -62,6 +281,18 @@ Phiên bản {0}</value>
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Mỗi {0} phút</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Không thể phát video: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Từ kênh đăng ký</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Hiệu ứng kính</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Làm mờ các thanh điều hướng</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Không thể tải nhật ký</value>
@@ -90,8 +321,17 @@ Phiên bản {0}</value>
   <data name="LanguageSystem" xml:space="preserve">
     <value>Mặc định hệ thống</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Thích</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Đã sao chép đường liên kết</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Ô động</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Hiển thị đề xuất trên màn hình Bắt đầu</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Đang tải mô tả...</value>
@@ -237,6 +477,9 @@ Phiên bản {0}</value>
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Không có video trong danh sách phát này</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Cá nhân hóa</value>
   </data>
@@ -375,6 +618,15 @@ Phiên bản {0}</value>
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} tháng trước</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Lỗi mạng. Kiểm tra kết nối Internet.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Không</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Không tìm thấy bình luận.</value>
   </data>
@@ -393,11 +645,26 @@ Phiên bản {0}</value>
   <data name="NoNotifications" xml:space="preserve">
     <value>Không có thông báo</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Không tìm thấy Shorts.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Không thể cập nhật tùy chọn thông báo.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Thông báo thất bại</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Các nội dung cập nhật mới từ kênh đăng ký của bạn sẽ xuất hiện ở đây.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Đăng nhập để xem thông báo YouTube của bạn.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Hãy mở lại trang này sau.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Không có tiêu đề</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Chưa đăng nhập</value>
@@ -414,8 +681,23 @@ Phiên bản {0}</value>
   <data name="PlaybackError" xml:space="preserve">
     <value>Lỗi phát</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Phát thất bại</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Tốc độ phát</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Không thể phát video. Trình phát chưa được khởi tạo.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Danh sách phát</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>ID danh sách phát đang trống</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Không thể cập nhật danh sách phát</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>Mã QR</value>
@@ -423,11 +705,62 @@ Phiên bản {0}</value>
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>Lỗi hiển thị QR: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Chất lượng</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Đánh giá thất bại</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube đã từ chối yêu cầu đánh giá. Kiểm tra mã TV hợp lệ và có quyền đánh giá YouTube.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Video đề xuất</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Không thể đổi mã làm mới lấy mã truy cập.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>phản hồi</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} phản hồi</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Lưu</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Lỗi tìm kiếm: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Không xác định</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Chọn tài khoản</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Chọn danh sách phát</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Tiếng Anh</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Mặc định sử dụng ngôn ngữ Windows.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Ngôn ngữ ứng dụng</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Tiếng Nga</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Ngôn ngữ</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Ngôn ngữ</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Mặc định hệ thống</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Chia sẻ YouTube Short này</value>
@@ -435,11 +768,47 @@ Phiên bản {0}</value>
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Chia sẻ video YouTube này</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Hiển thị Shorts trong ứng dụng</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Ẩn bớt</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Thêm</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>Không thể đổi mã làm mới TV lấy mã truy cập. Hãy đăng nhập lại và kiểm tra mã làm mới vẫn còn hiệu lực.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Yêu cầu đăng nhập</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Đăng nhập để xem Shorts.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Phân đoạn quảng cáo trên thanh tua</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Hiển thị các khoảng SponsorBlock có màu</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Đăng ký</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>người đăng ký</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>người đăng ký</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>người đăng ký</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} người đăng ký • {1} video</value>
@@ -450,65 +819,71 @@ Phiên bản {0}</value>
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube đã từ chối yêu cầu đăng ký.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube đã từ chối yêu cầu đăng ký. Kiểm tra mã TV hợp lệ và đã tìm thấy ID kênh.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Sớm hơn (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Muộn hơn (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Khôi phục độ lệch thông thường (0,00 giây)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Phụ đề</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Đồng bộ: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Không thể tải bình luận.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Chủ đề</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Không có tiêu đề</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Tối</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Liên kết video đã được sao chép vào bảng tạm.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Sáng</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} video</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Tuần này</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Chất lượng hình thu nhỏ</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Ngôn ngữ</value>
+  <data name="Today" xml:space="preserve">
+    <value>Hôm nay</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Ngôn ngữ ứng dụng</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Tiểu phẩm hài</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Ngôn ngữ</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Công thức nấu ăn</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Mặc định sử dụng ngôn ngữ Windows.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Hướng dẫn DIY</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Mặc định hệ thống</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Điểm nổi bật trò chơi</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Tiếng Anh</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Đoạn giới thiệu phim</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Tiếng Nga</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Video âm nhạc</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>Video YouTube</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Điểm nổi bật thể thao</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Kênh</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Đánh giá công nghệ</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Không thể đổi mã làm mới TV lấy mã truy cập.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Không xác định</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Không có tiêu đề</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Không thể đổi mã làm mới TV lấy mã truy cập. Hãy đăng nhập lại và kiểm tra mã làm mới vẫn còn hiệu lực.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>Không tìm thấy mã làm mới TV. Hãy đăng nhập lại và thử lại.</value>
@@ -516,194 +891,23 @@ Phiên bản {0}</value>
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>Không tìm thấy mã làm mới TV. Hãy đăng nhập lại để lưu yt_refresh_token rồi thử lại.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>Không thể đổi mã làm mới TV lấy mã truy cập.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Không thể đổi mã làm mới lấy mã truy cập.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Phát thất bại</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Không thể phát Short này</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Tải video đã hết thời gian chờ. Kiểm tra kết nối Internet.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Không thể tải video. Vui lòng thử lại.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Không thể phát video. Trình phát chưa được khởi tạo.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Không thể tải video. Liên kết có thể đã hết hạn hoặc định dạng không được hỗ trợ.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Lỗi mạng. Kiểm tra kết nối Internet.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Lỗi phát video. Hãy thử chọn chất lượng thấp hơn.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Không thể phát video.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Video âm nhạc</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Điểm nổi bật trò chơi</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Công thức nấu ăn</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Đánh giá công nghệ</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Đoạn giới thiệu phim</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Điểm nổi bật thể thao</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Tiểu phẩm hài</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>Hướng dẫn DIY</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Video đề xuất</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Bạn có chắc muốn đăng xuất không?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Xác nhận đăng xuất</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Có</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Không</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>Đăng nhập để xem thông báo YouTube của bạn.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Không thể tải thông báo</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Hãy mở lại trang này sau.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>ID danh sách phát đang trống</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} video</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Không xác định</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Đăng nhập để xem Shorts.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Không tìm thấy Shorts.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Không thể tải bình luận.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Không thể tải Shorts.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Không thể phát Short này</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Không thể phát Short này.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Chất lượng</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Không xác định</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Tốc độ phát</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Bản âm thanh</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Phụ đề</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Không thể phát video: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Mã lỗi: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Hôm nay</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} ngày trước</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} tuần trước</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} tháng trước</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} năm trước</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Quay lại</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>Video YouTube</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>người đăng ký</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>người đăng ký</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>người đăng ký</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Đăng ký</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Thích</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Bình luận</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Các nội dung cập nhật mới từ kênh đăng ký của bạn sẽ xuất hiện ở đây.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube đã từ chối yêu cầu đăng ký. Kiểm tra mã TV hợp lệ và đã tìm thấy ID kênh.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube đã từ chối yêu cầu đánh giá. Kiểm tra mã TV hợp lệ và có quyền đánh giá YouTube.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>Không thể đổi mã làm mới TV lấy mã truy cập. Hãy đăng nhập lại và kiểm tra mã làm mới vẫn còn hiệu lực.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Hôm qua</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Tuần này</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Không có tiêu đề</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Đã tải video lên</value>
@@ -711,146 +915,73 @@ Phiên bản {0}</value>
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>Đã tải video “{0}” lên</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Từ kênh đăng ký</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Đã thêm video vào “{0}”</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Tất cả</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Phim &amp; Hoạt hình</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Liên kết video đã được sao chép vào bảng tạm.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Ô tô &amp; Xe cộ</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Không thể tải video. Liên kết có thể đã hết hạn hoặc định dạng không được hỗ trợ.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Âm nhạc</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Tải video đã hết thời gian chờ. Kiểm tra kết nối Internet.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Thú cưng &amp; Động vật</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Thể thao</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Phim ngắn</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Lỗi phát video. Hãy thử chọn chất lượng thấp hơn.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Du lịch &amp; Sự kiện</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Đã xóa video khỏi “{0}”</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Trò chơi</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} video</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Video blog</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} video</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Con người &amp; Blog</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} tuần trước</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Hài</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} năm trước</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Giải trí</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Có</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Tin tức &amp; Chính trị</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Hôm qua</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Hướng dẫn &amp; Phong cách</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Giáo dục</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>Video YouTube</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Khoa học &amp; Công nghệ</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>Video YouTube</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Phi lợi nhuận &amp; Hoạt động xã hội</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Xóa video đã tải xuống</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Phim</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Xóa tất cả video đã tải xuống và hình thu nhỏ đã lưu vào bộ nhớ đệm</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Anime/Hoạt hình</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Tất cả video đã tải xuống và hình thu nhỏ sẽ bị xóa vĩnh viễn.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Hành động/Phiêu lưu</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Xóa</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Kinh điển</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Phim tài liệu</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Chính kịch</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Gia đình</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Nước ngoài</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Kinh dị</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Khoa học viễn tưởng/Giả tưởng</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Ly kỳ</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Chương trình</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Đoạn giới thiệu</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Trực tiếp</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Học tập</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Trò chơi điện tử</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Tin tức</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Podcast</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Giao diện</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Chủ đề</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Sáng</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Tối</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Ô động</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Hiển thị đề xuất trên màn hình Bắt đầu</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Chất lượng hình thu nhỏ</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Biểu tượng kênh</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Hiển thị biểu tượng kênh trên thẻ video</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Hủy</value>
   </data>
 </root>

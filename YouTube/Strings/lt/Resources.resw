@@ -1,28 +1,987 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
           </xsd:element>
-          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
-          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /><xsd:element name="comment" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
-          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
         </xsd:choice>
       </xsd:complexType>
     </xsd:element>
   </xsd:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutText" xml:space="preserve">
+    <value>Sukūrė „LegacyProjects“ komanda.
+Palaiko „YouTube API Legacy“.
+
+Versija {0}</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Paskyros</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Išvaizda</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Garso takelis</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Automatiškai</value>
+  </data>
+  <data name="AutoTranslate" xml:space="preserve">
+    <value>Automatinis vertimas &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Atgal</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Veiksmas/Nuotykiai</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Visi</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Animacija</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Automobiliai ir transporto priemonės</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Klasika</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Komedija</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Dokumentika</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Drama</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Švietimas</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Pramogos</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Šeima</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Filmai ir animacija</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Užsienio</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Žaidimai</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Siaubas</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Patarimai ir stilius</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Mokymasis</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Tiesiogiai</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Filmai</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Muzika</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Naujienos</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Naujienos ir politika</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Ne pelno organizacijos ir aktyvizmas</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Žmonės ir tinklaraščiai</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Naminiai gyvūnai ir gyvūnai</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Tinklalaidės</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Mokslas ir technologijos</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Mokslinė fantastika/Fantazija</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Trumpi filmai</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Laidos</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Sportas</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Trileris</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Anonsai</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Kelionės ir renginiai</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Vaizdo tinklaraščiai</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Vaizdo žaidimai</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Kanalas</value>
+  </data>
   <data name="ChannelIcons" xml:space="preserve">
     <value>Kanalų piktogramos</value>
   </data>
   <data name="ChannelIconsDescription" xml:space="preserve">
     <value>Rodyti kanalų piktogramas vaizdo įrašų kortelėse</value>
+  </data>
+  <data name="ChannelLoadingError" xml:space="preserve">
+    <value>Kanalo įkėlimo klaida</value>
+  </data>
+  <data name="ChannelWasNotProvided" xml:space="preserve">
+    <value>Kanalas nenurodytas</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Komentarai</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Ar tikrai norite atsijungti?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Patvirtinti atsijungimą</value>
+  </data>
+  <data name="CouldNotLoadChannel" xml:space="preserve">
+    <value>Nepavyko įkelti kanalo</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Nepavyko įkelti pranešimų</value>
+  </data>
+  <data name="CouldNotLoadPlaylist" xml:space="preserve">
+    <value>Nepavyko įkelti grojaraščio</value>
+  </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Nepavyko įkelti vaizdo įrašo. Bandykite dar kartą.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Nepavyko paleisti vaizdo įrašo.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>prieš {0} dienų</value>
+  </data>
+  <data name="DescriptionNotAvailable" xml:space="preserve">
+    <value>Aprašas nepasiekiamas</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Atsisiųsti</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Atsisiųsta</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Jūsų atsisiuntimai</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Atsisiuntimų aplankas</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Pasirinkite, kur išsaugoti atsisiųstus vaizdo įrašus</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Atsisiuntimo kokybė</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Atsisiuntimai</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Atsisiųsti vaizdo įrašai bus rodomi čia.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Jūsų atsisiuntimai</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Atsisiuntimai</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Šio vaizdo įrašo atsisiųsti negalima</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Klaidos kodas: {0}</value>
+  </data>
+  <data name="ErrorFormat" xml:space="preserve">
+    <value>Klaida: {0}</value>
+  </data>
+  <data name="Every15Min" xml:space="preserve">
+    <value>Kas 15 min</value>
+  </data>
+  <data name="Every2Hours" xml:space="preserve">
+    <value>Kas 2 valandas</value>
+  </data>
+  <data name="Every30Min" xml:space="preserve">
+    <value>Kas 30 min</value>
+  </data>
+  <data name="Every6Hours" xml:space="preserve">
+    <value>Kas 6 valandas</value>
+  </data>
+  <data name="EveryHour" xml:space="preserve">
+    <value>Kas valandą</value>
+  </data>
+  <data name="EveryHours" xml:space="preserve">
+    <value>Kas {0} valandų</value>
+  </data>
+  <data name="EveryMinutes" xml:space="preserve">
+    <value>Kas {0} min</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Nepavyko paleisti vaizdo įrašo: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Iš prenumeratų</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Stiklo efektas</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Sulieti naršymo juostas</value>
+  </data>
+  <data name="HistoryLoadFailed" xml:space="preserve">
+    <value>Nepavyko įkelti istorijos</value>
+  </data>
+  <data name="HistorySignIn" xml:space="preserve">
+    <value>Prisijunkite, kad matytumėte žiūrėjimo istoriją</value>
+  </data>
+  <data name="HomeAll" xml:space="preserve">
+    <value>Visi</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Programos kalba</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>Anglų</value>
+  </data>
+  <data name="LanguageRestartHint" xml:space="preserve">
+    <value>Sąsaja bus atnaujinta iškart.</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Rusų</value>
+  </data>
+  <data name="LanguageSection" xml:space="preserve">
+    <value>Kalba</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>Sistemos numatytoji</value>
+  </data>
+  <data name="Like" xml:space="preserve">
+    <value>Patinka</value>
+  </data>
+  <data name="LinkCopied" xml:space="preserve">
+    <value>Nuoroda nukopijuota</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Aktyvioji plytelė</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Rodyti rekomendacijas pradžios ekrane</value>
+  </data>
+  <data name="LoadingDescription" xml:space="preserve">
+    <value>Įkeliamas aprašas...</value>
+  </data>
+  <data name="LoadingFailed" xml:space="preserve">
+    <value>Įkelti nepavyko</value>
+  </data>
+  <data name="Loc_0Subscribers0Videos_Text.Text" xml:space="preserve">
+    <value>0 prenumeratorių • 0 vaizdo įrašų</value>
+  </data>
+  <data name="Loc_About_Text.Text" xml:space="preserve">
+    <value>Apie</value>
+  </data>
+  <data name="Loc_Account_Text.Text" xml:space="preserve">
+    <value>Paskyra</value>
+  </data>
+  <data name="Loc_All_Text.Text" xml:space="preserve">
+    <value>Visi</value>
+  </data>
+  <data name="Loc_AudioTrack_Text.Text" xml:space="preserve">
+    <value>Garso takelis</value>
+  </data>
+  <data name="Loc_Auto_Text.Text" xml:space="preserve">
+    <value>Automatiškai</value>
+  </data>
+  <data name="Loc_AutoFullscreenInLandscape_Text.Text" xml:space="preserve">
+    <value>Automatinis visas ekranas gulsčiai</value>
+  </data>
+  <data name="Loc_BackgroundToastsFromYouTubeNotifications_Text.Text" xml:space="preserve">
+    <value>„YouTube“ pranešimai fone</value>
+  </data>
+  <data name="Loc_Channel_Text.Text" xml:space="preserve">
+    <value>Kanalas</value>
+  </data>
+  <data name="Loc_Channels_Text.Text" xml:space="preserve">
+    <value>Kanalai</value>
+  </data>
+  <data name="Loc_CheckYourConnectionAndTryAgain_Text.Text" xml:space="preserve">
+    <value>Patikrinkite ryšį ir bandykite dar kartą</value>
+  </data>
+  <data name="Loc_Close_Content.Content" xml:space="preserve">
+    <value>Uždaryti</value>
+  </data>
+  <data name="Loc_Comments_Text.Text" xml:space="preserve">
+    <value>Komentarai</value>
+  </data>
+  <data name="Loc_CopyLink_Text.Text" xml:space="preserve">
+    <value>Kopijuoti nuorodą</value>
+  </data>
+  <data name="Loc_CouldNotLoadChannel_Text.Text" xml:space="preserve">
+    <value>Nepavyko įkelti kanalo</value>
+  </data>
+  <data name="Loc_CouldNotLoadPlaylist_Text.Text" xml:space="preserve">
+    <value>Nepavyko įkelti grojaraščio</value>
+  </data>
+  <data name="Loc_Description_Text.Text" xml:space="preserve">
+    <value>Aprašas</value>
+  </data>
+  <data name="Loc_EveryHour_Text.Text" xml:space="preserve">
+    <value>Kas valandą</value>
+  </data>
+  <data name="Loc_ExpandTheVideoWhenThePhoneRotates_Text.Text" xml:space="preserve">
+    <value>Išplėsti vaizdo įrašą pasukus telefoną</value>
+  </data>
+  <data name="Loc_Frequency_Text.Text" xml:space="preserve">
+    <value>Dažnis</value>
+  </data>
+  <data name="Loc_History_Text.Text" xml:space="preserve">
+    <value>Istorija</value>
+  </data>
+  <data name="Loc_Home_Text.Text" xml:space="preserve">
+    <value>Pagrindinis</value>
+  </data>
+  <data name="Loc_Information_Text.Text" xml:space="preserve">
+    <value>Informacija</value>
+  </data>
+  <data name="Loc_Like_Text.Text" xml:space="preserve">
+    <value>Patinka</value>
+  </data>
+  <data name="Loc_Likes_Text.Text" xml:space="preserve">
+    <value>Patiktukai</value>
+  </data>
+  <data name="Loc_LinkCopied_Text.Text" xml:space="preserve">
+    <value>Nuoroda nukopijuota</value>
+  </data>
+  <data name="Loc_Loading_Text.Text" xml:space="preserve">
+    <value>Įkeliama...</value>
+  </data>
+  <data name="Loc_LoadingChannel_Text.Text" xml:space="preserve">
+    <value>Įkeliamas kanalas...</value>
+  </data>
+  <data name="Loc_LoadingComments_Text.Text" xml:space="preserve">
+    <value>Įkeliami komentarai...</value>
+  </data>
+  <data name="Loc_LoadingMore_Text.Text" xml:space="preserve">
+    <value>Įkeliama daugiau...</value>
+  </data>
+  <data name="Loc_LoadingMoreHistory_Text.Text" xml:space="preserve">
+    <value>Įkeliama daugiau istorijos...</value>
+  </data>
+  <data name="Loc_LoadingMoreResults_Text.Text" xml:space="preserve">
+    <value>Įkeliama daugiau rezultatų...</value>
+  </data>
+  <data name="Loc_LoadingMoreVideos_Text.Text" xml:space="preserve">
+    <value>Įkeliama daugiau vaizdo įrašų...</value>
+  </data>
+  <data name="Loc_LoadingPlaylist_Text.Text" xml:space="preserve">
+    <value>Įkeliamas grojaraštis...</value>
+  </data>
+  <data name="Loc_LogOut_Text.Text" xml:space="preserve">
+    <value>Atsijungti</value>
+  </data>
+  <data name="Loc_LooksLikeWeCanTLoadVideosForYou_Text.Text" xml:space="preserve">
+    <value>Atrodo, kad negalime jums įkelti vaizdo įrašų.</value>
+  </data>
+  <data name="Loc_More_Text.Text" xml:space="preserve">
+    <value>...daugiau</value>
+  </data>
+  <data name="Loc_NewUpdatesFromYourSubscriptionsWillAppearHere_Text.Text" xml:space="preserve">
+    <value>Nauji jūsų prenumeratų naujiniai bus rodomi čia.</value>
+  </data>
+  <data name="Loc_NoCommentsFound_Text.Text" xml:space="preserve">
+    <value>Komentarų nerasta.</value>
+  </data>
+  <data name="Loc_NoConnectionToTheInternet_Text.Text" xml:space="preserve">
+    <value>Nėra interneto ryšio</value>
+  </data>
+  <data name="Loc_NoData_Text.Text" xml:space="preserve">
+    <value>Nėra duomenų</value>
+  </data>
+  <data name="Loc_NoHistoryYet_Text.Text" xml:space="preserve">
+    <value>Istorijos dar nėra</value>
+  </data>
+  <data name="Loc_None_Text.Text" xml:space="preserve">
+    <value>Nėra</value>
+  </data>
+  <data name="Loc_NoNotifications_Text.Text" xml:space="preserve">
+    <value>Nėra pranešimų</value>
+  </data>
+  <data name="Loc_Notifications_Text.Text" xml:space="preserve">
+    <value>Pranešimai</value>
+  </data>
+  <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
+    <value>Šiame grojaraštyje nėra vaizdo įrašų</value>
+  </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>Gerai</value>
+  </data>
+  <data name="Loc_Personalized_Text.Text" xml:space="preserve">
+    <value>Suasmeninti</value>
+  </data>
+  <data name="Loc_PlaybackSpeed_Text.Text" xml:space="preserve">
+    <value>Atkūrimo greitis</value>
+  </data>
+  <data name="Loc_Playlist_Text.Text" xml:space="preserve">
+    <value>Grojaraštis</value>
+  </data>
+  <data name="Loc_Playlists_Text.Text" xml:space="preserve">
+    <value>Grojaraščiai</value>
+  </data>
+  <data name="Loc_Posts_Text.Text" xml:space="preserve">
+    <value>Įrašai</value>
+  </data>
+  <data name="Loc_PreferredShortsQuality_Text.Text" xml:space="preserve">
+    <value>Pageidaujama „Shorts“ kokybė</value>
+  </data>
+  <data name="Loc_PreferredVideoQuality_Text.Text" xml:space="preserve">
+    <value>Pageidaujama vaizdo kokybė</value>
+  </data>
+  <data name="Loc_Published_Text.Text" xml:space="preserve">
+    <value>Paskelbta</value>
+  </data>
+  <data name="Loc_QRCode_Text.Text" xml:space="preserve">
+    <value>QR kodas</value>
+  </data>
+  <data name="Loc_Quality_Text.Text" xml:space="preserve">
+    <value>Kokybė</value>
+  </data>
+  <data name="Loc_RefreshQRCode_Content.Content" xml:space="preserve">
+    <value>Atnaujinti QR kodą</value>
+  </data>
+  <data name="Loc_ReloadVideo_Text.Text" xml:space="preserve">
+    <value>Iš naujo įkelti vaizdo įrašą</value>
+  </data>
+  <data name="Loc_Retry_Content.Content" xml:space="preserve">
+    <value>Bandyti dar kartą</value>
+  </data>
+  <data name="Loc_ScanTheQRCodeToSignIn_Text.Text" xml:space="preserve">
+    <value>Nuskaitykite QR kodą, kad prisijungtumėte</value>
+  </data>
+  <data name="Loc_Search_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>Ieškoti</value>
+  </data>
+  <data name="Loc_Searching_Text.Text" xml:space="preserve">
+    <value>Ieškoma...</value>
+  </data>
+  <data name="Loc_SearchYouTube_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>Ieškoti „YouTube“</value>
+  </data>
+  <data name="Loc_SearchYouTube_Text.Text" xml:space="preserve">
+    <value>Ieškoti „YouTube“</value>
+  </data>
+  <data name="Loc_SeekPreview_Text.Text" xml:space="preserve">
+    <value>Paieškos peržiūra</value>
+  </data>
+  <data name="Loc_SendNotifications_Text.Text" xml:space="preserve">
+    <value>Siųsti pranešimus</value>
+  </data>
+  <data name="Loc_Settings_Text.Text" xml:space="preserve">
+    <value>Nustatymai</value>
+  </data>
+  <data name="Loc_Share_Text.Text" xml:space="preserve">
+    <value>Bendrinti</value>
+  </data>
+  <data name="Loc_ShareVia_Text.Text" xml:space="preserve">
+    <value>Bendrinti per...</value>
+  </data>
+  <data name="Loc_Shorts_Text.Text" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="Loc_ShortsLinkHasBeenCopiedToClipboard_Text.Text" xml:space="preserve">
+    <value>„Short“ nuoroda nukopijuota į iškarpinę</value>
+  </data>
+  <data name="Loc_ShowQRCode_Text.Text" xml:space="preserve">
+    <value>Rodyti QR kodą</value>
+  </data>
+  <data name="Loc_ShowVideoThumbnailWhileSeeking_Text.Text" xml:space="preserve">
+    <value>Rodyti vaizdo miniatiūrą ieškant</value>
+  </data>
+  <data name="Loc_Subscribe_Text.Text" xml:space="preserve">
+    <value>Prenumeruoti</value>
+  </data>
+  <data name="Loc_Subscriptions_Text.Text" xml:space="preserve">
+    <value>Prenumeratos</value>
+  </data>
+  <data name="Loc_Subtitles_Text.Text" xml:space="preserve">
+    <value>Subtitrai</value>
+  </data>
+  <data name="Loc_TrendingSearches_Text.Text" xml:space="preserve">
+    <value>Populiarios paieškos</value>
+  </data>
+  <data name="Loc_TryAgain_Content.Content" xml:space="preserve">
+    <value>Bandyti dar kartą</value>
+  </data>
+  <data name="Loc_Type_Text.Text" xml:space="preserve">
+    <value>Tipas</value>
+  </data>
+  <data name="Loc_Unsubscribe_Text.Text" xml:space="preserve">
+    <value>Atsisakyti prenumeratos</value>
+  </data>
+  <data name="Loc_VerificationCode_Text.Text" xml:space="preserve">
+    <value>Patvirtinimo kodas</value>
+  </data>
+  <data name="Loc_Video_Text.Text" xml:space="preserve">
+    <value>Vaizdo įrašas</value>
+  </data>
+  <data name="Loc_Videos_Text.Text" xml:space="preserve">
+    <value>Vaizdo įrašai</value>
+  </data>
+  <data name="Loc_ViewChannel_Text.Text" xml:space="preserve">
+    <value>Peržiūrėti kanalą</value>
+  </data>
+  <data name="Loc_Views_Text.Text" xml:space="preserve">
+    <value>Peržiūros</value>
+  </data>
+  <data name="Loc_You_Text.Text" xml:space="preserve">
+    <value>Jūs</value>
+  </data>
+  <data name="LoginLoadingQr" xml:space="preserve">
+    <value>Įkeliamas QR kodas...</value>
+  </data>
+  <data name="LoginQrFailed" xml:space="preserve">
+    <value>Nepavyko įkelti QR kodo.</value>
+  </data>
+  <data name="LoginScanQr" xml:space="preserve">
+    <value>Atidarykite telefono kamerą ir nuskaitykite QR kodą.</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>Prisijungta sėkmingai! Nukreipiama...</value>
+  </data>
+  <data name="MeSignIn" xml:space="preserve">
+    <value>Prisijunkite, kad matytumėte istoriją ir grojaraščius</value>
+  </data>
+  <data name="Mix" xml:space="preserve">
+    <value>Mix</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>prieš {0} mėnesių</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Tinklo klaida. Patikrinkite interneto ryšį.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ne</value>
+  </data>
+  <data name="NoCommentsFound" xml:space="preserve">
+    <value>Komentarų nerasta.</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>Nėra duomenų</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>Aprašo nėra.</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>Aprašas nepasiekiamas.</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>Nėra pavadinimo</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>Nėra pranešimų</value>
+  </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>„Shorts“ nerasta.</value>
+  </data>
+  <data name="NotificationPreferenceFailed" xml:space="preserve">
+    <value>Nepavyko atnaujinti pranešimų nuostatos.</value>
+  </data>
+  <data name="NotificationsFailed" xml:space="preserve">
+    <value>Pranešimai nepavyko</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Nauji jūsų prenumeratų naujiniai bus rodomi čia.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Prisijunkite, kad matytumėte „YouTube“ pranešimus.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Vėliau vėl atidarykite šį puslapį.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Be pavadinimo</value>
+  </data>
+  <data name="NotSignedIn" xml:space="preserve">
+    <value>Neprisijungta</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Išjungta</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Gerai</value>
+  </data>
+  <data name="Older" xml:space="preserve">
+    <value>Senesni</value>
+  </data>
+  <data name="PlaybackError" xml:space="preserve">
+    <value>Atkūrimo klaida</value>
+  </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Atkūrimas nepavyko</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Atkūrimo greitis</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Nepavyko paleisti vaizdo įrašo. Leistuvas neinicijuotas.</value>
+  </data>
+  <data name="Playlist" xml:space="preserve">
+    <value>Grojaraštis</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Grojaraščio ID tuščias</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Nepavyko atnaujinti grojaraščio</value>
+  </data>
+  <data name="QrCode" xml:space="preserve">
+    <value>QR kodas</value>
+  </data>
+  <data name="QrDisplayErrorFormat" xml:space="preserve">
+    <value>QR rodymo klaida: {0}</value>
+  </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Kokybė</value>
+  </data>
+  <data name="RatingFailed" xml:space="preserve">
+    <value>Vertinimas nepavyko</value>
+  </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>„YouTube“ atmetė vertinimo užklausą. Patikrinkite, ar TV prieigos raktas galioja ir turi „YouTube“ vertinimo teisę.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Rekomenduojamas vaizdo įrašas</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Nepavyko pakeisti atnaujinimo prieigos rakto į prieigos raktą.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>atsakymai</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} atsakymai</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Išsaugoti</value>
+  </data>
+  <data name="SearchErrorFormat" xml:space="preserve">
+    <value>Paieškos klaida: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Nežinoma</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Pasirinkite paskyrą</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Pasirinkite grojaraštį</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Anglų</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Pagal numatytuosius nustatymus naudoja „Windows“ kalbą.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Programos kalba</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Rusų</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Kalba</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Kalba</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Sistemos numatytoji</value>
+  </data>
+  <data name="ShareShortDescription" xml:space="preserve">
+    <value>Bendrinti šį „YouTube Short“</value>
+  </data>
+  <data name="ShareVideoDescription" xml:space="preserve">
+    <value>Bendrinti šį „YouTube“ vaizdo įrašą</value>
+  </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Rodyti Shorts programoje</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Rodyti mažiau</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Daugiau</value>
+  </data>
+  <data name="SignInAgain" xml:space="preserve">
+    <value>Nepavyko pakeisti TV atnaujinimo prieigos rakto į prieigos raktą. Prisijunkite dar kartą ir patikrinkite, ar atnaujinimo prieigos raktas vis dar galioja.</value>
+  </data>
+  <data name="SignInRequired" xml:space="preserve">
+    <value>Reikia prisijungti</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Prisijunkite, kad žiūrėtumėte „Shorts“.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Reklamos segmentai paieškos juostoje</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Rodyti spalvotus SponsorBlock intervalus</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Prenumeruoti</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>prenumeratoriai</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>prenumeratoriai</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>prenumeratorius</value>
+  </data>
+  <data name="SubscribersVideosFormat" xml:space="preserve">
+    <value>{0} prenumeratorių • {1} vaizdo įrašų</value>
+  </data>
+  <data name="SubscriptionFailed" xml:space="preserve">
+    <value>Prenumerata nepavyko</value>
+  </data>
+  <data name="SubscriptionRejected" xml:space="preserve">
+    <value>„YouTube“ atmetė prenumeratos užklausą.</value>
+  </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>„YouTube“ atmetė prenumeratos užklausą. Patikrinkite, ar TV prieigos raktas galioja ir ar rastas kanalo ID.</value>
+  </data>
+  <data name="SubtitleEarlier" xml:space="preserve">
+    <value>   Anksčiau (+0.25s)</value>
+  </data>
+  <data name="SubtitleLater" xml:space="preserve">
+    <value>   Vėliau (-0.25s)</value>
+  </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Atkurti įprastą poslinkį (0,00 s)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Subtitrai</value>
+  </data>
+  <data name="SyncFormat" xml:space="preserve">
+    <value>Sinchronizavimas: {0}</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Tema</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Tamsi</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Šviesi</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Šią savaitę</value>
+  </data>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Miniatiūros kokybė</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Šiandien</value>
+  </data>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Komedijų eskizai</value>
+  </data>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Maisto gaminimo receptai</value>
+  </data>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>„Pasidaryk pats“ pamokos</value>
+  </data>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Žaidimų akimirkos</value>
+  </data>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Filmų anonsai</value>
+  </data>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Muzikiniai vaizdo įrašai</value>
+  </data>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Sporto akimirkos</value>
+  </data>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Technologijų apžvalgos</value>
+  </data>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Nepavyko pakeisti TV atnaujinimo prieigos rakto į prieigos raktą.</value>
+  </data>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Nepavyko pakeisti TV atnaujinimo prieigos rakto į prieigos raktą. Prisijunkite dar kartą ir patikrinkite, ar atnaujinimo prieigos raktas vis dar galioja.</value>
+  </data>
+  <data name="TvTokenMissing" xml:space="preserve">
+    <value>TV atnaujinimo prieigos raktas nerastas. Prisijunkite dar kartą ir bandykite iš naujo.</value>
+  </data>
+  <data name="TvTokenMissingDetailed" xml:space="preserve">
+    <value>TV atnaujinimo prieigos raktas nerastas. Prisijunkite dar kartą, kad būtų išsaugotas yt_refresh_token, tada bandykite iš naujo.</value>
+  </data>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Nepavyko įkelti komentarų.</value>
+  </data>
+  <data name="UnableLoadShorts" xml:space="preserve">
+    <value>Nepavyko įkelti „Shorts“.</value>
+  </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Nepavyko paleisti šio „Short“</value>
+  </data>
+  <data name="UnablePlayShortPeriod" xml:space="preserve">
+    <value>Nepavyko paleisti šio „Short“.</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Nežinoma</value>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>Be pavadinimo</value>
+  </data>
+  <data name="UploadedVideo" xml:space="preserve">
+    <value>Įkėlė vaizdo įrašą</value>
+  </data>
+  <data name="UploadedVideoTitleFormat" xml:space="preserve">
+    <value>Įkėlė vaizdo įrašą „{0}“</value>
+  </data>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Vaizdo įrašas pridėtas prie „{0}“</value>
+  </data>
+  <data name="VideoFew" xml:space="preserve">
+    <value>vaizdo įrašai</value>
+  </data>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Vaizdo įrašo nuoroda nukopijuota į iškarpinę.</value>
+  </data>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Nepavyko įkelti vaizdo įrašo. Nuorodos galiojimas galėjo baigtis arba formatas nepalaikomas.</value>
+  </data>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Baigėsi vaizdo įrašo įkėlimo laikas. Patikrinkite interneto ryšį.</value>
+  </data>
+  <data name="VideoMany" xml:space="preserve">
+    <value>vaizdo įrašai</value>
+  </data>
+  <data name="VideoOne" xml:space="preserve">
+    <value>vaizdo įrašas</value>
+  </data>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Vaizdo atkūrimo klaida. Pabandykite pasirinkti žemesnę kokybę.</value>
+  </data>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Vaizdo įrašas pašalintas iš „{0}“</value>
+  </data>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} vaizdo įrašų</value>
+  </data>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} vaizdo įrašų</value>
+  </data>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>prieš {0} savaičių</value>
+  </data>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>prieš {0} metų</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Taip</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Vakar</value>
+  </data>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
+  </data>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>„YouTube“ vaizdo įrašas</value>
+  </data>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>„YouTube“ vaizdo įrašas</value>
+  </data>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Išvalyti atsisiųstus vaizdo įrašus</value>
+  </data>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Ištrinti visus atsisiųstus vaizdo įrašus ir talpykloje esančias miniatiūras</value>
+  </data>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Visi atsisiųsti vaizdo įrašai ir jų miniatiūros bus visam laikui ištrinti.</value>
+  </data>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Išvalyti</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Atšaukti</value>
   </data>
 </root>

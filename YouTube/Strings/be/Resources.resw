@@ -1,28 +1,987 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
           </xsd:element>
-          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
-          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /><xsd:element name="comment" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
-          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
         </xsd:choice>
       </xsd:complexType>
     </xsd:element>
   </xsd:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutText" xml:space="preserve">
+    <value>Распрацавана камандай LegacyProjects.
+Падтрымліваецца YouTube API Legacy.
+
+Версія {0}</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Уліковыя запісы</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Знешні выгляд</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Аўдыядарожка</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Аўта</value>
+  </data>
+  <data name="AutoTranslate" xml:space="preserve">
+    <value>Аўтапераклад &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Назад</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Баявік/Прыгоды</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Усе</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Анімэ/Анімацыя</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Аўто і транспарт</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Класіка</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Камедыя</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Дакументальныя</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Драма</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Адукацыя</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Забавы</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Сямейныя</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Фільмы і анімацыя</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Замежныя</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Гульні</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Жахі</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Інструкцыі і стыль</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Навучанне</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>У жывым эфіры</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Фільмы</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Музыка</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Навіны</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Навіны і палітыка</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Некамерцыйныя арганізацыі і актывізм</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Людзі і блогі</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Хатнія жывёлы і жывёлы</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Падкасты</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Навука і тэхналогіі</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Навуковая фантастыка/Фэнтэзі</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Кароткаметражныя фільмы</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Шоу</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Спорт</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Трылер</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Трэйлеры</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Падарожжы і падзеі</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Відэаблогі</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Відэагульні</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Канал</value>
+  </data>
   <data name="ChannelIcons" xml:space="preserve">
     <value>Значкі каналаў</value>
   </data>
   <data name="ChannelIconsDescription" xml:space="preserve">
     <value>Паказваць значкі каналаў у картках відэа</value>
+  </data>
+  <data name="ChannelLoadingError" xml:space="preserve">
+    <value>Памылка загрузкі канала</value>
+  </data>
+  <data name="ChannelWasNotProvided" xml:space="preserve">
+    <value>Канал не быў указаны</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Каментарыі</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Вы ўпэўнены, што хочаце выйсці?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Пацвердзіць выхад</value>
+  </data>
+  <data name="CouldNotLoadChannel" xml:space="preserve">
+    <value>Не ўдалося загрузіць канал</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Не ўдалося загрузіць апавяшчэнні</value>
+  </data>
+  <data name="CouldNotLoadPlaylist" xml:space="preserve">
+    <value>Не ўдалося загрузіць плэйліст</value>
+  </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Не ўдалося загрузіць відэа. Паспрабуйце яшчэ раз.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Не ўдалося прайграць відэа.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} дзён таму</value>
+  </data>
+  <data name="DescriptionNotAvailable" xml:space="preserve">
+    <value>Апісанне недаступнае</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Спампаваць</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Спампавана</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Спампаваныя відэа</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Папка спамповак</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Выберыце, дзе захоўваць спампаваныя відэа</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Якасць спампоўкі</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Спампоўкі</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Спампаваныя відэа з'явяцца тут.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Вашы спампоўкі</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Спампоўкі</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Гэта відэа немагчыма спампаваць</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Код памылкі: {0}</value>
+  </data>
+  <data name="ErrorFormat" xml:space="preserve">
+    <value>Памылка: {0}</value>
+  </data>
+  <data name="Every15Min" xml:space="preserve">
+    <value>Кожныя 15 хв</value>
+  </data>
+  <data name="Every2Hours" xml:space="preserve">
+    <value>Кожныя 2 гадзіны</value>
+  </data>
+  <data name="Every30Min" xml:space="preserve">
+    <value>Кожныя 30 хв</value>
+  </data>
+  <data name="Every6Hours" xml:space="preserve">
+    <value>Кожныя 6 гадзін</value>
+  </data>
+  <data name="EveryHour" xml:space="preserve">
+    <value>Кожную гадзіну</value>
+  </data>
+  <data name="EveryHours" xml:space="preserve">
+    <value>Кожныя {0} гадзін</value>
+  </data>
+  <data name="EveryMinutes" xml:space="preserve">
+    <value>Кожныя {0} хв</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Не ўдалося прайграць відэа: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>З падпісак</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Эфект шкла</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Размываць панэлі навігацыі</value>
+  </data>
+  <data name="HistoryLoadFailed" xml:space="preserve">
+    <value>Не ўдалося загрузіць гісторыю</value>
+  </data>
+  <data name="HistorySignIn" xml:space="preserve">
+    <value>Увайдзіце, каб убачыць гісторыю праглядаў</value>
+  </data>
+  <data name="HomeAll" xml:space="preserve">
+    <value>Усе</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Мова праграмы</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>Англійская</value>
+  </data>
+  <data name="LanguageRestartHint" xml:space="preserve">
+    <value>Інтэрфейс абновіцца адразу.</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Руская</value>
+  </data>
+  <data name="LanguageSection" xml:space="preserve">
+    <value>Мова</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>Сістэмная па змаўчанні</value>
+  </data>
+  <data name="Like" xml:space="preserve">
+    <value>Падабаецца</value>
+  </data>
+  <data name="LinkCopied" xml:space="preserve">
+    <value>Спасылка скапіравана</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Жывая плітка</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Паказваць рэкамендацыі на пачатковым экране</value>
+  </data>
+  <data name="LoadingDescription" xml:space="preserve">
+    <value>Загрузка апісання...</value>
+  </data>
+  <data name="LoadingFailed" xml:space="preserve">
+    <value>Загрузка не ўдалася</value>
+  </data>
+  <data name="Loc_0Subscribers0Videos_Text.Text" xml:space="preserve">
+    <value>0 падпісчыкаў • 0 відэа</value>
+  </data>
+  <data name="Loc_About_Text.Text" xml:space="preserve">
+    <value>Аб праграме</value>
+  </data>
+  <data name="Loc_Account_Text.Text" xml:space="preserve">
+    <value>Уліковы запіс</value>
+  </data>
+  <data name="Loc_All_Text.Text" xml:space="preserve">
+    <value>Усе</value>
+  </data>
+  <data name="Loc_AudioTrack_Text.Text" xml:space="preserve">
+    <value>Аўдыядарожка</value>
+  </data>
+  <data name="Loc_Auto_Text.Text" xml:space="preserve">
+    <value>Аўта</value>
+  </data>
+  <data name="Loc_AutoFullscreenInLandscape_Text.Text" xml:space="preserve">
+    <value>Аўтаматычна на ўвесь экран у альбомным рэжыме</value>
+  </data>
+  <data name="Loc_BackgroundToastsFromYouTubeNotifications_Text.Text" xml:space="preserve">
+    <value>Фонавыя апавяшчэнні YouTube</value>
+  </data>
+  <data name="Loc_Channel_Text.Text" xml:space="preserve">
+    <value>Канал</value>
+  </data>
+  <data name="Loc_Channels_Text.Text" xml:space="preserve">
+    <value>Каналы</value>
+  </data>
+  <data name="Loc_CheckYourConnectionAndTryAgain_Text.Text" xml:space="preserve">
+    <value>Праверце злучэнне і паспрабуйце яшчэ раз</value>
+  </data>
+  <data name="Loc_Close_Content.Content" xml:space="preserve">
+    <value>Закрыць</value>
+  </data>
+  <data name="Loc_Comments_Text.Text" xml:space="preserve">
+    <value>Каментарыі</value>
+  </data>
+  <data name="Loc_CopyLink_Text.Text" xml:space="preserve">
+    <value>Скапіраваць спасылку</value>
+  </data>
+  <data name="Loc_CouldNotLoadChannel_Text.Text" xml:space="preserve">
+    <value>Не ўдалося загрузіць канал</value>
+  </data>
+  <data name="Loc_CouldNotLoadPlaylist_Text.Text" xml:space="preserve">
+    <value>Не ўдалося загрузіць плэйліст</value>
+  </data>
+  <data name="Loc_Description_Text.Text" xml:space="preserve">
+    <value>Апісанне</value>
+  </data>
+  <data name="Loc_EveryHour_Text.Text" xml:space="preserve">
+    <value>Кожную гадзіну</value>
+  </data>
+  <data name="Loc_ExpandTheVideoWhenThePhoneRotates_Text.Text" xml:space="preserve">
+    <value>Разгортваць відэа пры павароце тэлефона</value>
+  </data>
+  <data name="Loc_Frequency_Text.Text" xml:space="preserve">
+    <value>Частата</value>
+  </data>
+  <data name="Loc_History_Text.Text" xml:space="preserve">
+    <value>Гісторыя</value>
+  </data>
+  <data name="Loc_Home_Text.Text" xml:space="preserve">
+    <value>Галоўная</value>
+  </data>
+  <data name="Loc_Information_Text.Text" xml:space="preserve">
+    <value>Інфармацыя</value>
+  </data>
+  <data name="Loc_Like_Text.Text" xml:space="preserve">
+    <value>Падабаецца</value>
+  </data>
+  <data name="Loc_Likes_Text.Text" xml:space="preserve">
+    <value>Упадабанні</value>
+  </data>
+  <data name="Loc_LinkCopied_Text.Text" xml:space="preserve">
+    <value>Спасылка скапіравана</value>
+  </data>
+  <data name="Loc_Loading_Text.Text" xml:space="preserve">
+    <value>Загрузка...</value>
+  </data>
+  <data name="Loc_LoadingChannel_Text.Text" xml:space="preserve">
+    <value>Загрузка канала...</value>
+  </data>
+  <data name="Loc_LoadingComments_Text.Text" xml:space="preserve">
+    <value>Загрузка каментарыяў...</value>
+  </data>
+  <data name="Loc_LoadingMore_Text.Text" xml:space="preserve">
+    <value>Загрузка яшчэ...</value>
+  </data>
+  <data name="Loc_LoadingMoreHistory_Text.Text" xml:space="preserve">
+    <value>Загрузка дадатковай гісторыі...</value>
+  </data>
+  <data name="Loc_LoadingMoreResults_Text.Text" xml:space="preserve">
+    <value>Загрузка дадатковых вынікаў...</value>
+  </data>
+  <data name="Loc_LoadingMoreVideos_Text.Text" xml:space="preserve">
+    <value>Загрузка дадатковых відэа...</value>
+  </data>
+  <data name="Loc_LoadingPlaylist_Text.Text" xml:space="preserve">
+    <value>Загрузка плэйліста...</value>
+  </data>
+  <data name="Loc_LogOut_Text.Text" xml:space="preserve">
+    <value>Выйсці</value>
+  </data>
+  <data name="Loc_LooksLikeWeCanTLoadVideosForYou_Text.Text" xml:space="preserve">
+    <value>Падобна, мы не можам загрузіць для вас відэа.</value>
+  </data>
+  <data name="Loc_More_Text.Text" xml:space="preserve">
+    <value>...больш</value>
+  </data>
+  <data name="Loc_NewUpdatesFromYourSubscriptionsWillAppearHere_Text.Text" xml:space="preserve">
+    <value>Новыя абнаўленні з вашых падпісак з'явяцца тут.</value>
+  </data>
+  <data name="Loc_NoCommentsFound_Text.Text" xml:space="preserve">
+    <value>Каментарыі не знойдзены.</value>
+  </data>
+  <data name="Loc_NoConnectionToTheInternet_Text.Text" xml:space="preserve">
+    <value>Няма падключэння да Інтэрнэту</value>
+  </data>
+  <data name="Loc_NoData_Text.Text" xml:space="preserve">
+    <value>Няма даных</value>
+  </data>
+  <data name="Loc_NoHistoryYet_Text.Text" xml:space="preserve">
+    <value>Гісторыі яшчэ няма</value>
+  </data>
+  <data name="Loc_None_Text.Text" xml:space="preserve">
+    <value>Няма</value>
+  </data>
+  <data name="Loc_NoNotifications_Text.Text" xml:space="preserve">
+    <value>Няма апавяшчэнняў</value>
+  </data>
+  <data name="Loc_Notifications_Text.Text" xml:space="preserve">
+    <value>Апавяшчэнні</value>
+  </data>
+  <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
+    <value>У гэтым плэйлісце няма відэа</value>
+  </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>Добра</value>
+  </data>
+  <data name="Loc_Personalized_Text.Text" xml:space="preserve">
+    <value>Персаналізаваныя</value>
+  </data>
+  <data name="Loc_PlaybackSpeed_Text.Text" xml:space="preserve">
+    <value>Хуткасць прайгравання</value>
+  </data>
+  <data name="Loc_Playlist_Text.Text" xml:space="preserve">
+    <value>Плэйліст</value>
+  </data>
+  <data name="Loc_Playlists_Text.Text" xml:space="preserve">
+    <value>Плэйлісты</value>
+  </data>
+  <data name="Loc_Posts_Text.Text" xml:space="preserve">
+    <value>Публікацыі</value>
+  </data>
+  <data name="Loc_PreferredShortsQuality_Text.Text" xml:space="preserve">
+    <value>Пажаданая якасць Shorts</value>
+  </data>
+  <data name="Loc_PreferredVideoQuality_Text.Text" xml:space="preserve">
+    <value>Пажаданая якасць відэа</value>
+  </data>
+  <data name="Loc_Published_Text.Text" xml:space="preserve">
+    <value>Апублікавана</value>
+  </data>
+  <data name="Loc_QRCode_Text.Text" xml:space="preserve">
+    <value>QR-код</value>
+  </data>
+  <data name="Loc_Quality_Text.Text" xml:space="preserve">
+    <value>Якасць</value>
+  </data>
+  <data name="Loc_RefreshQRCode_Content.Content" xml:space="preserve">
+    <value>Абнавіць QR-код</value>
+  </data>
+  <data name="Loc_ReloadVideo_Text.Text" xml:space="preserve">
+    <value>Перазагрузіць відэа</value>
+  </data>
+  <data name="Loc_Retry_Content.Content" xml:space="preserve">
+    <value>Паўтарыць</value>
+  </data>
+  <data name="Loc_ScanTheQRCodeToSignIn_Text.Text" xml:space="preserve">
+    <value>Адскануйце QR-код, каб увайсці</value>
+  </data>
+  <data name="Loc_Search_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>Пошук</value>
+  </data>
+  <data name="Loc_Searching_Text.Text" xml:space="preserve">
+    <value>Пошук...</value>
+  </data>
+  <data name="Loc_SearchYouTube_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>Пошук на YouTube</value>
+  </data>
+  <data name="Loc_SearchYouTube_Text.Text" xml:space="preserve">
+    <value>Пошук на YouTube</value>
+  </data>
+  <data name="Loc_SeekPreview_Text.Text" xml:space="preserve">
+    <value>Папярэдні прагляд пры перамотцы</value>
+  </data>
+  <data name="Loc_SendNotifications_Text.Text" xml:space="preserve">
+    <value>Адпраўляць апавяшчэнні</value>
+  </data>
+  <data name="Loc_Settings_Text.Text" xml:space="preserve">
+    <value>Налады</value>
+  </data>
+  <data name="Loc_Share_Text.Text" xml:space="preserve">
+    <value>Падзяліцца</value>
+  </data>
+  <data name="Loc_ShareVia_Text.Text" xml:space="preserve">
+    <value>Падзяліцца праз...</value>
+  </data>
+  <data name="Loc_Shorts_Text.Text" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="Loc_ShortsLinkHasBeenCopiedToClipboard_Text.Text" xml:space="preserve">
+    <value>Спасылка на Short скапіравана ў буфер абмену</value>
+  </data>
+  <data name="Loc_ShowQRCode_Text.Text" xml:space="preserve">
+    <value>Паказаць QR-код</value>
+  </data>
+  <data name="Loc_ShowVideoThumbnailWhileSeeking_Text.Text" xml:space="preserve">
+    <value>Паказваць мініяцюру відэа пры перамотцы</value>
+  </data>
+  <data name="Loc_Subscribe_Text.Text" xml:space="preserve">
+    <value>Падпісацца</value>
+  </data>
+  <data name="Loc_Subscriptions_Text.Text" xml:space="preserve">
+    <value>Падпіскі</value>
+  </data>
+  <data name="Loc_Subtitles_Text.Text" xml:space="preserve">
+    <value>Субцітры</value>
+  </data>
+  <data name="Loc_TrendingSearches_Text.Text" xml:space="preserve">
+    <value>Папулярныя пошукі</value>
+  </data>
+  <data name="Loc_TryAgain_Content.Content" xml:space="preserve">
+    <value>Паспрабаваць яшчэ раз</value>
+  </data>
+  <data name="Loc_Type_Text.Text" xml:space="preserve">
+    <value>Тып</value>
+  </data>
+  <data name="Loc_Unsubscribe_Text.Text" xml:space="preserve">
+    <value>Адпісацца</value>
+  </data>
+  <data name="Loc_VerificationCode_Text.Text" xml:space="preserve">
+    <value>Код пацвярджэння</value>
+  </data>
+  <data name="Loc_Video_Text.Text" xml:space="preserve">
+    <value>Відэа</value>
+  </data>
+  <data name="Loc_Videos_Text.Text" xml:space="preserve">
+    <value>Відэа</value>
+  </data>
+  <data name="Loc_ViewChannel_Text.Text" xml:space="preserve">
+    <value>Праглядзець канал</value>
+  </data>
+  <data name="Loc_Views_Text.Text" xml:space="preserve">
+    <value>Прагляды</value>
+  </data>
+  <data name="Loc_You_Text.Text" xml:space="preserve">
+    <value>Вы</value>
+  </data>
+  <data name="LoginLoadingQr" xml:space="preserve">
+    <value>Загрузка QR-кода...</value>
+  </data>
+  <data name="LoginQrFailed" xml:space="preserve">
+    <value>Не ўдалося загрузіць QR-код.</value>
+  </data>
+  <data name="LoginScanQr" xml:space="preserve">
+    <value>Адкрыйце камеру тэлефона і адскануйце QR-код.</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>Уваход паспяховы! Перанакіраванне...</value>
+  </data>
+  <data name="MeSignIn" xml:space="preserve">
+    <value>Увайдзіце, каб убачыць гісторыю і плэйлісты</value>
+  </data>
+  <data name="Mix" xml:space="preserve">
+    <value>Mix</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} месяцаў таму</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Памылка сеткі. Праверце падключэнне да Інтэрнэту.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Не</value>
+  </data>
+  <data name="NoCommentsFound" xml:space="preserve">
+    <value>Каментарыі не знойдзены.</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>Няма даных</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>Няма апісання.</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>Апісанне недаступнае.</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>Няма назвы</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>Няма апавяшчэнняў</value>
+  </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts не знойдзены.</value>
+  </data>
+  <data name="NotificationPreferenceFailed" xml:space="preserve">
+    <value>Не ўдалося абнавіць налады апавяшчэнняў.</value>
+  </data>
+  <data name="NotificationsFailed" xml:space="preserve">
+    <value>Памылка апавяшчэнняў</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Новыя абнаўленні з вашых падпісак з'явяцца тут.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Увайдзіце, каб убачыць апавяшчэнні YouTube.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Адкрыйце гэтую старонку пазней.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Без назвы</value>
+  </data>
+  <data name="NotSignedIn" xml:space="preserve">
+    <value>Вы не ўвайшлі</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Выключана</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>Добра</value>
+  </data>
+  <data name="Older" xml:space="preserve">
+    <value>Старэйшыя</value>
+  </data>
+  <data name="PlaybackError" xml:space="preserve">
+    <value>Памылка прайгравання</value>
+  </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Прайграванне не ўдалося</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Хуткасць прайгравання</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Не ўдалося прайграць відэа. Прайгравальнік не ініцыялізаваны.</value>
+  </data>
+  <data name="Playlist" xml:space="preserve">
+    <value>Плэйліст</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>ID плэйліста пусты</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Не ўдалося абнавіць плэйліст</value>
+  </data>
+  <data name="QrCode" xml:space="preserve">
+    <value>QR-код</value>
+  </data>
+  <data name="QrDisplayErrorFormat" xml:space="preserve">
+    <value>Памылка паказу QR: {0}</value>
+  </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Якасць</value>
+  </data>
+  <data name="RatingFailed" xml:space="preserve">
+    <value>Не ўдалося ацаніць</value>
+  </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube адхіліў запыт на ацэнку. Праверце, ці токен TV сапраўдны і мае дазвол на ацэнку YouTube.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Рэкамендаванае відэа</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Не ўдалося абмяняць токен абнаўлення на токен доступу.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>адказаў</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} адказаў</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Захаваць</value>
+  </data>
+  <data name="SearchErrorFormat" xml:space="preserve">
+    <value>Памылка пошуку: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Невядома</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Выберыце ўліковы запіс</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Выберыце плэйліст</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Англійская</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Па змаўчанні выкарыстоўвае мову Windows.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Мова праграмы</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Руская</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Мова</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Мова</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Сістэмная па змаўчанні</value>
+  </data>
+  <data name="ShareShortDescription" xml:space="preserve">
+    <value>Падзяліцца гэтым YouTube Short</value>
+  </data>
+  <data name="ShareVideoDescription" xml:space="preserve">
+    <value>Падзяліцца гэтым відэа YouTube</value>
+  </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Паказваць Shorts у праграме</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Паказаць менш</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Яшчэ</value>
+  </data>
+  <data name="SignInAgain" xml:space="preserve">
+    <value>Не ўдалося абмяняць токен абнаўлення TV на токен доступу. Увайдзіце зноў і праверце, ці токен абнаўлення ўсё яшчэ сапраўдны.</value>
+  </data>
+  <data name="SignInRequired" xml:space="preserve">
+    <value>Патрабуецца ўваход</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Увайдзіце, каб глядзець Shorts.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Рэкламныя сегменты на паласе перамоткі</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Паказваць каляровыя адрэзкі SponsorBlock</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Падпісацца</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>падпісчыкі</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>падпісчыкі</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>падпісчык</value>
+  </data>
+  <data name="SubscribersVideosFormat" xml:space="preserve">
+    <value>{0} падпісчыкаў • {1} відэа</value>
+  </data>
+  <data name="SubscriptionFailed" xml:space="preserve">
+    <value>Не ўдалося падпісацца</value>
+  </data>
+  <data name="SubscriptionRejected" xml:space="preserve">
+    <value>YouTube адхіліў запыт на падпіску.</value>
+  </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube адхіліў запыт на падпіску. Праверце, ці токен TV сапраўдны і ці знойдзены ID канала.</value>
+  </data>
+  <data name="SubtitleEarlier" xml:space="preserve">
+    <value>   Раней (+0.25s)</value>
+  </data>
+  <data name="SubtitleLater" xml:space="preserve">
+    <value>   Пазней (-0.25s)</value>
+  </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Вярнуць звычайны зрух (0,00 с)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Субцітры</value>
+  </data>
+  <data name="SyncFormat" xml:space="preserve">
+    <value>Сінхранізацыя: {0}</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Тэма</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Цёмная</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Светлая</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>На гэтым тыдні</value>
+  </data>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Якасць мініяцюры</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Сёння</value>
+  </data>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Камедыйныя скетчы</value>
+  </data>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Кулінарныя рэцэпты</value>
+  </data>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Інструкцыі «зрабі сам»</value>
+  </data>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Лепшыя моманты гульняў</value>
+  </data>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Трэйлеры фільмаў</value>
+  </data>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Музычныя відэа</value>
+  </data>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Спартыўныя моманты</value>
+  </data>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Агляды тэхналогій</value>
+  </data>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Не ўдалося абмяняць токен абнаўлення TV на токен доступу.</value>
+  </data>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Не ўдалося абмяняць токен абнаўлення TV на токен доступу. Увайдзіце зноў і праверце, ці токен абнаўлення ўсё яшчэ сапраўдны.</value>
+  </data>
+  <data name="TvTokenMissing" xml:space="preserve">
+    <value>Токен абнаўлення TV не знойдзены. Увайдзіце зноў і паўтарыце спробу.</value>
+  </data>
+  <data name="TvTokenMissingDetailed" xml:space="preserve">
+    <value>Токен абнаўлення TV не знойдзены. Увайдзіце зноў, каб захаваць yt_refresh_token, і паўтарыце спробу.</value>
+  </data>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Не ўдалося загрузіць каментарыі.</value>
+  </data>
+  <data name="UnableLoadShorts" xml:space="preserve">
+    <value>Не ўдалося загрузіць Shorts.</value>
+  </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Немагчыма прайграць гэты Short</value>
+  </data>
+  <data name="UnablePlayShortPeriod" xml:space="preserve">
+    <value>Немагчыма прайграць гэты Short.</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Невядома</value>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>Без назвы</value>
+  </data>
+  <data name="UploadedVideo" xml:space="preserve">
+    <value>Загружана відэа</value>
+  </data>
+  <data name="UploadedVideoTitleFormat" xml:space="preserve">
+    <value>Загружана відэа «{0}»</value>
+  </data>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Відэа дададзена ў «{0}»</value>
+  </data>
+  <data name="VideoFew" xml:space="preserve">
+    <value>відэа</value>
+  </data>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Спасылка на відэа скапіравана ў буфер абмену.</value>
+  </data>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Не ўдалося загрузіць відэа. Магчыма, спасылка пратэрмінавана або фармат не падтрымліваецца.</value>
+  </data>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Час загрузкі відэа скончыўся. Праверце падключэнне да Інтэрнэту.</value>
+  </data>
+  <data name="VideoMany" xml:space="preserve">
+    <value>відэа</value>
+  </data>
+  <data name="VideoOne" xml:space="preserve">
+    <value>відэа</value>
+  </data>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Памылка прайгравання відэа. Паспрабуйце выбраць ніжэйшую якасць.</value>
+  </data>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Відэа выдалена з «{0}»</value>
+  </data>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} відэа</value>
+  </data>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} відэа</value>
+  </data>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} тыдняў таму</value>
+  </data>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} гадоў таму</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Так</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Учора</value>
+  </data>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
+  </data>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>Відэа YouTube</value>
+  </data>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>Відэа YouTube</value>
+  </data>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Ачысціць спампаваныя відэа</value>
+  </data>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Выдаліць усе спампаваныя відэа і кэшаваныя значкі</value>
+  </data>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Усе спампаваныя відэа і іх значкі будуць выдалены назаўсёды.</value>
+  </data>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Ачысціць</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Скасаваць</value>
   </data>
 </root>

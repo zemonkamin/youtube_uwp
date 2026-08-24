@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>由 LegacyProjects 團隊開發。
@@ -18,11 +45,146 @@
 
 版本 {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>帳戶</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>外觀</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>音軌</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>自動</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>自動翻譯 &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; 返回</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>動作/冒險</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>全部</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>動漫/動畫</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>汽車與交通工具</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>經典</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>喜劇</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>紀錄片</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>劇情</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>教育</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>娛樂</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>家庭</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>電影與動畫</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>外國</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>遊戲</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>恐怖</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>教學與風格</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>學習</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>直播</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>電影</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>音樂</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>新聞</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>新聞與政治</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>非營利組織與社會運動</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>人物與網誌</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>寵物與動物</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podcast</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>科學與科技</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>科幻/奇幻</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>短片</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>節目</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>運動</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>驚悚</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>預告片</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>旅遊與活動</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>影音網誌</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>電玩遊戲</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>頻道</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>頻道圖示</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>在影片卡片上顯示頻道圖示</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>頻道載入錯誤</value>
@@ -30,14 +192,71 @@
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>未提供頻道</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>留言</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>確定要登出嗎？</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>確認登出</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>無法載入頻道</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>無法載入通知</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>無法載入播放清單</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>無法載入影片。請再試一次。</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>無法播放影片。</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} 天前</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>說明無法使用</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>已下载</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>已下載的影片</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>下载文件夹</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>选择下载视频的保存位置</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>下载画质</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>下载内容</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>您下载的视频会显示在这里。</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>您的下载内容</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>此视频无法下载</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>錯誤代碼：{0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>錯誤：{0}</value>
@@ -62,6 +281,18 @@
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>每 {0} 分鐘</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>影片播放失敗：{0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>來自訂閱內容</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>玻璃效果</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>模糊導覽列</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>無法載入記錄</value>
@@ -90,8 +321,17 @@
   <data name="LanguageSystem" xml:space="preserve">
     <value>系統預設</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>喜歡</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>連結已複製</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>動態磚</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>在「開始」畫面顯示推薦</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>正在載入說明...</value>
@@ -237,6 +477,9 @@
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>這個播放清單中沒有影片</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>確定</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>個人化</value>
   </data>
@@ -375,6 +618,15 @@
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} 個月前</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>網路錯誤。請檢查網際網路連線。</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>否</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>找不到留言。</value>
   </data>
@@ -393,11 +645,26 @@
   <data name="NoNotifications" xml:space="preserve">
     <value>沒有通知</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>找不到 Shorts。</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>無法更新通知偏好設定。</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>通知失敗</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>你的訂閱內容有新動態時會顯示在這裡。</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>登入即可查看 YouTube 通知。</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>請稍後再開啟此頁面。</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>無標題</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>尚未登入</value>
@@ -414,8 +681,23 @@
   <data name="PlaybackError" xml:space="preserve">
     <value>播放錯誤</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>播放失敗</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>播放速度</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>無法播放影片。播放器尚未初始化。</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>播放清單</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>播放清單 ID 是空的</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>無法更新播放清單</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR 圖碼</value>
@@ -423,11 +705,62 @@
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>QR 顯示錯誤：{0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>畫質</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>評分失敗</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube 拒絕了評分要求。請確認 TV 權杖有效，而且具有 YouTube 評分權限。</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>推薦影片</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>無法將更新權杖交換為存取權杖。</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>条回复</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} 条回复</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>儲存</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>搜尋錯誤：{0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>不明</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>選擇帳戶</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>選取播放清單</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>英文</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>預設使用 Windows 語言。</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>應用程式語言</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>俄文</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>語言</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>語言</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>系統預設</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>分享這個 YouTube Short</value>
@@ -435,11 +768,47 @@
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>分享這部 YouTube 影片</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>在應用程式中顯示 Shorts</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>顯示較少</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>顯示更多</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>無法將 TV 更新權杖交換為存取權杖。請重新登入，並確認更新權杖仍然有效。</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>需要登入</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>登入即可觀看 Shorts。</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>在進度列上顯示廣告片段</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>以色彩顯示 SponsorBlock 區間</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>訂閱</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>訂閱者</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>訂閱者</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>訂閱者</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} 位訂閱者 • {1} 部影片</value>
@@ -450,65 +819,71 @@
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube 拒絕了訂閱要求。</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube 拒絕了訂閱要求。請確認 TV 權杖有效，而且已找到頻道 ID。</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   提早 (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   延後 (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>恢復一般偏移（0.00 秒）</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>字幕</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>同步：{0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>無法載入留言。</value>
+  <data name="Theme" xml:space="preserve">
+    <value>佈景主題</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>無標題</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>深色</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>影片連結已複製到剪貼簿。</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>淺色</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} 部影片</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>本週</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>縮圖畫質</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>語言</value>
+  <data name="Today" xml:space="preserve">
+    <value>今天</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>應用程式語言</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>喜劇短劇</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>語言</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>烹飪食譜</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>預設使用 Windows 語言。</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>DIY 教學</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>系統預設</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>遊戲精彩片段</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>英文</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>電影預告片</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>俄文</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>音樂影片</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube 影片</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>運動精彩片段</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>頻道</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>科技評測</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>無法將 TV 更新權杖交換為存取權杖。</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>不明</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>無標題</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>無法將 TV 更新權杖交換為存取權杖。請重新登入，並確認更新權杖仍然有效。</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>找不到 TV 更新權杖。請重新登入並再試一次。</value>
@@ -516,194 +891,23 @@
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>找不到 TV 更新權杖。請重新登入以儲存 yt_refresh_token，然後再試一次。</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>無法將 TV 更新權杖交換為存取權杖。</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>無法將更新權杖交換為存取權杖。</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>播放失敗</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>無法播放這個 Short</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>影片載入逾時。請檢查網際網路連線。</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>無法載入影片。請再試一次。</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>無法播放影片。播放器尚未初始化。</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>無法載入影片。連結可能已失效，或不支援此格式。</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>網路錯誤。請檢查網際網路連線。</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>影片播放錯誤。請嘗試選擇較低畫質。</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>無法播放影片。</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>音樂影片</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>遊戲精彩片段</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>烹飪食譜</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>科技評測</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>電影預告片</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>運動精彩片段</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>喜劇短劇</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>DIY 教學</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>推薦影片</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>確定要登出嗎？</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>確認登出</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>是</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>否</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>登入即可查看 YouTube 通知。</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>無法載入通知</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>請稍後再開啟此頁面。</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>播放清單 ID 是空的</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} 部影片</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>不明</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>登入即可觀看 Shorts。</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>找不到 Shorts。</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>無法載入留言。</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>無法載入 Shorts。</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>無法播放這個 Short</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>無法播放這個 Short。</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>畫質</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>不明</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>播放速度</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>音軌</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>字幕</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>影片播放失敗：{0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>錯誤代碼：{0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>今天</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} 天前</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} 週前</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} 個月前</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} 年前</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; 返回</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube 影片</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>訂閱者</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>訂閱者</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>訂閱者</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>影片</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>影片</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>影片</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>訂閱</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>喜歡</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>留言</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>你的訂閱內容有新動態時會顯示在這裡。</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube 拒絕了訂閱要求。請確認 TV 權杖有效，而且已找到頻道 ID。</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube 拒絕了評分要求。請確認 TV 權杖有效，而且具有 YouTube 評分權限。</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>無法將 TV 更新權杖交換為存取權杖。請重新登入，並確認更新權杖仍然有效。</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>確定</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>昨天</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>本週</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>無標題</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>上傳了一部影片</value>
@@ -711,146 +915,73 @@
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>上傳了影片「{0}」</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>來自訂閱內容</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>影片已新增至「{0}」</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>全部</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>影片</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>電影與動畫</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>影片連結已複製到剪貼簿。</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>汽車與交通工具</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>無法載入影片。連結可能已失效，或不支援此格式。</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>音樂</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>影片載入逾時。請檢查網際網路連線。</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>寵物與動物</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>影片</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>運動</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>影片</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>短片</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>影片播放錯誤。請嘗試選擇較低畫質。</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>旅遊與活動</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>影片已從「{0}」移除</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>遊戲</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} 部影片</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>影音網誌</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} 部影片</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>人物與網誌</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} 週前</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>喜劇</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} 年前</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>娛樂</value>
+  <data name="Yes" xml:space="preserve">
+    <value>是</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>新聞與政治</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>昨天</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>教學與風格</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>教育</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube 影片</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>科學與科技</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube 影片</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>非營利組織與社會運動</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>清除已下載的影片</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>電影</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>刪除所有已下載的影片和快取縮圖</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>動漫/動畫</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>所有已下載的影片及其縮圖都會永久刪除。</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>動作/冒險</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>清除</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>經典</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>紀錄片</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>劇情</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>家庭</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>外國</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>恐怖</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>科幻/奇幻</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>驚悚</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>節目</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>預告片</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>直播</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>學習</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>電玩遊戲</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>新聞</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Podcast</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>外觀</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>佈景主題</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>淺色</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>深色</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>動態磚</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>在「開始」畫面顯示推薦</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>縮圖畫質</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>頻道圖示</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>在影片卡片上顯示頻道圖示</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
   </data>
 </root>

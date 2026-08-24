@@ -95,6 +95,28 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- ListViewItem has its own PointerOver/Pressed chrome even when the row content is
+             transparent. Search history and suggestions are action rows, so keep their visual
+             completely unchanged while the pointer/finger is down. -->
+        <Style x:Key="FlatSearchListItemStyle" TargetType="ListViewItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="MinHeight" Value="52" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border Background="Transparent">
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
 
     <Grid Background="{ThemeResource AppBackgroundBrush}">
@@ -104,16 +126,22 @@
         </Grid.RowDefinitions>
 
         <Grid
+            x:Name="SearchNavbar"
             Grid.Row="0"
             Height="64"
-            Padding="12,0">
+            Padding="12,0"
+            Canvas.ZIndex="20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-
+            <Border x:Name="SearchNavbarGlassHost"
+                    Grid.ColumnSpan="3"
+                    Margin="-12,0"
+                    Background="Transparent"
+                    IsHitTestVisible="False" />
 
             <Grid
                 Grid.Column="1"
@@ -159,20 +187,19 @@
             </Button>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="0" Grid.RowSpan="2">
             <ListView
                 x:Name="SearchHistoryListView"
-                Padding="0,10"
+                Padding="0,0,0,10"
                 IsItemClickEnabled="True"
                 ItemClick="SuggestionsListView_ItemClick"
                 SelectionMode="None"
                 Visibility="Collapsed">
+                <ListView.Header>
+                    <Border Height="74" />
+                </ListView.Header>
                 <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="Padding" Value="0" />
-                        <Setter Property="MinHeight" Value="52" />
-                    </Style>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource FlatSearchListItemStyle}" />
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
@@ -215,17 +242,16 @@
 
             <ListView
                 x:Name="SuggestionsListView"
-                Padding="0,10"
+                Padding="0,0,0,10"
                 IsItemClickEnabled="True"
                 ItemClick="SuggestionsListView_ItemClick"
                 SelectionMode="None"
                 Visibility="Collapsed">
+                <ListView.Header>
+                    <Border Height="74" />
+                </ListView.Header>
                 <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="Padding" Value="0" />
-                        <Setter Property="MinHeight" Value="52" />
-                    </Style>
+                    <Style TargetType="ListViewItem" BasedOn="{StaticResource FlatSearchListItemStyle}" />
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>

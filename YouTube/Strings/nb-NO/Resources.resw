@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>Utviklet av LegacyProjects-teamet.
@@ -18,11 +45,146 @@ Støttet av YouTube API Legacy.
 
 Versjon {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Kontoer</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Utseende</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Lydspor</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Auto</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Automatisk oversettelse &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Tilbake</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Action/Eventyr</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Animasjon</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Biler og kjøretøy</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Klassikere</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Komedie</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Dokumentar</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Drama</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Utdanning</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Underholdning</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Familie</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Film og animasjon</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Utenlandsk</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Spill</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Skrekk</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Slik gjør du og stil</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Læring</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Direkte</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Filmer</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Musikk</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Nyheter</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Nyheter og politikk</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Ideelle organisasjoner og aktivisme</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Folk og blogger</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Kjæledyr og dyr</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podkaster</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Vitenskap og teknologi</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Sci-fi/Fantasy</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Kortfilmer</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Programmer</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Sport</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Thriller</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Trailere</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Reiser og arrangementer</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Videoblogging</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Videospill</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Kanal</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Kanalikoner</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Vis kanalikoner på videokort</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Feil ved lasting av kanal</value>
@@ -30,14 +192,71 @@ Versjon {0}</value>
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Kanal ble ikke oppgitt</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Kommentarer</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Er du sikker på at du vil logge av?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Bekreft avlogging</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Kunne ikke laste kanalen</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Kunne ikke laste varsler</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Kunne ikke laste spillelisten</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Kunne ikke laste videoen. Prøv igjen.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Kunne ikke spille av videoen.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>for {0} dager siden</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Beskrivelse ikke tilgjengelig</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Last ned</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Lastet ned</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Nedlastede videoer</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Nedlastingsmappe</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Velg hvor nedlastede videoer lagres</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Nedlastingskvalitet</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Nedlastinger</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Videoer du laster ned, vises her.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Nedlastingene dine</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Nedlastinger</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Denne videoen kan ikke lastes ned</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Feilkode: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Feil: {0}</value>
@@ -62,6 +281,18 @@ Versjon {0}</value>
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Hvert {0}. min</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Kunne ikke spille av video: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Fra abonnementer</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Glasseffekt</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Gjør navigasjonsfeltene uskarpe</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Kunne ikke laste historikk</value>
@@ -90,8 +321,17 @@ Versjon {0}</value>
   <data name="LanguageSystem" xml:space="preserve">
     <value>Systemstandard</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Liker</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Lenke kopiert</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Dynamisk flis</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Vis anbefalinger på startskjermen</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Laster beskrivelse...</value>
@@ -237,6 +477,9 @@ Versjon {0}</value>
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Ingen videoer i denne spillelisten</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Personlig tilpasset</value>
   </data>
@@ -375,6 +618,15 @@ Versjon {0}</value>
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>for {0} måneder siden</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Nettverksfeil. Kontroller Internett-tilkoblingen.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nei</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Ingen kommentarer funnet.</value>
   </data>
@@ -393,11 +645,26 @@ Versjon {0}</value>
   <data name="NoNotifications" xml:space="preserve">
     <value>Ingen varsler</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Ingen Shorts funnet.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Kunne ikke oppdatere varselinnstillingen.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Varsler mislyktes</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Nye oppdateringer fra abonnementene dine vises her.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Logg på for å se YouTube-varslene dine.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Åpne denne siden igjen senere.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Ingen tittel</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Ikke pålogget</value>
@@ -414,8 +681,23 @@ Versjon {0}</value>
   <data name="PlaybackError" xml:space="preserve">
     <value>Avspillingsfeil</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Avspilling mislyktes</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Avspillingshastighet</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Kunne ikke spille av videoen. Spilleren er ikke initialisert.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Spilleliste</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Spilleliste-ID er tom</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Kunne ikke oppdatere spillelisten</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR-kode</value>
@@ -423,11 +705,62 @@ Versjon {0}</value>
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>Feil ved visning av QR: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Kvalitet</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Vurdering mislyktes</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube avviste vurderingsforespørselen. Kontroller at TV-tokenet er gyldig og har YouTube-vurderingstillatelse.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Anbefalt video</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Kunne ikke bytte oppdateringstokenet mot et tilgangstoken.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>svar</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} svar</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Lagre</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Søkefeil: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Ukjent</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Velg en konto</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Velg spilleliste</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Engelsk</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Bruker Windows-språket som standard.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Appspråk</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Russisk</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Språk</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Språk</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Systemstandard</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Del denne YouTube Short</value>
@@ -435,11 +768,47 @@ Versjon {0}</value>
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Del denne YouTube-videoen</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Vis Shorts i appen</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Vis mindre</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Mer</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>Kunne ikke bytte TV-oppdateringstokenet mot et tilgangstoken. Logg på igjen og kontroller at oppdateringstokenet fortsatt er gyldig.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Pålogging kreves</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Logg på for å se Shorts.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Annonsesegmenter på søkelinjen</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Vis fargede SponsorBlock-områder</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Abonner</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>abonnenter</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>abonnenter</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>abonnent</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} abonnenter • {1} videoer</value>
@@ -450,65 +819,71 @@ Versjon {0}</value>
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube avviste abonnementsforespørselen.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube avviste abonnementsforespørselen. Kontroller at TV-tokenet er gyldig og at kanal-ID-en ble funnet.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Tidligere (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Senere (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Gjenopprett normal forskyvning (0,00 s)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Undertekster</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Synkronisering: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Kunne ikke laste kommentarer.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Tema</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Uten tittel</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Mørk</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Videolenken er kopiert til utklippstavlen.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Lys</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} videoer</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Denne uken</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Miniatyrkvalitet</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Språk</value>
+  <data name="Today" xml:space="preserve">
+    <value>I dag</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Appspråk</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Komediesketsjer</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Språk</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Matoppskrifter</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Bruker Windows-språket som standard.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Gjør-det-selv-veiledninger</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Systemstandard</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Spillhøydepunkter</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Engelsk</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Filmtrailere</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Russisk</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Musikkvideoer</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube-video</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Sportshøydepunkter</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Kanal</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Teknologianmeldelser</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Kunne ikke bytte TV-oppdateringstokenet mot et tilgangstoken.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Ukjent</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Ingen tittel</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Kunne ikke bytte TV-oppdateringstokenet mot et tilgangstoken. Logg på igjen og kontroller at oppdateringstokenet fortsatt er gyldig.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>TV-oppdateringstoken ble ikke funnet. Logg på igjen og prøv på nytt.</value>
@@ -516,194 +891,23 @@ Versjon {0}</value>
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>TV-oppdateringstoken ble ikke funnet. Logg på igjen slik at yt_refresh_token lagres, og prøv på nytt.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>Kunne ikke bytte TV-oppdateringstokenet mot et tilgangstoken.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Kunne ikke bytte oppdateringstokenet mot et tilgangstoken.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Avspilling mislyktes</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Kan ikke spille av denne Short</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Videoen brukte for lang tid på å laste. Kontroller Internett-tilkoblingen.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Kunne ikke laste videoen. Prøv igjen.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Kunne ikke spille av videoen. Spilleren er ikke initialisert.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Kunne ikke laste videoen. Lenken kan ha utløpt eller formatet støttes ikke.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Nettverksfeil. Kontroller Internett-tilkoblingen.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Feil ved videoavspilling. Prøv å velge lavere kvalitet.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Kunne ikke spille av videoen.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Musikkvideoer</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Spillhøydepunkter</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Matoppskrifter</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Teknologianmeldelser</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Filmtrailere</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Sportshøydepunkter</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Komediesketsjer</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>Gjør-det-selv-veiledninger</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Anbefalt video</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Er du sikker på at du vil logge av?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Bekreft avlogging</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Ja</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Nei</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>Logg på for å se YouTube-varslene dine.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Kunne ikke laste varsler</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Åpne denne siden igjen senere.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>Spilleliste-ID er tom</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} videoer</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Ukjent</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Logg på for å se Shorts.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Ingen Shorts funnet.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Kunne ikke laste kommentarer.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Kunne ikke laste Shorts.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Kan ikke spille av denne Short</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Kan ikke spille av denne Short.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Kvalitet</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Ukjent</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Avspillingshastighet</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Lydspor</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Undertekster</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Kunne ikke spille av video: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Feilkode: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>I dag</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>for {0} dager siden</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>for {0} uker siden</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>for {0} måneder siden</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>for {0} år siden</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Tilbake</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube-video</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>abonnent</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>abonnenter</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>abonnenter</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>videoer</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>videoer</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Abonner</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Liker</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Kommentarer</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Nye oppdateringer fra abonnementene dine vises her.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube avviste abonnementsforespørselen. Kontroller at TV-tokenet er gyldig og at kanal-ID-en ble funnet.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube avviste vurderingsforespørselen. Kontroller at TV-tokenet er gyldig og har YouTube-vurderingstillatelse.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>Kunne ikke bytte TV-oppdateringstokenet mot et tilgangstoken. Logg på igjen og kontroller at oppdateringstokenet fortsatt er gyldig.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>I går</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Denne uken</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Uten tittel</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Lastet opp en video</value>
@@ -711,146 +915,73 @@ Versjon {0}</value>
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>Lastet opp en video «{0}»</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Fra abonnementer</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Videoen ble lagt til i «{0}»</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Alle</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>videoer</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Film og animasjon</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Videolenken er kopiert til utklippstavlen.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Biler og kjøretøy</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Kunne ikke laste videoen. Lenken kan ha utløpt eller formatet støttes ikke.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Musikk</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Videoen brukte for lang tid på å laste. Kontroller Internett-tilkoblingen.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Kjæledyr og dyr</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>videoer</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Sport</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Kortfilmer</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Feil ved videoavspilling. Prøv å velge lavere kvalitet.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Reiser og arrangementer</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Videoen ble fjernet fra «{0}»</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Spill</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} videoer</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Videoblogging</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} videoer</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Folk og blogger</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>for {0} uker siden</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Komedie</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>for {0} år siden</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Underholdning</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Nyheter og politikk</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>I går</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Slik gjør du og stil</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Utdanning</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube-video</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Vitenskap og teknologi</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube-video</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Ideelle organisasjoner og aktivisme</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Tøm nedlastede videoer</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Filmer</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Slett alle nedlastede videoer og hurtigbufrede miniatyrbilder</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Anime/Animasjon</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Alle nedlastede videoer og miniatyrbildene deres slettes permanent.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Action/Eventyr</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Tøm</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Klassikere</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Dokumentar</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Drama</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Familie</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Utenlandsk</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Skrekk</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Sci-fi/Fantasy</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Thriller</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Programmer</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Trailere</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Direkte</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Læring</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Videospill</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Nyheter</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Podkaster</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Utseende</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Tema</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Lys</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Mørk</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Dynamisk flis</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Vis anbefalinger på startskjermen</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Miniatyrkvalitet</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Kanalikoner</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Vis kanalikoner på videokort</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Avbryt</value>
   </data>
 </root>

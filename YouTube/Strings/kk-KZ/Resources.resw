@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>LegacyProjects тобы әзірледі.
@@ -18,11 +45,146 @@ YouTube API Legacy қолдау көрсетеді.
 
 Нұсқа {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Есептік жазбалар</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Көрініс</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Аудиожол</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Авто</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Автоматты аудару &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Артқа</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Экшн/Шытырман</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Барлығы</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Аниме/Анимация</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Авто және көлік</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Классика</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Комедия</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Деректі</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Драма</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Білім</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Ойын-сауық</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Отбасы</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Фильм және анимация</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Шетелдік</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Ойындар</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Қорқынышты</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Нұсқаулар және стиль</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Оқу</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Тікелей эфир</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Фильмдер</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Музыка</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Жаңалықтар</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Жаңалықтар және саясат</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Коммерциялық емес ұйымдар және белсенділік</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Адамдар және блогтар</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Үй жануарлары және жануарлар</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Подкасттар</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Ғылым және технология</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Ғылыми фантастика/Фэнтези</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Қысқа фильмдер</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Шоулар</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Спорт</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Триллер</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Трейлерлер</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Саяхат және іс-шаралар</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Видеоблог</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Видео ойындар</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Арна</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Арна белгішелері</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Бейне карточкаларында арна белгішелерін көрсету</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Арнаны жүктеу қатесі</value>
@@ -30,14 +192,71 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Арна көрсетілмеді</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Пікірлер</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Шығуды қалайтыныңызға сенімдісіз бе?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Шығуды растау</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Арнаны жүктеу мүмкін болмады</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Хабарландыруларды жүктеу мүмкін болмады</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Ойнату тізімін жүктеу мүмкін болмады</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Видеоны жүктеу мүмкін болмады. Қайталап көріңіз.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Видеоны ойнату мүмкін болмады.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} күн бұрын</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Сипаттама қолжетімсіз</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Жүктеп алу</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Жүктеп алынды</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Жүктеп алғандарыңыз</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Жүктеп алу қалтасы</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Жүктеп алынған бейнелер сақталатын орынды таңдаңыз</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Жүктеп алу сапасы</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Жүктеп алынғандар</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Жүктеп алған бейнелеріңіз осында көрсетіледі.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Жүктеп алғандарыңыз</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Жүктеп алынғандар</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Бұл бейнені жүктеп алу мүмкін емес</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Қате коды: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Қате: {0}</value>
@@ -62,6 +281,18 @@ YouTube API Legacy қолдау көрсетеді.
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Әр {0} мин</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Видеоны ойнату сәтсіз аяқталды: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Жазылымдардан</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Шыны әсері</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Навигация жолақтарын бұлдырату</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Тарихты жүктеу сәтсіз аяқталды</value>
@@ -90,8 +321,17 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="LanguageSystem" xml:space="preserve">
     <value>Жүйелік әдепкі</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Ұнайды</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Сілтеме көшірілді</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Жанды плитка</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Ұсыныстарды Бастау экранында көрсету</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Сипаттама жүктелуде...</value>
@@ -237,6 +477,9 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Бұл ойнату тізімінде видео жоқ</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Жекелендірілген</value>
   </data>
@@ -375,6 +618,15 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} ай бұрын</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Желі қатесі. Интернет байланысын тексеріңіз.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Жоқ</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Пікірлер табылмады.</value>
   </data>
@@ -393,11 +645,26 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="NoNotifications" xml:space="preserve">
     <value>Хабарландырулар жоқ</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts табылмады.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Хабарландыру параметрін жаңарту мүмкін болмады.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Хабарландырулар сәтсіз аяқталды</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Жазылымдарыңыздағы жаңа жаңартулар осында көрсетіледі.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>YouTube хабарландыруларын көру үшін кіріңіз.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Бұл бетті кейінірек қайта ашыңыз.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Тақырып жоқ</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Кірмеген</value>
@@ -414,8 +681,23 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="PlaybackError" xml:space="preserve">
     <value>Ойнату қатесі</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Ойнату сәтсіз аяқталды</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Ойнату жылдамдығы</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Видеоны ойнату мүмкін болмады. Ойнатқыш іске қосылмаған.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Ойнату тізімі</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Ойнату тізімі ID-і бос</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Ойнату тізімін жаңарту мүмкін болмады</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR коды</value>
@@ -423,11 +705,62 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>QR көрсету қатесі: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Сапа</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Бағалау сәтсіз аяқталды</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube бағалау сұрауын қабылдамады. TV токенінің жарамды екенін және YouTube бағалау рұқсаты бар екенін тексеріңіз.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Ұсынылған видео</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Жаңарту токенін кіру токеніне айырбастау мүмкін болмады.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>жауап</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} жауап</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Сақтау</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Іздеу қатесі: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Белгісіз</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Есептік жазбаны таңдаңыз</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Ойнату тізімін таңдаңыз</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Ағылшын тілі</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Әдепкі бойынша Windows тілін пайдаланады.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Қолданба тілі</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Орыс тілі</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Тіл</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Тіл</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Жүйелік әдепкі</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Осы YouTube Short-пен бөлісу</value>
@@ -435,11 +768,47 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Осы YouTube видеосымен бөлісу</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Қолданбада Shorts көрсету</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Азырақ көрсету</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Тағы</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>TV жаңарту токенін кіру токеніне айырбастау мүмкін болмады. Қайта кіріп, жаңарту токенінің әлі жарамды екенін тексеріңіз.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Кіру қажет</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Shorts көру үшін кіріңіз.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Іздеу жолағындағы жарнама сегменттері</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>SponsorBlock түсті аралықтарын көрсету</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Жазылу</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>жазылушылар</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>жазылушылар</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>жазылушы</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} жазылушы • {1} видео</value>
@@ -450,65 +819,71 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube жазылу сұрауын қабылдамады.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube жазылу сұрауын қабылдамады. TV токенінің жарамды екенін және арна ID-і табылғанын тексеріңіз.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Ертерек (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Кейінірек (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Қалыпты ығысуды қалпына келтіру (0,00 с)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Субтитрлер</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Синхрондау: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Пікірлерді жүктеу мүмкін болмады.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Тақырып</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Тақырыпсыз</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Қараңғы</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Видео сілтемесі алмасу буферіне көшірілді.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Ашық</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} видео</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Осы апта</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Нобай сапасы</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Тіл</value>
+  <data name="Today" xml:space="preserve">
+    <value>Бүгін</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Қолданба тілі</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Комедиялық скетчтер</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Тіл</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Тағам рецептері</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Әдепкі бойынша Windows тілін пайдаланады.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>DIY сабақтары</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Жүйелік әдепкі</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Ойынның үздік сәттері</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Ағылшын тілі</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Фильм трейлерлері</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Орыс тілі</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Музыкалық видеолар</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube видеосы</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Спорттың үздік сәттері</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Арна</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Технологиялық шолулар</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>TV жаңарту токенін кіру токеніне айырбастау мүмкін болмады.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Белгісіз</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Тақырып жоқ</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>TV жаңарту токенін кіру токеніне айырбастау мүмкін болмады. Қайта кіріп, жаңарту токенінің әлі жарамды екенін тексеріңіз.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>TV жаңарту токені табылмады. Қайта кіріп, қайталап көріңіз.</value>
@@ -516,194 +891,23 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>TV жаңарту токені табылмады. yt_refresh_token сақталуы үшін қайта кіріп, қайталап көріңіз.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>TV жаңарту токенін кіру токеніне айырбастау мүмкін болмады.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Жаңарту токенін кіру токеніне айырбастау мүмкін болмады.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Ойнату сәтсіз аяқталды</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Бұл Short-ты ойнату мүмкін емес</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Видеоны жүктеу уақыты аяқталды. Интернет байланысын тексеріңіз.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Видеоны жүктеу мүмкін болмады. Қайталап көріңіз.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Видеоны ойнату мүмкін болмады. Ойнатқыш іске қосылмаған.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Видеоны жүктеу мүмкін болмады. Сілтеменің мерзімі өтуі немесе пішімге қолдау көрсетілмеуі мүмкін.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Желі қатесі. Интернет байланысын тексеріңіз.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Видео ойнату қатесі. Төменірек сапаны таңдап көріңіз.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Видеоны ойнату мүмкін болмады.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Музыкалық видеолар</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Ойынның үздік сәттері</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Тағам рецептері</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Технологиялық шолулар</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Фильм трейлерлері</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Спорттың үздік сәттері</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Комедиялық скетчтер</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>DIY сабақтары</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Ұсынылған видео</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Шығуды қалайтыныңызға сенімдісіз бе?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Шығуды растау</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Иә</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Жоқ</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>YouTube хабарландыруларын көру үшін кіріңіз.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Хабарландыруларды жүктеу мүмкін болмады</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Бұл бетті кейінірек қайта ашыңыз.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>Ойнату тізімі ID-і бос</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} видео</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Белгісіз</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Shorts көру үшін кіріңіз.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Shorts табылмады.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Пікірлерді жүктеу мүмкін болмады.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Shorts жүктеу мүмкін болмады.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Бұл Short-ты ойнату мүмкін емес</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Бұл Short-ты ойнату мүмкін емес.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Сапа</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Белгісіз</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Ойнату жылдамдығы</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Аудиожол</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Субтитрлер</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Видеоны ойнату сәтсіз аяқталды: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Қате коды: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Бүгін</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} күн бұрын</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} апта бұрын</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} ай бұрын</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} жыл бұрын</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Артқа</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube видеосы</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>жазылушы</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>жазылушылар</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>жазылушылар</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>видео</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>видеолар</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>видеолар</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Жазылу</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Ұнайды</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Пікірлер</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Жазылымдарыңыздағы жаңа жаңартулар осында көрсетіледі.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube жазылу сұрауын қабылдамады. TV токенінің жарамды екенін және арна ID-і табылғанын тексеріңіз.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube бағалау сұрауын қабылдамады. TV токенінің жарамды екенін және YouTube бағалау рұқсаты бар екенін тексеріңіз.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>TV жаңарту токенін кіру токеніне айырбастау мүмкін болмады. Қайта кіріп, жаңарту токенінің әлі жарамды екенін тексеріңіз.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Кеше</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Осы апта</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Тақырыпсыз</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Видео жүктеді</value>
@@ -711,146 +915,73 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>“{0}” видеосын жүктеді</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Жазылымдардан</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Бейне «{0}» тізіміне қосылды</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Барлығы</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>видеолар</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Фильм және анимация</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Видео сілтемесі алмасу буферіне көшірілді.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Авто және көлік</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Видеоны жүктеу мүмкін болмады. Сілтеменің мерзімі өтуі немесе пішімге қолдау көрсетілмеуі мүмкін.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Музыка</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Видеоны жүктеу уақыты аяқталды. Интернет байланысын тексеріңіз.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Үй жануарлары және жануарлар</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>видеолар</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Спорт</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>видео</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Қысқа фильмдер</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Видео ойнату қатесі. Төменірек сапаны таңдап көріңіз.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Саяхат және іс-шаралар</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Бейне «{0}» тізімінен жойылды</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Ойындар</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} видео</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Видеоблог</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} видео</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Адамдар және блогтар</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} апта бұрын</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Комедия</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} жыл бұрын</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Ойын-сауық</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Иә</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Жаңалықтар және саясат</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Кеше</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Нұсқаулар және стиль</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Білім</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube видеосы</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Ғылым және технология</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube видеосы</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Коммерциялық емес ұйымдар және белсенділік</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Жүктеп алынған бейнелерді тазалау</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Фильмдер</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Жүктеп алынған барлық бейнелерді және кэштелген нобайларды жою</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Аниме/Анимация</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Барлық жүктелген бейнелер мен олардың нобайлары біржола жойылады.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Экшн/Шытырман</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Тазалау</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Классика</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Деректі</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Драма</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Отбасы</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Шетелдік</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Қорқынышты</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Ғылыми фантастика/Фэнтези</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Триллер</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Шоулар</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Трейлерлер</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Тікелей эфир</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Оқу</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Видео ойындар</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Жаңалықтар</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Подкасттар</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Көрініс</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Тақырып</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Ашық</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Қараңғы</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Жанды плитка</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Ұсыныстарды Бастау экранында көрсету</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Нобай сапасы</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Арна белгішелері</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Бейне карточкаларында арна белгішелерін көрсету</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Болдырмау</value>
   </data>
 </root>

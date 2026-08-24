@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>Розроблено командою LegacyProjects.
@@ -18,11 +45,146 @@
 
 Версія {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Облікові записи</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Вигляд</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Аудіодоріжка</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Авто</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Автопереклад &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Назад</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Бойовики/Пригоди</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Усі</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Аніме/Анімація</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Авто й транспорт</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Класика</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Комедія</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Документальні</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Драма</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Освіта</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Розваги</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Сімейні</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Фільми й анімація</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Іноземні</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Ігри</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Жахи</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Інструкції та стиль</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Навчання</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Наживо</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Фільми</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Музика</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Новини</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Новини й політика</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Некомерційні організації та активізм</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Люди й блоги</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Домашні тварини й тварини</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Подкасти</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Наука й технології</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Наукова фантастика/Фентезі</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Короткометражні фільми</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Шоу</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Спорт</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Трилер</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Трейлери</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Подорожі й події</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Відеоблоги</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Відеоігри</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Канал</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Значки каналів</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Показувати значки каналів у картках відео</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Помилка завантаження каналу</value>
@@ -30,14 +192,71 @@
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Канал не вказано</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Коментарі</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Ви впевнені, що хочете вийти?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Підтвердити вихід</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Не вдалося завантажити канал</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Не вдалося завантажити сповіщення</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Не вдалося завантажити список відтворення</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Не вдалося завантажити відео. Спробуйте ще раз.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Не вдалося відтворити відео.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} днів тому</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Опис недоступний</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Завантажити</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Завантажено</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Завантажені відео</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Папка завантажень</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Виберіть, де зберігати завантажені відео</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Якість завантаження</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Завантаження</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Завантажені відео з'являться тут.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Ваші завантаження</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Завантаження</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Це відео недоступне для завантаження</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Код помилки: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Помилка: {0}</value>
@@ -62,6 +281,18 @@
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Кожні {0} хв</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Не вдалося відтворити відео: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>З підписок</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Ефект скла</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Розмивати панелі навігації</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Не вдалося завантажити історію</value>
@@ -90,8 +321,17 @@
   <data name="LanguageSystem" xml:space="preserve">
     <value>Системна за замовчуванням</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Подобається</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Посилання скопійовано</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Жива плитка</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Показувати рекомендації на початковому екрані</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Завантаження опису...</value>
@@ -237,6 +477,9 @@
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>У цьому списку відтворення немає відео</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>Гаразд</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Персоналізовані</value>
   </data>
@@ -375,6 +618,15 @@
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} місяців тому</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Помилка мережі. Перевірте підключення до Інтернету.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ні</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Коментарів не знайдено.</value>
   </data>
@@ -393,11 +645,26 @@
   <data name="NoNotifications" xml:space="preserve">
     <value>Немає сповіщень</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts не знайдено.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Не вдалося оновити налаштування сповіщень.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Помилка сповіщень</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Нові оновлення з ваших підписок з’являться тут.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Увійдіть, щоб переглянути сповіщення YouTube.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Відкрийте цю сторінку пізніше.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Без назви</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Вхід не виконано</value>
@@ -414,8 +681,23 @@
   <data name="PlaybackError" xml:space="preserve">
     <value>Помилка відтворення</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Не вдалося відтворити</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Швидкість відтворення</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Не вдалося відтворити відео. Програвач не ініціалізовано.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Список відтворення</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>ID списку відтворення порожній</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Не вдалося оновити список відтворення</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR-код</value>
@@ -423,11 +705,62 @@
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>Помилка відображення QR: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Якість</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Не вдалося оцінити</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube відхилив запит на оцінювання. Перевірте, чи токен TV дійсний і має дозвіл на оцінювання YouTube.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Рекомендоване відео</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Не вдалося обміняти токен оновлення на токен доступу.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>відповідей</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} відповідей</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Зберегти</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Помилка пошуку: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Невідомо</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Виберіть обліковий запис</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Виберіть список відтворення</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Англійська</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>За замовчуванням використовує мову Windows.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Мова програми</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Російська</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Мова</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Мова</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Системна за замовчуванням</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Поділитися цим YouTube Short</value>
@@ -435,11 +768,47 @@
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Поділитися цим відео YouTube</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Показувати Shorts у програмі</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Згорнути</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Ще</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>Не вдалося обміняти токен оновлення TV на токен доступу. Увійдіть знову та перевірте, чи токен оновлення ще дійсний.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Потрібен вхід</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Увійдіть, щоб дивитися Shorts.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Рекламні сегменти на смузі перемотування</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Показувати кольорові відрізки SponsorBlock</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Підписатися</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>підписники</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>підписники</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>підписник</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} підписників • {1} відео</value>
@@ -450,65 +819,71 @@
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube відхилив запит на підписку.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube відхилив запит на підписку. Перевірте, чи токен TV дійсний і чи знайдено ID каналу.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Раніше (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Пізніше (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Повернути звичайний зсув (0,00 с)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Субтитри</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Синхронізація: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Не вдалося завантажити коментарі.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Тема</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Без назви</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Темна</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Посилання на відео скопійовано в буфер обміну.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Світла</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} відео</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Цього тижня</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Якість мініатюри</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Мова</value>
+  <data name="Today" xml:space="preserve">
+    <value>Сьогодні</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Мова програми</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Комедійні скетчі</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Мова</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Кулінарні рецепти</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>За замовчуванням використовує мову Windows.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Інструкції «зроби сам»</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Системна за замовчуванням</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Найкращі моменти ігор</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Англійська</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Трейлери фільмів</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Російська</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Музичні відео</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>Відео YouTube</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Спортивні моменти</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Канал</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Огляди технологій</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Не вдалося обміняти токен оновлення TV на токен доступу.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Невідомо</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Без назви</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Не вдалося обміняти токен оновлення TV на токен доступу. Увійдіть знову та перевірте, чи токен оновлення ще дійсний.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>Токен оновлення TV не знайдено. Увійдіть знову та повторіть спробу.</value>
@@ -516,194 +891,23 @@
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>Токен оновлення TV не знайдено. Увійдіть знову, щоб зберегти yt_refresh_token, і повторіть спробу.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>Не вдалося обміняти токен оновлення TV на токен доступу.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Не вдалося обміняти токен оновлення на токен доступу.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Не вдалося відтворити</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Не вдається відтворити цей Short</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Час завантаження відео вичерпано. Перевірте підключення до Інтернету.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Не вдалося завантажити відео. Спробуйте ще раз.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Не вдалося відтворити відео. Програвач не ініціалізовано.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Не вдалося завантажити відео. Можливо, термін дії посилання минув або формат не підтримується.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Помилка мережі. Перевірте підключення до Інтернету.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Помилка відтворення відео. Спробуйте вибрати нижчу якість.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Не вдалося відтворити відео.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Музичні відео</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Найкращі моменти ігор</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Кулінарні рецепти</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Огляди технологій</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Трейлери фільмів</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Спортивні моменти</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Комедійні скетчі</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>Інструкції «зроби сам»</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Рекомендоване відео</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Ви впевнені, що хочете вийти?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Підтвердити вихід</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Так</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Ні</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>Увійдіть, щоб переглянути сповіщення YouTube.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Не вдалося завантажити сповіщення</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Відкрийте цю сторінку пізніше.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>ID списку відтворення порожній</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} відео</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Невідомо</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Увійдіть, щоб дивитися Shorts.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Shorts не знайдено.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Не вдалося завантажити коментарі.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Не вдалося завантажити Shorts.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Не вдається відтворити цей Short</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Не вдається відтворити цей Short.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Якість</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Невідомо</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Швидкість відтворення</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Аудіодоріжка</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Субтитри</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Не вдалося відтворити відео: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Код помилки: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Сьогодні</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} днів тому</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} тижнів тому</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} місяців тому</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} років тому</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Назад</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>Відео YouTube</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>підписник</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>підписники</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>підписники</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>відео</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>відео</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>відео</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Підписатися</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Подобається</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Коментарі</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Нові оновлення з ваших підписок з’являться тут.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube відхилив запит на підписку. Перевірте, чи токен TV дійсний і чи знайдено ID каналу.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube відхилив запит на оцінювання. Перевірте, чи токен TV дійсний і має дозвіл на оцінювання YouTube.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>Не вдалося обміняти токен оновлення TV на токен доступу. Увійдіть знову та перевірте, чи токен оновлення ще дійсний.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>Гаразд</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Учора</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Цього тижня</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Без назви</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Завантажено відео</value>
@@ -711,146 +915,73 @@
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>Завантажено відео «{0}»</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>З підписок</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Відео додано до «{0}»</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Усі</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>відео</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Фільми й анімація</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Посилання на відео скопійовано в буфер обміну.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Авто й транспорт</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Не вдалося завантажити відео. Можливо, термін дії посилання минув або формат не підтримується.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Музика</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Час завантаження відео вичерпано. Перевірте підключення до Інтернету.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Домашні тварини й тварини</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>відео</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Спорт</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>відео</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Короткометражні фільми</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Помилка відтворення відео. Спробуйте вибрати нижчу якість.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Подорожі й події</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Відео вилучено з «{0}»</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Ігри</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} відео</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Відеоблоги</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} відео</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Люди й блоги</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} тижнів тому</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Комедія</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} років тому</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Розваги</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Так</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Новини й політика</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Учора</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Інструкції та стиль</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Освіта</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>Відео YouTube</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Наука й технології</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>Відео YouTube</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Некомерційні організації та активізм</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Очистити завантажені відео</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Фільми</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Видалити всі завантажені відео та кешовані значки</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Аніме/Анімація</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Усі завантажені відео та їхні значки буде остаточно видалено.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Бойовики/Пригоди</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Очистити</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Класика</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Документальні</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Драма</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Сімейні</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Іноземні</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Жахи</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Наукова фантастика/Фентезі</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Трилер</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Шоу</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Трейлери</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Наживо</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Навчання</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Відеоігри</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Новини</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Подкасти</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Вигляд</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Тема</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Світла</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Темна</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Жива плитка</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Показувати рекомендації на початковому екрані</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Якість мініатюри</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Значки каналів</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Показувати значки каналів у картках відео</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Скасувати</value>
   </data>
 </root>

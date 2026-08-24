@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>ພັດທະນາໂດຍທີມ LegacyProjects.
@@ -18,11 +45,146 @@
 
 ເວີຊັນ {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>ບັນຊີ</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>ຮູບລັກສະນະ</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>ແທຣັກສຽງ</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>ອັດຕະໂນມັດ</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>ແປອັດຕະໂນມັດ &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; ກັບຄືນ</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>ແອັກຊັນ/ຜະຈົນໄພ</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>ທັງໝົດ</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>ອານິເມ/ແອນິເມຊັນ</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>ລົດ &amp; ພາຫະນະ</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>ຄລາສສິກ</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>ຕະຫຼົກ</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>ສາລະຄະດີ</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>ດຣາມາ</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>ການສຶກສາ</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>ບັນເທີງ</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>ຄອບຄົວ</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>ຮູບເງົາ &amp; ແອນິເມຊັນ</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>ຕ່າງປະເທດ</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>ເກມ</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>ສະຫຍອງຂວັນ</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>ວິທີເຮັດ &amp; ສະໄຕລ໌</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>ການຮຽນຮູ້</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>ສົດ</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>ຮູບເງົາ</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>ດົນຕີ</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>ຂ່າວ</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>ຂ່າວ &amp; ການເມືອງ</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>ບໍ່ຫາກຳໄລ &amp; ກິດຈະກຳ</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>ຜູ້ຄົນ &amp; ບລັອກ</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>ສັດລ້ຽງ &amp; ສັດ</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>ພອດແຄສ</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>ວິທະຍາສາດ &amp; ເຕັກໂນໂລຊີ</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>ໄຊໄຟ/ແຟນຕາຊີ</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>ຮູບເງົາສັ້ນ</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>ລາຍການ</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>ກິລາ</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>ລະທຶກຂວັນ</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>ຕົວຢ່າງ</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>ທ່ອງທ່ຽວ &amp; ກິດຈະກຳ</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>ວິດີໂອບລັອກ</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>ວິດີໂອເກມ</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>ຊ່ອງ</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>ໄອຄອນຊ່ອງ</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>ສະແດງໄອຄອນຊ່ອງໃນບັດວິດີໂອ</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>ຂໍ້ຜິດພາດໃນການໂຫຼດຊ່ອງ</value>
@@ -30,14 +192,71 @@
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>ບໍ່ໄດ້ລະບຸຊ່ອງ</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>ຄຳເຫັນ</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການອອກຈາກລະບົບ?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>ຢືນຢັນການອອກຈາກລະບົບ</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>ບໍ່ສາມາດໂຫຼດຊ່ອງໄດ້</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>ບໍ່ສາມາດໂຫຼດການແຈ້ງເຕືອນໄດ້</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>ບໍ່ສາມາດໂຫຼດເພລຍລິສໄດ້</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>ບໍ່ສາມາດໂຫຼດວິດີໂອໄດ້. ກະລຸນາລອງໃໝ່.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>ບໍ່ສາມາດຫຼິ້ນວິດີໂອໄດ້.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} ມື້ກ່ອນ</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>ບໍ່ມີຄຳອະທິບາຍ</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>ດາວໂຫຼດ</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>ດາວໂຫຼດແລ້ວ</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>ລາຍການດາວໂຫຼດຂອງທ່ານ</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>ໂຟນເດີດາວໂຫຼດ</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>ເລືອກບ່ອນບັນທຶກວິດີໂອທີ່ດາວໂຫຼດ</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>ຄຸນນະພາບການດາວໂຫຼດ</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>ລາຍການດາວໂຫຼດ</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>ວິດີໂອທີ່ທ່ານດາວໂຫຼດຈະສະແດງຢູ່ນີ້.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>ລາຍການດາວໂຫຼດຂອງທ່ານ</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>ລາຍການດາວໂຫຼດ</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>ບໍ່ສາມາດດາວໂຫຼດວິດີໂອນີ້ໄດ້</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>ລະຫັດຂໍ້ຜິດພາດ: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>ຂໍ້ຜິດພາດ: {0}</value>
@@ -62,6 +281,18 @@
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>ທຸກໆ {0} ນາທີ</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>ຫຼິ້ນວິດີໂອບໍ່ສຳເລັດ: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>ຈາກການຕິດຕາມ</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>ເອັບເຟັກແກ້ວ</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>ເຮັດໃຫ້ແຖບນຳທາງມົວ</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>ໂຫຼດປະຫວັດບໍ່ສຳເລັດ</value>
@@ -90,8 +321,17 @@
   <data name="LanguageSystem" xml:space="preserve">
     <value>ຄ່າເລີ່ມຕົ້ນຂອງລະບົບ</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>ຖືກໃຈ</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>ສຳເນົາລິ້ງແລ້ວ</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>ໄທລ໌ສົດ</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>ສະແດງຄຳແນະນຳໃນໜ້າເລີ່ມ</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>ກຳລັງໂຫຼດຄຳອະທິບາຍ...</value>
@@ -237,6 +477,9 @@
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>ບໍ່ມີວິດີໂອໃນເພລຍລິສນີ້</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>ຕົກລົງ</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>ປັບແຕ່ງສ່ວນຕົວ</value>
   </data>
@@ -375,6 +618,15 @@
   <data name="Mix" xml:space="preserve">
     <value>ມິກຊ໌</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} ເດືອນກ່ອນ</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>ຂໍ້ຜິດພາດເຄືອຂ່າຍ. ກວດສອບອິນເຕີເນັດຂອງທ່ານ.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>ບໍ່</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>ບໍ່ພົບຄຳເຫັນ.</value>
   </data>
@@ -393,11 +645,26 @@
   <data name="NoNotifications" xml:space="preserve">
     <value>ບໍ່ມີການແຈ້ງເຕືອນ</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>ບໍ່ພົບ Shorts.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>ບໍ່ສາມາດອັບເດດຄ່າການແຈ້ງເຕືອນໄດ້.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>ການແຈ້ງເຕືອນລົ້ມເຫຼວ</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>ອັບເດດໃໝ່ຈາກການຕິດຕາມຂອງທ່ານຈະປາກົດຢູ່ນີ້.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>ເຂົ້າລະບົບເພື່ອເບິ່ງການແຈ້ງເຕືອນ YouTube ຂອງທ່ານ.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>ກັບມາເປີດໜ້ານີ້ອີກພາຍຫຼັງ.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>ບໍ່ມີຊື່ເລື່ອງ</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>ຍັງບໍ່ໄດ້ເຂົ້າລະບົບ</value>
@@ -414,8 +681,23 @@
   <data name="PlaybackError" xml:space="preserve">
     <value>ຂໍ້ຜິດພາດການຫຼິ້ນ</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>ການຫຼິ້ນລົ້ມເຫຼວ</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>ຄວາມໄວການຫຼິ້ນ</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>ບໍ່ສາມາດຫຼິ້ນວິດີໂອໄດ້. ໂປຣແກຣມຫຼິ້ນຍັງບໍ່ຖືກເລີ່ມ.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>ເພລຍລິສ</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>playlist id ຫວ່າງ</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>ອັບເດດລາຍການຫຼິ້ນບໍ່ໄດ້</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>ລະຫັດ QR</value>
@@ -423,11 +705,62 @@
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>ຂໍ້ຜິດພາດການສະແດງ QR: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>ຄຸນນະພາບ</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>ການໃຫ້ຄະແນນລົ້ມເຫຼວ</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube ປະຕິເສດຄຳຂໍຄະແນນ. ກວດວ່າ TV token ໃຊ້ໄດ້ ແລະມີ YouTube rating scope.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>ວິດີໂອແນະນຳ</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>ບໍ່ສາມາດແລກ refresh token ເປັນ access token ໄດ້.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>ຄຳຕອບ</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} ຄຳຕອບ</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>ບັນທຶກ</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>ຂໍ້ຜິດພາດການຄົ້ນຫາ: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>ບໍ່ຮູ້ຈັກ</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>ເລືອກບັນຊີ</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>ເລືອກລາຍການຫຼິ້ນ</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>ອັງກິດ</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>ໃຊ້ພາສາ Windows ເປັນຄ່າເລີ່ມຕົ້ນ.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>ພາສາແອັບ</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>ລັດເຊຍ</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>ພາສາ</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>ພາສາ</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>ຄ່າເລີ່ມຕົ້ນຂອງລະບົບ</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>ແບ່ງປັນ YouTube Short ນີ້</value>
@@ -435,11 +768,47 @@
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>ແບ່ງປັນວິດີໂອ YouTube ນີ້</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>ສະແດງ Shorts ໃນແອັບ</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>ສະແດງໜ້ອຍລົງ</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>ເພີ່ມເຕີມ</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>ບໍ່ສາມາດແລກ TV refresh token ເປັນ access token ໄດ້. ເຂົ້າລະບົບໃໝ່ ແລະກວດວ່າ refresh token ຍັງໃຊ້ໄດ້.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>ຕ້ອງເຂົ້າລະບົບ</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>ເຂົ້າລະບົບເພື່ອເບິ່ງ Shorts.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>ຊ່ວງໂຄສະນາໃນແຖບຊອກຫາ</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>ສະແດງຊ່ວງ SponsorBlock ເປັນສີ</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>ຕິດຕາມ</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>ຜູ້ຕິດຕາມ</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>ຜູ້ຕິດຕາມ</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>ຜູ້ຕິດຕາມ</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} ຜູ້ຕິດຕາມ • {1} ວິດີໂອ</value>
@@ -450,65 +819,71 @@
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube ປະຕິເສດຄຳຂໍຕິດຕາມ.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube ປະຕິເສດຄຳຂໍຕິດຕາມ. ກວດວ່າ TV token ໃຊ້ໄດ້ ແລະພົບ channel id ແລ້ວ.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   ໄວຂຶ້ນ (+0.25ວິ)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   ຊ້າລົງ (-0.25ວິ)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>ຄືນຄ່າເລື່ອນປົກກະຕິ (0.00 ວິ.)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>ຄຳບັນຍາຍ</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>ຊິງຄ໌: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>ບໍ່ສາມາດໂຫຼດຄຳເຫັນໄດ້.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>ຮູບແບບ</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>ບໍ່ມີຊື່ເລື່ອງ</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>ມືດ</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>ສຳເນົາລິ້ງວິດີໂອໄປຄລິບບອດແລ້ວ.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>ສະຫວ່າງ</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} ວິດີໂອ</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>ອາທິດນີ້</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>ຄຸນນະພາບຮູບຕົວຢ່າງ</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>ພາສາ</value>
+  <data name="Today" xml:space="preserve">
+    <value>ມື້ນີ້</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>ພາສາແອັບ</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>ສະເກັດຕະຫຼົກ</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>ພາສາ</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>ສູດອາຫານ</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>ໃຊ້ພາສາ Windows ເປັນຄ່າເລີ່ມຕົ້ນ.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>ບົດສອນ DIY</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>ຄ່າເລີ່ມຕົ້ນຂອງລະບົບ</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>ໄຮໄລຕ໌ເກມ</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>ອັງກິດ</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>ຕົວຢ່າງຮູບເງົາ</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>ລັດເຊຍ</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>ມິວສິກວິດີໂອ</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>ວິດີໂອ YouTube</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>ໄຮໄລຕ໌ກິລາ</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>ຊ່ອງ</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>ຣີວິວເຕັກໂນໂລຊີ</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>ບໍ່ສາມາດແລກ TV refresh token ເປັນ access token ໄດ້.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>ບໍ່ຮູ້ຈັກ</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>ບໍ່ມີຊື່ເລື່ອງ</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>ບໍ່ສາມາດແລກ TV refresh token ເປັນ access token ໄດ້. ເຂົ້າລະບົບໃໝ່ ແລະກວດວ່າ refresh token ຍັງໃຊ້ໄດ້.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>ບໍ່ພົບ TV refresh token. ເຂົ້າລະບົບໃໝ່ແລ້ວລອງອີກຄັ້ງ.</value>
@@ -516,194 +891,23 @@
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>ບໍ່ພົບ TV refresh token. ເຂົ້າລະບົບໃໝ່ເພື່ອໃຫ້ yt_refresh_token ຖືກບັນທຶກ ແລ້ວລອງໃໝ່.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>ບໍ່ສາມາດແລກ TV refresh token ເປັນ access token ໄດ້.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>ບໍ່ສາມາດແລກ refresh token ເປັນ access token ໄດ້.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>ການຫຼິ້ນລົ້ມເຫຼວ</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>ບໍ່ສາມາດຫຼິ້ນ Short ນີ້ໄດ້</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>ໝົດເວລາໂຫຼດວິດີໂອ. ກວດສອບອິນເຕີເນັດຂອງທ່ານ.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>ບໍ່ສາມາດໂຫຼດວິດີໂອໄດ້. ກະລຸນາລອງໃໝ່.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>ບໍ່ສາມາດຫຼິ້ນວິດີໂອໄດ້. ໂປຣແກຣມຫຼິ້ນຍັງບໍ່ຖືກເລີ່ມ.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>ບໍ່ສາມາດໂຫຼດວິດີໂອໄດ້. ລິ້ງອາດໝົດອາຍຸ ຫຼືບໍ່ຮອງຮັບຮູບແບບ.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>ຂໍ້ຜິດພາດເຄືອຂ່າຍ. ກວດສອບອິນເຕີເນັດຂອງທ່ານ.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>ຂໍ້ຜິດພາດການຫຼິ້ນວິດີໂອ. ລອງເລືອກຄຸນນະພາບຕ່ຳລົງ.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>ບໍ່ສາມາດຫຼິ້ນວິດີໂອໄດ້.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>ມິວສິກວິດີໂອ</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>ໄຮໄລຕ໌ເກມ</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>ສູດອາຫານ</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>ຣີວິວເຕັກໂນໂລຊີ</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>ຕົວຢ່າງຮູບເງົາ</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>ໄຮໄລຕ໌ກິລາ</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>ສະເກັດຕະຫຼົກ</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>ບົດສອນ DIY</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>ວິດີໂອແນະນຳ</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>ທ່ານແນ່ໃຈບໍວ່າຕ້ອງການອອກຈາກລະບົບ?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>ຢືນຢັນການອອກຈາກລະບົບ</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>ແມ່ນ</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>ບໍ່</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>ເຂົ້າລະບົບເພື່ອເບິ່ງການແຈ້ງເຕືອນ YouTube ຂອງທ່ານ.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>ບໍ່ສາມາດໂຫຼດການແຈ້ງເຕືອນໄດ້</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>ກັບມາເປີດໜ້ານີ້ອີກພາຍຫຼັງ.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>playlist id ຫວ່າງ</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} ວິດີໂອ</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>ບໍ່ຮູ້ຈັກ</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>ເຂົ້າລະບົບເພື່ອເບິ່ງ Shorts.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>ບໍ່ພົບ Shorts.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>ບໍ່ສາມາດໂຫຼດຄຳເຫັນໄດ້.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>ບໍ່ສາມາດໂຫຼດ Shorts ໄດ້.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>ບໍ່ສາມາດຫຼິ້ນ Short ນີ້ໄດ້</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>ບໍ່ສາມາດຫຼິ້ນ Short ນີ້ໄດ້.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>ຄຸນນະພາບ</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>ບໍ່ຮູ້ຈັກ</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>ຄວາມໄວການຫຼິ້ນ</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>ແທຣັກສຽງ</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>ຄຳບັນຍາຍ</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>ຫຼິ້ນວິດີໂອບໍ່ສຳເລັດ: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>ລະຫັດຂໍ້ຜິດພາດ: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>ມື້ນີ້</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} ມື້ກ່ອນ</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} ອາທິດກ່ອນ</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} ເດືອນກ່ອນ</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} ປີກ່ອນ</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; ກັບຄືນ</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>ວິດີໂອ YouTube</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>ຜູ້ຕິດຕາມ</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>ຜູ້ຕິດຕາມ</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>ຜູ້ຕິດຕາມ</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>ວິດີໂອ</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>ວິດີໂອຕ່າງໆ</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>ວິດີໂອຕ່າງໆ</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>ຕິດຕາມ</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>ຖືກໃຈ</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>ຄຳເຫັນ</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>ອັບເດດໃໝ່ຈາກການຕິດຕາມຂອງທ່ານຈະປາກົດຢູ່ນີ້.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube ປະຕິເສດຄຳຂໍຕິດຕາມ. ກວດວ່າ TV token ໃຊ້ໄດ້ ແລະພົບ channel id ແລ້ວ.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube ປະຕິເສດຄຳຂໍຄະແນນ. ກວດວ່າ TV token ໃຊ້ໄດ້ ແລະມີ YouTube rating scope.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>ບໍ່ສາມາດແລກ TV refresh token ເປັນ access token ໄດ້. ເຂົ້າລະບົບໃໝ່ ແລະກວດວ່າ refresh token ຍັງໃຊ້ໄດ້.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>ຕົກລົງ</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>ມື້ວານ</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>ອາທິດນີ້</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>ບໍ່ມີຊື່ເລື່ອງ</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>ອັບໂຫຼດວິດີໂອໜຶ່ງ</value>
@@ -711,146 +915,73 @@
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>ອັບໂຫຼດວິດີໂອ “{0}”</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>ຈາກການຕິດຕາມ</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>ເພີ່ມວິດີໂອໃສ່ “{0}” ແລ້ວ</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>ທັງໝົດ</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>ວິດີໂອຕ່າງໆ</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>ຮູບເງົາ &amp; ແອນິເມຊັນ</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>ສຳເນົາລິ້ງວິດີໂອໄປຄລິບບອດແລ້ວ.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>ລົດ &amp; ພາຫະນະ</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>ບໍ່ສາມາດໂຫຼດວິດີໂອໄດ້. ລິ້ງອາດໝົດອາຍຸ ຫຼືບໍ່ຮອງຮັບຮູບແບບ.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>ດົນຕີ</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>ໝົດເວລາໂຫຼດວິດີໂອ. ກວດສອບອິນເຕີເນັດຂອງທ່ານ.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>ສັດລ້ຽງ &amp; ສັດ</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>ວິດີໂອຕ່າງໆ</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>ກິລາ</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>ວິດີໂອ</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>ຮູບເງົາສັ້ນ</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>ຂໍ້ຜິດພາດການຫຼິ້ນວິດີໂອ. ລອງເລືອກຄຸນນະພາບຕ່ຳລົງ.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>ທ່ອງທ່ຽວ &amp; ກິດຈະກຳ</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>ລຶບວິດີໂອອອກຈາກ “{0}” ແລ້ວ</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>ເກມ</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} ວິດີໂອ</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>ວິດີໂອບລັອກ</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} ວິດີໂອ</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>ຜູ້ຄົນ &amp; ບລັອກ</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} ອາທິດກ່ອນ</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>ຕະຫຼົກ</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} ປີກ່ອນ</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>ບັນເທີງ</value>
+  <data name="Yes" xml:space="preserve">
+    <value>ແມ່ນ</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>ຂ່າວ &amp; ການເມືອງ</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>ມື້ວານ</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>ວິທີເຮັດ &amp; ສະໄຕລ໌</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>ການສຶກສາ</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>ວິດີໂອ YouTube</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>ວິທະຍາສາດ &amp; ເຕັກໂນໂລຊີ</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>ວິດີໂອ YouTube</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>ບໍ່ຫາກຳໄລ &amp; ກິດຈະກຳ</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>ລ້າງວິດີໂອທີ່ດາວໂຫຼດແລ້ວ</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>ຮູບເງົາ</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>ລຶບວິດີໂອທີ່ດາວໂຫຼດທັງໝົດ ແລະ ຮູບພາບຂະໜາດນ້ອຍທີ່ເກັບໄວ້</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>ອານິເມ/ແອນິເມຊັນ</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>ວິດີໂອທັງຫມົດທີ່ດາວໂຫລດແລະຮູບພາບຂະຫນາດນ້ອຍຂອງເຂົາເຈົ້າຈະຖືກລຶບອອກຢ່າງຖາວອນ.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>ແອັກຊັນ/ຜະຈົນໄພ</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>ແຈ້ງ</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>ຄລາສສິກ</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>ສາລະຄະດີ</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>ດຣາມາ</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>ຄອບຄົວ</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>ຕ່າງປະເທດ</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>ສະຫຍອງຂວັນ</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>ໄຊໄຟ/ແຟນຕາຊີ</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>ລະທຶກຂວັນ</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>ລາຍການ</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>ຕົວຢ່າງ</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>ສົດ</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>ການຮຽນຮູ້</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>ວິດີໂອເກມ</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>ຂ່າວ</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>ພອດແຄສ</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>ຮູບລັກສະນະ</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>ຮູບແບບ</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>ສະຫວ່າງ</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>ມືດ</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>ໄທລ໌ສົດ</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>ສະແດງຄຳແນະນຳໃນໜ້າເລີ່ມ</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>ຄຸນນະພາບຮູບຕົວຢ່າງ</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>ໄອຄອນຊ່ອງ</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>ສະແດງໄອຄອນຊ່ອງໃນບັດວິດີໂອ</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>ຍົກເລີກ</value>
   </data>
 </root>

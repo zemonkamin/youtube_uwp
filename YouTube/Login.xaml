@@ -31,22 +31,8 @@
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal"/>
-                                    <VisualState x:Name="PointerOver">
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="RootBorder"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0.92"
-                                                             Duration="0:0:0"/>
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Pressed">
-                                        <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetName="RootBorder"
-                                                             Storyboard.TargetProperty="Opacity"
-                                                             To="0.80"
-                                                             Duration="0:0:0"/>
-                                        </Storyboard>
-                                    </VisualState>
+                                    <VisualState x:Name="PointerOver"/>
+                                    <VisualState x:Name="Pressed"/>
                                     <VisualState x:Name="Disabled">
                                         <Storyboard>
                                             <DoubleAnimation Storyboard.TargetName="RootBorder"
@@ -89,7 +75,7 @@
         </Grid.RowDefinitions>
 
         <!-- Navbar at the top -->
-        <local:Navbar x:Name="navbar" Grid.Row="0"/>
+        <local:Navbar x:Name="navbar" Grid.Row="0" Canvas.ZIndex="20"/>
 
         <!-- QR Code section in the middle -->
         <StackPanel x:Name="qrContainer"
@@ -142,6 +128,6 @@
         </StackPanel>
 
         <!-- Tabbar at the bottom -->
-        <local:Tabbar x:Name="tabbar" Grid.Row="2"/>
+        <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20"/>
     </Grid>
 </Page>

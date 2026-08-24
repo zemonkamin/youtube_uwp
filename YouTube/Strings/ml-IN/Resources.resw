@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>LegacyProjects ടീം വികസിപ്പിച്ചത്.
@@ -18,11 +45,146 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
 
 പതിപ്പ് {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>അക്കൗണ്ടുകൾ</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>രൂപം</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>ഓഡിയോ ട്രാക്ക്</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>ഓട്ടോ</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>സ്വയമേവ വിവർത്തനം &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; തിരികെ</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>ആക്ഷൻ/അഡ്വഞ്ചർ</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>എല്ലാം</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>അനിമെ/ആനിമേഷൻ</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>ഓട്ടോകൾ &amp; വാഹനങ്ങൾ</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>ക്ലാസിക്കുകൾ</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>കോമഡി</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>ഡോക്യുമെന്ററി</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>ഡ്രാമ</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>വിദ്യാഭ്യാസം</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>വിനോദം</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>കുടുംബം</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>ഫിലിം &amp; ആനിമേഷൻ</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>വിദേശം</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>ഗെയിമിംഗ്</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>ഹൊറർ</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>ഹൗടു &amp; സ്റ്റൈൽ</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>പഠനം</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>ലൈവ്</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>സിനിമകൾ</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>സംഗീതം</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>വാർത്തകൾ</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>വാർത്ത &amp; രാഷ്ട്രീയം</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>ലാഭേച്ഛയില്ലാത്തവ &amp; പ്രവർത്തനം</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>ആളുകൾ &amp; ബ്ലോഗുകൾ</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>വളർത്തുമൃഗങ്ങൾ &amp; മൃഗങ്ങൾ</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>പോഡ്കാസ്റ്റുകൾ</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>ശാസ്ത്രം &amp; സാങ്കേതികവിദ്യ</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>സൈ-ഫൈ/ഫാന്റസി</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>ഹ്രസ്വചിത്രങ്ങൾ</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>ഷോകൾ</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>കായികം</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>ത്രില്ലർ</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>ട്രെയിലറുകൾ</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>യാത്ര &amp; ഇവന്റുകൾ</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>വീഡിയോബ്ലോഗിംഗ്</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>വീഡിയോ ഗെയിമുകൾ</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>ചാനൽ</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>ചാനൽ ഐക്കണുകൾ</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>വീഡിയോ കാർഡുകളിൽ ചാനൽ ഐക്കണുകൾ കാണിക്കുക</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>ചാനൽ ലോഡ് പിശക്</value>
@@ -30,14 +192,71 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>ചാനൽ നൽകിയിട്ടില്ല</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>അഭിപ്രായങ്ങൾ</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>നിങ്ങൾക്ക് സൈൻ ഔട്ട് ചെയ്യണമെന്ന് ഉറപ്പാണോ?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>സൈൻ ഔട്ട് സ്ഥിരീകരിക്കുക</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>ചാനൽ ലോഡ് ചെയ്യാനായില്ല</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>അറിയിപ്പുകൾ ലോഡ് ചെയ്യാനായില്ല</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>പ്ലേലിസ്റ്റ് ലോഡ് ചെയ്യാനായില്ല</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>വീഡിയോ ലോഡ് ചെയ്യാനായില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>വീഡിയോ പ്ലേ ചെയ്യാനായില്ല.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} ദിവസം മുമ്പ്</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>വിവരണം ലഭ്യമല്ല</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>ഡൗൺലോഡ് ചെയ്യുക</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>ഡൗൺലോഡ് ചെയ്തു</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>നിങ്ങളുടെ ഡൗൺലോഡുകൾ</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>ഡൗൺലോഡ് ഫോൾഡർ</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>ഡൗൺലോഡ് ചെയ്ത വീഡിയോകൾ സംരക്ഷിക്കേണ്ട സ്ഥലം തിരഞ്ഞെടുക്കുക</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>ഡൗൺലോഡ് നിലവാരം</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>ഡൗൺലോഡുകൾ</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>നിങ്ങൾ ഡൗൺലോഡ് ചെയ്യുന്ന വീഡിയോകൾ ഇവിടെ ദൃശ്യമാകും.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>നിങ്ങളുടെ ഡൗൺലോഡുകൾ</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>ഡൗൺലോഡുകൾ</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>ഈ വീഡിയോ ഡൗൺലോഡ് ചെയ്യാനാകില്ല</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>പിശക് കോഡ്: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>പിശക്: {0}</value>
@@ -62,6 +281,18 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>ഓരോ {0} മിനിറ്റിലും</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>വീഡിയോ പ്ലേ ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രിപ്ഷനുകളിൽ നിന്ന്</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>ഗ്ലാസ് ഇഫക്റ്റ്</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>നാവിഗേഷൻ ബാറുകൾ മങ്ങിക്കുക</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>ചരിത്രം ലോഡ് ചെയ്യുന്നത് പരാജയപ്പെട്ടു</value>
@@ -90,8 +321,17 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="LanguageSystem" xml:space="preserve">
     <value>സിസ്റ്റം ഡിഫോൾട്ട്</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>ലൈക്ക്</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>ലിങ്ക് പകർത്തി</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>ലൈവ് ടൈൽ</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>സ്റ്റാർട്ട് സ്ക്രീനിൽ ശുപാർശകൾ കാണിക്കുക</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>വിവരണം ലോഡ് ചെയ്യുന്നു...</value>
@@ -237,6 +477,9 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>ഈ പ്ലേലിസ്റ്റിൽ വീഡിയോകളില്ല</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>ശരി</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>വ്യക്തിഗതമാക്കിയത്</value>
   </data>
@@ -375,6 +618,15 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="Mix" xml:space="preserve">
     <value>മിക്സ്</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} മാസം മുമ്പ്</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>നെറ്റ്‌വർക്ക് പിശക്. നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>ഇല്ല</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>അഭിപ്രായങ്ങളൊന്നും കണ്ടെത്തിയില്ല.</value>
   </data>
@@ -393,11 +645,26 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="NoNotifications" xml:space="preserve">
     <value>അറിയിപ്പുകളില്ല</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts ഒന്നും കണ്ടെത്തിയില്ല.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>അറിയിപ്പ് മുൻഗണന അപ്ഡേറ്റ് ചെയ്യാനായില്ല.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>അറിയിപ്പുകൾ പരാജയപ്പെട്ടു</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>നിങ്ങളുടെ സബ്‌സ്‌ക്രിപ്ഷനുകളിൽ നിന്നുള്ള പുതിയ അപ്ഡേറ്റുകൾ ഇവിടെ കാണിക്കും.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>നിങ്ങളുടെ YouTube അറിയിപ്പുകൾ കാണാൻ സൈൻ ഇൻ ചെയ്യുക.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>ഈ പേജ് പിന്നീട് വീണ്ടും തുറക്കുക.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>ശീർഷകമില്ല</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>സൈൻ ഇൻ ചെയ്തിട്ടില്ല</value>
@@ -414,8 +681,23 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="PlaybackError" xml:space="preserve">
     <value>പ്ലേബാക്ക് പിശക്</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>പ്ലേബാക്ക് പരാജയപ്പെട്ടു</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>പ്ലേബാക്ക് വേഗം</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>വീഡിയോ പ്ലേ ചെയ്യാനായില്ല. പ്ലെയർ ആരംഭിച്ചിട്ടില്ല.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>പ്ലേലിസ്റ്റ്</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>പ്ലേലിസ്റ്റ് id ശൂന്യമാണ്</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>പ്ലേലിസ്റ്റ് അപ്ഡേറ്റ് ചെയ്യാനായില്ല</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR കോഡ്</value>
@@ -423,11 +705,62 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>QR പ്രദർശന പിശക്: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>നിലവാരം</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>റേറ്റിംഗ് പരാജയപ്പെട്ടു</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube റേറ്റിംഗ് അഭ്യർത്ഥന നിരസിച്ചു. TV ടോക്കൺ സാധുവാണെന്നും YouTube റേറ്റിംഗ് scope ഉണ്ടെന്നും പരിശോധിക്കുക.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>ശുപാർശ ചെയ്ത വീഡിയോ</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>റിഫ്രഷ് ടോക്കൺ ആക്സസ് ടോക്കണായി മാറ്റാനായില്ല.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>മറുപടികൾ</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} മറുപടികൾ</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>സേവ് ചെയ്യുക</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>തിരച്ചിൽ പിശക്: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>അജ്ഞാതം</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>അക്കൗണ്ട് തിരഞ്ഞെടുക്കുക</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>പ്ലേലിസ്റ്റ് തിരഞ്ഞെടുക്കുക</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>ഇംഗ്ലീഷ്</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>ഡിഫോൾട്ടായി Windows ഭാഷ ഉപയോഗിക്കുന്നു.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>ആപ്പ് ഭാഷ</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>റഷ്യൻ</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>ഭാഷ</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>ഭാഷ</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>സിസ്റ്റം ഡിഫോൾട്ട്</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>ഈ YouTube Short പങ്കിടുക</value>
@@ -435,11 +768,47 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>ഈ YouTube വീഡിയോ പങ്കിടുക</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>ആപ്പിൽ Shorts കാണിക്കുക</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>കുറച്ച് കാണിക്കുക</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>കൂടുതൽ</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>TV റിഫ്രഷ് ടോക്കൺ ആക്സസ് ടോക്കണായി മാറ്റാനായില്ല. വീണ്ടും സൈൻ ഇൻ ചെയ്ത് റിഫ്രഷ് ടോക്കൺ ഇപ്പോഴും സാധുവാണോ പരിശോധിക്കുക.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>സൈൻ ഇൻ ആവശ്യമാണ്</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Shorts കാണാൻ സൈൻ ഇൻ ചെയ്യുക.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>സീക്ക് ബാറിലെ പരസ്യ ഭാഗങ്ങൾ</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>നിറമുള്ള SponsorBlock പരിധികൾ കാണിക്കുക</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രൈബ് ചെയ്യുക</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രൈബർമാർ</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രൈബർമാർ</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രൈബർ</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} സബ്‌സ്‌ക്രൈബർമാർ • {1} വീഡിയോകൾ</value>
@@ -450,65 +819,71 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube സബ്‌സ്‌ക്രിപ്ഷൻ അഭ്യർത്ഥന നിരസിച്ചു.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube സബ്‌സ്‌ക്രിപ്ഷൻ അഭ്യർത്ഥന നിരസിച്ചു. TV ടോക്കൺ സാധുവാണെന്നും ചാനൽ id കണ്ടെത്തിയെന്നും പരിശോധിക്കുക.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   നേരത്തെ (+0.25സെ)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   പിന്നീട് (-0.25സെ)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>സാധാരണ ഓഫ്‌സെറ്റ് പുനഃസ്ഥാപിക്കുക (0.00 സെ)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>സബ്‌ടൈറ്റിലുകൾ</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>സിങ്ക്: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>അഭിപ്രായങ്ങൾ ലോഡ് ചെയ്യാനായില്ല.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>തീം</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>ശീർഷകമില്ല</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>ഡാർക്ക്</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>വീഡിയോ ലിങ്ക് ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>ലൈറ്റ്</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} വീഡിയോകൾ</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>ഈ ആഴ്ച</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>തമ്പ്‌നെയിൽ ഗുണനിലവാരം</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>ഭാഷ</value>
+  <data name="Today" xml:space="preserve">
+    <value>ഇന്ന്</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>ആപ്പ് ഭാഷ</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>കോമഡി സ്കെച്ചുകൾ</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>ഭാഷ</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>പാചക പാചകക്കുറിപ്പുകൾ</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>ഡിഫോൾട്ടായി Windows ഭാഷ ഉപയോഗിക്കുന്നു.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>DIY ട്യൂട്ടോറിയലുകൾ</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>സിസ്റ്റം ഡിഫോൾട്ട്</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>ഗെയിമിംഗ് ഹൈലൈറ്റുകൾ</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>ഇംഗ്ലീഷ്</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>സിനിമാ ട്രെയിലറുകൾ</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>റഷ്യൻ</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>സംഗീത വീഡിയോകൾ</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube വീഡിയോ</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>കായിക ഹൈലൈറ്റുകൾ</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>ചാനൽ</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>ടെക് അവലോകനങ്ങൾ</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>TV റിഫ്രഷ് ടോക്കൺ ആക്സസ് ടോക്കണായി മാറ്റാനായില്ല.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>അജ്ഞാതം</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>ശീർഷകമില്ല</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>TV റിഫ്രഷ് ടോക്കൺ ആക്സസ് ടോക്കണായി മാറ്റാനായില്ല. വീണ്ടും സൈൻ ഇൻ ചെയ്ത് റിഫ്രഷ് ടോക്കൺ ഇപ്പോഴും സാധുവാണോ പരിശോധിക്കുക.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>TV റിഫ്രഷ് ടോക്കൺ കണ്ടെത്തിയില്ല. വീണ്ടും സൈൻ ഇൻ ചെയ്ത് ശ്രമിക്കുക.</value>
@@ -516,194 +891,23 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>TV റിഫ്രഷ് ടോക്കൺ കണ്ടെത്തിയില്ല. yt_refresh_token സേവ് ആകാൻ വീണ്ടും സൈൻ ഇൻ ചെയ്ത് പിന്നെ ശ്രമിക്കുക.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>TV റിഫ്രഷ് ടോക്കൺ ആക്സസ് ടോക്കണായി മാറ്റാനായില്ല.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>റിഫ്രഷ് ടോക്കൺ ആക്സസ് ടോക്കണായി മാറ്റാനായില്ല.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>പ്ലേബാക്ക് പരാജയപ്പെട്ടു</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>ഈ Short പ്ലേ ചെയ്യാനായില്ല</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>വീഡിയോ ലോഡ് ചെയ്യാനുള്ള സമയം കഴിഞ്ഞു. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>വീഡിയോ ലോഡ് ചെയ്യാനായില്ല. ദയവായി വീണ്ടും ശ്രമിക്കുക.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>വീഡിയോ പ്ലേ ചെയ്യാനായില്ല. പ്ലെയർ ആരംഭിച്ചിട്ടില്ല.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>വീഡിയോ ലോഡ് ചെയ്യാനായില്ല. ലിങ്ക് കാലഹരണപ്പെട്ടിരിക്കാം അല്ലെങ്കിൽ ഫോർമാറ്റ് പിന്തുണയ്ക്കാത്തതാകാം.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>നെറ്റ്‌വർക്ക് പിശക്. നിങ്ങളുടെ ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>വീഡിയോ പ്ലേബാക്ക് പിശക്. കുറഞ്ഞ നിലവാരം തിരഞ്ഞെടുത്ത് ശ്രമിക്കുക.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>വീഡിയോ പ്ലേ ചെയ്യാനായില്ല.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>സംഗീത വീഡിയോകൾ</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>ഗെയിമിംഗ് ഹൈലൈറ്റുകൾ</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>പാചക പാചകക്കുറിപ്പുകൾ</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>ടെക് അവലോകനങ്ങൾ</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>സിനിമാ ട്രെയിലറുകൾ</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>കായിക ഹൈലൈറ്റുകൾ</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>കോമഡി സ്കെച്ചുകൾ</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>DIY ട്യൂട്ടോറിയലുകൾ</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>ശുപാർശ ചെയ്ത വീഡിയോ</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>നിങ്ങൾക്ക് സൈൻ ഔട്ട് ചെയ്യണമെന്ന് ഉറപ്പാണോ?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>സൈൻ ഔട്ട് സ്ഥിരീകരിക്കുക</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>അതെ</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>ഇല്ല</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>നിങ്ങളുടെ YouTube അറിയിപ്പുകൾ കാണാൻ സൈൻ ഇൻ ചെയ്യുക.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>അറിയിപ്പുകൾ ലോഡ് ചെയ്യാനായില്ല</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>ഈ പേജ് പിന്നീട് വീണ്ടും തുറക്കുക.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>പ്ലേലിസ്റ്റ് id ശൂന്യമാണ്</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} വീഡിയോകൾ</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>അജ്ഞാതം</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Shorts കാണാൻ സൈൻ ഇൻ ചെയ്യുക.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Shorts ഒന്നും കണ്ടെത്തിയില്ല.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>അഭിപ്രായങ്ങൾ ലോഡ് ചെയ്യാനായില്ല.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Shorts ലോഡ് ചെയ്യാനായില്ല.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>ഈ Short പ്ലേ ചെയ്യാനായില്ല</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>ഈ Short പ്ലേ ചെയ്യാനായില്ല.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>നിലവാരം</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>അജ്ഞാതം</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>പ്ലേബാക്ക് വേഗം</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>ഓഡിയോ ട്രാക്ക്</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>സബ്‌ടൈറ്റിലുകൾ</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>വീഡിയോ പ്ലേ ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>പിശക് കോഡ്: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>ഇന്ന്</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} ദിവസം മുമ്പ്</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} ആഴ്ച മുമ്പ്</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} മാസം മുമ്പ്</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} വർഷം മുമ്പ്</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; തിരികെ</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube വീഡിയോ</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>സബ്‌സ്‌ക്രൈബർ</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>സബ്‌സ്‌ക്രൈബർമാർ</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>സബ്‌സ്‌ക്രൈബർമാർ</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>വീഡിയോ</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>വീഡിയോകൾ</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>വീഡിയോകൾ</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>സബ്‌സ്‌ക്രൈബ് ചെയ്യുക</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>ലൈക്ക്</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>അഭിപ്രായങ്ങൾ</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>നിങ്ങളുടെ സബ്‌സ്‌ക്രിപ്ഷനുകളിൽ നിന്നുള്ള പുതിയ അപ്ഡേറ്റുകൾ ഇവിടെ കാണിക്കും.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube സബ്‌സ്‌ക്രിപ്ഷൻ അഭ്യർത്ഥന നിരസിച്ചു. TV ടോക്കൺ സാധുവാണെന്നും ചാനൽ id കണ്ടെത്തിയെന്നും പരിശോധിക്കുക.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube റേറ്റിംഗ് അഭ്യർത്ഥന നിരസിച്ചു. TV ടോക്കൺ സാധുവാണെന്നും YouTube റേറ്റിംഗ് scope ഉണ്ടെന്നും പരിശോധിക്കുക.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>TV റിഫ്രഷ് ടോക്കൺ ആക്സസ് ടോക്കണായി മാറ്റാനായില്ല. വീണ്ടും സൈൻ ഇൻ ചെയ്ത് റിഫ്രഷ് ടോക്കൺ ഇപ്പോഴും സാധുവാണോ പരിശോധിക്കുക.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>ശരി</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>ഇന്നലെ</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>ഈ ആഴ്ച</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>ശീർഷകമില്ല</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>ഒരു വീഡിയോ അപ്‌ലോഡ് ചെയ്തു</value>
@@ -711,146 +915,73 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>“{0}” വീഡിയോ അപ്‌ലോഡ് ചെയ്തു</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>സബ്‌സ്‌ക്രിപ്ഷനുകളിൽ നിന്ന്</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>വീഡിയോ “{0}” എന്നതിലേക്ക് ചേർത്തു</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>എല്ലാം</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>വീഡിയോകൾ</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>ഫിലിം &amp; ആനിമേഷൻ</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>വീഡിയോ ലിങ്ക് ക്ലിപ്പ്ബോർഡിലേക്ക് പകർത്തി.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>ഓട്ടോകൾ &amp; വാഹനങ്ങൾ</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>വീഡിയോ ലോഡ് ചെയ്യാനായില്ല. ലിങ്ക് കാലഹരണപ്പെട്ടിരിക്കാം അല്ലെങ്കിൽ ഫോർമാറ്റ് പിന്തുണയ്ക്കാത്തതാകാം.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>സംഗീതം</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>വീഡിയോ ലോഡ് ചെയ്യാനുള്ള സമയം കഴിഞ്ഞു. ഇന്റർനെറ്റ് കണക്ഷൻ പരിശോധിക്കുക.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>വളർത്തുമൃഗങ്ങൾ &amp; മൃഗങ്ങൾ</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>വീഡിയോകൾ</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>കായികം</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>വീഡിയോ</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>ഹ്രസ്വചിത്രങ്ങൾ</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>വീഡിയോ പ്ലേബാക്ക് പിശക്. കുറഞ്ഞ നിലവാരം തിരഞ്ഞെടുത്ത് ശ്രമിക്കുക.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>യാത്ര &amp; ഇവന്റുകൾ</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>വീഡിയോ “{0}” എന്നതിൽ നിന്ന് നീക്കി</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>ഗെയിമിംഗ്</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} വീഡിയോകൾ</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>വീഡിയോബ്ലോഗിംഗ്</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} വീഡിയോകൾ</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>ആളുകൾ &amp; ബ്ലോഗുകൾ</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} ആഴ്ച മുമ്പ്</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>കോമഡി</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} വർഷം മുമ്പ്</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>വിനോദം</value>
+  <data name="Yes" xml:space="preserve">
+    <value>അതെ</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>വാർത്ത &amp; രാഷ്ട്രീയം</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>ഇന്നലെ</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>ഹൗടു &amp; സ്റ്റൈൽ</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>വിദ്യാഭ്യാസം</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube വീഡിയോ</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>ശാസ്ത്രം &amp; സാങ്കേതികവിദ്യ</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube വീഡിയോ</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>ലാഭേച്ഛയില്ലാത്തവ &amp; പ്രവർത്തനം</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>ഡൗൺലോഡ് ചെയ്ത വീഡിയോകൾ മായ്ക്കുക</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>സിനിമകൾ</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>ഡൗൺലോഡ് ചെയ്ത എല്ലാ വീഡിയോകളും കാഷെ ചെയ്ത ലഘുചിത്രങ്ങളും ഇല്ലാതാക്കുക</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>അനിമെ/ആനിമേഷൻ</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>ഡൗൺലോഡ് ചെയ്ത എല്ലാ വീഡിയോകളും അവയുടെ ലഘുചിത്രങ്ങളും ശാശ്വതമായി ഇല്ലാതാക്കപ്പെടും.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>ആക്ഷൻ/അഡ്വഞ്ചർ</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>മായ്ക്കുക</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>ക്ലാസിക്കുകൾ</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>ഡോക്യുമെന്ററി</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>ഡ്രാമ</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>കുടുംബം</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>വിദേശം</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>ഹൊറർ</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>സൈ-ഫൈ/ഫാന്റസി</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>ത്രില്ലർ</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>ഷോകൾ</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>ട്രെയിലറുകൾ</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>ലൈവ്</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>പഠനം</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>വീഡിയോ ഗെയിമുകൾ</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>വാർത്തകൾ</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>പോഡ്കാസ്റ്റുകൾ</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>രൂപം</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>തീം</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>ലൈറ്റ്</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>ഡാർക്ക്</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>ലൈവ് ടൈൽ</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>സ്റ്റാർട്ട് സ്ക്രീനിൽ ശുപാർശകൾ കാണിക്കുക</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>തമ്പ്‌നെയിൽ ഗുണനിലവാരം</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>ചാനൽ ഐക്കണുകൾ</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>വീഡിയോ കാർഡുകളിൽ ചാനൽ ഐക്കണുകൾ കാണിക്കുക</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>റദ്ദാക്കുക</value>
   </data>
 </root>

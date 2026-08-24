@@ -186,7 +186,7 @@ namespace YouTube
             }
         }
 
-        private static bool RequiresPhysicalWideCrop(string url)
+        internal static bool RequiresPhysicalWideCrop(string url)
         {
             if (string.IsNullOrWhiteSpace(url))
                 return false;

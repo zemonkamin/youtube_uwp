@@ -25,10 +25,14 @@ namespace YouTube
         private const string InnertubeApiKey = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 
         private ObservableCollection<SearchVideoItem> searchResults;
+        private ObservableCollection<SearchVideoItem> allPriorityResults;
+        private ObservableCollection<SearchVideoItem> allShortsResults;
+        private readonly Dictionary<string, double> _watchedProgressByVideoId =
+            new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
         private bool isLoadingMore = false;
         private string currentQuery = "";
         private string currentContinuation = "";
-        private SearchContentType currentSearchType = SearchContentType.Videos;
+        private SearchContentType currentSearchType = SearchContentType.All;
 
         private const double DefaultCardWidth = 360.0;
         private const double VideoThumbnailAspectRatio = 16.0 / 9.0;
@@ -47,11 +51,19 @@ namespace YouTube
         private bool _suppressSearchBoxNavigation;
         private bool _isNavigatingToSearching;
         private DispatcherTimer _searchBoxNavigationSuppressTimer;
+        private bool? _usingAllSearchResultsPanel;
 
         public Search()
         {
             this.InitializeComponent();
             searchResults = new ObservableCollection<SearchVideoItem>();
+            allPriorityResults = new ObservableCollection<SearchVideoItem>();
+            allShortsResults = new ObservableCollection<SearchVideoItem>();
+            SearchResultsList.ItemsSource = searchResults;
+            AllPriorityResultsList.ItemsSource = allPriorityResults;
+            AllPriorityResultsList.ItemTemplate = SearchResultsList.ItemTemplate;
+            AllShortsList.ItemsSource = allShortsResults;
+            UpdateSearchResultsPanel();
             InitializePlaceholderCards();
             UpdateTypeCheckMarks();
             this.Loaded += Page_Loaded;
@@ -68,13 +80,16 @@ namespace YouTube
             SystemNavigationManager.GetForCurrentView().BackRequested += OnBackRequested;
             UpdateBackButtonVisibility();
 
-            // Set Home tab as active
-            tabbar?.SetActiveTab(Tabbar.ActiveTab.Home);
+            // Search is a secondary page, not the Home tab itself.
+            tabbar?.SetActiveTab(Tabbar.ActiveTab.None);
 
             var query = e.Parameter as string;
             if (string.IsNullOrWhiteSpace(query))
             {
-                SearchResultsList.ItemsSource = new ObservableCollection<SearchVideoItem>();
+                searchResults.Clear();
+                allPriorityResults.Clear();
+                allShortsResults.Clear();
+                UpdateAllShortsSectionVisibility();
                 return;
             }
 
@@ -205,6 +220,9 @@ namespace YouTube
                 // Use the same smooth centered AndroidLoadingRing for every result type.
                 // Previously only Channels used it while videos/shorts/playlists flashed skeletons.
                 searchResults.Clear();
+                allPriorityResults.Clear();
+                allShortsResults.Clear();
+                UpdateAllShortsSectionVisibility();
                 LoadingPanel.Visibility = Visibility.Collapsed;
                 LoadingRing.IsActive = false;
 
@@ -225,22 +243,16 @@ namespace YouTube
 
                 var page = await SearchInnertubeAsync(query, 30, currentSearchType, null);
 
-                searchResults.Clear();
-                if (page != null && page.Items != null)
-                {
-                    foreach (var item in page.Items)
-                    {
-                        searchResults.Add(item);
-                    }
-
-                    currentContinuation = page.Continuation ?? string.Empty;
-                }
+                ApplyInitialSearchPage(page);
 
                 UpdateResponsiveCardLayouts();
             }
             catch (Exception ex)
             {
                 searchResults.Clear();
+                allPriorityResults.Clear();
+                allShortsResults.Clear();
+                UpdateAllShortsSectionVisibility();
                 ErrorText.Text = Localization.Format("SearchErrorFormat", ex.Message);
                 ErrorText.Visibility = Visibility.Visible;
             }
@@ -264,6 +276,46 @@ namespace YouTube
                     SearchLoadingRing.IsActive = false;
                 }
             }
+        }
+
+        private void ApplyInitialSearchPage(SearchPageResult page)
+        {
+            searchResults.Clear();
+            allPriorityResults.Clear();
+            allShortsResults.Clear();
+
+            if (page == null)
+            {
+                currentContinuation = string.Empty;
+                UpdateAllShortsSectionVisibility();
+                return;
+            }
+
+            currentContinuation = page.Continuation ?? string.Empty;
+            var items = page.Items ?? new List<SearchVideoItem>();
+            var showShortsShelf = currentSearchType == SearchContentType.All
+                && ShortsFeatureController.IsEnabled()
+                && page.Shorts != null
+                && page.Shorts.Count > 0;
+
+            if (showShortsShelf)
+            {
+                for (int i = 0; i < page.Shorts.Count; i++)
+                    allShortsResults.Add(page.Shorts[i]);
+            }
+
+            // YouTube keeps channel matches as full-width rows. Keeping them in a
+            // separate vertical ItemsControl also prevents a short channel row from
+            // defining the height of video cells in ItemsWrapGrid.
+            for (int i = 0; i < items.Count; i++)
+            {
+                if (currentSearchType == SearchContentType.All && items[i].IsChannel)
+                    allPriorityResults.Add(items[i]);
+                else
+                    searchResults.Add(items[i]);
+            }
+
+            UpdateAllShortsSectionVisibility();
         }
 
         private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -301,16 +353,36 @@ namespace YouTube
                     if (page.Items != null && page.Items.Count > 0)
                     {
                         // Add new items to the ObservableCollection (avoid duplicates)
-                        var existingIds = new HashSet<string>(searchResults.Select(v => v.ItemKey), StringComparer.OrdinalIgnoreCase);
+                        var existingIds = new HashSet<string>(
+                            allPriorityResults.Concat(searchResults).Select(v => v.ItemKey),
+                            StringComparer.OrdinalIgnoreCase);
                         foreach (var item in page.Items)
                         {
                             if (!existingIds.Contains(item.ItemKey))
                             {
-                                searchResults.Add(item);
+                                if (currentSearchType == SearchContentType.All && item.IsChannel)
+                                    allPriorityResults.Add(item);
+                                else
+                                    searchResults.Add(item);
                                 existingIds.Add(item.ItemKey);
                             }
                         }
                     }
+
+                    if (page.Shorts != null && page.Shorts.Count > 0)
+                    {
+                        var existingShortIds = new HashSet<string>(allShortsResults.Select(v => v.ItemKey), StringComparer.OrdinalIgnoreCase);
+                        foreach (var item in page.Shorts)
+                        {
+                            if (!existingShortIds.Contains(item.ItemKey))
+                            {
+                                allShortsResults.Add(item);
+                                existingShortIds.Add(item.ItemKey);
+                            }
+                        }
+                    }
+
+                    UpdateAllShortsSectionVisibility();
                 }
             }
             catch (Exception)
@@ -327,11 +399,30 @@ namespace YouTube
 
         private async Task<SearchPageResult> SearchInnertubeAsync(string query, int count, SearchContentType type, string continuation)
         {
-            var context = "{\"client\":{\"clientName\":\"WEB\",\"clientVersion\":\"2.20250101\",\"hl\":\""
+            Config.LoadUserToken();
+            // Dedicated Shorts and Channels searches use the public WEB response shapes.
+            // They must not carry the account's TV OAuth token; personalized TV search is
+            // retained for All, Videos and Playlists.
+            var forceWebClient = type == SearchContentType.Shorts
+                || type == SearchContentType.Channels;
+            var accessToken = forceWebClient || string.IsNullOrWhiteSpace(Config.UserToken)
+                ? string.Empty
+                : await Config.RefreshAccessTokenAsync(Config.UserToken);
+            var useTvClient = !string.IsNullOrWhiteSpace(accessToken);
+            Task<List<VideoCardItem>> historyProgressTask = null;
+            if (useTvClient && string.IsNullOrWhiteSpace(continuation))
+            {
+                _watchedProgressByVideoId.Clear();
+                historyProgressTask = Config.GetHistoryProgressItemsAsync(Config.UserToken, 500);
+            }
+            var clientName = useTvClient ? "TVHTML5" : "WEB";
+            var clientVersion = useTvClient ? "7.20250209.19.00" : "2.20250101";
+            var platform = useTvClient ? ",\"platform\":\"TV\"" : string.Empty;
+            var context = "{\"client\":{\"clientName\":\"" + clientName + "\",\"clientVersion\":\"" + clientVersion + "\",\"hl\":\""
                 + JsonEscape(Config.Hl)
                 + "\",\"gl\":\""
                 + JsonEscape(Config.Gl)
-                + "\"}}";
+                + "\"" + platform + "}}";
             string payload;
 
             if (!string.IsNullOrWhiteSpace(continuation))
@@ -350,19 +441,98 @@ namespace YouTube
 
             using (var request = new HttpRequestMessage(HttpMethod.Post, url))
             {
-                request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+                request.Headers.TryAddWithoutValidation("User-Agent", useTvClient
+                    ? "Mozilla/5.0 (SMART-TV; Linux; Tizen 6.0)"
+                    : "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
                 request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
-                request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "1");
-                request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "2.20250101");
-                request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+                request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", useTvClient ? "7" : "1");
+                request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
+                if (useTvClient)
+                {
+                    request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
+                    request.Headers.TryAddWithoutValidation("X-Goog-AuthUser", "0");
+                    request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
+                    request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/tv");
+                    Config.ApplySelectedAccountHeader(request, true);
+                }
+                request.Content = new StringContent(
+                    Config.ApplySelectedAccountContext(payload, useTvClient),
+                    Encoding.UTF8,
+                    "application/json");
 
                 var response = await httpClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
                 var page = ParseSearchPage(json, count, type);
+                System.Diagnostics.Debug.WriteLine("[SearchProgress] response classic="
+                    + (json.IndexOf("\"percentDurationWatched\"", StringComparison.Ordinal) >= 0)
+                    + ", viewModel="
+                    + (json.IndexOf("\"startPercent\"", StringComparison.Ordinal) >= 0));
+                if (historyProgressTask != null)
+                {
+                    try
+                    {
+                        var historyItems = await historyProgressTask;
+                        for (var i = 0; i < historyItems.Count; i++)
+                        {
+                            var historyItem = historyItems[i];
+                            if (historyItem != null
+                                && !string.IsNullOrWhiteSpace(historyItem.VideoId)
+                                && historyItem.WatchedPercent > 0)
+                            {
+                                _watchedProgressByVideoId[historyItem.VideoId] = historyItem.WatchedPercent;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[Search] TV history progress failed: " + ex.Message);
+                    }
+                }
+
+                ApplySearchWatchedProgress(page);
                 await HydrateSearchChannelThumbnailsAsync(page);
                 return page;
             }
+        }
+
+        private void ApplySearchWatchedProgress(SearchPageResult page)
+        {
+            if (page == null || page.Items == null)
+            {
+                return;
+            }
+
+            var directCount = 0;
+            var mergedCount = 0;
+            for (var i = 0; i < page.Items.Count; i++)
+            {
+                var item = page.Items[i];
+                if (item == null || item.IsShort || item.IsPlaylist || item.IsChannel)
+                {
+                    continue;
+                }
+
+                if (item.WatchedPercent > 0 && !string.IsNullOrWhiteSpace(item.VideoId))
+                {
+                    _watchedProgressByVideoId[item.VideoId] = item.WatchedPercent;
+                    directCount++;
+                    continue;
+                }
+
+                double percent;
+                if (!string.IsNullOrWhiteSpace(item.VideoId)
+                    && _watchedProgressByVideoId.TryGetValue(item.VideoId, out percent))
+                {
+                    item.WatchedPercent = percent;
+                    mergedCount++;
+                }
+            }
+
+            System.Diagnostics.Debug.WriteLine("[SearchProgress] cards=" + page.Items.Count
+                + ", direct=" + directCount
+                + ", historyMap=" + _watchedProgressByVideoId.Count
+                + ", merged=" + mergedCount);
         }
 
         private static async Task HydrateSearchChannelThumbnailsAsync(SearchPageResult page)
@@ -450,6 +620,11 @@ namespace YouTube
 
         private static string GetSearchParams(SearchContentType type)
         {
+            if (type == SearchContentType.All)
+            {
+                return string.Empty;
+            }
+
             if (type == SearchContentType.Playlists)
             {
                 return "EgIQAw==";
@@ -476,6 +651,8 @@ namespace YouTube
             var page = new SearchPageResult
             {
                 Items = new List<SearchVideoItem>(),
+                Shorts = new List<SearchVideoItem>(),
+                ShortsInsertIndex = -1,
                 Continuation = string.Empty
             };
 
@@ -488,7 +665,23 @@ namespace YouTube
             {
                 var root = JsonValue.Parse(json);
                 page.Continuation = FindContinuation(root);
-                if (type == SearchContentType.Playlists)
+                if (type == SearchContentType.All)
+                {
+                    int shortsInsertIndex;
+                    if (ShortsFeatureController.IsEnabled())
+                    {
+                        page.Shorts = ParseShortResults(root, maxCount);
+                        page.Items = ParseAllResults(root, maxCount, out shortsInsertIndex);
+                        page.ShortsInsertIndex = shortsInsertIndex;
+                    }
+                    else
+                    {
+                        page.Items = ParseAllResults(root, maxCount, out shortsInsertIndex);
+                        page.Shorts.Clear();
+                        page.ShortsInsertIndex = -1;
+                    }
+                }
+                else if (type == SearchContentType.Playlists)
                 {
                     page.Items = ParsePlaylistResults(root, maxCount);
                 }
@@ -513,13 +706,147 @@ namespace YouTube
             return page;
         }
 
+        private static List<SearchVideoItem> ParseAllResults(IJsonValue root, int maxCount, out int shortsInsertIndex)
+        {
+            shortsInsertIndex = -1;
+            var candidates = new List<SearchVideoItem>();
+            candidates.AddRange(ParseVideoResults(root, maxCount));
+            candidates.AddRange(ParseChannelResults(root, maxCount));
+            candidates.AddRange(ParsePlaylistResults(root, maxCount));
+
+            var byKey = new Dictionary<string, SearchVideoItem>(StringComparer.OrdinalIgnoreCase);
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                var item = candidates[i];
+                if (item != null && !string.IsNullOrWhiteSpace(item.ItemKey) && !byKey.ContainsKey(item.ItemKey))
+                    byKey.Add(item.ItemKey, item);
+            }
+
+            // Keep the order of renderer blocks sent by YouTube. This is important in All:
+            // an exact channel match or playlist may appear between ordinary videos.
+            var ordered = new List<SearchVideoItem>();
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            CollectAllResultOrder(root, byKey, seen, ordered, maxCount, ref shortsInsertIndex);
+
+            for (int i = 0; i < candidates.Count && ordered.Count < maxCount; i++)
+            {
+                var item = candidates[i];
+                if (item != null && seen.Add(item.ItemKey))
+                    ordered.Add(item);
+            }
+
+            return ordered;
+        }
+
+        private static void CollectAllResultOrder(
+            IJsonValue value,
+            IDictionary<string, SearchVideoItem> byKey,
+            ISet<string> seen,
+            IList<SearchVideoItem> result,
+            int maxCount,
+            ref int shortsInsertIndex)
+        {
+            if (value == null || result.Count >= maxCount) return;
+
+            if (value.ValueType == JsonValueType.Object)
+            {
+                var obj = value.GetObject();
+                string itemKey = string.Empty;
+
+                if (obj.ContainsKey("reelItemRenderer") || obj.ContainsKey("shortsLockupViewModel"))
+                {
+                    if (shortsInsertIndex < 0)
+                        shortsInsertIndex = result.Count;
+                    return;
+                }
+
+                if (obj.ContainsKey("videoRenderer") && obj["videoRenderer"].ValueType == JsonValueType.Object)
+                {
+                    itemKey = "video:" + GetJsonString(obj["videoRenderer"].GetObject(), "videoId");
+                }
+                else if (obj.ContainsKey("gridVideoRenderer") && obj["gridVideoRenderer"].ValueType == JsonValueType.Object)
+                {
+                    itemKey = "video:" + GetJsonString(obj["gridVideoRenderer"].GetObject(), "videoId");
+                }
+                else if (obj.ContainsKey("compactVideoRenderer") && obj["compactVideoRenderer"].ValueType == JsonValueType.Object)
+                {
+                    itemKey = "video:" + GetJsonString(obj["compactVideoRenderer"].GetObject(), "videoId");
+                }
+                else if (obj.ContainsKey("tileRenderer") && obj["tileRenderer"].ValueType == JsonValueType.Object)
+                {
+                    var card = Config.ParseTileRenderer(obj["tileRenderer"].GetObject());
+                    if (card != null)
+                        itemKey = "video:" + card.VideoId;
+                }
+                else if (obj.ContainsKey("channelRenderer") && obj["channelRenderer"].ValueType == JsonValueType.Object)
+                {
+                    var renderer = obj["channelRenderer"].GetObject();
+                    itemKey = "channel:" + FirstNonEmpty(
+                        GetJsonString(renderer, "channelId"),
+                        ExtractChannelIdFromNavigation(renderer));
+                }
+                else if (obj.ContainsKey("playlistRenderer") && obj["playlistRenderer"].ValueType == JsonValueType.Object)
+                {
+                    var renderer = obj["playlistRenderer"].GetObject();
+                    itemKey = "playlist:" + FirstNonEmpty(
+                        GetJsonString(renderer, "playlistId"),
+                        ExtractPlaylistIdFromNavigation(renderer));
+                }
+                else if (obj.ContainsKey("lockupViewModel") && obj["lockupViewModel"].ValueType == JsonValueType.Object)
+                {
+                    var renderer = obj["lockupViewModel"].GetObject();
+                    var contentId = FirstNonEmpty(
+                        GetJsonString(renderer, "contentId"),
+                        ExtractPlaylistIdFromNavigation(renderer),
+                        ExtractChannelIdFromNavigation(renderer));
+                    var contentType = GetJsonString(renderer, "contentType");
+
+                    if (contentType.IndexOf("CHANNEL", StringComparison.OrdinalIgnoreCase) >= 0 || IsLikelyChannelId(contentId))
+                        itemKey = "channel:" + contentId;
+                    else if (contentType.IndexOf("PLAYLIST", StringComparison.OrdinalIgnoreCase) >= 0 || IsLikelyPlaylistId(contentId))
+                        itemKey = "playlist:" + contentId;
+                    else
+                    {
+                        var videoId = FirstNonEmpty(contentId, FindStringByKey(renderer, "videoId"));
+                        if (videoId.Length == 11)
+                            itemKey = "video:" + videoId;
+                    }
+                }
+
+                SearchVideoItem item;
+                if (!string.IsNullOrWhiteSpace(itemKey)
+                    && byKey.TryGetValue(itemKey, out item)
+                    && seen.Add(itemKey))
+                {
+                    result.Add(item);
+                    return;
+                }
+
+                foreach (var pair in obj)
+                {
+                    CollectAllResultOrder(pair.Value, byKey, seen, result, maxCount, ref shortsInsertIndex);
+                    if (result.Count >= maxCount) return;
+                }
+            }
+            else if (value.ValueType == JsonValueType.Array)
+            {
+                var array = value.GetArray();
+                for (int i = 0; i < array.Count && result.Count < maxCount; i++)
+                    CollectAllResultOrder(array[i], byKey, seen, result, maxCount, ref shortsInsertIndex);
+            }
+        }
+
         private static List<SearchVideoItem> ParseVideoResults(IJsonValue root, int maxCount)
         {
             var result = new List<SearchVideoItem>();
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             var videoRenderers = new List<JsonObject>();
+            var lockupViewModels = new List<JsonObject>();
+            var tileRenderers = new List<JsonObject>();
 
             FindVideoRenderers(root, videoRenderers);
+            FindObjectsByKey(root, "lockupViewModel", lockupViewModels);
+            FindObjectsByKey(root, "tileRenderer", tileRenderers);
 
             foreach (var renderer in videoRenderers)
             {
@@ -538,12 +865,84 @@ namespace YouTube
                     ResultType = "Video",
                     VideoId = videoId,
                     Title = SimplifyText(renderer, "title", Localization.GetString("Untitled")),
-                    Author = SimplifyText(renderer, "ownerText", Localization.GetString("Unknown")),
-                    Views = SimplifyText(renderer, "viewCountText", string.Empty),
+                    Author = FirstNonEmpty(Config.ExtractVideoCardAuthor(renderer), Localization.GetString("Unknown")),
+                    Views = FirstNonEmpty(
+                        SimplifyText(renderer, "viewCountText", string.Empty),
+                        SimplifyText(renderer, "shortViewCountText", string.Empty)),
                     Duration = SimplifyText(renderer, "lengthText", string.Empty),
                     Thumbnail = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg",
                     ChannelId = Config.ExtractVideoCardChannelId(renderer),
-                    ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer)
+                    ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer),
+                    WatchedPercent = Config.ExtractWatchedPercent(renderer)
+                });
+            }
+
+            // New WEB search responses increasingly use lockupViewModel for ordinary
+            // videos. youtube-ios includes that renderer in its common video pass too.
+            for (int i = 0; i < lockupViewModels.Count && result.Count < maxCount; i++)
+            {
+                var renderer = lockupViewModels[i];
+                var contentId = FirstNonEmpty(
+                    GetJsonString(renderer, "contentId"),
+                    FindStringByKey(renderer, "videoId"));
+                var contentType = GetJsonString(renderer, "contentType");
+
+                if (contentId.Length != 11
+                    || seen.Contains(contentId)
+                    || contentType.IndexOf("CHANNEL", StringComparison.OrdinalIgnoreCase) >= 0
+                    || contentType.IndexOf("PLAYLIST", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    continue;
+                }
+
+                seen.Add(contentId);
+                result.Add(new SearchVideoItem
+                {
+                    ResultType = "Video",
+                    VideoId = contentId,
+                    Title = FirstNonEmpty(ExtractLockupTitle(renderer), Localization.GetString("Untitled")),
+                    Author = FirstNonEmpty(
+                        Config.ExtractVideoCardAuthor(renderer),
+                        ExtractLockupSubtitle(renderer),
+                        Localization.GetString("Unknown")),
+                    Views = FirstNonEmpty(
+                        FindRenderedTextByKey(renderer, "shortViewCountText"),
+                        FindRenderedTextByKey(renderer, "viewCountText"),
+                        ExtractLockupMetadata(renderer)),
+                    Duration = FirstNonEmpty(
+                        FindRenderedTextByKey(renderer, "lengthText"),
+                        ExtractPlaylistBadgeText(renderer)),
+                    Thumbnail = FirstNonEmpty(
+                        ExtractThumbnailUrl(renderer),
+                        "https://i.ytimg.com/vi/" + contentId + "/hqdefault.jpg"),
+                    ChannelId = Config.ExtractVideoCardChannelId(renderer),
+                    ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer),
+                    WatchedPercent = Config.ExtractWatchedPercent(renderer)
+                });
+            }
+
+            for (int i = 0; i < tileRenderers.Count && result.Count < maxCount; i++)
+            {
+                var card = Config.ParseTileRenderer(tileRenderers[i]);
+                if (card == null || string.IsNullOrWhiteSpace(card.VideoId) || !seen.Add(card.VideoId))
+                {
+                    continue;
+                }
+
+                result.Add(new SearchVideoItem
+                {
+                    ResultType = "Video",
+                    VideoId = card.VideoId,
+                    PlaylistId = card.PlaylistId,
+                    Title = FirstNonEmpty(card.Title, Localization.GetString("Untitled")),
+                    Author = FirstNonEmpty(card.ChannelTitle, Localization.GetString("Unknown")),
+                    Views = card.ViewCount,
+                    Duration = card.Duration,
+                    Thumbnail = FirstNonEmpty(card.ThumbnailUrl,
+                        "https://i.ytimg.com/vi/" + card.VideoId + "/hqdefault.jpg"),
+                    ChannelId = card.ChannelId,
+                    ChannelThumbnailUrl = card.ChannelThumbnailUrl,
+                    WatchedPercent = card.WatchedPercent
                 });
             }
 
@@ -573,6 +972,10 @@ namespace YouTube
                 }
 
                 seen.Add(videoId);
+                var views = FirstNonEmpty(
+                    ExtractShortsMetadataText(renderer, "secondaryText"),
+                    FindRenderedTextByKey(renderer, "shortViewCountText"),
+                    FindRenderedTextByKey(renderer, "viewCountText"));
                 result.Add(new SearchVideoItem
                 {
                     ResultType = "Short",
@@ -582,11 +985,10 @@ namespace YouTube
                         SimplifyText(renderer, "title", string.Empty),
                         Localization.GetString("Shorts")),
                     Author = string.Empty,
-                    Views = string.Empty,
+                    Views = views,
                     Duration = string.Empty,
                     Thumbnail = FirstNonEmpty(
                         ExtractThumbnailUrl(renderer),
-                        "https://i.ytimg.com/vi/" + videoId + "/oardefault.jpg",
                         "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg"),
                     ChannelId = Config.ExtractVideoCardChannelId(renderer),
                     ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer)
@@ -602,14 +1004,14 @@ namespace YouTube
                     continue;
                 }
 
-                // shortsLockupViewModel has overlayMetadata.primaryText.content on current WEB
-                // responses. Fall back to the generic lockup title extractor for older shapes.
-                var overlayMetadata = GetObject(renderer, "overlayMetadata");
-                var primaryText = GetObject(overlayMetadata, "primaryText");
                 var title = FirstNonEmpty(
-                    ExtractText(primaryText),
+                    ExtractShortsMetadataText(renderer, "primaryText"),
                     ExtractLockupTitle(renderer),
                     "Shorts");
+                var views = FirstNonEmpty(
+                    ExtractShortsMetadataText(renderer, "secondaryText"),
+                    FindRenderedTextByKey(renderer, "shortViewCountText"),
+                    FindRenderedTextByKey(renderer, "viewCountText"));
 
                 seen.Add(videoId);
                 result.Add(new SearchVideoItem
@@ -618,11 +1020,10 @@ namespace YouTube
                     VideoId = videoId,
                     Title = title,
                     Author = string.Empty,
-                    Views = string.Empty,
+                    Views = views,
                     Duration = string.Empty,
                     Thumbnail = FirstNonEmpty(
                         ExtractThumbnailUrl(renderer),
-                        "https://i.ytimg.com/vi/" + videoId + "/oardefault.jpg",
                         "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg"),
                     ChannelId = Config.ExtractVideoCardChannelId(renderer),
                     ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer)
@@ -630,6 +1031,67 @@ namespace YouTube
             }
 
             return result;
+        }
+
+        // youtube-ios first reads overlayMetadata.primaryText/secondaryText and then
+        // searches the same uncommon field anywhere inside the Shorts card. Keep the
+        // same order because WEB moves overlayMetadata between view-model wrappers.
+        private static string ExtractShortsMetadataText(JsonObject renderer, string fieldName)
+        {
+            if (renderer == null || string.IsNullOrWhiteSpace(fieldName)) return string.Empty;
+
+            var overlays = new List<JsonObject>();
+            FindObjectsByKey(renderer, "overlayMetadata", overlays);
+            for (int i = 0; i < overlays.Count; i++)
+            {
+                var text = ExtractRenderedField(overlays[i], fieldName);
+                if (!string.IsNullOrWhiteSpace(text)) return text;
+            }
+
+            return FindRenderedTextByKey(renderer, fieldName);
+        }
+
+        private static string FindRenderedTextByKey(IJsonValue value, string key)
+        {
+            if (value == null || string.IsNullOrWhiteSpace(key)) return string.Empty;
+
+            if (value.ValueType == JsonValueType.Object)
+            {
+                var obj = value.GetObject();
+                var direct = ExtractRenderedField(obj, key);
+                if (!string.IsNullOrWhiteSpace(direct)) return direct;
+
+                foreach (var pair in obj)
+                {
+                    var found = FindRenderedTextByKey(pair.Value, key);
+                    if (!string.IsNullOrWhiteSpace(found)) return found;
+                }
+            }
+            else if (value.ValueType == JsonValueType.Array)
+            {
+                var array = value.GetArray();
+                for (int i = 0; i < array.Count; i++)
+                {
+                    var found = FindRenderedTextByKey(array[i], key);
+                    if (!string.IsNullOrWhiteSpace(found)) return found;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static string ExtractRenderedField(JsonObject parent, string key)
+        {
+            if (parent == null || !parent.ContainsKey(key) || parent[key] == null)
+                return string.Empty;
+
+            var value = parent[key];
+            if (value.ValueType == JsonValueType.String)
+                return value.GetString();
+
+            return value.ValueType == JsonValueType.Object
+                ? ExtractText(value.GetObject())
+                : string.Empty;
         }
 
         private static List<SearchVideoItem> ParsePlaylistResults(IJsonValue root, int maxCount)
@@ -656,6 +1118,7 @@ namespace YouTube
                 seen.Add(playlistId);
 
                 var videoCountText = FirstNonEmpty(
+                    ExtractPlaylistBadgeText(renderer),
                     SimplifyText(renderer, "videoCountText", string.Empty),
                     ExtractPlaylistVideoCount(renderer));
 
@@ -665,9 +1128,10 @@ namespace YouTube
                     PlaylistId = playlistId,
                     Title = SimplifyText(renderer, "title", Localization.GetString("Playlist")),
                     Author = FirstNonEmpty(
+                        Config.ExtractPlaylistCardAuthor(renderer),
                         SimplifyText(renderer, "shortBylineText", string.Empty),
                         SimplifyText(renderer, "longBylineText", string.Empty),
-                        Localization.GetString("Playlist")),
+                        Localization.GetString("Unknown")),
                     Views = videoCountText,
                     Duration = string.Empty,
                     Thumbnail = FirstNonEmpty(ExtractThumbnailUrl(renderer), App.GetThemeAssetUri("Assets/yt_skeleton/video.png").ToString()),
@@ -699,8 +1163,16 @@ namespace YouTube
                     ResultType = "Playlist",
                     PlaylistId = playlistId,
                     Title = FirstNonEmpty(ExtractLockupTitle(renderer), Localization.GetString("Playlist")),
-                    Author = FirstNonEmpty(ExtractLockupSubtitle(renderer), Localization.GetString("Playlist")),
-                    Views = FirstNonEmpty(ExtractLockupMetadata(renderer), string.Empty),
+                    Author = FirstNonEmpty(
+                        Config.ExtractPlaylistCardAuthor(renderer),
+                        ExtractLockupSubtitle(renderer),
+                        Localization.GetString("Unknown")),
+                    Views = FirstNonEmpty(
+                        ExtractPlaylistBadgeText(renderer),
+                        SimplifyText(renderer, "videoCountText", string.Empty),
+                        ExtractPlaylistVideoCount(renderer),
+                        ExtractLockupMetadata(renderer),
+                        string.Empty),
                     Duration = string.Empty,
                     Thumbnail = FirstNonEmpty(ExtractThumbnailUrl(renderer), App.GetThemeAssetUri("Assets/yt_skeleton/video.png").ToString()),
                     ChannelId = Config.ExtractVideoCardChannelId(renderer),
@@ -1033,6 +1505,14 @@ namespace YouTube
                     var videoRenderer = obj.GetNamedObject("videoRenderer");
                     outList.Add(videoRenderer);
                 }
+                else if (obj.ContainsKey("gridVideoRenderer"))
+                {
+                    outList.Add(obj.GetNamedObject("gridVideoRenderer"));
+                }
+                else if (obj.ContainsKey("compactVideoRenderer"))
+                {
+                    outList.Add(obj.GetNamedObject("compactVideoRenderer"));
+                }
                 else
                 {
                     foreach (var pair in obj)
@@ -1251,6 +1731,33 @@ namespace YouTube
             }
 
             return string.Empty;
+        }
+
+        private static string ExtractPlaylistBadgeText(JsonObject renderer)
+        {
+            if (renderer == null) return string.Empty;
+
+            foreach (var key in new[]
+            {
+                "thumbnailBadgeViewModel",
+                "thumbnailOverlayTimeStatusRenderer",
+                "thumbnailOverlayBottomPanelRenderer"
+            })
+            {
+                var nodes = new List<JsonObject>();
+                FindObjectsByKey(renderer, key, nodes);
+                for (var i = 0; i < nodes.Count; i++)
+                {
+                    var text = ExtractText(nodes[i]);
+                    if (!string.IsNullOrWhiteSpace(text))
+                        return text;
+                }
+            }
+
+            return FirstNonEmpty(
+                SimplifyText(renderer, "videoCountShortText", string.Empty),
+                SimplifyText(renderer, "videoCountText", string.Empty),
+                ExtractPlaylistVideoCount(renderer));
         }
 
         private static string ExtractPlaylistIdFromNavigation(JsonObject obj)
@@ -1528,15 +2035,19 @@ namespace YouTube
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            ShortsFeatureController.EnabledChanged -= ShortsFeature_EnabledChanged;
+            ShortsFeatureController.EnabledChanged += ShortsFeature_EnabledChanged;
             Window.Current.SizeChanged -= Window_SizeChanged;
             Window.Current.SizeChanged += Window_SizeChanged;
             InitializePlaceholderCards();
             UpdateResponsiveCardLayouts();
+            UpdateShortsFeatureVisibility();
             UpdateTypeCheckMarks();
         }
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
+            ShortsFeatureController.EnabledChanged -= ShortsFeature_EnabledChanged;
             Window.Current.SizeChanged -= Window_SizeChanged;
             SystemNavigationManager.GetForCurrentView().BackRequested -= OnBackRequested;
 
@@ -1546,6 +2057,52 @@ namespace YouTube
                 _searchBoxNavigationSuppressTimer.Tick -= SearchBoxNavigationSuppressTimer_Tick;
                 _searchBoxNavigationSuppressTimer = null;
             }
+        }
+
+        private async void ShortsFeature_EnabledChanged(object sender, EventArgs e)
+        {
+            var wasShowingShorts = currentSearchType == SearchContentType.Shorts;
+            var wasShowingAll = currentSearchType == SearchContentType.All;
+            UpdateShortsFeatureVisibility();
+            UpdateAllShortsSectionVisibility();
+            UpdateTypeCheckMarks();
+
+            if ((wasShowingAll || (wasShowingShorts && !ShortsFeatureController.IsEnabled()))
+                && !string.IsNullOrWhiteSpace(currentQuery))
+                await PerformSearchAsync(currentQuery);
+        }
+
+        private void UpdateShortsFeatureVisibility()
+        {
+            var enabled = ShortsFeatureController.IsEnabled();
+            if (ShortsTypeButton != null)
+                ShortsTypeButton.Visibility = enabled ? Visibility.Visible : Visibility.Collapsed;
+
+            if (!enabled && currentSearchType == SearchContentType.Shorts)
+                currentSearchType = SearchContentType.All;
+        }
+
+        private void UpdateAllShortsSectionVisibility()
+        {
+            var isAll = currentSearchType == SearchContentType.All;
+
+            if (AllPriorityResultsList != null)
+            {
+                AllPriorityResultsList.Visibility = isAll
+                    && allPriorityResults != null
+                    && allPriorityResults.Count > 0
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
+            }
+
+            if (AllShortsSection == null) return;
+
+            AllShortsSection.Visibility = isAll
+                && ShortsFeatureController.IsEnabled()
+                && allShortsResults != null
+                && allShortsResults.Count > 0
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
         }
 
         private void Window_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
@@ -1728,6 +2285,7 @@ namespace YouTube
         private void UpdateResponsiveCardLayouts()
         {
             bool isPortrait = IsPortraitOrientation();
+            UpdateSearchResultsPanel();
 
             if (currentSearchType == SearchContentType.Channels)
             {
@@ -1751,6 +2309,8 @@ namespace YouTube
             {
                 SetItemsControlPadding(SearchResultsList, isPortrait, new Thickness(8, 0, 8, 16));
             }
+
+            SetItemsControlPadding(AllPriorityResultsList, isPortrait, new Thickness(8, 0, 8, 0));
 
             if (currentSearchType == SearchContentType.Shorts && isPortrait)
             {
@@ -1791,7 +2351,24 @@ namespace YouTube
             UpdateItemsWrapGrid(SearchResultsList, itemWidth, maxColumns);
             UpdateItemsWrapGrid(SkeletonCardsList, itemWidth, maxColumns);
             UpdateResponsiveCardMargins(SearchResultsList);
+            UpdateResponsiveCardMargins(AllPriorityResultsList);
             UpdateResponsiveCardMargins(SkeletonCardsList);
+        }
+
+        private void UpdateSearchResultsPanel()
+        {
+            var useAllPanel = currentSearchType == SearchContentType.All;
+            if (_usingAllSearchResultsPanel.HasValue && _usingAllSearchResultsPanel.Value == useAllPanel)
+                return;
+
+            var templateKey = useAllPanel
+                ? "AllSearchResultsPanelTemplate"
+                : "FilteredSearchResultsPanelTemplate";
+            var template = Resources[templateKey] as ItemsPanelTemplate;
+            if (SearchResultsList != null && template != null)
+                SearchResultsList.ItemsPanel = template;
+
+            _usingAllSearchResultsPanel = useAllPanel;
         }
 
         private static void SetItemsControlPadding(Control control, bool isPortrait, Thickness landscapePadding)
@@ -1922,6 +2499,7 @@ namespace YouTube
                 {
                     PlaylistId = item.PlaylistId,
                     Title = item.Title,
+                    AuthorName = item.Author,
                     ThumbnailUrl = item.Thumbnail,
                     PrivacyText = string.Empty,
                     VideoCountText = item.Views
@@ -1936,6 +2514,11 @@ namespace YouTube
             AnimateTypeBottomSheet(true);
         }
 
+        private async void AllTypeButton_Click(object sender, RoutedEventArgs e)
+        {
+            await SetSearchContentTypeAsync(SearchContentType.All);
+        }
+
         private async void VideosTypeButton_Click(object sender, RoutedEventArgs e)
         {
             await SetSearchContentTypeAsync(SearchContentType.Videos);
@@ -1943,6 +2526,9 @@ namespace YouTube
 
         private async void ShortsTypeButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!ShortsFeatureController.IsEnabled())
+                return;
+
             await SetSearchContentTypeAsync(SearchContentType.Shorts);
         }
 
@@ -1967,7 +2553,9 @@ namespace YouTube
             }
 
             currentSearchType = type;
+            UpdateSearchResultsPanel();
             UpdateTypeCheckMarks();
+            UpdateAllShortsSectionVisibility();
             AnimateTypeBottomSheet(false);
 
             if (!string.IsNullOrWhiteSpace(currentQuery))
@@ -1978,6 +2566,11 @@ namespace YouTube
 
         private void UpdateTypeCheckMarks()
         {
+            if (AllTypeCheck != null)
+            {
+                AllTypeCheck.Visibility = currentSearchType == SearchContentType.All ? Visibility.Visible : Visibility.Collapsed;
+            }
+
             if (VideosTypeCheck != null)
             {
                 VideosTypeCheck.Visibility = currentSearchType == SearchContentType.Videos ? Visibility.Visible : Visibility.Collapsed;
@@ -2008,7 +2601,7 @@ namespace YouTube
             var animation = new DoubleAnimation
             {
                 From = TypeBottomSheetTransform.Y,
-                To = show ? 0 : 365,
+                To = show ? 0 : 421,
                 Duration = new Duration(TimeSpan.FromMilliseconds(220)),
                 EnableDependentAnimation = true
             };
@@ -2086,6 +2679,7 @@ namespace YouTube
 
         private enum SearchContentType
         {
+            All,
             Videos,
             Shorts,
             Playlists,
@@ -2095,6 +2689,8 @@ namespace YouTube
         private sealed class SearchPageResult
         {
             public List<SearchVideoItem> Items { get; set; }
+            public List<SearchVideoItem> Shorts { get; set; }
+            public int ShortsInsertIndex { get; set; }
             public string Continuation { get; set; }
         }
     }
@@ -2111,6 +2707,17 @@ namespace YouTube
         public string Duration { get; set; }
         public string Thumbnail { get; set; }
         public string ChannelThumbnailUrl { get; set; }
+        public double WatchedPercent { get; set; }
+
+        public Visibility WatchedProgressVisibility
+        {
+            get
+            {
+                return !IsPlaylist && !IsChannel && !IsShort && WatchedPercent > 0
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            }
+        }
 
         public ImageSource ChannelAvatarSource
         {
@@ -2161,6 +2768,11 @@ namespace YouTube
         public bool IsShort
         {
             get { return string.Equals(ResultType, "Short", StringComparison.OrdinalIgnoreCase); }
+        }
+
+        public bool IsCardTabStop
+        {
+            get { return !IsShort; }
         }
 
         public Visibility MediaCardVisibility
@@ -2224,6 +2836,16 @@ namespace YouTube
         public Visibility DurationVisibility
         {
             get { return string.IsNullOrWhiteSpace(Duration) ? Visibility.Collapsed : Visibility.Visible; }
+        }
+
+        public string MediaBadgeText
+        {
+            get { return IsPlaylist ? (Views ?? string.Empty) : (Duration ?? string.Empty); }
+        }
+
+        public Visibility MediaBadgeVisibility
+        {
+            get { return string.IsNullOrWhiteSpace(MediaBadgeText) ? Visibility.Collapsed : Visibility.Visible; }
         }
     }
 }

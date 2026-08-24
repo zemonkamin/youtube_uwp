@@ -12,10 +12,12 @@ using Windows.Data.Json;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Shapes;
 using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Core;
@@ -26,6 +28,8 @@ namespace YouTube
 {
     public sealed partial class Shorts : Page
     {
+        private const string CommentUrlPattern = @"(http|https)://[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?";
+        private const string CommentTimecodePattern = @"(?<![\d:])(?:\d{1,2}:)?\d{1,2}:\d{2}(?![\d:])";
         private readonly List<ShortsVideoItem> _shorts = new List<ShortsVideoItem>();
         private readonly HashSet<string> _seenVideoIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private string _sequenceToken = string.Empty;
@@ -1615,7 +1619,7 @@ namespace YouTube
                 payload["target"] = target;
             }
 
-            return payload.Stringify();
+            return Config.ApplySelectedAccountContext(payload.Stringify(), true);
         }
 
         private async Task<bool> PostShortRatingInnertubeAsync(
@@ -2770,7 +2774,7 @@ namespace YouTube
             payload["videoId"] = JsonValue.CreateStringValue(videoId);
             payload["racyCheckOk"] = JsonValue.CreateBooleanValue(true);
             payload["contentCheckOk"] = JsonValue.CreateBooleanValue(true);
-            return payload.Stringify();
+            return Config.ApplySelectedAccountContext(payload.Stringify(), true);
         }
 
         private static string BuildShortRatingPayload(string videoId, bool mobileWebClient)
@@ -2794,7 +2798,7 @@ namespace YouTube
             var payload = new JsonObject();
             payload["context"] = context;
             payload["target"] = target;
-            return payload.Stringify();
+            return Config.ApplySelectedAccountContext(payload.Stringify(), true);
         }
 
         private static string BuildPlayerPayload(string videoId)
@@ -2820,6 +2824,7 @@ namespace YouTube
             if (!string.IsNullOrWhiteSpace(accessToken))
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                Config.ApplySelectedAccountHeader(request, true);
             }
 
             request.Headers.TryAddWithoutValidation("User-Agent", userAgent);
@@ -3407,6 +3412,222 @@ namespace YouTube
             return string.Empty;
         }
 
+        private void CommentAuthorImage_DataContextChanged(
+            FrameworkElement sender,
+            DataContextChangedEventArgs args)
+        {
+            var ellipse = sender as Ellipse;
+            var brush = ellipse == null ? null : ellipse.Fill as ImageBrush;
+            var item = args.NewValue as CommentItem;
+            ChannelIconController.AssignAlways(
+                brush,
+                item == null ? string.Empty : item.AuthorThumbnail);
+        }
+
+        private void CommentAuthorImage_Loaded(object sender, RoutedEventArgs e)
+        {
+            var ellipse = sender as Ellipse;
+            var brush = ellipse == null ? null : ellipse.Fill as ImageBrush;
+            var item = ellipse == null ? null : ellipse.DataContext as CommentItem;
+            ChannelIconController.AssignAlways(
+                brush,
+                item == null ? string.Empty : item.AuthorThumbnail);
+        }
+
+        private void CommentTextRichTextBlock_Loaded(object sender, RoutedEventArgs e)
+        {
+            var richTextBlock = sender as RichTextBlock;
+            if (richTextBlock == null)
+            {
+                return;
+            }
+
+            SetCommentTextWithLinks(
+                richTextBlock,
+                richTextBlock.Tag as string ?? string.Empty);
+        }
+
+        private void SetCommentTextWithLinks(RichTextBlock richTextBlock, string text)
+        {
+            if (richTextBlock == null)
+            {
+                return;
+            }
+
+            richTextBlock.Blocks.Clear();
+            var paragraph = new Paragraph();
+            if (string.IsNullOrEmpty(text))
+            {
+                richTextBlock.Blocks.Add(paragraph);
+                return;
+            }
+
+            var regex = new Regex(
+                "(?<url>" + CommentUrlPattern + ")|(?<time>" + CommentTimecodePattern + ")",
+                RegexOptions.IgnoreCase);
+            var lastPosition = 0;
+
+            foreach (Match match in regex.Matches(text))
+            {
+                if (match.Index > lastPosition)
+                {
+                    AddCommentTextRun(
+                        paragraph,
+                        text.Substring(lastPosition, match.Index - lastPosition));
+                }
+
+                if (match.Groups["time"].Success)
+                {
+                    TimeSpan timestamp;
+                    if (TryParseCommentTimecode(match.Value, out timestamp))
+                    {
+                        var hyperlink = new Hyperlink();
+                        hyperlink.Inlines.Add(new Run { Text = match.Value });
+                        var targetTimestamp = timestamp;
+                        hyperlink.Click += (hyperlinkSender, args) =>
+                            SeekToCommentTimestamp(targetTimestamp);
+                        paragraph.Inlines.Add(hyperlink);
+                    }
+                    else
+                    {
+                        AddCommentTextRun(paragraph, match.Value);
+                    }
+                }
+                else if (match.Groups["url"].Success)
+                {
+                    var hyperlink = new Hyperlink();
+                    hyperlink.Inlines.Add(new Run { Text = match.Value });
+                    hyperlink.Click += CommentHyperlink_Click;
+                    paragraph.Inlines.Add(hyperlink);
+                }
+                else
+                {
+                    AddCommentTextRun(paragraph, match.Value);
+                }
+
+                lastPosition = match.Index + match.Length;
+            }
+
+            if (lastPosition < text.Length)
+            {
+                AddCommentTextRun(paragraph, text.Substring(lastPosition));
+            }
+
+            if (paragraph.Inlines.Count == 0)
+            {
+                AddCommentTextRun(paragraph, text);
+            }
+
+            richTextBlock.Blocks.Add(paragraph);
+        }
+
+        private static void AddCommentTextRun(Paragraph paragraph, string text)
+        {
+            if (paragraph != null && !string.IsNullOrEmpty(text))
+            {
+                paragraph.Inlines.Add(new Run { Text = text });
+            }
+        }
+
+        private static bool TryParseCommentTimecode(string text, out TimeSpan position)
+        {
+            position = TimeSpan.Zero;
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return false;
+            }
+
+            var parts = text.Split(':');
+            if (parts.Length < 2 || parts.Length > 3)
+            {
+                return false;
+            }
+
+            int hours = 0;
+            int minutes;
+            int seconds;
+            if (parts.Length == 2)
+            {
+                if (!int.TryParse(parts[0], out minutes)
+                    || !int.TryParse(parts[1], out seconds))
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (!int.TryParse(parts[0], out hours)
+                    || !int.TryParse(parts[1], out minutes)
+                    || !int.TryParse(parts[2], out seconds)
+                    || minutes < 0
+                    || minutes > 59)
+                {
+                    return false;
+                }
+            }
+
+            if (hours < 0 || minutes < 0 || seconds < 0 || seconds > 59)
+            {
+                return false;
+            }
+
+            position = new TimeSpan(hours, minutes, seconds);
+            return true;
+        }
+
+        private void SeekToCommentTimestamp(TimeSpan timestamp)
+        {
+            try
+            {
+                var player = FindShortsMediaPlayerElement();
+                if (player == null || player.MediaPlayer == null)
+                {
+                    return;
+                }
+
+                var duration = player.MediaPlayer.PlaybackSession.NaturalDuration;
+                if (duration > TimeSpan.Zero && timestamp > duration)
+                {
+                    timestamp = duration;
+                }
+                player.MediaPlayer.PlaybackSession.Position = timestamp;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Shorts] Failed to seek to comment timestamp: " + ex.Message);
+            }
+        }
+
+        private async void CommentHyperlink_Click(
+            Hyperlink sender,
+            HyperlinkClickEventArgs args)
+        {
+            try
+            {
+                var value = string.Empty;
+                foreach (var inline in sender.Inlines)
+                {
+                    var run = inline as Run;
+                    if (run != null)
+                    {
+                        value += run.Text;
+                    }
+                }
+
+                Uri uri;
+                if (Uri.TryCreate(value, UriKind.Absolute, out uri))
+                {
+                    await Launcher.LaunchUriAsync(uri);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Shorts] Failed to open comment link: " + ex.Message);
+            }
+        }
+
         private async Task ShowCommentsBottomSheetAsync()
         {
             var item = CurrentShort;
@@ -3490,6 +3711,41 @@ namespace YouTube
             else
             {
                 SetCommentsEmpty(false, string.Empty);
+            }
+        }
+
+        private async void CommentRepliesButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var comment = button != null ? button.DataContext as CommentItem : null;
+            var videoId = _commentsLoadedVideoId;
+            if (comment == null || string.IsNullOrWhiteSpace(videoId)
+                || !comment.TryBeginLoadingReplies())
+            {
+                return;
+            }
+
+            try
+            {
+                var replies = await Config.GetCommentsAsync(
+                    videoId,
+                    comment.ReplyContinuationToken);
+
+                // Keep the branch attached to the video whose sheet is still open.
+                if (!string.Equals(videoId, _commentsLoadedVideoId, StringComparison.OrdinalIgnoreCase))
+                {
+                    comment.FinishLoadingReplies(null, false);
+                    return;
+                }
+
+                comment.FinishLoadingReplies(replies, true);
+                System.Diagnostics.Debug.WriteLine(
+                    "[Shorts] Replies opened: " + (replies != null ? replies.Count : 0));
+            }
+            catch (Exception ex)
+            {
+                comment.FinishLoadingReplies(null, false);
+                System.Diagnostics.Debug.WriteLine("[Shorts] Replies load failed: " + ex.Message);
             }
         }
 

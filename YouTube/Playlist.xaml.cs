@@ -11,8 +11,6 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
-using Windows.UI.Xaml.Shapes;
-
 namespace YouTube
 {
     public sealed partial class Playlist : Page
@@ -51,7 +49,7 @@ namespace YouTube
             ScheduleResponsiveCardLayoutUpdate();
 
             if (tabbar != null)
-                tabbar.SetActiveTab(Tabbar.ActiveTab.Account);
+                tabbar.SetActiveTab(Tabbar.ActiveTab.None);
 
             _seedItem = e.Parameter as PlaylistItem;
             if (_seedItem != null)
@@ -85,17 +83,21 @@ namespace YouTube
                 return;
 
             if (!string.IsNullOrWhiteSpace(item.Title))
+            {
                 PlaylistTitleText.Text = item.Title;
+                PlaylistBarTitleText.Text = item.Title;
+            }
 
-            if (!string.IsNullOrWhiteSpace(item.ThumbnailUrl))
-                SetBorderImage(PlaylistHeaderImageBorder, item.ThumbnailUrl);
+            SetPlaylistCover(item.ThumbnailUrl);
 
             var meta = BuildSeedMeta(item);
             PlaylistMetaText.Text = meta;
             PlaylistMetaText.Visibility = string.IsNullOrWhiteSpace(meta) ? Visibility.Collapsed : Visibility.Visible;
 
-            if (OwnerRow != null)
-                OwnerRow.Visibility = Visibility.Collapsed;
+            OwnerText.Text = item.AuthorName ?? string.Empty;
+            OwnerText.Visibility = string.IsNullOrWhiteSpace(OwnerText.Text)
+                ? Visibility.Collapsed
+                : Visibility.Visible;
         }
 
         private static string BuildSeedMeta(PlaylistItem item)
@@ -149,13 +151,14 @@ namespace YouTube
         private void ApplyDetails(PlaylistDetails details)
         {
             if (!string.IsNullOrWhiteSpace(details.Title) && !string.Equals(details.Title, "Playlist", StringComparison.OrdinalIgnoreCase))
+            {
                 PlaylistTitleText.Text = details.Title;
+                PlaylistBarTitleText.Text = details.Title;
+            }
 
-            if (!string.IsNullOrWhiteSpace(details.ThumbnailUrl))
-                SetBorderImage(PlaylistHeaderImageBorder, details.ThumbnailUrl);
+            SetPlaylistCover(details.ThumbnailUrl);
 
             var hasOwnerName = !string.IsNullOrWhiteSpace(details.OwnerName);
-            var hasOwnerAvatar = !string.IsNullOrWhiteSpace(details.OwnerThumbnailUrl);
 
             if (hasOwnerName)
             {
@@ -168,25 +171,8 @@ namespace YouTube
                 OwnerText.Visibility = Visibility.Collapsed;
             }
 
-            if (hasOwnerAvatar)
-            {
-                SetEllipseImage(OwnerAvatarEllipse, details.OwnerThumbnailUrl);
-                OwnerAvatarEllipse.Visibility = Visibility.Visible;
-                OwnerText.Margin = hasOwnerName ? new Thickness(10, 0, 0, 0) : new Thickness(0);
-            }
-            else
-            {
-                OwnerAvatarEllipse.Visibility = Visibility.Collapsed;
-                OwnerText.Margin = new Thickness(0);
-            }
-
-            OwnerRow.Visibility = (hasOwnerName || hasOwnerAvatar) ? Visibility.Visible : Visibility.Collapsed;
-
             PlaylistMetaText.Text = details.MetadataText ?? string.Empty;
             PlaylistMetaText.Visibility = string.IsNullOrWhiteSpace(PlaylistMetaText.Text) ? Visibility.Collapsed : Visibility.Visible;
-
-            PlaylistDescriptionText.Text = details.Description ?? string.Empty;
-            PlaylistDescriptionText.Visibility = string.IsNullOrWhiteSpace(PlaylistDescriptionText.Text) ? Visibility.Collapsed : Visibility.Visible;
 
             _videos.Clear();
             _loadedVideoIds.Clear();
@@ -283,39 +269,29 @@ namespace YouTube
             }
         }
 
-        private static void SetBorderImage(Border border, string url)
+        private void SetPlaylistCover(string url)
         {
-            if (border == null || string.IsNullOrWhiteSpace(url))
+            if (PlaylistHeaderImageBorder == null)
                 return;
+
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                PlaylistHeaderImageBorder.Visibility = Visibility.Collapsed;
+                return;
+            }
 
             try
             {
-                border.Background = new ImageBrush
+                PlaylistHeaderImageBorder.Background = new ImageBrush
                 {
                     ImageSource = new BitmapImage(new Uri(url)),
                     Stretch = Stretch.UniformToFill
                 };
+                PlaylistHeaderImageBorder.Visibility = Visibility.Visible;
             }
             catch
             {
-            }
-        }
-
-        private static void SetEllipseImage(Windows.UI.Xaml.Shapes.Ellipse ellipse, string url)
-        {
-            if (ellipse == null || string.IsNullOrWhiteSpace(url))
-                return;
-
-            try
-            {
-                ellipse.Fill = new ImageBrush
-                {
-                    ImageSource = new BitmapImage(new Uri(url)),
-                    Stretch = Stretch.UniformToFill
-                };
-            }
-            catch
-            {
+                PlaylistHeaderImageBorder.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -417,12 +393,6 @@ namespace YouTube
                 e.Handled = true;
                 _frame.GoBack();
             }
-        }
-
-        private void SearchButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (_frame != null)
-                _frame.Navigate(typeof(Searching));
         }
 
         private void VideoCard_Click(object sender, RoutedEventArgs e)

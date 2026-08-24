@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>Մշակվել է LegacyProjects թիմի կողմից։
@@ -18,11 +45,146 @@
 
 Տարբերակ {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Հաշիվներ</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Արտաքին տեսք</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Ձայնային ուղի</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Ավտոմատ</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Ավտոմատ թարգմանություն &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Հետ</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Էքշն/Արկածային</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Բոլորը</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Անիմե/Անիմացիա</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Ավտոմեքենաներ և տրանսպորտ</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Դասական</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Կատակերգություն</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Վավերագրական</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Դրամա</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Կրթություն</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Ժամանց</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Ընտանեկան</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Ֆիլմ և անիմացիա</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Արտասահմանյան</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Խաղեր</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Սարսափ</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Ուղեցույցներ և ոճ</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Ուսուցում</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Ուղիղ</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Ֆիլմեր</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Երաժշտություն</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Նորություններ</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Նորություններ և քաղաքականություն</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Ոչ առևտրային և ակտիվիզմ</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Մարդիկ և բլոգներ</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Կենդանիներ</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Փոդքասթներ</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Գիտություն և տեխնոլոգիա</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Գիտական ֆանտաստիկա/Ֆենթեզի</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Կարճամետրաժ ֆիլմեր</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Շոուներ</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Սպորտ</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Թրիլլեր</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Թրեյլերներ</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Ճանապարհորդություն և միջոցառումներ</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Վիդեոբլոգ</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Տեսախաղեր</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Ալիք</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Ալիքների պատկերակներ</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Ցուցադրել ալիքների պատկերակները տեսանյութերի քարտերում</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Ալիքի բեռնման սխալ</value>
@@ -30,14 +192,71 @@
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Ալիքը չի նշվել</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Մեկնաբանություններ</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Վստա՞հ եք, որ ուզում եք դուրս գալ։</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Հաստատել դուրս գալը</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Չհաջողվեց բեռնել ալիքը</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Չհաջողվեց բեռնել ծանուցումները</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Չհաջողվեց բեռնել երգացանկը</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Չհաջողվեց բեռնել տեսանյութը։ Կրկին փորձեք։</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Չհաջողվեց նվագարկել տեսանյութը։</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} օր առաջ</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Նկարագրությունը հասանելի չէ</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Ներբեռնել</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Ներբեռնված է</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Ձեր ներբեռնումները</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Ներբեռնումների պանակ</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Ընտրեք ներբեռնված տեսանյութերի պահպանման վայրը</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Ներբեռնման որակ</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Ներբեռնումներ</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Ձեր ներբեռնած տեսանյութերը կհայտնվեն այստեղ։</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Ձեր ներբեռնումները</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Ներբեռնումներ</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Այս տեսանյութը հնարավոր չէ ներբեռնել</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Սխալի կոդ՝ {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Սխալ՝ {0}</value>
@@ -62,6 +281,18 @@
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Ամեն {0} րոպեն մեկ</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Տեսանյութի նվագարկումը ձախողվեց՝ {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Բաժանորդագրություններից</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Ապակու էֆեկտ</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Մշուշել նավիգացիոն վահանակները</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Չհաջողվեց բեռնել պատմությունը</value>
@@ -90,8 +321,17 @@
   <data name="LanguageSystem" xml:space="preserve">
     <value>Համակարգի լռելյայնը</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Հավանել</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Հղումը պատճենվել է</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Կենդանի սալիկ</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Ցուցադրել առաջարկությունները մեկնարկային էկրանին</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Նկարագրությունը բեռնվում է...</value>
@@ -237,6 +477,9 @@
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Այս երգացանկում տեսանյութեր չկան</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>Լավ</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Անհատականացված</value>
   </data>
@@ -375,6 +618,15 @@
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} ամիս առաջ</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Ցանցային սխալ։ Ստուգեք ինտերնետ կապը։</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ոչ</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Մեկնաբանություններ չեն գտնվել։</value>
   </data>
@@ -393,11 +645,26 @@
   <data name="NoNotifications" xml:space="preserve">
     <value>Ծանուցումներ չկան</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts չեն գտնվել։</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Չհաջողվեց թարմացնել ծանուցման նախապատվությունը։</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Ծանուցումները ձախողվեցին</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Ձեր բաժանորդագրությունների նոր թարմացումները կհայտնվեն այստեղ։</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Մուտք գործեք՝ YouTube ծանուցումները տեսնելու համար։</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Ավելի ուշ նորից բացեք այս էջը։</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Վերնագիր չկա</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Մուտք գործած չեք</value>
@@ -414,8 +681,23 @@
   <data name="PlaybackError" xml:space="preserve">
     <value>Նվագարկման սխալ</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Նվագարկումը ձախողվեց</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Նվագարկման արագություն</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Չհաջողվեց նվագարկել տեսանյութը։ Նվագարկիչը սկզբնավորված չէ։</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Երգացանկ</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Երգացանկի ID-ն դատարկ է</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Չհաջողվեց թարմացնել երգացանկը</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR կոդ</value>
@@ -423,11 +705,62 @@
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>QR ցուցադրման սխալ՝ {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Որակ</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Գնահատումը ձախողվեց</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube-ը մերժեց գնահատման հարցումը։ Ստուգեք, որ TV թոքենը վավեր է և ունի YouTube գնահատման թույլտվություն։</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Առաջարկվող տեսանյութ</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Չհաջողվեց թարմացման թոքենը փոխանակել մուտքի թոքենի հետ։</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>պատասխան</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} պատասխան</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Պահել</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Որոնման սխալ՝ {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Անհայտ</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Ընտրեք հաշիվ</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Ընտրեք երգացանկը</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Անգլերեն</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Լռելյայն օգտագործում է Windows-ի լեզուն։</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Հավելվածի լեզու</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Ռուսերեն</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Լեզու</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Լեզու</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Համակարգի լռելյայնը</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Կիսվել այս YouTube Short-ով</value>
@@ -435,11 +768,47 @@
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Կիսվել այս YouTube տեսանյութով</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Ցուցադրել Shorts-ը հավելվածում</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Ցուցադրել ավելի քիչ</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Ավելին</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>Չհաջողվեց TV թարմացման թոքենը փոխանակել մուտքի թոքենի հետ։ Կրկին մուտք գործեք և ստուգեք, որ թարմացման թոքենը դեռ վավեր է։</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Մուտք է պահանջվում</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Մուտք գործեք՝ Shorts դիտելու համար։</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Գովազդային հատվածներ որոնման գոտում</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Ցուցադրել SponsorBlock-ի գունավոր միջակայքերը</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Բաժանորդագրվել</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>բաժանորդներ</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>բաժանորդներ</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>բաժանորդ</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} բաժանորդ • {1} տեսանյութ</value>
@@ -450,65 +819,71 @@
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube-ը մերժեց բաժանորդագրության հարցումը։</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube-ը մերժեց բաժանորդագրության հարցումը։ Ստուգեք, որ TV թոքենը վավեր է և ալիքի ID-ն գտնվել է։</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Ավելի շուտ (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Ավելի ուշ (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Վերականգնել սովորական շեղումը (0,00 վրկ)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Ենթագրեր</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Համաժամացում՝ {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Չհաջողվեց բեռնել մեկնաբանությունները։</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Թեմա</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Առանց վերնագրի</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Մուգ</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Տեսանյութի հղումը պատճենվել է սեղմատախտակ։</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Բաց</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} տեսանյութ</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Այս շաբաթ</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Մանրապատկերի որակ</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Լեզու</value>
+  <data name="Today" xml:space="preserve">
+    <value>Այսօր</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Հավելվածի լեզու</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Կատակերգական սքեչներ</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Լեզու</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Խոհարարական բաղադրատոմսեր</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Լռելյայն օգտագործում է Windows-ի լեզուն։</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>DIY դասեր</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Համակարգի լռելյայնը</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Խաղերի կարևոր պահեր</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Անգլերեն</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Ֆիլմերի թրեյլերներ</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Ռուսերեն</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Երաժշտական տեսանյութեր</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube տեսանյութ</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Սպորտային կարևոր պահեր</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Ալիք</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Տեխնոլոգիական ակնարկներ</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Չհաջողվեց TV թարմացման թոքենը փոխանակել մուտքի թոքենի հետ։</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Անհայտ</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Վերնագիր չկա</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Չհաջողվեց TV թարմացման թոքենը փոխանակել մուտքի թոքենի հետ։ Կրկին մուտք գործեք և ստուգեք, որ թարմացման թոքենը դեռ վավեր է։</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>TV թարմացման թոքենը չի գտնվել։ Կրկին մուտք գործեք և փորձեք նորից։</value>
@@ -516,194 +891,23 @@
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>TV թարմացման թոքենը չի գտնվել։ Կրկին մուտք գործեք, որպեսզի yt_refresh_token-ը պահպանվի, ապա փորձեք նորից։</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>Չհաջողվեց TV թարմացման թոքենը փոխանակել մուտքի թոքենի հետ։</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Չհաջողվեց թարմացման թոքենը փոխանակել մուտքի թոքենի հետ։</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Նվագարկումը ձախողվեց</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Այս Short-ը հնարավոր չէ նվագարկել</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Տեսանյութի բեռնման ժամանակը սպառվեց։ Ստուգեք ինտերնետ կապը։</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Չհաջողվեց բեռնել տեսանյութը։ Կրկին փորձեք։</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Չհաջողվեց նվագարկել տեսանյութը։ Նվագարկիչը սկզբնավորված չէ։</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Չհաջողվեց բեռնել տեսանյութը։ Հղումը կարող է ժամկետանց լինել կամ ձևաչափը չաջակցվի։</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Ցանցային սխալ։ Ստուգեք ինտերնետ կապը։</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Տեսանյութի նվագարկման սխալ։ Փորձեք ընտրել ավելի ցածր որակ։</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Չհաջողվեց նվագարկել տեսանյութը։</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Երաժշտական տեսանյութեր</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Խաղերի կարևոր պահեր</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Խոհարարական բաղադրատոմսեր</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Տեխնոլոգիական ակնարկներ</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Ֆիլմերի թրեյլերներ</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Սպորտային կարևոր պահեր</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Կատակերգական սքեչներ</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>DIY դասեր</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Առաջարկվող տեսանյութ</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Վստա՞հ եք, որ ուզում եք դուրս գալ։</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Հաստատել դուրս գալը</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Այո</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Ոչ</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>Մուտք գործեք՝ YouTube ծանուցումները տեսնելու համար։</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Չհաջողվեց բեռնել ծանուցումները</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Ավելի ուշ նորից բացեք այս էջը։</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>Երգացանկի ID-ն դատարկ է</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} տեսանյութ</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Անհայտ</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Մուտք գործեք՝ Shorts դիտելու համար։</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Shorts չեն գտնվել։</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Չհաջողվեց բեռնել մեկնաբանությունները։</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Չհաջողվեց բեռնել Shorts-ը։</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Այս Short-ը հնարավոր չէ նվագարկել</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Այս Short-ը հնարավոր չէ նվագարկել։</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Որակ</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Անհայտ</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Նվագարկման արագություն</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Ձայնային ուղի</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Ենթագրեր</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Տեսանյութի նվագարկումը ձախողվեց՝ {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Սխալի կոդ՝ {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Այսօր</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} օր առաջ</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} շաբաթ առաջ</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} ամիս առաջ</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} տարի առաջ</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Հետ</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube տեսանյութ</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>բաժանորդ</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>բաժանորդներ</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>բաժանորդներ</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>տեսանյութ</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>տեսանյութեր</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>տեսանյութեր</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Բաժանորդագրվել</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Հավանել</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Մեկնաբանություններ</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Ձեր բաժանորդագրությունների նոր թարմացումները կհայտնվեն այստեղ։</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube-ը մերժեց բաժանորդագրության հարցումը։ Ստուգեք, որ TV թոքենը վավեր է և ալիքի ID-ն գտնվել է։</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube-ը մերժեց գնահատման հարցումը։ Ստուգեք, որ TV թոքենը վավեր է և ունի YouTube գնահատման թույլտվություն։</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>Չհաջողվեց TV թարմացման թոքենը փոխանակել մուտքի թոքենի հետ։ Կրկին մուտք գործեք և ստուգեք, որ թարմացման թոքենը դեռ վավեր է։</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>Լավ</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Երեկ</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Այս շաբաթ</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Առանց վերնագրի</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Վերբեռնել է տեսանյութ</value>
@@ -711,146 +915,73 @@
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>Վերբեռնել է «{0}» տեսանյութը</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Բաժանորդագրություններից</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Տեսանյութն ավելացվել է «{0}» ցանկում</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Բոլորը</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>տեսանյութեր</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Ֆիլմ և անիմացիա</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Տեսանյութի հղումը պատճենվել է սեղմատախտակ։</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Ավտոմեքենաներ և տրանսպորտ</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Չհաջողվեց բեռնել տեսանյութը։ Հղումը կարող է ժամկետանց լինել կամ ձևաչափը չաջակցվի։</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Երաժշտություն</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Տեսանյութի բեռնման ժամանակը սպառվեց։ Ստուգեք ինտերնետ կապը։</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Կենդանիներ</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>տեսանյութեր</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Սպորտ</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>տեսանյութ</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Կարճամետրաժ ֆիլմեր</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Տեսանյութի նվագարկման սխալ։ Փորձեք ընտրել ավելի ցածր որակ։</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Ճանապարհորդություն և միջոցառումներ</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Տեսանյութը հեռացվել է «{0}» ցանկից</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Խաղեր</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} տեսանյութ</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Վիդեոբլոգ</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} տեսանյութ</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Մարդիկ և բլոգներ</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} շաբաթ առաջ</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Կատակերգություն</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} տարի առաջ</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Ժամանց</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Այո</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Նորություններ և քաղաքականություն</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Երեկ</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Ուղեցույցներ և ոճ</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Կրթություն</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube տեսանյութ</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Գիտություն և տեխնոլոգիա</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube տեսանյութ</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Ոչ առևտրային և ակտիվիզմ</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Ջնջել ներբեռնված տեսանյութերը</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Ֆիլմեր</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Ջնջել բոլոր ներբեռնված տեսանյութերը և պահոցավորված մանրապատկերները</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Անիմե/Անիմացիա</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Բոլոր ներբեռնված տեսանյութերը և դրանց մանրապատկերները ընդմիշտ կջնջվեն:</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Էքշն/Արկածային</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Ջնջել</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Դասական</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Վավերագրական</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Դրամա</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Ընտանեկան</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Արտասահմանյան</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Սարսափ</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Գիտական ֆանտաստիկա/Ֆենթեզի</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Թրիլլեր</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Շոուներ</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Թրեյլերներ</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Ուղիղ</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Ուսուցում</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Տեսախաղեր</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Նորություններ</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Փոդքասթներ</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Արտաքին տեսք</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Թեմա</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Բաց</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Մուգ</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Կենդանի սալիկ</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Ցուցադրել առաջարկությունները մեկնարկային էկրանին</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Մանրապատկերի որակ</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Ալիքների պատկերակներ</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Ցուցադրել ալիքների պատկերակները տեսանյութերի քարտերում</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Ջնջել</value>
   </data>
 </root>

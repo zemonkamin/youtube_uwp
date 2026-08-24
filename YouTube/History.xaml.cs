@@ -36,7 +36,7 @@ namespace YouTube
             base.OnNavigatedTo(e);
 
             if (tabbar != null)
-                tabbar.SetActiveTab(Tabbar.ActiveTab.Account);
+                tabbar.SetActiveTab(Tabbar.ActiveTab.None);
 
             var currentView = SystemNavigationManager.GetForCurrentView();
             currentView.AppViewBackButtonVisibility = _frame != null && _frame.CanGoBack
@@ -137,28 +137,48 @@ namespace YouTube
 
             foreach (var group in result.Groups)
             {
-                if (group == null || group.Videos == null || group.Videos.Count == 0)
+                if (group == null ||
+                    ((group.Videos == null || group.Videos.Count == 0) &&
+                     (group.Shorts == null || group.Shorts.Count == 0)))
                     continue;
 
                 var title = string.IsNullOrWhiteSpace(group.DateTitle) ? Localization.GetString("Older") : group.DateTitle;
                 var target = GetOrCreateSection(title);
 
-                foreach (var video in group.Videos)
+                if (group.Shorts != null)
                 {
-                    if (video == null || string.IsNullOrWhiteSpace(video.VideoId))
-                        continue;
+                    foreach (var shortVideo in group.Shorts)
+                    {
+                        if (shortVideo == null || string.IsNullOrWhiteSpace(shortVideo.VideoId))
+                            continue;
 
-                    if (_seenVideoIds.Contains(video.VideoId))
-                        continue;
+                        if (_seenVideoIds.Contains(shortVideo.VideoId))
+                            continue;
 
-                    _seenVideoIds.Add(video.VideoId);
-                    target.Videos.Add(video);
+                        _seenVideoIds.Add(shortVideo.VideoId);
+                        target.Shorts.Add(shortVideo);
+                    }
+                }
+
+                if (group.Videos != null)
+                {
+                    foreach (var video in group.Videos)
+                    {
+                        if (video == null || string.IsNullOrWhiteSpace(video.VideoId))
+                            continue;
+
+                        if (_seenVideoIds.Contains(video.VideoId))
+                            continue;
+
+                        _seenVideoIds.Add(video.VideoId);
+                        target.Videos.Add(video);
+                    }
                 }
             }
 
             for (var i = _sections.Count - 1; i >= 0; i--)
             {
-                if (_sections[i].Videos.Count == 0)
+                if (_sections[i].Videos.Count == 0 && _sections[i].Shorts.Count == 0)
                     _sections.RemoveAt(i);
             }
         }
@@ -171,7 +191,16 @@ namespace YouTube
                     return _sections[i];
             }
 
-            var section = new HistoryDateSectionViewModel { DateTitle = title };
+            var section = new HistoryDateSectionViewModel
+            {
+                DateTitle = title,
+                DateTitleVisibility = string.Equals(
+                    title,
+                    Localization.GetString("Older"),
+                    StringComparison.OrdinalIgnoreCase)
+                    ? Visibility.Collapsed
+                    : Visibility.Visible
+            };
             _sections.Add(section);
             return section;
         }
@@ -208,6 +237,15 @@ namespace YouTube
                 _frame.Navigate(typeof(Video), item.VideoId);
         }
 
+        private void ShortCard_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var item = button != null ? button.DataContext as VideoCardItem : null;
+
+            if (item != null && !string.IsNullOrWhiteSpace(item.VideoId) && _frame != null)
+                _frame.Navigate(typeof(Shorts), item.VideoId);
+        }
+
         private void ShowInitialLoading(bool isLoading)
         {
             if (LoadingOverlay != null)
@@ -230,11 +268,15 @@ namespace YouTube
     public sealed class HistoryDateSectionViewModel
     {
         public string DateTitle { get; set; }
+        public Visibility DateTitleVisibility { get; set; }
         public ObservableCollection<VideoCardItem> Videos { get; private set; }
+        public ObservableCollection<VideoCardItem> Shorts { get; private set; }
 
         public HistoryDateSectionViewModel()
         {
+            DateTitleVisibility = Visibility.Visible;
             Videos = new ObservableCollection<VideoCardItem>();
+            Shorts = new ObservableCollection<VideoCardItem>();
         }
     }
 }

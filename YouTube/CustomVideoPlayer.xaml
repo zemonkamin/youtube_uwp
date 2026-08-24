@@ -180,19 +180,24 @@
         <!-- Subtitles. Above the video but below ControlsOverlay, so the controls stay readable
              when they fade in over a caption. -->
         <Border x:Name="SubtitleOverlay"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Bottom"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
                 Background="#B0000000"
                 CornerRadius="4"
-                Padding="10,4"
-                Margin="16,0,16,56"
+                Padding="8,4"
+                Margin="0"
                 Visibility="Collapsed"
                 IsHitTestVisible="False">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="SubtitleOverlayTransform" X="0" Y="0"/>
+            </Border.RenderTransform>
             <TextBlock x:Name="SubtitleText"
                        Foreground="White"
-                       FontSize="16"
+                       FontSize="15"
+                       FontWeight="SemiBold"
                        TextAlignment="Center"
-                       TextWrapping="Wrap"/>
+                       TextWrapping="Wrap"
+                       MaxLines="3"/>
         </Border>
 
         <!-- Skip overlay for fullscreen mode -->

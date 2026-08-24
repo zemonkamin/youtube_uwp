@@ -36,13 +36,13 @@
             <RowDefinition Height="52" />
         </Grid.RowDefinitions>
 
-        <local:Navbar x:Name="navbar" Grid.Row="0" />
+        <local:Navbar x:Name="navbar" Grid.Row="0" Canvas.ZIndex="20" />
 
-        <Grid Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}">
+        <Grid Grid.Row="0" Grid.RowSpan="3" Background="{ThemeResource AppBackgroundBrush}">
             <ScrollViewer VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled"
                           ZoomMode="Disabled">
-                <StackPanel Padding="0,12,0,82">
+                <StackPanel Padding="0,68,0,82">
                     <TextBlock x:Uid="Loc_Settings_Text"
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="22"
@@ -198,6 +198,118 @@
                                        VerticalAlignment="Center"
                                        Margin="6,0,0,0" />
                             </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <Button x:Name="GlassEffectToggleButton"
+                            Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="62"
+                            HorizontalAlignment="Stretch"
+                            Click="GlassEffectToggleButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   local:ThemeAsset.Path="Assets/player/quality.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Margin="18,0,12,0">
+                                <TextBlock x:Name="GlassEffectLabelText"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                           FontSize="16"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                                <TextBlock x:Name="GlassEffectDescriptionText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="12"
+                                           Margin="0,2,0,0"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                            </StackPanel>
+                            <Grid Grid.Column="2"
+                                  Width="46"
+                                  Height="26"
+                                  VerticalAlignment="Center">
+                                <Border x:Name="GlassEffectToggleTrack"
+                                        Width="46"
+                                        Height="26"
+                                        Background="Transparent"
+                                        CornerRadius="13" />
+                                <Ellipse Width="20"
+                                         Height="20"
+                                         Fill="{ThemeResource ToggleKnobBrush}"
+                                         HorizontalAlignment="Left"
+                                         Margin="3,3,0,3">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="GlassEffectToggleThumbTransform" X="0" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Grid>
+                        </Grid>
+                    </Button>
+
+                    <Button x:Name="ShortsFeatureToggleButton"
+                            Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="62"
+                            HorizontalAlignment="Stretch"
+                            Click="ShortsFeatureToggleButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   local:ThemeAsset.Path="Assets/tabbar/shorts-icon.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Margin="18,0,12,0">
+                                <TextBlock x:Name="ShortsFeatureLabelText"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                           FontSize="16"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                                <TextBlock x:Name="ShortsFeatureDescriptionText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="12"
+                                           Margin="0,2,0,0"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                            </StackPanel>
+                            <Grid Grid.Column="2"
+                                  Width="46"
+                                  Height="26"
+                                  VerticalAlignment="Center">
+                                <Border x:Name="ShortsFeatureToggleTrack"
+                                        Width="46"
+                                        Height="26"
+                                        Background="Transparent"
+                                        CornerRadius="13" />
+                                <Ellipse Width="20"
+                                         Height="20"
+                                         Fill="{ThemeResource ToggleKnobBrush}"
+                                         HorizontalAlignment="Left"
+                                         Margin="3,3,0,3">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="ShortsFeatureToggleThumbTransform" X="0" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Grid>
                         </Grid>
                     </Button>
 
@@ -413,6 +525,78 @@
                         </Grid>
                     </Button>
 
+                    <Button x:Name="DownloadFolderButton"
+                            Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="62"
+                            HorizontalAlignment="Stretch"
+                            Click="DownloadFolderButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   local:ThemeAsset.Path="Assets/download.png"
+                                   Width="23" Height="23" Stretch="Uniform" />
+                            <StackPanel Grid.Column="1" Margin="18,0,12,0"
+                                        VerticalAlignment="Center">
+                                <TextBlock x:Name="DownloadFolderLabelText"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                           FontSize="16" MaxLines="1"
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock x:Name="DownloadFolderDescriptionText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="12" Margin="0,2,0,0" MaxLines="1"
+                                           TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Orientation="Horizontal"
+                                        VerticalAlignment="Center">
+                                <TextBlock x:Name="DownloadFolderValueText"
+                                           MaxWidth="120" MaxLines="1"
+                                           TextTrimming="CharacterEllipsis"
+                                           FontSize="13"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}" />
+                                <Image local:ThemeAsset.Path="Assets/player/skip.png"
+                                       Width="14" Height="14" Margin="6,0,0,0" Opacity="0.6" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
+                    <Button x:Name="ClearDownloadedVideosButton"
+                            Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="62"
+                            HorizontalAlignment="Stretch"
+                            Click="ClearDownloadedVideosButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <FontIcon Grid.Column="0"
+                                      Glyph="&#xE74D;"
+                                      FontFamily="Segoe MDL2 Assets"
+                                      FontSize="22"
+                                      Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                      VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="1"
+                                        Margin="18,0,0,0"
+                                        VerticalAlignment="Center">
+                                <TextBlock x:Name="ClearDownloadedVideosLabelText"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                           FontSize="16"
+                                           MaxLines="1"
+                                           TextTrimming="CharacterEllipsis" />
+                                <TextBlock x:Name="ClearDownloadedVideosDescriptionText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="12"
+                                           Margin="0,2,0,0"
+                                           MaxLines="1"
+                                           TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+
                     <Button x:Name="ChannelIconsToggleButton"
                             Style="{StaticResource SettingsIconButtonStyle}"
                             Height="62"
@@ -518,6 +702,57 @@
                                     <Ellipse.RenderTransform>
                                         <TranslateTransform x:Name="ScrubPreviewToggleThumbTransform"
                                                             X="0" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Grid>
+                        </Grid>
+                    </Button>
+
+                    <Button x:Name="SponsorMarkersToggleButton"
+                            Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="58"
+                            HorizontalAlignment="Stretch"
+                            Click="SponsorMarkersToggleButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0"
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,12,0">
+                                <TextBlock x:Name="SponsorMarkersLabelText"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                           FontSize="16"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                                <TextBlock x:Name="SponsorMarkersDescriptionText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="12"
+                                           Margin="0,2,0,0"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                            </StackPanel>
+
+                            <Grid Grid.Column="1"
+                                  Width="46"
+                                  Height="26"
+                                  VerticalAlignment="Center">
+                                <Border x:Name="SponsorMarkersToggleTrack"
+                                        Width="46"
+                                        Height="26"
+                                        Background="{ThemeResource AppMutedTextBrush}"
+                                        CornerRadius="13" />
+                                <Ellipse Width="20"
+                                         Height="20"
+                                         Fill="{ThemeResource ToggleKnobBrush}"
+                                         HorizontalAlignment="Left"
+                                         Margin="3,3,0,3">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="SponsorMarkersToggleThumbTransform" X="0" />
                                     </Ellipse.RenderTransform>
                                 </Ellipse>
                             </Grid>
@@ -681,12 +916,20 @@
                 </StackPanel>
             </ScrollViewer>
 
+        </Grid>
+
             <Grid x:Name="OverlayGrid"
+                  Grid.Row="0"
+                  Grid.RowSpan="3"
+                  Canvas.ZIndex="100"
                   Background="#80000000"
                   Visibility="Collapsed"
                   Tapped="OverlayGrid_Tapped" />
 
             <Border x:Name="QualityBottomSheetPanel"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
                     Background="{ThemeResource AppDividerBrush}"
@@ -732,6 +975,9 @@
             </Border>
 
             <Border x:Name="LanguageBottomSheetPanel"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
                     Background="{ThemeResource AppDividerBrush}"
@@ -785,6 +1031,9 @@
             </Border>
 
             <Border x:Name="ThemeBottomSheetPanel"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
                     Background="{ThemeResource AppDividerBrush}"
@@ -830,6 +1079,9 @@
             </Border>
 
             <Border x:Name="NotificationsBottomSheetPanel"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
                     Background="{ThemeResource AppDividerBrush}"
@@ -923,6 +1175,9 @@
             </Border>
 
             <Border x:Name="AboutBottomSheetPanel"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
                     Background="{ThemeResource AppSurfaceAltBrush}"
@@ -972,8 +1227,7 @@
                     </Grid>
                 </Grid>
             </Border>
-        </Grid>
 
-        <local:Tabbar x:Name="tabbar" Grid.Row="2" />
+        <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20" />
     </Grid>
 </Page>

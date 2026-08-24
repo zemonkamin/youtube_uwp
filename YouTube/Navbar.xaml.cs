@@ -26,6 +26,7 @@ namespace YouTube
         {
             this.InitializeComponent();
             this.Loaded += Navbar_Loaded;
+            this.Unloaded += Navbar_Unloaded;
             UpdateAccountButtonsVisibility();
         }
 
@@ -44,6 +45,45 @@ namespace YouTube
         private void Navbar_Loaded(object sender, RoutedEventArgs e)
         {
             UpdateAccountButtonsVisibility();
+            FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
+            FluentGlassEffectHelper.EnabledChanged += GlassEffect_EnabledChanged;
+            if (NavbarGlassHost != null)
+            {
+                NavbarGlassHost.SizeChanged -= NavbarGlassHost_SizeChanged;
+                NavbarGlassHost.SizeChanged += NavbarGlassHost_SizeChanged;
+                ApplyGlassEffect();
+            }
+        }
+
+        private void Navbar_Unloaded(object sender, RoutedEventArgs e)
+        {
+            FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
+            if (NavbarGlassHost != null)
+                NavbarGlassHost.SizeChanged -= NavbarGlassHost_SizeChanged;
+
+            FluentGlassEffectHelper.Detach(NavbarGlassHost);
+        }
+
+        private void NavbarGlassHost_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ApplyGlassEffect();
+        }
+
+        private void GlassEffect_EnabledChanged(object sender, EventArgs e)
+        {
+            ApplyGlassEffect();
+        }
+
+        private void ApplyGlassEffect()
+        {
+            if (NavbarGlassHost == null ||
+                NavbarGlassHost.ActualWidth <= 1.0 ||
+                NavbarGlassHost.ActualHeight <= 1.0)
+                return;
+
+            FluentGlassEffectHelper.AttachTopBar(
+                NavbarGlassHost,
+                App.GetThemeBrush("AppBackgroundBrush"));
         }
 
         private void UpdateAccountButtonsVisibility()
@@ -66,6 +106,17 @@ namespace YouTube
             {
                 frame.Navigate(typeof(Notifications));
             }
+        }
+
+        private void YouTubeLogo_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            var frame = Window.Current.Content as Frame;
+            if (frame != null && !(frame.Content is Home))
+            {
+                frame.Navigate(typeof(Home));
+            }
+
+            e.Handled = true;
         }
 
         private void ShowSearchButton_Click(object sender, RoutedEventArgs e)

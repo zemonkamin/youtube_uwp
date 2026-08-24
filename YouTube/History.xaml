@@ -14,12 +14,12 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Grid.RowSpan="2">
             <ScrollViewer x:Name="HistoryScroll"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled"
                           ViewChanged="HistoryScroll_ViewChanged">
-                <StackPanel Padding="16,16,16,20">
+                <StackPanel Padding="16,16,16,72">
                     <TextBlock x:Uid="Loc_History_Text"
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="28"
@@ -31,10 +31,75 @@
                             <DataTemplate>
                                 <StackPanel Margin="0,0,0,12">
                                     <TextBlock Text="{Binding DateTitle}"
+                                               Visibility="{Binding DateTitleVisibility}"
                                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                FontSize="18"
                                                FontWeight="SemiBold"
                                                Margin="0,0,0,10"/>
+
+                                    <ScrollViewer HorizontalScrollMode="Enabled"
+                                                  HorizontalScrollBarVisibility="Hidden"
+                                                  VerticalScrollMode="Disabled"
+                                                  VerticalScrollBarVisibility="Disabled"
+                                                  Margin="0,0,0,10">
+                                        <ItemsControl ItemsSource="{Binding Shorts}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button Style="{StaticResource CardButtonStyle}"
+                                                            Width="142"
+                                                            Height="238"
+                                                            Margin="0,0,10,0"
+                                                            Background="Transparent"
+                                                            BorderThickness="0"
+                                                            Padding="0"
+                                                            Click="ShortCard_Click">
+                                                        <Grid Width="142" Height="238">
+                                                            <Border Background="{ThemeResource AppSurfaceAltBrush}"
+                                                                    CornerRadius="8"/>
+                                                            <Image DataContextChanged="HistoryThumbnail_DataContextChanged"
+                                                                   Stretch="UniformToFill"
+                                                                   HorizontalAlignment="Stretch"
+                                                                   VerticalAlignment="Stretch"/>
+                                                            <Border VerticalAlignment="Bottom"
+                                                                    Height="112"
+                                                                    CornerRadius="0,0,8,8">
+                                                                <Border.Background>
+                                                                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                                        <GradientStop Color="#00000000" Offset="0"/>
+                                                                        <GradientStop Color="#D9000000" Offset="1"/>
+                                                                    </LinearGradientBrush>
+                                                                </Border.Background>
+                                                            </Border>
+                                                            <Image Stretch="Fill"
+                                                                   IsHitTestVisible="False"
+                                                                   local:ThemeAsset.Path="Assets/rounding_up.png"/>
+                                                            <StackPanel VerticalAlignment="Bottom"
+                                                                        Margin="10,0,9,10">
+                                                                <TextBlock Text="{Binding Title}"
+                                                                           Foreground="White"
+                                                                           FontSize="15"
+                                                                           FontWeight="SemiBold"
+                                                                           TextWrapping="Wrap"
+                                                                           TextTrimming="CharacterEllipsis"
+                                                                           MaxLines="3"/>
+                                                                <TextBlock Text="{Binding ViewCount}"
+                                                                           Foreground="#E6FFFFFF"
+                                                                           FontSize="12"
+                                                                           TextWrapping="NoWrap"
+                                                                           TextTrimming="CharacterEllipsis"
+                                                                           Margin="0,5,0,0"/>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </ScrollViewer>
 
                                     <ItemsControl ItemsSource="{Binding Videos}">
                                         <ItemsControl.ItemTemplate>
@@ -59,6 +124,9 @@
                                                                    Stretch="UniformToFill"
                                                                    HorizontalAlignment="Stretch"
                                                                    VerticalAlignment="Stretch" />
+                                                            <ProgressBar Style="{StaticResource VideoWatchedProgressStyle}"
+                                                                         Value="{Binding WatchedPercent}"
+                                                                         Visibility="{Binding WatchedProgressVisibility}" />
                                                             <Image Stretch="Fill"
                                                                    IsHitTestVisible="False"
                                                                    local:ThemeAsset.Path="Assets/rounding_up.png"/>
@@ -138,6 +206,6 @@
             </Grid>
         </Grid>
 
-        <local:Tabbar x:Name="tabbar" Grid.Row="1"/>
+        <local:Tabbar x:Name="tabbar" Grid.Row="1" Canvas.ZIndex="20"/>
     </Grid>
 </Page>

@@ -15,25 +15,16 @@
             <RowDefinition Height="52" />
         </Grid.RowDefinitions>
 
-        <!-- Top bar: search only. Back navigation uses the system back button. -->
+        <!-- The system back button is the only back navigation on this page. -->
         <Grid Grid.Row="0" Background="{ThemeResource AppBackgroundBrush}" Padding="8,0,8,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <Button Grid.Column="1"
-                    Width="48"
-                    Height="48"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    Padding="10"
-                    Click="SearchButton_Click">
-                <Image local:ThemeAsset.Path="Assets/search.png"
-                       Width="28"
-                       Height="28"
-                       Stretch="Uniform" />
-            </Button>
+            <TextBlock x:Uid="Loc_Playlist_Text"
+                       x:Name="PlaylistBarTitleText"
+                       Foreground="{ThemeResource AppPrimaryTextBrush}"
+                       FontSize="17"
+                       FontWeight="SemiBold"
+                       TextTrimming="CharacterEllipsis"
+                       VerticalAlignment="Center"
+                       Margin="8,0" />
         </Grid>
 
         <Grid x:Name="LoadingGrid" Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}" Visibility="Visible">
@@ -72,6 +63,7 @@
 
         <ScrollViewer x:Name="MainContent"
                       Grid.Row="1"
+                      Grid.RowSpan="2"
                       Background="{ThemeResource AppBackgroundBrush}"
                       Visibility="Collapsed"
                       ZoomMode="Disabled"
@@ -79,19 +71,15 @@
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       ViewChanged="MainContent_ViewChanged">
-            <StackPanel Background="{ThemeResource AppBackgroundBrush}" Padding="0,8,0,24">
+            <StackPanel Background="{ThemeResource AppBackgroundBrush}" Padding="0,8,0,76">
 
-                <!-- Playlist header, like the mobile playlist screen, but without Play all / Save / Share / menu buttons. -->
+                <!-- Header ported from youtube-ios/YTPlaylistView. -->
                 <Grid Margin="16,0,16,0">
-                    <Border x:Name="PlaylistHeaderImageBorder" Height="185" CornerRadius="12" Background="{ThemeResource AppSurfaceAltBrush}" />
-                    <Border Height="185" CornerRadius="12">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                                <GradientStop Color="#11000000" Offset="0" />
-                                <GradientStop Color="#AA000000" Offset="1" />
-                            </LinearGradientBrush>
-                        </Border.Background>
-                    </Border>
+                    <Border x:Name="PlaylistHeaderImageBorder"
+                            Height="185"
+                            CornerRadius="12"
+                            Background="{ThemeResource AppSurfaceAltBrush}"
+                            Visibility="Collapsed" />
                 </Grid>
 
                 <StackPanel x:Name="PlaylistInfoPanel" Margin="16,14,16,14">
@@ -102,20 +90,14 @@
                                TextWrapping="WrapWholeWords"
                                MaxLines="3" />
 
-                    <StackPanel x:Name="OwnerRow" Orientation="Horizontal" Margin="0,8,0,0" Visibility="Collapsed">
-                        <Ellipse x:Name="OwnerAvatarEllipse"
-                                 Width="30"
-                                 Height="30"
-                                 VerticalAlignment="Center"
-                                 Visibility="Collapsed" />
-                        <TextBlock x:Name="OwnerText"
-                                   Text=""
-                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                   FontSize="16"
-                                   FontWeight="SemiBold"
-                                   TextTrimming="CharacterEllipsis"
-                                   VerticalAlignment="Center" />
-                    </StackPanel>
+                    <TextBlock x:Name="OwnerText"
+                               Text=""
+                               Foreground="{ThemeResource AppPrimaryTextBrush}"
+                               FontSize="16"
+                               FontWeight="Normal"
+                               TextTrimming="CharacterEllipsis"
+                               Margin="0,8,0,0"
+                               Visibility="Collapsed" />
 
                     <TextBlock x:Name="PlaylistMetaText"
                                Text=""
@@ -124,14 +106,6 @@
                                TextWrapping="Wrap"
                                Margin="0,6,0,0" />
 
-                    <TextBlock x:Name="PlaylistDescriptionText"
-                               Text=""
-                               Foreground="{ThemeResource AppPrimaryTextBrush}"
-                               FontSize="15"
-                               TextWrapping="Wrap"
-                               TextTrimming="WordEllipsis"
-                               MaxLines="3"
-                               Margin="0,12,0,0" />
                 </StackPanel>
 
                 <!-- Video cards: same layout as Channel/Home. -->
@@ -172,12 +146,17 @@
                                             HorizontalAlignment="Stretch">
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged"
                                           Tag="VideoCardThumbnailChrome">
-                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="8" />
-                                        <Border Tag="VideoCardThumbnailChrome" CornerRadius="8">
-                                            <Image DataContextChanged="CardThumbnail_DataContextChanged"
-                                                   Stretch="UniformToFill"
-                                                   VerticalAlignment="Stretch"
-                                                   HorizontalAlignment="Stretch" />
+                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" />
+                                        <Border Tag="VideoCardThumbnailChrome">
+                                            <Grid>
+                                                <Image DataContextChanged="CardThumbnail_DataContextChanged"
+                                                       Stretch="UniformToFill"
+                                                       VerticalAlignment="Stretch"
+                                                       HorizontalAlignment="Stretch" />
+                                                <ProgressBar Style="{StaticResource VideoWatchedProgressStyle}"
+                                                             Value="{Binding WatchedPercent}"
+                                                             Visibility="{Binding WatchedProgressVisibility}" />
+                                            </Grid>
                                         </Border>
                                         <Border HorizontalAlignment="Right"
                                                 VerticalAlignment="Bottom"
@@ -251,6 +230,6 @@
             </StackPanel>
         </ScrollViewer>
 
-        <local:Tabbar x:Name="tabbar" Grid.Row="2" />
+        <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20" />
     </Grid>
 </Page>

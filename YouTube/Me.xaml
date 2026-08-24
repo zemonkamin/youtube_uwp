@@ -8,18 +8,127 @@
     mc:Ignorable="d"
     Background="{ThemeResource AppBackgroundBrush}">
 
+    <Page.Resources>
+        <Style x:Key="SettingsIconButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ChannelActionButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{ThemeResource PrimaryActionBackgroundBrush}" />
+            <Setter Property="Foreground" Value="{ThemeResource PrimaryActionForegroundBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="20"
+                                Padding="{TemplateBinding Padding}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Pressed" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Same outlined pill foundation as the QR refresh button on Login. -->
+        <Style x:Key="AccountsPillButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{ThemeResource AppBackgroundBrush}" />
+            <Setter Property="Foreground" Value="{ThemeResource AppPrimaryTextBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource AppDividerBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="14,0" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Height" Value="38" />
+            <Setter Property="UseSystemFocusVisuals" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="RootBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="20">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Pressed" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
     <Grid Background="{ThemeResource AppBackgroundBrush}" x:Name="mainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" Grid.RowSpan="2">
             <ScrollViewer VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled">
-                <StackPanel Padding="0,10,0,24">
-                    <!-- Top bar: no Accounts button, no notifications bell -->
+                <StackPanel Padding="0,10,0,76">
+                    <!-- Top bar -->
                     <Grid Height="44" Margin="16,0,16,4">
+                        <Button x:Name="AccountsButton"
+                                Style="{StaticResource AccountsPillButtonStyle}"
+                                HorizontalAlignment="Left"
+                                Click="AccountsButton_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="AccountsButtonText"
+                                           VerticalAlignment="Center"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}" />
+                                <Image local:ThemeAsset.Path="Assets/down_arrow.png"
+                                       Width="12"
+                                       Height="12"
+                                       Margin="9,1,0,0"
+                                       Stretch="Uniform" />
+                            </StackPanel>
+                        </Button>
+
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center">
@@ -79,38 +188,29 @@
                                        TextWrapping="NoWrap"
                                        TextTrimming="CharacterEllipsis"/>
 
-                            <StackPanel Orientation="Horizontal"
-                                        Margin="0,3,0,0">
-                                <TextBlock x:Name="ChannelHandleText"
-                                           Text=""
-                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
-                                           FontSize="12"
-                                           VerticalAlignment="Center"/>
-                                <TextBlock x:Name="ProfileMetaSeparator"
-                                           Text="  •  "
-                                           Foreground="{ThemeResource AppMutedTextBrush}"
-                                           FontSize="12"
-                                           VerticalAlignment="Center"/>
-                                <Button x:Name="GoToChannelButton"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        Padding="0"
-                                        Click="GoToChannelButton_Click">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock x:Uid="Loc_ViewChannel_Text"
-                                                   Foreground="{ThemeResource AppSecondaryTextBrush}"
-                                                   FontSize="12"
-                                                   VerticalAlignment="Center"/>
-                                        <TextBlock Text=" &#x203A;"
-                                                   Foreground="{ThemeResource AppSecondaryTextBrush}"
-                                                   FontSize="18"
-                                                   Margin="2,-2,0,0"
-                                                   VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Button>
-                            </StackPanel>
+                            <TextBlock x:Name="ChannelHandleText"
+                                       Text=""
+                                       Margin="0,3,0,0"
+                                       Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                       FontSize="12"
+                                       VerticalAlignment="Center"/>
                         </StackPanel>
                     </Grid>
+
+                    <Button x:Name="GoToChannelButton"
+                            Style="{StaticResource ChannelActionButtonStyle}"
+                            Height="40"
+                            Margin="16,0,16,24"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            HorizontalAlignment="Stretch"
+                            Visibility="Collapsed"
+                            Click="GoToChannelButton_Click">
+                        <TextBlock x:Uid="Loc_ViewChannel_Text"
+                                   Foreground="{ThemeResource PrimaryActionForegroundBrush}"
+                                   FontSize="14"
+                                   FontWeight="SemiBold"/>
+                    </Button>
 
                     <!-- History -->
                     <Button Background="Transparent"
@@ -162,6 +262,9 @@
                                                        Stretch="UniformToFill"
                                                        HorizontalAlignment="Stretch"
                                                        VerticalAlignment="Stretch" />
+                                                <ProgressBar Style="{StaticResource VideoWatchedProgressStyle}"
+                                                             Value="{Binding WatchedPercent}"
+                                                             Visibility="{Binding WatchedProgressVisibility}" />
                                                 <Image Stretch="Fill"
                                                        IsHitTestVisible="False"
                                                        local:ThemeAsset.Path="Assets/rounding_up.png"/>
@@ -211,59 +314,143 @@
                         </StackPanel>
                     </Grid>
 
-                    <ScrollViewer HorizontalScrollBarVisibility="Hidden"
-                                  VerticalScrollBarVisibility="Disabled"
-                                  HorizontalScrollMode="Enabled"
-                                  VerticalScrollMode="Disabled"
-                                  ZoomMode="Disabled">
-                        <ItemsControl x:Name="PlaylistsList"
-                                      Margin="16,0,0,0">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Style="{StaticResource CardButtonStyle}" Width="160"
-                                            Margin="0,0,16,0"
-                                            Padding="0"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                            HorizontalContentAlignment="Stretch"
-                                            Click="PlaylistCard_Click">
-                                        <StackPanel>
-                                            <Grid Width="160" Height="90">
-                                                <Border Background="{ThemeResource AppSurfaceAltBrush}"/>
-                                                <Border>
-                                                    <Border.Background>
-                                                        <ImageBrush ImageSource="{Binding ThumbnailUrl}"
-                                                                    Stretch="UniformToFill"/>
-                                                    </Border.Background>
-                                                </Border>
-                                                <Image Stretch="Fill"
-                                                       IsHitTestVisible="False"
-                                                       local:ThemeAsset.Path="Assets/rounding_up.png"/>
-                                            </Grid>
+                    <ItemsControl x:Name="PlaylistsList"
+                                  HorizontalAlignment="Stretch"
+                                  HorizontalContentAlignment="Stretch">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource CardButtonStyle}"
+                                        Height="90"
+                                        Margin="16,0,16,12"
+                                        Padding="0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Stretch"
+                                        Click="PlaylistCard_Click">
+                                    <Grid Height="90" HorizontalAlignment="Stretch">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="144"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid Grid.Column="0" Width="144" Height="90"
+                                              HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <Border Width="126"
+                                                    Height="70"
+                                                    Margin="0,0,0,0"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Top"
+                                                    Background="{Binding AccentBackColor}"
+                                                    CornerRadius="8"
+                                                    Opacity="0.72"/>
+                                            <Border Width="136"
+                                                    Height="75"
+                                                    Margin="0,4,0,0"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Top"
+                                                    Background="{Binding AccentFrontColor}"
+                                                    CornerRadius="8"
+                                                    Opacity="0.86"/>
+                                            <Border Height="81"
+                                                    VerticalAlignment="Bottom"
+                                                    Background="{ThemeResource AppSurfaceAltBrush}"
+                                                    CornerRadius="8">
+                                                <Grid>
+                                                    <Image Source="{Binding ThumbnailUrl}"
+                                                           Stretch="UniformToFill"/>
+                                                    <Image Stretch="Fill"
+                                                           IsHitTestVisible="False"
+                                                           local:ThemeAsset.Path="Assets/rounding_up.png"/>
+                                                </Grid>
+                                            </Border>
+                                            <Border Width="30"
+                                                    Height="30"
+                                                    HorizontalAlignment="Right"
+                                                    VerticalAlignment="Bottom"
+                                                    Margin="0,0,5,5"
+                                                    CornerRadius="15"
+                                                    Background="#B8000000">
+                                                <Grid>
+                                                    <Image Source="{Binding OverlayIconSource}"
+                                                           Width="18"
+                                                           Height="18"
+                                                           Stretch="Uniform"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"
+                                                           Opacity="{Binding OverlayIconImageOpacity}"/>
+                                                    <FontIcon Glyph="{Binding OverlayIconGlyph}"
+                                                              FontFamily="Segoe MDL2 Assets"
+                                                              FontSize="16"
+                                                              Foreground="White"
+                                                              HorizontalAlignment="Center"
+                                                              VerticalAlignment="Center"
+                                                              Opacity="{Binding OverlayIconGlyphOpacity}"/>
+                                                </Grid>
+                                            </Border>
+                                        </Grid>
+
+                                        <StackPanel Grid.Column="1"
+                                                    Margin="14,0,8,0"
+                                                    VerticalAlignment="Center">
                                             <TextBlock Text="{Binding Title}"
                                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                                       FontSize="13"
+                                                       FontSize="16"
+                                                       FontWeight="SemiBold"
                                                        TextWrapping="NoWrap"
-                                                       TextTrimming="CharacterEllipsis"
-                                                       MaxLines="1"
-                                                       Margin="0,6,0,0"/>
-                                            <TextBlock Text="{Binding PrivacyText}"
+                                                       TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding MetadataText}"
                                                        Foreground="{ThemeResource AppSecondaryTextBrush}"
-                                                       FontSize="11"
+                                                       FontSize="12"
                                                        TextWrapping="NoWrap"
                                                        TextTrimming="CharacterEllipsis"
-                                                       Margin="0,3,0,0"/>
+                                                       Margin="0,5,0,0"/>
                                         </StackPanel>
-                                    </Button>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
+
+                                    </Grid>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <Button Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="52"
+                            Margin="0,2,0,12"
+                            HorizontalAlignment="Stretch"
+                            Click="DownloadsHeader_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   local:ThemeAsset.Path="Assets/download.png"
+                                   Width="23" Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <TextBlock x:Name="DownloadsHeaderText"
+                                       Grid.Column="1"
+                                       Margin="18,0,0,0"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                       FontSize="16"
+                                       VerticalAlignment="Center"
+                                       TextWrapping="NoWrap"
+                                       TextTrimming="CharacterEllipsis"
+                                       MaxLines="1" />
+                            <Image Grid.Column="2"
+                                   local:ThemeAsset.Path="Assets/player/skip.png"
+                                   Width="14" Height="14"
+                                   Opacity="0.6"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                        </Grid>
+                    </Button>
 
                     <TextBlock x:Uid="Loc_NoData_Text" x:Name="EmptyText"
                                Visibility="Collapsed"
@@ -286,6 +473,145 @@
             </Grid>
         </Grid>
 
-        <local:Tabbar x:Name="tabbar" Grid.Row="1"/>
+        <local:Tabbar x:Name="tabbar" Grid.Row="1" Canvas.ZIndex="20"/>
+
+        <Grid x:Name="AccountsOverlay"
+              Grid.Row="0"
+              Grid.RowSpan="2"
+              Canvas.ZIndex="100"
+              Background="#80000000"
+              Visibility="Collapsed"
+              Tapped="AccountsOverlay_Tapped" />
+
+        <Border x:Name="AccountsSheet"
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Canvas.ZIndex="101"
+                MaxHeight="520"
+                Margin="10,0,10,10"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                Background="{ThemeResource AppSurfaceAltBrush}"
+                CornerRadius="15"
+                Visibility="Collapsed">
+            <Border.RenderTransform>
+                <TranslateTransform x:Name="AccountsSheetTransform" Y="540" />
+            </Border.RenderTransform>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="36" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid x:Name="AccountsDragArea"
+                      Grid.Row="0"
+                      Height="36"
+                      Background="Transparent"
+                      PointerPressed="AccountsDragArea_PointerPressed"
+                      PointerMoved="AccountsDragArea_PointerMoved"
+                      PointerReleased="AccountsDragArea_PointerReleased"
+                      PointerCaptureLost="AccountsDragArea_PointerReleased">
+                    <Rectangle Width="40"
+                               Height="4"
+                               Fill="Gray"
+                               RadiusX="2"
+                               RadiusY="2"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center" />
+                </Grid>
+
+                <TextBlock x:Name="AccountsSheetTitle"
+                           Grid.Row="1"
+                           Margin="20,0,20,12"
+                           FontSize="20"
+                           FontWeight="SemiBold"
+                           Foreground="{ThemeResource AppPrimaryTextBrush}" />
+
+                <Grid Grid.Row="2" Margin="0,0,0,12">
+                    <ScrollViewer MaxHeight="350"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl x:Name="AccountsList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Margin="4,0,4,4"
+                                            Padding="16,9"
+                                            Height="68"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            HorizontalAlignment="Stretch"
+                                            HorizontalContentAlignment="Stretch"
+                                            Click="AccountItem_Click">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="48" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="32" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Ellipse Width="42" Height="42"
+                                                     HorizontalAlignment="Left"
+                                                     VerticalAlignment="Center">
+                                                <Ellipse.Fill>
+                                                    <ImageBrush ImageSource="{Binding ThumbnailUrl}"
+                                                                Stretch="UniformToFill" />
+                                                </Ellipse.Fill>
+                                            </Ellipse>
+
+                                            <StackPanel Grid.Column="1"
+                                                        Margin="10,0,8,0"
+                                                        VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding DisplayName}"
+                                                           FontSize="15"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           TextWrapping="NoWrap" />
+                                                <TextBlock Text="{Binding ChannelHandle}"
+                                                           Margin="0,3,0,0"
+                                                           FontSize="12"
+                                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           TextWrapping="NoWrap" />
+                                            </StackPanel>
+
+                                            <FontIcon Grid.Column="2"
+                                                      Glyph="&#xE73E;"
+                                                      FontFamily="Segoe MDL2 Assets"
+                                                      FontSize="18"
+                                                      Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center"
+                                                      Visibility="{Binding SelectedVisibility}" />
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <local:AndroidLoadingRing x:Name="AccountsLoadingRing"
+                                              Width="38"
+                                              Height="38"
+                                              Margin="0,20"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              IsActive="False"
+                                              Visibility="Collapsed" />
+
+                    <TextBlock x:Name="AccountsEmptyText"
+                               Margin="20,24"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               FontSize="14"
+                               Foreground="{ThemeResource AppSecondaryTextBrush}"
+                               Visibility="Collapsed" />
+                </Grid>
+
+            </Grid>
+        </Border>
     </Grid>
 </Page>

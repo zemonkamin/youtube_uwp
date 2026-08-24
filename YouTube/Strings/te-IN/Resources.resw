@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>LegacyProjects బృందం అభివృద్ధి చేసింది.
@@ -18,11 +45,146 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
 
 వెర్షన్ {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>ఖాతాలు</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>రూపం</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>ఆడియో ట్రాక్</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>ఆటో</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>స్వయంచాలక అనువాదం &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; వెనుకకు</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>యాక్షన్/అడ్వెంచర్</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>అన్నీ</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>అనిమే/యానిమేషన్</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>ఆటోలు &amp; వాహనాలు</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>క్లాసిక్స్</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>కామెడీ</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>డాక్యుమెంటరీ</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>డ్రామా</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>విద్య</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>వినోదం</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>కుటుంబం</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>ఫిల్మ్ &amp; యానిమేషన్</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>విదేశీ</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>గేమింగ్</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>హారర్</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>హౌటు &amp; స్టైల్</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>లెర్నింగ్</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>లైవ్</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>సినిమాలు</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>సంగీతం</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>వార్తలు</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>వార్తలు &amp; రాజకీయాలు</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>లాభాపేక్షలేనివి &amp; ఉద్యమం</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>వ్యక్తులు &amp; బ్లాగులు</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>పెంపుడు జంతువులు &amp; జంతువులు</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>పాడ్‌కాస్ట్‌లు</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>సైన్స్ &amp; టెక్నాలజీ</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>సై-ఫై/ఫాంటసీ</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>చిన్న సినిమాలు</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>షోలు</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>క్రీడలు</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>థ్రిల్లర్</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>ట్రైలర్లు</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>ప్రయాణం &amp; ఈవెంట్లు</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>వీడియోబ్లాగింగ్</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>వీడియో గేమ్స్</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>ఛానెల్</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>ఛానెల్ చిహ్నాలు</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>వీడియో కార్డ్‌లలో ఛానెల్ చిహ్నాలను చూపించు</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>ఛానెల్ లోడ్ చేయడంలో లోపం</value>
@@ -30,14 +192,71 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>ఛానెల్ అందించబడలేదు</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>వ్యాఖ్యలు</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>మీరు నిజంగా సైన్ అవుట్ కావాలనుకుంటున్నారా?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>సైన్ అవుట్ నిర్ధారించండి</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>ఛానెల్‌ను లోడ్ చేయలేకపోయాం</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>నోటిఫికేషన్లను లోడ్ చేయలేకపోయాం</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>ప్లేలిస్ట్‌ను లోడ్ చేయలేకపోయాం</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>వీడియోను లోడ్ చేయలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>వీడియోను ప్లే చేయలేకపోయాం.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} రోజుల క్రితం</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>వివరణ అందుబాటులో లేదు</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>డౌన్‌లోడ్ చేయండి</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>డౌన్‌లోడ్ అయింది</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>మీ డౌన్‌లోడ్‌లు</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>డౌన్‌లోడ్ ఫోల్డర్</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>డౌన్‌లోడ్ చేసిన వీడియోలను సేవ్ చేసే చోటును ఎంచుకోండి</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>డౌన్‌లోడ్ నాణ్యత</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>డౌన్‌లోడ్‌లు</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>మీరు డౌన్‌లోడ్ చేసిన వీడియోలు ఇక్కడ కనిపిస్తాయి.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>మీ డౌన్‌లోడ్‌లు</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>డౌన్‌లోడ్‌లు</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>ఈ వీడియోను డౌన్‌లోడ్ చేయడం సాధ్యం కాదు</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>లోపం కోడ్: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>లోపం: {0}</value>
@@ -62,6 +281,18 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>ప్రతి {0} నిమిషాలకు</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>వీడియోను ప్లే చేయడం విఫలమైంది: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>సబ్‌స్క్రిప్షన్‌ల నుండి</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>గ్లాస్ ప్రభావం</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>నావిగేషన్ బార్‌లను బ్లర్ చేయండి</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>హిస్టరీని లోడ్ చేయడం విఫలమైంది</value>
@@ -90,8 +321,17 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="LanguageSystem" xml:space="preserve">
     <value>సిస్టమ్ డిఫాల్ట్</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>లైక్</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>లింక్ కాపీ చేయబడింది</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>లైవ్ టైల్</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>ప్రారంభ స్క్రీన్‌లో సిఫార్సులను చూపించు</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>వివరణ లోడ్ అవుతోంది...</value>
@@ -237,6 +477,9 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>ఈ ప్లేలిస్ట్‌లో వీడియోలు లేవు</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>సరే</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>వ్యక్తిగతీకరించబడింది</value>
   </data>
@@ -375,6 +618,15 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="Mix" xml:space="preserve">
     <value>మిక్స్</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} నెలల క్రితం</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>నెట్‌వర్క్ లోపం. మీ ఇంటర్నెట్ కనెక్షన్‌ను తనిఖీ చేయండి.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>కాదు</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>వ్యాఖ్యలు కనుగొనబడలేదు.</value>
   </data>
@@ -393,11 +645,26 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="NoNotifications" xml:space="preserve">
     <value>నోటిఫికేషన్లు లేవు</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts కనుగొనబడలేదు.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>నోటిఫికేషన్ ప్రాధాన్యతను నవీకరించలేకపోయాం.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>నోటిఫికేషన్లు విఫలమయ్యాయి</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>మీ సబ్‌స్క్రిప్షన్‌ల కొత్త నవీకరణలు ఇక్కడ కనిపిస్తాయి.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>మీ YouTube నోటిఫికేషన్లను చూడటానికి సైన్ ఇన్ చేయండి.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>ఈ పేజీని తర్వాత మళ్లీ తెరవండి.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>శీర్షిక లేదు</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>సైన్ ఇన్ కాలేదు</value>
@@ -414,8 +681,23 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="PlaybackError" xml:space="preserve">
     <value>ప్లేబ్యాక్ లోపం</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>ప్లేబ్యాక్ విఫలమైంది</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>ప్లేబ్యాక్ వేగం</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>వీడియోను ప్లే చేయలేకపోయాం. ప్లేయర్ ప్రారంభించబడలేదు.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>ప్లేలిస్ట్</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>ప్లేలిస్ట్ id ఖాళీగా ఉంది</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>ప్లేలిస్ట్‌ను అప్‌డేట్ చేయడం సాధ్యపడలేదు</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR కోడ్</value>
@@ -423,11 +705,62 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>QR ప్రదర్శన లోపం: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>నాణ్యత</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>రేటింగ్ విఫలమైంది</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube రేటింగ్ అభ్యర్థనను తిరస్కరించింది. TV టోకెన్ చెల్లుబాటులో ఉందో మరియు YouTube రేటింగ్ scope ఉందో తనిఖీ చేయండి.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>సిఫార్సు చేసిన వీడియో</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>రిఫ్రెష్ టోకెన్‌ను యాక్సెస్ టోకెన్‌గా మార్చలేకపోయాం.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>ప్రత్యుత్తరాలు</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} ప్రత్యుత్తరాలు</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>సేవ్ చేయండి</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>శోధన లోపం: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>తెలియదు</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>ఖాతాను ఎంచుకోండి</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>ప్లేలిస్ట్‌ను ఎంచుకోండి</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>ఇంగ్లీష్</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>డిఫాల్ట్‌గా Windows భాషను ఉపయోగిస్తుంది.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>యాప్ భాష</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>రష్యన్</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>భాష</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>భాష</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>సిస్టమ్ డిఫాల్ట్</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>ఈ YouTube Shortను షేర్ చేయి</value>
@@ -435,11 +768,47 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>ఈ YouTube వీడియోను షేర్ చేయి</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>యాప్‌లో Shorts చూపించండి</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>తక్కువ చూపు</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>మరిన్ని</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>TV రిఫ్రెష్ టోకెన్‌ను యాక్సెస్ టోకెన్‌గా మార్చలేకపోయాం. మళ్లీ సైన్ ఇన్ చేసి రిఫ్రెష్ టోకెన్ ఇంకా చెల్లుబాటులో ఉందో తనిఖీ చేయండి.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>సైన్ ఇన్ అవసరం</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Shorts చూడటానికి సైన్ ఇన్ చేయండి.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>సీక్ బార్‌పై ప్రకటన విభాగాలు</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>రంగుల SponsorBlock పరిధులను చూపు</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>సబ్‌స్క్రైబ్</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>సబ్‌స్క్రైబర్లు</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>సబ్‌స్క్రైబర్లు</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>సబ్‌స్క్రైబర్</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} సబ్‌స్క్రైబర్లు • {1} వీడియోలు</value>
@@ -450,65 +819,71 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube సబ్‌స్క్రిప్షన్ అభ్యర్థనను తిరస్కరించింది.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube సబ్‌స్క్రిప్షన్ అభ్యర్థనను తిరస్కరించింది. TV టోకెన్ చెల్లుబాటులో ఉందో మరియు ఛానెల్ id కనుగొనబడిందో తనిఖీ చేయండి.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   ముందుగా (+0.25సె)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   తర్వాత (-0.25సె)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>సాధారణ ఆఫ్‌సెట్‌ను పునరుద్ధరించు (0.00 సె)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>సబ్‌టైటిల్స్</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>సింక్: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>వ్యాఖ్యలను లోడ్ చేయలేకపోయాం.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>థీమ్</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>శీర్షిక లేదు</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>డార్క్</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>వీడియో లింక్ క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>లైట్</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} వీడియోలు</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>ఈ వారం</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>థంబ్‌నెయిల్ నాణ్యత</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>భాష</value>
+  <data name="Today" xml:space="preserve">
+    <value>ఈ రోజు</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>యాప్ భాష</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>కామెడీ స్కెచ్‌లు</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>భాష</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>వంట వంటకాలు</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>డిఫాల్ట్‌గా Windows భాషను ఉపయోగిస్తుంది.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>DIY ట్యుటోరియల్స్</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>సిస్టమ్ డిఫాల్ట్</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>గేమింగ్ హైలైట్స్</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>ఇంగ్లీష్</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>సినిమా ట్రైలర్లు</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>రష్యన్</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>మ్యూజిక్ వీడియోలు</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube వీడియో</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>క్రీడా హైలైట్స్</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>ఛానెల్</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>టెక్ సమీక్షలు</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>TV రిఫ్రెష్ టోకెన్‌ను యాక్సెస్ టోకెన్‌గా మార్చలేకపోయాం.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>తెలియదు</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>శీర్షిక లేదు</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>TV రిఫ్రెష్ టోకెన్‌ను యాక్సెస్ టోకెన్‌గా మార్చలేకపోయాం. మళ్లీ సైన్ ఇన్ చేసి రిఫ్రెష్ టోకెన్ ఇంకా చెల్లుబాటులో ఉందో తనిఖీ చేయండి.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>TV రిఫ్రెష్ టోకెన్ కనుగొనబడలేదు. మళ్లీ సైన్ ఇన్ చేసి ప్రయత్నించండి.</value>
@@ -516,194 +891,23 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>TV రిఫ్రెష్ టోకెన్ కనుగొనబడలేదు. yt_refresh_token సేవ్ అయ్యేలా మళ్లీ సైన్ ఇన్ చేసి, తర్వాత ప్రయత్నించండి.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>TV రిఫ్రెష్ టోకెన్‌ను యాక్సెస్ టోకెన్‌గా మార్చలేకపోయాం.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>రిఫ్రెష్ టోకెన్‌ను యాక్సెస్ టోకెన్‌గా మార్చలేకపోయాం.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>ప్లేబ్యాక్ విఫలమైంది</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>ఈ Shortను ప్లే చేయలేకపోయాం</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>వీడియో లోడ్ సమయం ముగిసింది. మీ ఇంటర్నెట్ కనెక్షన్‌ను తనిఖీ చేయండి.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>వీడియోను లోడ్ చేయలేకపోయాం. దయచేసి మళ్లీ ప్రయత్నించండి.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>వీడియోను ప్లే చేయలేకపోయాం. ప్లేయర్ ప్రారంభించబడలేదు.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>వీడియోను లోడ్ చేయలేకపోయాం. లింక్ గడువు ముగిసివుండవచ్చు లేదా ఫార్మాట్‌కు మద్దతు ఉండకపోవచ్చు.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>నెట్‌వర్క్ లోపం. మీ ఇంటర్నెట్ కనెక్షన్‌ను తనిఖీ చేయండి.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>వీడియో ప్లేబ్యాక్ లోపం. తక్కువ నాణ్యతను ఎంచుకుని ప్రయత్నించండి.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>వీడియోను ప్లే చేయలేకపోయాం.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>మ్యూజిక్ వీడియోలు</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>గేమింగ్ హైలైట్స్</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>వంట వంటకాలు</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>టెక్ సమీక్షలు</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>సినిమా ట్రైలర్లు</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>క్రీడా హైలైట్స్</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>కామెడీ స్కెచ్‌లు</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>DIY ట్యుటోరియల్స్</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>సిఫార్సు చేసిన వీడియో</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>మీరు నిజంగా సైన్ అవుట్ కావాలనుకుంటున్నారా?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>సైన్ అవుట్ నిర్ధారించండి</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>అవును</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>కాదు</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>మీ YouTube నోటిఫికేషన్లను చూడటానికి సైన్ ఇన్ చేయండి.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>నోటిఫికేషన్లను లోడ్ చేయలేకపోయాం</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>ఈ పేజీని తర్వాత మళ్లీ తెరవండి.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>ప్లేలిస్ట్ id ఖాళీగా ఉంది</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} వీడియోలు</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>తెలియదు</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Shorts చూడటానికి సైన్ ఇన్ చేయండి.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Shorts కనుగొనబడలేదు.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>వ్యాఖ్యలను లోడ్ చేయలేకపోయాం.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Shortsను లోడ్ చేయలేకపోయాం.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>ఈ Shortను ప్లే చేయలేకపోయాం</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>ఈ Shortను ప్లే చేయలేకపోయాం.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>నాణ్యత</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>తెలియదు</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>ప్లేబ్యాక్ వేగం</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>ఆడియో ట్రాక్</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>సబ్‌టైటిల్స్</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>వీడియోను ప్లే చేయడం విఫలమైంది: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>లోపం కోడ్: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>ఈ రోజు</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} రోజుల క్రితం</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} వారాల క్రితం</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} నెలల క్రితం</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} సంవత్సరాల క్రితం</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; వెనుకకు</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube వీడియో</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>సబ్‌స్క్రైబర్</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>సబ్‌స్క్రైబర్లు</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>సబ్‌స్క్రైబర్లు</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>వీడియో</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>వీడియోలు</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>వీడియోలు</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>సబ్‌స్క్రైబ్</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>లైక్</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>వ్యాఖ్యలు</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>మీ సబ్‌స్క్రిప్షన్‌ల కొత్త నవీకరణలు ఇక్కడ కనిపిస్తాయి.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube సబ్‌స్క్రిప్షన్ అభ్యర్థనను తిరస్కరించింది. TV టోకెన్ చెల్లుబాటులో ఉందో మరియు ఛానెల్ id కనుగొనబడిందో తనిఖీ చేయండి.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube రేటింగ్ అభ్యర్థనను తిరస్కరించింది. TV టోకెన్ చెల్లుబాటులో ఉందో మరియు YouTube రేటింగ్ scope ఉందో తనిఖీ చేయండి.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>TV రిఫ్రెష్ టోకెన్‌ను యాక్సెస్ టోకెన్‌గా మార్చలేకపోయాం. మళ్లీ సైన్ ఇన్ చేసి రిఫ్రెష్ టోకెన్ ఇంకా చెల్లుబాటులో ఉందో తనిఖీ చేయండి.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>సరే</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>నిన్న</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>ఈ వారం</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>శీర్షిక లేదు</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>ఒక వీడియో అప్‌లోడ్ చేసింది</value>
@@ -711,146 +915,73 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>“{0}” వీడియోను అప్‌లోడ్ చేసింది</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>సబ్‌స్క్రిప్షన్‌ల నుండి</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>వీడియో “{0}”కు జోడించబడింది</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>అన్నీ</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>వీడియోలు</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>ఫిల్మ్ &amp; యానిమేషన్</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>వీడియో లింక్ క్లిప్‌బోర్డ్‌కు కాపీ చేయబడింది.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>ఆటోలు &amp; వాహనాలు</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>వీడియోను లోడ్ చేయలేకపోయాం. లింక్ గడువు ముగిసివుండవచ్చు లేదా ఫార్మాట్‌కు మద్దతు ఉండకపోవచ్చు.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>సంగీతం</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>వీడియో లోడ్ సమయం ముగిసింది. మీ ఇంటర్నెట్ కనెక్షన్‌ను తనిఖీ చేయండి.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>పెంపుడు జంతువులు &amp; జంతువులు</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>వీడియోలు</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>క్రీడలు</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>వీడియో</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>చిన్న సినిమాలు</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>వీడియో ప్లేబ్యాక్ లోపం. తక్కువ నాణ్యతను ఎంచుకుని ప్రయత్నించండి.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>ప్రయాణం &amp; ఈవెంట్లు</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>వీడియో “{0}” నుండి తీసివేయబడింది</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>గేమింగ్</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} వీడియోలు</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>వీడియోబ్లాగింగ్</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} వీడియోలు</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>వ్యక్తులు &amp; బ్లాగులు</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} వారాల క్రితం</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>కామెడీ</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} సంవత్సరాల క్రితం</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>వినోదం</value>
+  <data name="Yes" xml:space="preserve">
+    <value>అవును</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>వార్తలు &amp; రాజకీయాలు</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>నిన్న</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>హౌటు &amp; స్టైల్</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>విద్య</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube వీడియో</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>సైన్స్ &amp; టెక్నాలజీ</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube వీడియో</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>లాభాపేక్షలేనివి &amp; ఉద్యమం</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>డౌన్ ‌ లోడ్ చేసిన వీడియోలను క్లియర్ చేయండి</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>సినిమాలు</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>డౌన్ ‌ లోడ్ చేసిన అన్ని వీడియోలను మరియు కాష్ చేసిన సూక్ష్మచిత్రాలను తొలగించండి</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>అనిమే/యానిమేషన్</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>డౌన్ ‌ లోడ్ చేసిన అన్ని వీడియోలు మరియు వాటి సూక్ష్మచిత్రాలు శాశ్వతంగా తొలగించబడతాయి.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>యాక్షన్/అడ్వెంచర్</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>క్లియర్ చేయి</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>క్లాసిక్స్</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>డాక్యుమెంటరీ</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>డ్రామా</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>కుటుంబం</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>విదేశీ</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>హారర్</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>సై-ఫై/ఫాంటసీ</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>థ్రిల్లర్</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>షోలు</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>ట్రైలర్లు</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>లైవ్</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>లెర్నింగ్</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>వీడియో గేమ్స్</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>వార్తలు</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>పాడ్‌కాస్ట్‌లు</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>రూపం</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>థీమ్</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>లైట్</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>డార్క్</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>లైవ్ టైల్</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>ప్రారంభ స్క్రీన్‌లో సిఫార్సులను చూపించు</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>థంబ్‌నెయిల్ నాణ్యత</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>ఛానెల్ చిహ్నాలు</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>వీడియో కార్డ్‌లలో ఛానెల్ చిహ్నాలను చూపించు</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>రద్దు</value>
   </data>
 </root>

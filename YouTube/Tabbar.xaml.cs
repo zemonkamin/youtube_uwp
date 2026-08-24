@@ -28,13 +28,14 @@ namespace YouTube
         // Enum to track current active tab
         public enum ActiveTab
         {
+            None,
             Home,
             Shorts,
             Subscriptions,
             Account
         }
 
-        private ActiveTab _currentActiveTab = ActiveTab.Home;
+        private ActiveTab _currentActiveTab = ActiveTab.None;
 
         public Tabbar()
         {
@@ -52,6 +53,8 @@ namespace YouTube
             try
             {
                 InitializeTabBar();
+                this.Loaded += Tabbar_Loaded;
+                this.Unloaded += Tabbar_Unloaded;
             }
             catch (Exception ex)
             {
@@ -66,8 +69,8 @@ namespace YouTube
             // Load token from Config
             Config.LoadUserToken();
 
-            // Set Home as active by default
-            SetActiveTab(ActiveTab.Home);
+            // A secondary page must not inherit a highlight from whichever tab opened it.
+            SetActiveTab(ActiveTab.None);
 
             // Enable or disable authenticated tabs based on login state
             UpdateShortsButtonState();
@@ -77,6 +80,93 @@ namespace YouTube
             // fetch it once and persist it for future app/page entries.
             RefreshAccountIconFromCache();
             EnsureAccountIconCachedAsync();
+        }
+
+        private void Tabbar_Loaded(object sender, RoutedEventArgs e)
+        {
+            FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
+            FluentGlassEffectHelper.EnabledChanged += GlassEffect_EnabledChanged;
+            ShortsFeatureController.EnabledChanged -= ShortsFeature_EnabledChanged;
+            ShortsFeatureController.EnabledChanged += ShortsFeature_EnabledChanged;
+            UpdateShortsButtonState();
+            if (TabbarGlassHost != null)
+            {
+                TabbarGlassHost.SizeChanged -= TabbarGlassHost_SizeChanged;
+                TabbarGlassHost.SizeChanged += TabbarGlassHost_SizeChanged;
+                ApplyGlassEffect();
+            }
+
+            var frame = Window.Current.Content as Frame;
+            if (frame != null)
+            {
+                frame.Navigated -= RootFrame_Navigated;
+                frame.Navigated += RootFrame_Navigated;
+                SynchronizeWithPage(frame.Content);
+            }
+        }
+
+        private void Tabbar_Unloaded(object sender, RoutedEventArgs e)
+        {
+            FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
+            ShortsFeatureController.EnabledChanged -= ShortsFeature_EnabledChanged;
+            if (TabbarGlassHost != null)
+                TabbarGlassHost.SizeChanged -= TabbarGlassHost_SizeChanged;
+
+            FluentGlassEffectHelper.Detach(TabbarGlassHost);
+
+            var frame = Window.Current.Content as Frame;
+            if (frame != null)
+            {
+                frame.Navigated -= RootFrame_Navigated;
+            }
+        }
+
+        private void TabbarGlassHost_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ApplyGlassEffect();
+        }
+
+        private void GlassEffect_EnabledChanged(object sender, EventArgs e)
+        {
+            ApplyGlassEffect();
+        }
+
+        private void ShortsFeature_EnabledChanged(object sender, EventArgs e)
+        {
+            UpdateShortsButtonState();
+            if (!ShortsFeatureController.IsEnabled() && _currentActiveTab == ActiveTab.Shorts)
+                SetActiveTab(ActiveTab.None);
+        }
+
+        private void ApplyGlassEffect()
+        {
+            if (TabbarGlassHost == null ||
+                TabbarGlassHost.ActualWidth <= 1.0 ||
+                TabbarGlassHost.ActualHeight <= 1.0)
+                return;
+
+            FluentGlassEffectHelper.AttachBottomBar(
+                TabbarGlassHost,
+                App.GetThemeBrush("AppBackgroundBrush"));
+        }
+
+        private void RootFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            SynchronizeWithPage(e != null ? e.Content : null);
+        }
+
+        private void SynchronizeWithPage(object page)
+        {
+            if (page is Home)
+                SetActiveTab(ActiveTab.Home);
+            else if (page is Shorts)
+                SetActiveTab(ShortsFeatureController.IsEnabled() ? ActiveTab.Shorts : ActiveTab.None);
+            else if (page is Subscriptions)
+                SetActiveTab(ActiveTab.Subscriptions);
+            else if (page is Me || page is Login)
+                SetActiveTab(ActiveTab.Account);
+            else
+                SetActiveTab(ActiveTab.None);
         }
 
         public void RefreshAccountIconFromCache()
@@ -180,6 +270,15 @@ namespace YouTube
 
         public void UpdateShortsButtonState()
         {
+            var featureEnabled = ShortsFeatureController.IsEnabled();
+            if (ShortsColumn != null)
+                ShortsColumn.Width = featureEnabled ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
+            if (ShortsButton != null)
+                ShortsButton.Visibility = featureEnabled ? Visibility.Visible : Visibility.Collapsed;
+
+            if (!featureEnabled)
+                return;
+
             Config.LoadUserToken();
             bool isAuthenticated = !string.IsNullOrEmpty(Config.UserToken);
 
@@ -246,6 +345,8 @@ namespace YouTube
             // Then, set the specified tab to active (if it's enabled)
             switch (tab)
             {
+                case ActiveTab.None:
+                    break;
                 case ActiveTab.Home:
                     if (HomeButton.IsEnabled) SetHomeTabActive(true);
                     break;
@@ -457,14 +558,15 @@ namespace YouTube
 
         private void HomeTab_Click(object sender, RoutedEventArgs e)
         {
-            // Set Home tab as active
-            SetActiveTab(ActiveTab.Home);
-
             // Navigate to Home page
             var frame = Window.Current.Content as Frame;
             if (frame != null && frame.Content.GetType() != typeof(Home))
             {
                 frame.Navigate(typeof(Home));
+            }
+            else
+            {
+                SetActiveTab(ActiveTab.Home);
             }
 
             HomeTabClicked?.Invoke(this, EventArgs.Empty);
@@ -472,6 +574,9 @@ namespace YouTube
 
         private void ShortsTab_Click(object sender, RoutedEventArgs e)
         {
+            if (!ShortsFeatureController.IsEnabled())
+                return;
+
             Config.LoadUserToken();
             if (string.IsNullOrEmpty(Config.UserToken))
             {
@@ -479,12 +584,14 @@ namespace YouTube
                 return;
             }
 
-            SetActiveTab(ActiveTab.Shorts);
-
             var frame = Window.Current.Content as Frame;
             if (frame != null && frame.Content.GetType() != typeof(Shorts))
             {
                 frame.Navigate(typeof(Shorts));
+            }
+            else
+            {
+                SetActiveTab(ActiveTab.Shorts);
             }
 
             ShortsTabClicked?.Invoke(this, EventArgs.Empty);
@@ -492,14 +599,15 @@ namespace YouTube
 
         private void SubscriptionsTab_Click(object sender, RoutedEventArgs e)
         {
-            // Set Subscriptions tab as active
-            SetActiveTab(ActiveTab.Subscriptions);
-
             // Navigate to Subscriptions page
             var frame = Window.Current.Content as Frame;
             if (frame != null && frame.Content.GetType() != typeof(Subscriptions))
             {
                 frame.Navigate(typeof(Subscriptions));
+            }
+            else
+            {
+                SetActiveTab(ActiveTab.Subscriptions);
             }
 
             SubscriptionsTabClicked?.Invoke(this, EventArgs.Empty);
@@ -511,20 +619,19 @@ namespace YouTube
             Config.LoadUserToken();
             bool isAuthenticated = !string.IsNullOrEmpty(Config.UserToken);
 
-            // Set Account tab as active
-            SetActiveTab(ActiveTab.Account);
-
             // Navigate to Me page if authenticated, otherwise to Login
             var frame = Window.Current.Content as Frame;
             if (frame != null)
             {
                 if (isAuthenticated)
                 {
-                    frame.Navigate(typeof(Me));
+                    if (!(frame.Content is Me)) frame.Navigate(typeof(Me));
+                    else SetActiveTab(ActiveTab.Account);
                 }
                 else
                 {
-                    frame.Navigate(typeof(Login));
+                    if (!(frame.Content is Login)) frame.Navigate(typeof(Login));
+                    else SetActiveTab(ActiveTab.Account);
                 }
             }
 

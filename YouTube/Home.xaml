@@ -34,6 +34,44 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Same outlined pill foundation as the Accounts button on Me. -->
+        <Style x:Key="OfflineDownloadsButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{ThemeResource AppBackgroundBrush}" />
+            <Setter Property="Foreground" Value="{ThemeResource AppPrimaryTextBrush}" />
+            <Setter Property="BorderBrush" Value="{ThemeResource AppDividerBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="14,0" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Height" Value="38" />
+            <Setter Property="UseSystemFocusVisuals" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="20">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Pressed" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
 
     <Grid Background="{ThemeResource AppBackgroundBrush}">
@@ -42,9 +80,6 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="52"/>
         </Grid.RowDefinitions>
-
-        <!-- Navbar at the top -->
-        <local:Navbar x:Name="navbar" Grid.Row="0"/>
 
         <!-- Search Suggestions Section -->
         <Border x:Name="SuggestionsSection"
@@ -101,7 +136,8 @@
 
         <!-- Main content with ScrollViewer -->
         <ScrollViewer x:Name="MainScrollViewer"
-                      Grid.Row="1"
+                      Grid.Row="0"
+                      Grid.RowSpan="3"
                       Background="{ThemeResource AppBackgroundBrush}"
                       ZoomMode="Disabled"
                       HorizontalScrollMode="Disabled"
@@ -109,7 +145,8 @@
                       VerticalScrollBarVisibility="Auto"
                       ViewChanged="ScrollViewer_ViewChanged">
 
-            <StackPanel Background="{ThemeResource AppBackgroundBrush}">
+            <StackPanel Background="{ThemeResource AppBackgroundBrush}"
+                        Padding="0,56,0,52">
 
                 <!-- Home category chips -->
                 <Grid x:Name="CategoriesHost"
@@ -197,12 +234,17 @@
                                     <!-- Video Thumbnail -->
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged"
                                           Tag="VideoCardThumbnailChrome">
-                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" CornerRadius="8" />
-                                        <Border Tag="VideoCardThumbnailChrome" CornerRadius="8">
-                                            <Image DataContextChanged="CardThumbnail_DataContextChanged"
-                                                   Stretch="UniformToFill"
-                                                   VerticalAlignment="Stretch"
-                                                   HorizontalAlignment="Stretch"/>
+                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" />
+                                        <Border Tag="VideoCardThumbnailChrome">
+                                            <Grid>
+                                                <Image DataContextChanged="CardThumbnail_DataContextChanged"
+                                                       Stretch="UniformToFill"
+                                                       VerticalAlignment="Stretch"
+                                                       HorizontalAlignment="Stretch"/>
+                                                <ProgressBar Style="{StaticResource VideoWatchedProgressStyle}"
+                                                             Value="{Binding WatchedPercent}"
+                                                             Visibility="{Binding WatchedProgressVisibility}" />
+                                            </Grid>
                                         </Border>
                                         <!-- Duration overlay -->
                                         <Border HorizontalAlignment="Right"
@@ -302,9 +344,6 @@
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
-
-        <!-- Tabbar at the bottom -->
-        <local:Tabbar x:Name="tabbar" Grid.Row="2"/>
 
         <!-- Skeleton Loading Screen -->
         <Grid x:Name="SkeletonLoader"
@@ -434,6 +473,14 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
+                <Button x:Name="OfflineDownloadsButton"
+                        Style="{StaticResource OfflineDownloadsButtonStyle}"
+                        Margin="0,12,0,0"
+                        HorizontalAlignment="Center"
+                        Click="OfflineDownloadsButton_Click">
+                    <TextBlock x:Name="OfflineDownloadsButtonText"
+                               Foreground="{ThemeResource AppPrimaryTextBrush}" />
+                </Button>
             </StackPanel>
         </Grid>
 
@@ -448,5 +495,10 @@
                                       HorizontalAlignment="Center"
                                       VerticalAlignment="Center"/>
         </Grid>
+
+        <!-- Keep navigation chrome last in the visual tree so BackdropBrush always
+             samples the scrolling Home content below it. -->
+        <local:Navbar x:Name="navbar" Grid.Row="0" Canvas.ZIndex="20"/>
+        <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20"/>
     </Grid>
 </Page>

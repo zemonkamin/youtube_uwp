@@ -39,7 +39,9 @@ namespace YouTube
             {
             }
 
-            return true;
+            // Channel avatars add one extra request per card. Keep them opt-in on fresh installs;
+            // an existing saved user choice remains authoritative above.
+            return false;
         }
 
         public static void SetEnabled(bool enabled)
@@ -208,6 +210,12 @@ namespace YouTube
                 .Replace("\\u0026", "&")
                 .Replace("\u0026", "&")
                 .Replace("&amp;", "&");
+
+            // Downloaded cards keep the channel avatar in LocalFolder so it remains
+            // available without a connection. BitmapImage accepts ms-appdata URIs
+            // directly; do not run those through the HTTPS-only normalization below.
+            if (value.StartsWith("ms-appdata:///", StringComparison.OrdinalIgnoreCase))
+                return value;
 
             if (value.StartsWith("//", StringComparison.Ordinal))
                 value = "https:" + value;

@@ -58,8 +58,10 @@ namespace YouTube
         private const double CompactHeight = 202; // 16:9
         private const double CompactMaxEdge = 520;
 
-        private const double MiniWidth = 220;
-        private const double MiniHeight = 124; // ~16:9
+        private const double MiniMaximumEdge = 220;
+        private const double DefaultMiniAspectRatio = 16.0 / 9.0;
+        private static double _miniWidth = MiniMaximumEdge;
+        private static double _miniHeight = MiniMaximumEdge / DefaultMiniAspectRatio;
         private const double EdgeMargin = 10;
         private const double BottomInset = 68; // clear a bottom tab bar on the page behind it
         private const double DragThreshold = 8;
@@ -71,7 +73,11 @@ namespace YouTube
 
         // Reparents the given player into the mini window and shows it. onRestore is invoked when
         // the user taps the free area (expand back); onClosed when the user taps the X.
-        public static void Show(CustomVideoPlayer player, Action onRestore, Action onClosed)
+        public static void Show(
+            CustomVideoPlayer player,
+            double videoAspectRatio,
+            Action onRestore,
+            Action onClosed)
         {
             if (player == null)
             {
@@ -79,6 +85,7 @@ namespace YouTube
             }
 
             EnsureUi();
+            ApplyVideoAspectRatio(videoAspectRatio);
 
             _player = player;
             _onRestore = onRestore;
@@ -102,6 +109,51 @@ namespace YouTube
             // Desktop only: turn the app window itself into a small always-on-top window, so the
             // mini-player floats above other applications. No-op on Windows 10 Mobile.
             TryEnterCompactOverlay();
+        }
+
+        // Keep the popup bounds in the video's aspect ratio. A fixed 16:9 host caused black
+        // letterbox bars for square, 4:3 and vertical videos. The longer edge remains 220 pixels.
+        public static void UpdateAspectRatio(double videoAspectRatio)
+        {
+            ApplyVideoAspectRatio(videoAspectRatio);
+            if (IsActive && !_compactOverlay)
+            {
+                PositionPopup();
+            }
+        }
+
+        private static void ApplyVideoAspectRatio(double videoAspectRatio)
+        {
+            if (videoAspectRatio <= 0
+                || double.IsNaN(videoAspectRatio)
+                || double.IsInfinity(videoAspectRatio)
+                || videoAspectRatio < 0.45
+                || videoAspectRatio > 3.5)
+            {
+                videoAspectRatio = DefaultMiniAspectRatio;
+            }
+
+            if (videoAspectRatio >= 1.0)
+            {
+                _miniWidth = MiniMaximumEdge;
+                _miniHeight = MiniMaximumEdge / videoAspectRatio;
+            }
+            else
+            {
+                _miniHeight = MiniMaximumEdge;
+                _miniWidth = MiniMaximumEdge * videoAspectRatio;
+            }
+
+            if (_root != null && !_compactOverlay)
+            {
+                _root.Width = _miniWidth;
+                _root.Height = _miniHeight;
+            }
+
+            System.Diagnostics.Debug.WriteLine(
+                "[MiniPlayer] Video aspect " + videoAspectRatio.ToString("0.###")
+                + ", popup " + _miniWidth.ToString("0.#") + "x" + _miniHeight.ToString("0.#")
+            );
         }
 
         // Removes a player from its current parent panel so it can be handed to the mini-player.
@@ -221,8 +273,8 @@ namespace YouTube
 
             _root = new Grid
             {
-                Width = MiniWidth,
-                Height = MiniHeight,
+                Width = _miniWidth,
+                Height = _miniHeight,
                 Background = new SolidColorBrush(Colors.Black)
             };
             _root.Children.Add(_videoHost);
@@ -274,8 +326,8 @@ namespace YouTube
             try
             {
                 var bounds = Window.Current.Bounds;
-                _popup.HorizontalOffset = Math.Max(EdgeMargin, bounds.Width - MiniWidth - EdgeMargin);
-                _popup.VerticalOffset = Math.Max(EdgeMargin, bounds.Height - MiniHeight - BottomInset);
+                _popup.HorizontalOffset = Math.Max(EdgeMargin, bounds.Width - _miniWidth - EdgeMargin);
+                _popup.VerticalOffset = Math.Max(EdgeMargin, bounds.Height - _miniHeight - BottomInset);
             }
             catch
             {
@@ -350,8 +402,8 @@ namespace YouTube
 
             if (_root != null)
             {
-                _root.Width = MiniWidth;
-                _root.Height = MiniHeight;
+                _root.Width = _miniWidth;
+                _root.Height = _miniHeight;
             }
             PositionPopup();
 
@@ -539,8 +591,8 @@ namespace YouTube
                 var x = _startOffsetX + dx;
                 var y = _startOffsetY + dy;
                 // Keep it fully on screen while dragging.
-                x = Math.Max(0, Math.Min(x, bounds.Width - MiniWidth));
-                y = Math.Max(0, Math.Min(y, bounds.Height - MiniHeight));
+                x = Math.Max(0, Math.Min(x, bounds.Width - _miniWidth));
+                y = Math.Max(0, Math.Min(y, bounds.Height - _miniHeight));
                 _popup.HorizontalOffset = x;
                 _popup.VerticalOffset = y;
             }
@@ -583,15 +635,15 @@ namespace YouTube
                 var x = _popup.HorizontalOffset;
                 var y = _popup.VerticalOffset;
 
-                var centerX = x + MiniWidth / 2.0;
+                var centerX = x + _miniWidth / 2.0;
                 var snapLeft = centerX < bounds.Width / 2.0;
-                var targetX = snapLeft ? EdgeMargin : bounds.Width - MiniWidth - EdgeMargin;
+                var targetX = snapLeft ? EdgeMargin : bounds.Width - _miniWidth - EdgeMargin;
                 var targetY = y;
 
                 if (targetY < EdgeMargin) targetY = EdgeMargin;
-                if (targetY > bounds.Height - MiniHeight - EdgeMargin)
+                if (targetY > bounds.Height - _miniHeight - EdgeMargin)
                 {
-                    targetY = bounds.Height - MiniHeight - EdgeMargin;
+                    targetY = bounds.Height - _miniHeight - EdgeMargin;
                 }
 
                 StartSnapAnimation(targetX, targetY);

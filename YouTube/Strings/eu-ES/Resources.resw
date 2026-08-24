@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>LegacyProjects taldeak garatua.
@@ -18,11 +45,146 @@ YouTube API Legacy-k onartua.
 
 {0} bertsioa</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Kontuak</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Itxura</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Audio-pista</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Automatikoa</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Itzulpen automatikoa &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Atzera</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Akzioa/Abentura</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Guztiak</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Animea/Animazioa</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Autoak eta ibilgailuak</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Klasikoak</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Komedia</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Dokumentala</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Drama</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Hezkuntza</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Entretenimendua</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Familia</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Filmak eta animazioa</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Atzerrikoa</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Jokoak</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Beldurra</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Tutorialak eta estiloa</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Ikaskuntza</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Zuzenean</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Filmak</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Musika</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Albisteak</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Albisteak eta politika</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Irabazi-asmorik gabekoak eta aktibismoa</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Pertsonak eta blogak</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Maskotak eta animaliak</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podcastak</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Zientzia eta teknologia</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Zientzia-fikzioa/Fantasia</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Film laburrak</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Saioak</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Kirolak</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Thrillerra</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Trailerrak</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Bidaiak eta ekitaldiak</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Bideoblogak</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Bideojokoak</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Kanala</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Kanalaren ikonoak</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Erakutsi kanalaren ikonoak bideo-txarteletan</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Errorea kanala kargatzean</value>
@@ -30,14 +192,71 @@ YouTube API Legacy-k onartua.
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Ez da kanalik eman</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Iruzkinak</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Ziur zaude saioa amaitu nahi duzula?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Berretsi saio-amaiera</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Ezin izan da kanala kargatu</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Ezin izan dira jakinarazpenak kargatu</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Ezin izan da erreprodukzio-zerrenda kargatu</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Ezin izan da bideoa kargatu. Saiatu berriro.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Ezin izan da bideoa erreproduzitu.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>Duela {0} egun</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Deskribapena ez dago erabilgarri</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Deskargatu</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Deskargatuta</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Deskargatutako bideoak</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Deskargen karpeta</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Aukeratu non gordeko diren deskargatutako bideoak</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Deskargaren kalitatea</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Deskargak</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Deskargatutako bideoak hemen agertuko dira.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Zure deskargak</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Deskargak</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Bideo hau ezin da deskargatu</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Errore-kodea: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Errorea: {0}</value>
@@ -62,6 +281,18 @@ YouTube API Legacy-k onartua.
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>{0} minutuero</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Ezin izan da bideoa erreproduzitu: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Harpidetzetatik</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Beira-efektua</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Lausotu nabigazio-barrak</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Ezin izan da historia kargatu</value>
@@ -90,8 +321,17 @@ YouTube API Legacy-k onartua.
   <data name="LanguageSystem" xml:space="preserve">
     <value>Sistemaren lehenetsia</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Atsegin dut</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Esteka kopiatu da</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Lauza dinamikoa</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Erakutsi gomendioak Hasi pantailan</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Deskribapena kargatzen...</value>
@@ -237,6 +477,9 @@ YouTube API Legacy-k onartua.
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Ez dago bideorik erreprodukzio-zerrenda honetan</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>Ados</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Pertsonalizatua</value>
   </data>
@@ -375,6 +618,15 @@ YouTube API Legacy-k onartua.
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>Duela {0} hilabete</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Sareko errorea. Egiaztatu Interneteko konexioa.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ez</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Ez da iruzkinik aurkitu.</value>
   </data>
@@ -393,11 +645,26 @@ YouTube API Legacy-k onartua.
   <data name="NoNotifications" xml:space="preserve">
     <value>Jakinarazpenik ez</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Ez da Shorts aurkitu.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Ezin izan da jakinarazpen-hobespena eguneratu.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Jakinarazpenek huts egin dute</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Zure harpidetzen eguneratze berriak hemen agertuko dira.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Hasi saioa YouTube jakinarazpenak ikusteko.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Ireki berriro orri hau geroago.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Izenbururik ez</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Ez duzu saioa hasi</value>
@@ -414,8 +681,23 @@ YouTube API Legacy-k onartua.
   <data name="PlaybackError" xml:space="preserve">
     <value>Erreprodukzio-errorea</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Erreprodukzioak huts egin du</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Erreprodukzio-abiadura</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Ezin izan da bideoa erreproduzitu. Erreproduzitzailea ez dago hasieratuta.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Erreprodukzio-zerrenda</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Erreprodukzio-zerrendaren IDa hutsik dago</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Ezin izan da erreprodukzio-zerrenda eguneratu</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR kodea</value>
@@ -423,11 +705,62 @@ YouTube API Legacy-k onartua.
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>QR bistaratze-errorea: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Kalitatea</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Balorazioak huts egin du</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTubek balorazio-eskaera baztertu du. Egiaztatu TV tokena baliozkoa dela eta YouTube balorazio-baimena duela.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Gomendatutako bideoa</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Ezin izan da freskatze-tokena sarbide-token batekin trukatu.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>erantzun</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} erantzun</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Gorde</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Bilaketa-errorea: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Ezezaguna</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Hautatu kontu bat</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Hautatu erreprodukzio-zerrenda</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Ingelesa</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Windows-en hizkuntza erabiltzen du lehenespenez.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Aplikazioaren hizkuntza</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Errusiera</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Hizkuntza</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Hizkuntza</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Sistemaren lehenetsia</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Partekatu YouTube Short hau</value>
@@ -435,11 +768,47 @@ YouTube API Legacy-k onartua.
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Partekatu YouTube bideo hau</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Erakutsi Shorts aplikazioan</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Erakutsi gutxiago</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Gehiago</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>Ezin izan da TV freskatze-tokena sarbide-token batekin trukatu. Hasi saioa berriro eta egiaztatu freskatze-tokenak baliozkoa izaten jarraitzen duela.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Saioa hasi behar da</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Hasi saioa Shorts ikusteko.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Publizitate-segmentuak bilaketa-barran</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Erakutsi SponsorBlock tarteak kolorez</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Harpidetu</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>harpidedunak</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>harpidedunak</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>harpidedun</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} harpidedun • {1} bideo</value>
@@ -450,65 +819,71 @@ YouTube API Legacy-k onartua.
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTubek harpidetza-eskaera baztertu du.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTubek harpidetza-eskaera baztertu du. Egiaztatu TV tokena baliozkoa dela eta kanalaren IDa aurkitu dela.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Lehenago (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Geroago (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Berrezarri desplazamendu normala (0,00 s)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Azpitituluak</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Sinkronizazioa: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Ezin izan dira iruzkinak kargatu.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Gaia</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Izenbururik gabe</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Iluna</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Bideoaren esteka arbelera kopiatu da.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Argia</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} bideo</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Aste honetan</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Miniaturaren kalitatea</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Hizkuntza</value>
+  <data name="Today" xml:space="preserve">
+    <value>Gaur</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Aplikazioaren hizkuntza</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Komedia-esketxak</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Hizkuntza</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Sukaldaritza-errezetak</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Windows-en hizkuntza erabiltzen du lehenespenez.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Brikolaje-tutorialak</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Sistemaren lehenetsia</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Jokoetako une aipagarriak</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Ingelesa</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Filmen trailerrak</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Errusiera</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Musika-bideoak</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube bideoa</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Kiroletako une aipagarriak</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Kanala</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Teknologia-iritziak</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Ezin izan da TV freskatze-tokena sarbide-token batekin trukatu.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Ezezaguna</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Izenbururik ez</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Ezin izan da TV freskatze-tokena sarbide-token batekin trukatu. Hasi saioa berriro eta egiaztatu freskatze-tokenak baliozkoa izaten jarraitzen duela.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>Ez da TV freskatze-tokenik aurkitu. Hasi saioa berriro eta saiatu berriro.</value>
@@ -516,194 +891,23 @@ YouTube API Legacy-k onartua.
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>Ez da TV freskatze-tokenik aurkitu. Hasi saioa berriro yt_refresh_token gorde dadin, eta saiatu berriro.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>Ezin izan da TV freskatze-tokena sarbide-token batekin trukatu.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Ezin izan da freskatze-tokena sarbide-token batekin trukatu.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Erreprodukzioak huts egin du</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Ezin da Short hau erreproduzitu</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Bideoaren kargak denbora-muga gainditu du. Egiaztatu Interneteko konexioa.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Ezin izan da bideoa kargatu. Saiatu berriro.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Ezin izan da bideoa erreproduzitu. Erreproduzitzailea ez dago hasieratuta.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Ezin izan da bideoa kargatu. Baliteke esteka iraungita egotea edo formatua ez onartzea.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Sareko errorea. Egiaztatu Interneteko konexioa.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Bideo-erreprodukzioaren errorea. Saiatu kalitate txikiagoa hautatzen.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Ezin izan da bideoa erreproduzitu.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Musika-bideoak</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Jokoetako une aipagarriak</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Sukaldaritza-errezetak</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Teknologia-iritziak</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Filmen trailerrak</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Kiroletako une aipagarriak</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Komedia-esketxak</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>Brikolaje-tutorialak</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Gomendatutako bideoa</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Ziur zaude saioa amaitu nahi duzula?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Berretsi saio-amaiera</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Bai</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Ez</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>Hasi saioa YouTube jakinarazpenak ikusteko.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Ezin izan dira jakinarazpenak kargatu</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Ireki berriro orri hau geroago.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>Erreprodukzio-zerrendaren IDa hutsik dago</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} bideo</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Ezezaguna</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Hasi saioa Shorts ikusteko.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Ez da Shorts aurkitu.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Ezin izan dira iruzkinak kargatu.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Ezin izan da Shorts kargatu.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Ezin da Short hau erreproduzitu</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Ezin da Short hau erreproduzitu.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Kalitatea</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Ezezaguna</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Erreprodukzio-abiadura</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Audio-pista</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Azpitituluak</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Ezin izan da bideoa erreproduzitu: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Errore-kodea: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Gaur</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>Duela {0} egun</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>Duela {0} aste</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>Duela {0} hilabete</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>Duela {0} urte</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Atzera</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube bideoa</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>harpidedun</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>harpidedunak</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>harpidedunak</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>bideo</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>bideoak</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>bideoak</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Harpidetu</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Atsegin dut</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Iruzkinak</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Zure harpidetzen eguneratze berriak hemen agertuko dira.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTubek harpidetza-eskaera baztertu du. Egiaztatu TV tokena baliozkoa dela eta kanalaren IDa aurkitu dela.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTubek balorazio-eskaera baztertu du. Egiaztatu TV tokena baliozkoa dela eta YouTube balorazio-baimena duela.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>Ezin izan da TV freskatze-tokena sarbide-token batekin trukatu. Hasi saioa berriro eta egiaztatu freskatze-tokenak baliozkoa izaten jarraitzen duela.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>Ados</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Atzo</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Aste honetan</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Izenbururik gabe</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Bideo bat kargatu du</value>
@@ -711,146 +915,73 @@ YouTube API Legacy-k onartua.
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>“{0}” bideoa kargatu du</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Harpidetzetatik</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Bideoa «{0}» zerrendan gehitu da</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Guztiak</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>bideoak</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Filmak eta animazioa</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Bideoaren esteka arbelera kopiatu da.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Autoak eta ibilgailuak</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Ezin izan da bideoa kargatu. Baliteke esteka iraungita egotea edo formatua ez onartzea.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Musika</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Bideoaren kargak denbora-muga gainditu du. Egiaztatu Interneteko konexioa.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Maskotak eta animaliak</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>bideoak</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Kirolak</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>bideo</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Film laburrak</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Bideo-erreprodukzioaren errorea. Saiatu kalitate txikiagoa hautatzen.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Bidaiak eta ekitaldiak</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Bideoa «{0}» zerrendatik kendu da</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Jokoak</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} bideo</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Bideoblogak</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} bideo</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Pertsonak eta blogak</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>Duela {0} aste</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Komedia</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>Duela {0} urte</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Entretenimendua</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Bai</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Albisteak eta politika</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Atzo</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Tutorialak eta estiloa</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Hezkuntza</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube bideoa</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Zientzia eta teknologia</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube bideoa</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Irabazi-asmorik gabekoak eta aktibismoa</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Garbitu deskargatutako bideoak</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Filmak</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Ezabatu deskargatutako bideo guztiak eta cacheko miniaturak</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Animea/Animazioa</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Deskargatutako bideo guztiak eta haien miniaturak betiko ezabatuko dira.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Akzioa/Abentura</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Garbitu</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Klasikoak</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Dokumentala</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Drama</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Familia</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Atzerrikoa</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Beldurra</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Zientzia-fikzioa/Fantasia</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Thrillerra</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Saioak</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Trailerrak</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Zuzenean</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Ikaskuntza</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Bideojokoak</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Albisteak</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Podcastak</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Itxura</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Gaia</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Argia</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Iluna</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Lauza dinamikoa</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Erakutsi gomendioak Hasi pantailan</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Miniaturaren kalitatea</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Kanalaren ikonoak</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Erakutsi kanalaren ikonoak bideo-txarteletan</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Utzi</value>
   </data>
 </root>

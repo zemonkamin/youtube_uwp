@@ -26,7 +26,7 @@
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
-    <PackageCertificateThumbprint></PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>309EA63520FF505E4DC02171E6AE1A9102A21C67</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -101,6 +101,7 @@
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Content Include="Assets\**\*.*" />
     <None Include="project.json" />
+    <None Include="YouTube_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AndroidLoadingRing.xaml.cs">
@@ -113,6 +114,7 @@
       <DependentUpon>Channel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Config.cs" />
+    <Compile Include="FluentGlassEffectHelper.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="DashDemuxer.cs" />
     <Compile Include="Converters\VideoInfoConverters.cs" />
@@ -123,6 +125,10 @@
     <Compile Include="CustomVideoPlayer.xaml.cs">
       <DependentUpon>CustomVideoPlayer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DownloadManager.cs" />
+    <Compile Include="Downloads.xaml.cs">
+      <DependentUpon>Downloads.xaml</DependentUpon>
+    </Compile>
     <Compile Include="History.xaml.cs">
       <DependentUpon>History.xaml</DependentUpon>
     </Compile>
@@ -131,10 +137,12 @@
     </Compile>
     <Compile Include="ThumbnailImageLoader.cs" />
     <Compile Include="ChannelIconController.cs" />
+    <Compile Include="ShortsFeatureController.cs" />
     <Compile Include="VideoThumbnailController.cs" />
     <Compile Include="VideoCardController.cs" />
     <Compile Include="StoryboardThumbnails.cs" />
     <Compile Include="MiniPlayer.cs" />
+    <Compile Include="Mp4DownloadMuxer.cs" />
     <Compile Include="SponsorBlock.cs" />
     <Compile Include="Subtitles.cs" />
     <Compile Include="Login.xaml.cs">
@@ -183,7 +191,6 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="YouTube_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="Strings\af-ZA\Resources.resw" />
@@ -287,6 +294,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomVideoPlayer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Downloads.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

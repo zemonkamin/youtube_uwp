@@ -45,8 +45,54 @@ namespace YouTube
         public Searching()
         {
             this.InitializeComponent();
+            this.Loaded += Searching_Loaded;
+            this.Unloaded += Searching_Unloaded;
             _searchHistory = LoadSearchHistory();
             UpdateSearchHistoryVisibility();
+        }
+
+        private void Searching_Loaded(object sender, RoutedEventArgs e)
+        {
+            FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
+            FluentGlassEffectHelper.EnabledChanged += GlassEffect_EnabledChanged;
+
+            if (SearchNavbarGlassHost != null)
+            {
+                SearchNavbarGlassHost.SizeChanged -= SearchNavbarGlassHost_SizeChanged;
+                SearchNavbarGlassHost.SizeChanged += SearchNavbarGlassHost_SizeChanged;
+                ApplySearchNavbarGlass();
+            }
+        }
+
+        private void Searching_Unloaded(object sender, RoutedEventArgs e)
+        {
+            FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
+            if (SearchNavbarGlassHost != null)
+                SearchNavbarGlassHost.SizeChanged -= SearchNavbarGlassHost_SizeChanged;
+
+            FluentGlassEffectHelper.Detach(SearchNavbarGlassHost);
+        }
+
+        private void SearchNavbarGlassHost_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ApplySearchNavbarGlass();
+        }
+
+        private void GlassEffect_EnabledChanged(object sender, EventArgs e)
+        {
+            ApplySearchNavbarGlass();
+        }
+
+        private void ApplySearchNavbarGlass()
+        {
+            if (SearchNavbarGlassHost == null ||
+                SearchNavbarGlassHost.ActualWidth <= 1.0 ||
+                SearchNavbarGlassHost.ActualHeight <= 1.0)
+                return;
+
+            FluentGlassEffectHelper.AttachSearchBar(
+                SearchNavbarGlassHost,
+                App.GetThemeBrush("AppBackgroundBrush"));
         }
 
         private List<SearchHistoryItem> LoadSearchHistory()

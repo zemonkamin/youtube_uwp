@@ -288,8 +288,11 @@ namespace YouTube
         {
             try
             {
-                // Events without segs are window/style definitions, not text.
-                if (!cueEvent.ContainsKey("segs") || !cueEvent.ContainsKey("tStartMs"))
+                // Exact youtube-ios rule: events without text, start or a positive duration are
+                // definitions/incomplete ASR windows, not captions to invent a duration for.
+                if (!cueEvent.ContainsKey("segs")
+                    || !cueEvent.ContainsKey("tStartMs")
+                    || !cueEvent.ContainsKey("dDurationMs"))
                 {
                     return null;
                 }
@@ -311,10 +314,11 @@ namespace YouTube
                 }
 
                 var start = cueEvent.GetNamedNumber("tStartMs");
-                // Auto-generated tracks sometimes omit the duration; give those a sane fallback.
-                var duration = cueEvent.ContainsKey("dDurationMs")
-                    ? cueEvent.GetNamedNumber("dDurationMs")
-                    : 3000;
+                var duration = cueEvent.GetNamedNumber("dDurationMs");
+                if (duration <= 0)
+                {
+                    return null;
+                }
 
                 return new SubtitleCue
                 {

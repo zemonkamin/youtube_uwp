@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>Binuo ng LegacyProjects team.
@@ -18,11 +45,146 @@ Sinusuportahan ng YouTube API Legacy.
 
 Bersyon {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Mga Account</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Hitsura</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Audio track</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Auto</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Awtomatikong pagsasalin &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Bumalik</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Action/Adventure</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Lahat</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Animation</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Mga Sasakyan</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Classics</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Comedy</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Documentary</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Drama</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Edukasyon</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Entertainment</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Pamilya</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Pelikula at Animation</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Foreign</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Gaming</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Horror</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Howto at Style</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Pag-aaral</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Live</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Mga Pelikula</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Musika</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Balita</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Balita at Pulitika</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Nonprofit at Aktibismo</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Mga Tao at Blog</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Mga Alagang Hayop at Hayop</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Mga Podcast</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Agham at Teknolohiya</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Sci-Fi/Fantasy</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Maiikling Pelikula</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Mga Show</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Sports</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Thriller</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Mga Trailer</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Paglalakbay at Mga Event</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Videoblogging</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Mga video game</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Channel</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Mga icon ng channel</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Ipakita ang mga icon ng channel sa mga video card</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Error sa pag-load ng channel</value>
@@ -30,14 +192,71 @@ Bersyon {0}</value>
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Hindi ibinigay ang channel</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Mga komento</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Sigurado ka bang gusto mong mag-sign out?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Kumpirmahin ang pag-sign out</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Hindi ma-load ang channel</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Hindi ma-load ang mga notification</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Hindi ma-load ang playlist</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Hindi ma-load ang video. Pakisubukang muli.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Hindi ma-play ang video.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} araw ang nakalipas</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Hindi available ang paglalarawan</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>I-download</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Na-download</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Mga na-download na video</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Folder ng download</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Piliin kung saan ise-save ang mga na-download na video</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Kalidad ng pag-download</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Mga Download</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Lalabas dito ang mga video na ida-download mo.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Iyong mga download</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Mga Download</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Hindi mada-download ang video na ito</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Error Code: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Error: {0}</value>
@@ -62,6 +281,18 @@ Bersyon {0}</value>
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Bawat {0} min</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Hindi na-play ang video: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Mula sa mga subscription</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Glass effect</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>I-blur ang mga navigation bar</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Hindi na-load ang history</value>
@@ -90,8 +321,17 @@ Bersyon {0}</value>
   <data name="LanguageSystem" xml:space="preserve">
     <value>Default ng system</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>I-like</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Nakopya ang link</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Live tile</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Ipakita ang mga rekomendasyon sa Start screen</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Nilo-load ang paglalarawan...</value>
@@ -237,6 +477,9 @@ Bersyon {0}</value>
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Walang video sa playlist na ito</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Personalized</value>
   </data>
@@ -375,6 +618,15 @@ Bersyon {0}</value>
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} buwan ang nakalipas</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Error sa network. Suriin ang iyong koneksyon sa Internet.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Hindi</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Walang nakitang komento.</value>
   </data>
@@ -393,11 +645,26 @@ Bersyon {0}</value>
   <data name="NoNotifications" xml:space="preserve">
     <value>Walang notification</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Walang nakitang Shorts.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Hindi ma-update ang kagustuhan sa notification.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Hindi gumana ang mga notification</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Dito lalabas ang mga bagong update mula sa iyong mga subscription.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Mag-sign in para makita ang iyong mga notification sa YouTube.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Buksan muli ang page na ito mamaya.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Walang pamagat</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Hindi naka-sign in</value>
@@ -414,8 +681,23 @@ Bersyon {0}</value>
   <data name="PlaybackError" xml:space="preserve">
     <value>Error sa Pag-playback</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Hindi gumana ang playback</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Bilis ng pag-playback</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Hindi ma-play ang video. Hindi pa naka-initialize ang player.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Playlist</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Walang laman ang playlist ID</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Hindi ma-update ang playlist</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR code</value>
@@ -423,11 +705,62 @@ Bersyon {0}</value>
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>Error sa pagpapakita ng QR: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Kalidad</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Hindi gumana ang rating</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>Tinanggihan ng YouTube ang kahilingan sa rating. Tiyaking valid ang TV token at may YouTube rating scope.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Inirerekomendang video</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Hindi maipagpalit ang refresh token para sa access token.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>mga tugon</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} mga tugon</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>I-save</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Error sa paghahanap: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Hindi alam</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Pumili ng account</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Pumili ng playlist</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Ginagamit ang wika ng Windows bilang default.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Wika ng app</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Russian</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Wika</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Wika</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Default ng system</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Ibahagi ang YouTube Short na ito</value>
@@ -435,11 +768,47 @@ Bersyon {0}</value>
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Ibahagi ang YouTube video na ito</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Ipakita ang Shorts sa app</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Magpakita nang mas kaunti</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Higit pa</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>Hindi maipagpalit ang TV refresh token para sa access token. Mag-sign in muli at tiyaking valid pa ang refresh token.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Kailangang mag-sign in</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Mag-sign in para manood ng Shorts.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Mga bahagi ng ad sa seek bar</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Ipakita ang may-kulay na mga saklaw ng SponsorBlock</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Mag-subscribe</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>mga subscriber</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>mga subscriber</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>subscriber</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} subscriber • {1} video</value>
@@ -450,65 +819,71 @@ Bersyon {0}</value>
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>Tinanggihan ng YouTube ang kahilingan sa subscription.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>Tinanggihan ng YouTube ang kahilingan sa subscription. Tiyaking valid ang TV token at nakita ang channel ID.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Mas maaga (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Mas huli (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Ibalik ang normal na offset (0.00 s)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Mga subtitle</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Sync: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Hindi ma-load ang mga komento.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Tema</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Walang pamagat</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Madilim</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Nakopya sa clipboard ang link ng video.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Maliwanag</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} video</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Ngayong linggo</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Kalidad ng thumbnail</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Wika</value>
+  <data name="Today" xml:space="preserve">
+    <value>Ngayon</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Wika ng app</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Mga comedy sketch</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Wika</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Mga recipe sa pagluluto</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Ginagamit ang wika ng Windows bilang default.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Mga DIY tutorial</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Default ng system</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Mga highlight sa gaming</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>English</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Mga trailer ng pelikula</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Russian</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Mga music video</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube video</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Mga highlight sa sports</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Channel</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Mga tech review</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Hindi maipagpalit ang TV refresh token para sa access token.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Hindi alam</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Walang pamagat</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Hindi maipagpalit ang TV refresh token para sa access token. Mag-sign in muli at tiyaking valid pa ang refresh token.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>Hindi nakita ang TV refresh token. Mag-sign in muli at subukan muli.</value>
@@ -516,194 +891,23 @@ Bersyon {0}</value>
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>Hindi nakita ang TV refresh token. Mag-sign in muli para ma-save ang yt_refresh_token, pagkatapos ay subukan muli.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>Hindi maipagpalit ang TV refresh token para sa access token.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Hindi maipagpalit ang refresh token para sa access token.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Hindi gumana ang playback</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Hindi ma-play ang Short na ito</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Nag-time out ang pag-load ng video. Suriin ang iyong koneksyon sa Internet.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Hindi ma-load ang video. Pakisubukang muli.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Hindi ma-play ang video. Hindi pa naka-initialize ang player.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Hindi ma-load ang video. Maaaring nag-expire ang link o hindi suportado ang format.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Error sa network. Suriin ang iyong koneksyon sa Internet.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Error sa pag-play ng video. Subukang pumili ng mas mababang kalidad.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Hindi ma-play ang video.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Mga music video</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Mga highlight sa gaming</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Mga recipe sa pagluluto</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Mga tech review</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Mga trailer ng pelikula</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Mga highlight sa sports</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Mga comedy sketch</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>Mga DIY tutorial</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Inirerekomendang video</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Sigurado ka bang gusto mong mag-sign out?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Kumpirmahin ang pag-sign out</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Oo</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Hindi</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>Mag-sign in para makita ang iyong mga notification sa YouTube.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Hindi ma-load ang mga notification</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Buksan muli ang page na ito mamaya.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>Walang laman ang playlist ID</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} video</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Hindi alam</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Mag-sign in para manood ng Shorts.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Walang nakitang Shorts.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Hindi ma-load ang mga komento.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Hindi ma-load ang Shorts.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Hindi ma-play ang Short na ito</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Hindi ma-play ang Short na ito.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Kalidad</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Hindi alam</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Bilis ng pag-playback</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Audio track</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Mga subtitle</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Hindi na-play ang video: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Error Code: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Ngayon</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} araw ang nakalipas</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} linggo ang nakalipas</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} buwan ang nakalipas</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} taon ang nakalipas</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Bumalik</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube Video</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>subscriber</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>mga subscriber</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>mga subscriber</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>mga video</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>mga video</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Mag-subscribe</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>I-like</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Mga komento</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Dito lalabas ang mga bagong update mula sa iyong mga subscription.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>Tinanggihan ng YouTube ang kahilingan sa subscription. Tiyaking valid ang TV token at nakita ang channel ID.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>Tinanggihan ng YouTube ang kahilingan sa rating. Tiyaking valid ang TV token at may YouTube rating scope.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>Hindi maipagpalit ang TV refresh token para sa access token. Mag-sign in muli at tiyaking valid pa ang refresh token.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Kahapon</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Ngayong linggo</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Walang pamagat</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Nag-upload ng video</value>
@@ -711,146 +915,73 @@ Bersyon {0}</value>
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>Nag-upload ng video na “{0}”</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Mula sa mga subscription</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Idinagdag ang video sa “{0}”</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Lahat</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>mga video</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Pelikula at Animation</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Nakopya sa clipboard ang link ng video.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Mga Sasakyan</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Hindi ma-load ang video. Maaaring nag-expire ang link o hindi suportado ang format.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Musika</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Nag-time out ang pag-load ng video. Suriin ang iyong koneksyon sa Internet.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Mga Alagang Hayop at Hayop</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>mga video</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Sports</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Maiikling Pelikula</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Error sa pag-play ng video. Subukang pumili ng mas mababang kalidad.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Paglalakbay at Mga Event</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Inalis ang video sa “{0}”</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Gaming</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} video</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Videoblogging</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} video</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Mga Tao at Blog</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} linggo ang nakalipas</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Comedy</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} taon ang nakalipas</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Entertainment</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Oo</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Balita at Pulitika</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Kahapon</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Howto at Style</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Edukasyon</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube video</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Agham at Teknolohiya</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube Video</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Nonprofit at Aktibismo</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>I-clear ang mga na-download na video</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Mga Pelikula</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>I-delete ang lahat ng na-download na video at naka-cache na thumbnail</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Anime/Animation</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Permanenteng made-delete ang lahat ng na-download na video at mga thumbnail nito.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Action/Adventure</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>I-clear</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Classics</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Documentary</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Drama</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Pamilya</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Foreign</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Horror</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Sci-Fi/Fantasy</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Thriller</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Mga Show</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Mga Trailer</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Live</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Pag-aaral</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Mga video game</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Balita</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Mga Podcast</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Hitsura</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Tema</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Maliwanag</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Madilim</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Live tile</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Ipakita ang mga rekomendasyon sa Start screen</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Kalidad ng thumbnail</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Mga icon ng channel</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Ipakita ang mga icon ng channel sa mga video card</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Kanselahin</value>
   </data>
 </root>

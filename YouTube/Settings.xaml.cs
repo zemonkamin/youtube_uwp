@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Core;
 using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
@@ -46,9 +47,12 @@ namespace YouTube
         private bool _notificationsIsDragging;
         private Storyboard _notificationsToggleStoryboard;
         private Storyboard _scrubPreviewToggleStoryboard;
+        private Storyboard _sponsorMarkersToggleStoryboard;
         private Storyboard _autoFullscreenLandscapeToggleStoryboard;
         private Storyboard _liveTileToggleStoryboard;
         private Storyboard _channelIconsToggleStoryboard;
+        private Storyboard _glassEffectToggleStoryboard;
+        private Storyboard _shortsFeatureToggleStoryboard;
 
         public Settings()
         {
@@ -66,7 +70,7 @@ namespace YouTube
             {
                 if (tabbar != null)
                 {
-                    tabbar.SetActiveTab(Tabbar.ActiveTab.Account);
+                    tabbar.SetActiveTab(Tabbar.ActiveTab.None);
                 }
             }
             catch
@@ -77,9 +81,11 @@ namespace YouTube
             UpdatePreferredQualityText();
             UpdateThumbnailQualityText();
             UpdateChannelIconsToggleVisual(ChannelIconController.IsEnabled(), false);
+            UpdateDownloadFolderText();
             BuildQualityOptions();
             EnsureScrubPreviewDefault();
             UpdateScrubPreviewToggleVisual(IsScrubPreviewEnabled(), false);
+            UpdateSponsorMarkersToggleVisual(SponsorBlock.AreTimelineMarkersEnabled(), false);
             EnsureAutoFullscreenLandscapeDefault();
             UpdateAutoFullscreenLandscapeToggleVisual(IsAutoFullscreenLandscapeEnabled(), false);
             UpdateNotificationFrequencyText();
@@ -91,6 +97,8 @@ namespace YouTube
             UpdateAppearanceTexts();
             UpdateThemeText();
             BuildThemeOptions();
+            UpdateGlassEffectToggleVisual(FluentGlassEffectHelper.IsEnabled(), false);
+            UpdateShortsFeatureToggleVisual(ShortsFeatureController.IsEnabled(), false);
             UpdateLiveTileToggleVisual(App.IsLiveTileEnabled(), false);
         }
 
@@ -218,10 +226,91 @@ namespace YouTube
                 LiveTileLabelText.Text = Localization.GetString("LiveTile");
             if (LiveTileDescriptionText != null)
                 LiveTileDescriptionText.Text = Localization.GetString("LiveTileDescription");
+            if (GlassEffectLabelText != null)
+                GlassEffectLabelText.Text = Localization.GetString("GlassEffect");
+            if (GlassEffectDescriptionText != null)
+                GlassEffectDescriptionText.Text = Localization.GetString("GlassEffectDescription");
+            if (ShortsFeatureLabelText != null)
+                ShortsFeatureLabelText.Text = Localization.GetString("ShortsFeature");
+            if (ShortsFeatureDescriptionText != null)
+                ShortsFeatureDescriptionText.Text = Localization.GetString("ShortsFeatureDescription");
             if (ChannelIconsLabelText != null)
                 ChannelIconsLabelText.Text = Localization.GetString("ChannelIcons");
             if (ChannelIconsDescriptionText != null)
                 ChannelIconsDescriptionText.Text = Localization.GetString("ChannelIconsDescription");
+            if (DownloadFolderLabelText != null)
+                DownloadFolderLabelText.Text = Localization.GetString("DownloadFolder");
+            if (DownloadFolderDescriptionText != null)
+                DownloadFolderDescriptionText.Text = Localization.GetString("DownloadFolderDescription");
+            if (ClearDownloadedVideosLabelText != null)
+                ClearDownloadedVideosLabelText.Text = Localization.GetString("ClearDownloadedVideos");
+            if (ClearDownloadedVideosDescriptionText != null)
+                ClearDownloadedVideosDescriptionText.Text = Localization.GetString("ClearDownloadedVideosDescription");
+            if (SponsorMarkersLabelText != null)
+            {
+                var text = Localization.GetString("SponsorMarkers");
+                SponsorMarkersLabelText.Text = string.Equals(text, "SponsorMarkers", StringComparison.Ordinal)
+                    ? "Advertising segments on seek bar"
+                    : text;
+            }
+            if (SponsorMarkersDescriptionText != null)
+            {
+                var text = Localization.GetString("SponsorMarkersDescription");
+                SponsorMarkersDescriptionText.Text = string.Equals(text, "SponsorMarkersDescription", StringComparison.Ordinal)
+                    ? "Show colored SponsorBlock ranges"
+                    : text;
+            }
+        }
+
+        private void UpdateDownloadFolderText()
+        {
+            if (DownloadFolderValueText != null)
+                DownloadFolderValueText.Text = DownloadManager.GetDestinationDisplayName();
+        }
+
+        private async void DownloadFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var picker = new FolderPicker();
+                picker.SuggestedStartLocation = PickerLocationId.Downloads;
+                picker.FileTypeFilter.Add("*");
+                var folder = await picker.PickSingleFolderAsync();
+                if (folder == null) return;
+                DownloadManager.SetDestinationFolder(folder);
+                UpdateDownloadFolderText();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Downloads] Folder picker failed: " + ex.Message);
+            }
+        }
+
+        private async void ClearDownloadedVideosButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (ClearDownloadedVideosButton == null) return;
+            try
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = Localization.GetString("ClearDownloadedVideos"),
+                    Content = Localization.GetString("ClearDownloadedVideosConfirmation"),
+                    PrimaryButtonText = Localization.GetString("ClearDownloadedVideosAction"),
+                    SecondaryButtonText = Localization.GetString("Cancel")
+                };
+                if (await dialog.ShowAsync() != ContentDialogResult.Primary) return;
+
+                ClearDownloadedVideosButton.IsEnabled = false;
+                await DownloadManager.ClearAllAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Downloads] Clear failed: " + ex.Message);
+            }
+            finally
+            {
+                ClearDownloadedVideosButton.IsEnabled = true;
+            }
         }
 
         private void UpdateThemeText()
@@ -406,6 +495,120 @@ namespace YouTube
             var enabled = !App.IsLiveTileEnabled();
             App.SetLiveTileEnabled(enabled);
             UpdateLiveTileToggleVisual(enabled, true);
+        }
+
+        private void GlassEffectToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var enabled = !FluentGlassEffectHelper.IsEnabled();
+            FluentGlassEffectHelper.SetEnabled(enabled);
+            UpdateGlassEffectToggleVisual(enabled, true);
+        }
+
+        private void ShortsFeatureToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var enabled = !ShortsFeatureController.IsEnabled();
+            ShortsFeatureController.SetEnabled(enabled);
+            UpdateShortsFeatureToggleVisual(enabled, true);
+        }
+
+        private void UpdateShortsFeatureToggleVisual(bool isOn, bool animate)
+        {
+            if (ShortsFeatureToggleTrack == null || ShortsFeatureToggleThumbTransform == null)
+                return;
+
+            if (_shortsFeatureToggleStoryboard != null)
+            {
+                _shortsFeatureToggleStoryboard.Stop();
+                _shortsFeatureToggleStoryboard = null;
+            }
+
+            var brush = ShortsFeatureToggleTrack.Background as SolidColorBrush;
+            if (brush == null)
+            {
+                brush = new SolidColorBrush(
+                    isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155)));
+                ShortsFeatureToggleTrack.Background = brush;
+            }
+
+            const double OnOffset = 20.0;
+            if (!animate)
+            {
+                brush.Color = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155));
+                ShortsFeatureToggleThumbTransform.X = isOn ? OnOffset : 0;
+                return;
+            }
+
+            var thumbAnimation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? OnOffset : 0,
+                EnableDependentAnimation = true
+            };
+            var colorAnimation = new ColorAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155))
+            };
+
+            Storyboard.SetTarget(thumbAnimation, ShortsFeatureToggleThumbTransform);
+            Storyboard.SetTargetProperty(thumbAnimation, "X");
+            Storyboard.SetTarget(colorAnimation, brush);
+            Storyboard.SetTargetProperty(colorAnimation, "Color");
+
+            _shortsFeatureToggleStoryboard = new Storyboard();
+            _shortsFeatureToggleStoryboard.Children.Add(thumbAnimation);
+            _shortsFeatureToggleStoryboard.Children.Add(colorAnimation);
+            _shortsFeatureToggleStoryboard.Begin();
+        }
+
+        private void UpdateGlassEffectToggleVisual(bool isOn, bool animate)
+        {
+            if (GlassEffectToggleTrack == null || GlassEffectToggleThumbTransform == null)
+                return;
+
+            if (_glassEffectToggleStoryboard != null)
+            {
+                _glassEffectToggleStoryboard.Stop();
+                _glassEffectToggleStoryboard = null;
+            }
+
+            var brush = GlassEffectToggleTrack.Background as SolidColorBrush;
+            if (brush == null)
+            {
+                brush = new SolidColorBrush(
+                    isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155)));
+                GlassEffectToggleTrack.Background = brush;
+            }
+
+            const double OnOffset = 20.0;
+            if (!animate)
+            {
+                brush.Color = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155));
+                GlassEffectToggleThumbTransform.X = isOn ? OnOffset : 0;
+                return;
+            }
+
+            var thumbAnimation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? OnOffset : 0,
+                EnableDependentAnimation = true
+            };
+            var colorAnimation = new ColorAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155))
+            };
+
+            Storyboard.SetTarget(thumbAnimation, GlassEffectToggleThumbTransform);
+            Storyboard.SetTargetProperty(thumbAnimation, "X");
+            Storyboard.SetTarget(colorAnimation, brush);
+            Storyboard.SetTargetProperty(colorAnimation, "Color");
+
+            _glassEffectToggleStoryboard = new Storyboard();
+            _glassEffectToggleStoryboard.Children.Add(thumbAnimation);
+            _glassEffectToggleStoryboard.Children.Add(colorAnimation);
+            _glassEffectToggleStoryboard.Begin();
         }
 
         private void UpdateLiveTileToggleVisual(bool isOn, bool animate)
@@ -683,6 +886,65 @@ namespace YouTube
             _scrubPreviewToggleStoryboard.Children.Add(thumbAnimation);
             _scrubPreviewToggleStoryboard.Children.Add(colorAnimation);
             _scrubPreviewToggleStoryboard.Begin();
+        }
+
+        private void SponsorMarkersToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var enabled = !SponsorBlock.AreTimelineMarkersEnabled();
+            SponsorBlock.SetTimelineMarkersEnabled(enabled);
+            UpdateSponsorMarkersToggleVisual(enabled, true);
+        }
+
+        private void UpdateSponsorMarkersToggleVisual(bool isOn, bool animate)
+        {
+            if (SponsorMarkersToggleTrack == null || SponsorMarkersToggleThumbTransform == null)
+            {
+                return;
+            }
+
+            if (_sponsorMarkersToggleStoryboard != null)
+            {
+                _sponsorMarkersToggleStoryboard.Stop();
+                _sponsorMarkersToggleStoryboard = null;
+            }
+
+            var brush = SponsorMarkersToggleTrack.Background as SolidColorBrush;
+            if (brush == null)
+            {
+                brush = new SolidColorBrush(
+                    isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155)));
+                SponsorMarkersToggleTrack.Background = brush;
+            }
+
+            const double OnOffset = 20.0;
+            if (!animate)
+            {
+                brush.Color = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155));
+                SponsorMarkersToggleThumbTransform.X = isOn ? OnOffset : 0;
+                return;
+            }
+
+            var thumbAnimation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? OnOffset : 0,
+                EnableDependentAnimation = true
+            };
+            var colorAnimation = new ColorAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155))
+            };
+
+            Storyboard.SetTarget(thumbAnimation, SponsorMarkersToggleThumbTransform);
+            Storyboard.SetTargetProperty(thumbAnimation, "X");
+            Storyboard.SetTarget(colorAnimation, brush);
+            Storyboard.SetTargetProperty(colorAnimation, "Color");
+
+            _sponsorMarkersToggleStoryboard = new Storyboard();
+            _sponsorMarkersToggleStoryboard.Children.Add(thumbAnimation);
+            _sponsorMarkersToggleStoryboard.Children.Add(colorAnimation);
+            _sponsorMarkersToggleStoryboard.Begin();
         }
 
         private static void EnsureAutoFullscreenLandscapeDefault()
@@ -1020,7 +1282,7 @@ namespace YouTube
             if (ThumbnailQualityValueText != null)
             {
                 var option = VideoThumbnailController.GetSelectedOption();
-                ThumbnailQualityValueText.Text = option != null ? option.Key : VideoThumbnailController.DefaultQuality;
+                ThumbnailQualityValueText.Text = option != null ? option.FileName : "hqdefault.jpg";
             }
         }
 

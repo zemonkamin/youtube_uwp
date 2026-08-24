@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>Développé par l’équipe LegacyProjects.
@@ -18,11 +45,146 @@ Pris en charge par YouTube API Legacy.
 
 Version {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Comptes</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Apparence</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Piste audio</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Auto</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Traduction automatique &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Retour</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Action/Aventure</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Tout</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Animation</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Automobile et véhicules</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Classiques</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Humour</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Documentaire</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Drame</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Éducation</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Divertissement</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Famille</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Films et animation</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Étranger</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Jeux vidéo</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Horreur</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Tutoriels et style</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Apprentissage</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>En direct</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Films</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Musique</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Actualités</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Actualités et politique</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Associations et militantisme</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Personnes et blogs</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Animaux</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podcasts</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Science et technologie</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Science-fiction/Fantastique</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Courts métrages</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Émissions</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Sports</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Thriller</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Bandes-annonces</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Voyages et événements</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Vidéoblogs</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Jeux vidéo</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Chaîne</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Icônes des chaînes</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Afficher les icônes des chaînes sur les cartes vidéo</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Erreur de chargement de la chaîne</value>
@@ -30,14 +192,71 @@ Version {0}</value>
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>La chaîne n’a pas été fournie</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Commentaires</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Voulez-vous vraiment vous déconnecter ?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Confirmer la déconnexion</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Impossible de charger la chaîne</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Impossible de charger les notifications</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Impossible de charger la playlist</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Impossible de charger la vidéo. Veuillez réessayer.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Impossible de lire la vidéo.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>Il y a {0} jours</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Description indisponible</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Télécharger</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Téléchargée</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Vidéos téléchargées</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Dossier de téléchargement</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Choisissez où enregistrer les vidéos téléchargées</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Qualité du téléchargement</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Téléchargements</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Les vidéos téléchargées apparaîtront ici.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Vos téléchargements</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Téléchargements</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Cette vidéo ne peut pas être téléchargée</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Code d’erreur : {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Erreur : {0}</value>
@@ -62,6 +281,18 @@ Version {0}</value>
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Toutes les {0} min</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Échec de la lecture de la vidéo : {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Depuis les abonnements</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Effet de verre</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Flouter les barres de navigation</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Impossible de charger l’historique</value>
@@ -90,8 +321,17 @@ Version {0}</value>
   <data name="LanguageSystem" xml:space="preserve">
     <value>Valeur par défaut du système</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>J’aime</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Lien copié</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Tuile dynamique</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Afficher les recommandations sur l’écran d’accueil</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Chargement de la description...</value>
@@ -237,6 +477,9 @@ Version {0}</value>
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Aucune vidéo dans cette playlist</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Personnalisées</value>
   </data>
@@ -375,6 +618,15 @@ Version {0}</value>
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>Il y a {0} mois</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Erreur réseau. Vérifiez votre connexion Internet.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Non</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Aucun commentaire trouvé.</value>
   </data>
@@ -393,11 +645,26 @@ Version {0}</value>
   <data name="NoNotifications" xml:space="preserve">
     <value>Aucune notification</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Aucun Short trouvé.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Impossible de mettre à jour la préférence de notification.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Échec des notifications</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Les nouvelles mises à jour de vos abonnements apparaîtront ici.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Connectez-vous pour voir vos notifications YouTube.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Revenez sur cette page plus tard.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Sans titre</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Non connecté</value>
@@ -414,8 +681,23 @@ Version {0}</value>
   <data name="PlaybackError" xml:space="preserve">
     <value>Erreur de lecture</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Échec de la lecture</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Vitesse de lecture</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Impossible de lire la vidéo. Le lecteur n’est pas initialisé.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Playlist</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>L’identifiant de la playlist est vide</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Impossible de mettre à jour la playlist</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>Code QR</value>
@@ -423,11 +705,62 @@ Version {0}</value>
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>Erreur d’affichage du QR : {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Qualité</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Échec de l’évaluation</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube a refusé la demande d’évaluation. Vérifiez que le jeton TV est valide et possède l’autorisation d’évaluation YouTube.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Vidéo recommandée</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Impossible d’échanger le jeton d’actualisation contre un jeton d’accès.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>réponses</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} réponses</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Enregistrer</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Erreur de recherche : {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Inconnu</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Sélectionner un compte</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Sélectionner une playlist</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Anglais</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Utilise la langue de Windows par défaut.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Langue de l’application</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Russe</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Langue</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Langue</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Valeur par défaut du système</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Partager ce Short YouTube</value>
@@ -435,11 +768,47 @@ Version {0}</value>
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Partager cette vidéo YouTube</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Afficher les Shorts dans l’application</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Afficher moins</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Plus</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>Impossible d’échanger le jeton d’actualisation TV contre un jeton d’accès. Reconnectez-vous et vérifiez que le jeton d’actualisation est toujours valide.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Connexion requise</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Connectez-vous pour regarder des Shorts.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Segments publicitaires sur la barre de lecture</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Afficher les segments SponsorBlock en couleur</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>S’abonner</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>abonnés</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>abonnés</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>abonné</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} abonnés • {1} vidéos</value>
@@ -450,65 +819,71 @@ Version {0}</value>
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube a refusé la demande d’abonnement.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube a refusé la demande d’abonnement. Vérifiez que le jeton TV est valide et que l’identifiant de la chaîne a été trouvé.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Plus tôt (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Plus tard (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Rétablir le décalage normal (0,00 s)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Sous-titres</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Synchronisation : {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Impossible de charger les commentaires.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Thème</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Sans titre</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Sombre</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Le lien de la vidéo a été copié dans le presse-papiers.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Clair</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} vidéos</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Cette semaine</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Qualité de la miniature</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Langue</value>
+  <data name="Today" xml:space="preserve">
+    <value>Aujourd’hui</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Langue de l’application</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Sketchs humoristiques</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Langue</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Recettes de cuisine</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Utilise la langue de Windows par défaut.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Tutoriels de bricolage</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Valeur par défaut du système</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Moments forts de jeux vidéo</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Anglais</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Bandes-annonces de films</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Russe</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Clips musicaux</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>Vidéo YouTube</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Moments forts sportifs</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Chaîne</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Tests technologiques</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Impossible d’échanger le jeton d’actualisation TV contre un jeton d’accès.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Inconnu</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Sans titre</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Impossible d’échanger le jeton d’actualisation TV contre un jeton d’accès. Reconnectez-vous et vérifiez que le jeton d’actualisation est toujours valide.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>Le jeton d’actualisation TV est introuvable. Reconnectez-vous et réessayez.</value>
@@ -516,194 +891,23 @@ Version {0}</value>
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>Le jeton d’actualisation TV est introuvable. Reconnectez-vous afin d’enregistrer yt_refresh_token, puis réessayez.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>Impossible d’échanger le jeton d’actualisation TV contre un jeton d’accès.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Impossible d’échanger le jeton d’actualisation contre un jeton d’accès.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Échec de la lecture</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Impossible de lire ce Short</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Le délai de chargement de la vidéo est dépassé. Vérifiez votre connexion Internet.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Impossible de charger la vidéo. Veuillez réessayer.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Impossible de lire la vidéo. Le lecteur n’est pas initialisé.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Impossible de charger la vidéo. Le lien a peut-être expiré ou le format n’est pas pris en charge.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Erreur réseau. Vérifiez votre connexion Internet.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Erreur de lecture vidéo. Essayez de sélectionner une qualité inférieure.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Impossible de lire la vidéo.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Clips musicaux</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Moments forts de jeux vidéo</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Recettes de cuisine</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Tests technologiques</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Bandes-annonces de films</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Moments forts sportifs</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Sketchs humoristiques</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>Tutoriels de bricolage</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Vidéo recommandée</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Voulez-vous vraiment vous déconnecter ?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Confirmer la déconnexion</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Oui</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Non</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>Connectez-vous pour voir vos notifications YouTube.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Impossible de charger les notifications</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Revenez sur cette page plus tard.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>L’identifiant de la playlist est vide</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} vidéos</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Inconnu</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Connectez-vous pour regarder des Shorts.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Aucun Short trouvé.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Impossible de charger les commentaires.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Impossible de charger les Shorts.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Impossible de lire ce Short</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Impossible de lire ce Short.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Qualité</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Inconnu</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Vitesse de lecture</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Piste audio</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Sous-titres</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Échec de la lecture de la vidéo : {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Code d’erreur : {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Aujourd’hui</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>Il y a {0} jours</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>Il y a {0} semaines</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>Il y a {0} mois</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>Il y a {0} ans</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Retour</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>Vidéo YouTube</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>abonné</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>abonnés</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>abonnés</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>vidéo</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>vidéos</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>vidéos</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>S’abonner</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>J’aime</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Commentaires</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Les nouvelles mises à jour de vos abonnements apparaîtront ici.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube a refusé la demande d’abonnement. Vérifiez que le jeton TV est valide et que l’identifiant de la chaîne a été trouvé.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube a refusé la demande d’évaluation. Vérifiez que le jeton TV est valide et possède l’autorisation d’évaluation YouTube.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>Impossible d’échanger le jeton d’actualisation TV contre un jeton d’accès. Reconnectez-vous et vérifiez que le jeton d’actualisation est toujours valide.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Hier</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Cette semaine</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Sans titre</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>A mis en ligne une vidéo</value>
@@ -711,146 +915,73 @@ Version {0}</value>
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>A mis en ligne une vidéo « {0} »</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Depuis les abonnements</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Vidéo ajoutée à « {0} »</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Tout</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>vidéos</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Films et animation</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Le lien de la vidéo a été copié dans le presse-papiers.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Automobile et véhicules</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Impossible de charger la vidéo. Le lien a peut-être expiré ou le format n’est pas pris en charge.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Musique</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Le délai de chargement de la vidéo est dépassé. Vérifiez votre connexion Internet.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Animaux</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>vidéos</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Sports</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>vidéo</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Courts métrages</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Erreur de lecture vidéo. Essayez de sélectionner une qualité inférieure.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Voyages et événements</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Vidéo supprimée de « {0} »</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Jeux vidéo</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} vidéos</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Vidéoblogs</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} vidéos</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Personnes et blogs</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>Il y a {0} semaines</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Humour</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>Il y a {0} ans</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Divertissement</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Oui</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Actualités et politique</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Hier</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Tutoriels et style</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Éducation</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>Vidéo YouTube</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Science et technologie</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>Vidéo YouTube</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Associations et militantisme</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Effacer les vidéos téléchargées</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Films</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Supprimer toutes les vidéos téléchargées et les miniatures en cache</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Anime/Animation</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Toutes les vidéos téléchargées et leurs miniatures seront définitivement supprimées.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Action/Aventure</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Effacer</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Classiques</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Documentaire</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Drame</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Famille</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Étranger</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Horreur</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Science-fiction/Fantastique</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Thriller</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Émissions</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Bandes-annonces</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>En direct</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Apprentissage</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Jeux vidéo</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Actualités</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Podcasts</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Apparence</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Thème</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Clair</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Sombre</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Tuile dynamique</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Afficher les recommandations sur l’écran d’accueil</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Qualité de la miniature</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Icônes des chaînes</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Afficher les icônes des chaînes sur les cartes vidéo</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Annuler</value>
   </data>
 </root>

@@ -11,6 +11,7 @@ namespace YouTube
     {
         public const string ThumbnailChromeTag = "VideoCardThumbnailChrome";
         public const string MetadataTag = "VideoCardMetadata";
+        private const string RoundingTextureTag = "VideoCardRoundingTexture";
 
         public static void ApplyResponsiveLayout(DependencyObject root, bool isPortrait)
         {
@@ -23,10 +24,22 @@ namespace YouTube
                 var tag = element.Tag as string;
                 if (string.Equals(tag, ThumbnailChromeTag, StringComparison.Ordinal))
                 {
-                    var radius = isPortrait ? new CornerRadius(0) : new CornerRadius(8);
                     var border = element as Border;
                     if (border != null)
-                        border.CornerRadius = radius;
+                    {
+                        // UWP's Border clipping is inconsistent on the older mobile compositor.
+                        // The landscape cards use the same alpha-mask texture on every page.
+                        border.CornerRadius = new CornerRadius(0);
+                    }
+
+                    var thumbnailGrid = element as Grid;
+                    if (thumbnailGrid != null)
+                    {
+                        var texture = EnsureRoundingTexture(thumbnailGrid);
+                        texture.Visibility = isPortrait
+                            ? Visibility.Collapsed
+                            : Visibility.Visible;
+                    }
 
                 }
                 else if (string.Equals(tag, MetadataTag, StringComparison.Ordinal))
@@ -40,6 +53,32 @@ namespace YouTube
             var childCount = VisualTreeHelper.GetChildrenCount(root);
             for (var i = 0; i < childCount; i++)
                 ApplyResponsiveLayout(VisualTreeHelper.GetChild(root, i), isPortrait);
+        }
+
+        private static Image EnsureRoundingTexture(Grid thumbnailGrid)
+        {
+            for (var i = 0; i < thumbnailGrid.Children.Count; i++)
+            {
+                var existing = thumbnailGrid.Children[i] as Image;
+                if (existing != null
+                    && string.Equals(existing.Tag as string, RoundingTextureTag, StringComparison.Ordinal))
+                {
+                    return existing;
+                }
+            }
+
+            var texture = new Image
+            {
+                Tag = RoundingTextureTag,
+                Stretch = Stretch.Fill,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                IsHitTestVisible = false
+            };
+            App.SetThemeImageSource(texture, "Assets/video_rounding.png");
+            Canvas.SetZIndex(texture, 1000);
+            thumbnailGrid.Children.Add(texture);
+            return texture;
         }
     }
 }

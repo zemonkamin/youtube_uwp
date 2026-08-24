@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>Ontwikkel deur die LegacyProjects-span.
@@ -18,11 +45,146 @@ Ondersteun deur YouTube API Legacy.
 
 Weergawe {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Rekeninge</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Voorkoms</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Oudiosnit</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Outomaties</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Outo-vertaal &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Terug</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Aksie/Avontuur</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Alles</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Animasie</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Motors en voertuie</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Klassieke</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Komedie</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Dokumentêr</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Drama</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Onderwys</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Vermaak</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Familie</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Film en animasie</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Buitelands</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Speletjies</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Gruwel</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Hoe-om en styl</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Leer</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Regstreeks</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Flieks</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Musiek</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Nuus</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Nuus en politiek</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Niewinsorganisasies en aktivisme</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Mense en blogs</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Troeteldiere en diere</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podsendings</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Wetenskap en tegnologie</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Wetenskapsfiksie/Fantasie</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Kortfilms</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Programme</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Sport</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Riller</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Sleepwaens</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Reis en geleenthede</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Videoblogging</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Videospeletjies</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Kanaal</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Kanaalikone</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Wys kanaalikone op videokaarte</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Kanaallaai-fout</value>
@@ -30,14 +192,71 @@ Weergawe {0}</value>
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Kanaal is nie verskaf nie</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Opmerkings</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Is jy seker jy wil afmeld?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Bevestig afmelding</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Kon nie kanaal laai nie</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Kon nie kennisgewings laai nie</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Kon nie snitlys laai nie</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Kon nie die video laai nie. Probeer weer.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Kon nie die video speel nie.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} dae gelede</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Beskrywing nie beskikbaar nie</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Laai af</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Afgelaai</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Jou aflaaie</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Aflaaigids</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Kies waar afgelaaide video's gestoor word</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Aflaaikwaliteit</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Aflaaie</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Video's wat jy aflaai, sal hier verskyn.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Jou aflaaie</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Aflaaie</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Hierdie video kan nie afgelaai word nie</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Foutkode: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Fout: {0}</value>
@@ -62,6 +281,18 @@ Weergawe {0}</value>
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Elke {0} min</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Kon nie video speel nie: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Van intekeninge</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Glaseffek</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Vervaag navigasiebalke</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Kon nie geskiedenis laai nie</value>
@@ -90,8 +321,17 @@ Weergawe {0}</value>
   <data name="LanguageSystem" xml:space="preserve">
     <value>Stelselverstek</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Hou van</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Skakel gekopieer</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Lewende teël</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Wys aanbevelings op die Start-skerm</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Laai beskrywing...</value>
@@ -237,6 +477,9 @@ Weergawe {0}</value>
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Geen video's in hierdie snitlys nie</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Gepersonaliseer</value>
   </data>
@@ -375,6 +618,15 @@ Weergawe {0}</value>
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} maande gelede</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Netwerkfout. Gaan jou internetverbinding na.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nee</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Geen opmerkings gevind nie.</value>
   </data>
@@ -393,11 +645,26 @@ Weergawe {0}</value>
   <data name="NoNotifications" xml:space="preserve">
     <value>Geen kennisgewings nie</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Geen Shorts gevind nie.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Kon nie kennisgewingvoorkeur opdateer nie.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Kennisgewings het misluk</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Nuwe opdaterings van jou intekeninge sal hier verskyn.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Meld aan om jou YouTube-kennisgewings te sien.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Maak hierdie bladsy later weer oop.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Geen titel nie</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Nie aangemeld nie</value>
@@ -414,8 +681,23 @@ Weergawe {0}</value>
   <data name="PlaybackError" xml:space="preserve">
     <value>Terugspeelfout</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Terugspeel het misluk</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Terugspeelspoed</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Kon nie die video speel nie. Die speler is nie geïnitialiseer nie.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Snitlys</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Snitlys-ID is leeg</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Kon nie die snitlys bywerk nie</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR-kode</value>
@@ -423,11 +705,62 @@ Weergawe {0}</value>
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>QR-vertoonfout: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Gehalte</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Gradering het misluk</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube het die graderingsversoek verwerp. Maak seker die TV-token is geldig en het YouTube-graderingstoestemming.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Aanbevole video</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Kon nie verfristoken vir toegangstoken omruil nie.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>antwoorde</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} antwoorde</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Stoor</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Soekfout: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Onbekend</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Kies 'n rekening</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Kies snitlys</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Engels</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Gebruik die Windows-taal by verstek.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Programtaal</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Russies</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Taal</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Taal</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Stelselverstek</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Deel hierdie YouTube Short</value>
@@ -435,11 +768,47 @@ Weergawe {0}</value>
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Deel hierdie YouTube-video</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Wys Shorts in die toepassing</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Wys minder</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Meer</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>Kon nie die TV-verfristoken vir 'n toegangstoken omruil nie. Meld weer aan en maak seker die verfristoken is steeds geldig.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Aanmelding vereis</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Meld aan om Shorts te kyk.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Advertensiesegmente op die soekbalk</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Wys gekleurde SponsorBlock-reekse</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Teken in</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>intekenare</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>intekenare</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>intekenaar</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} intekenare • {1} video's</value>
@@ -450,65 +819,71 @@ Weergawe {0}</value>
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube het die intekeningversoek verwerp.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube het die intekeningversoek verwerp. Maak seker die TV-token is geldig en die kanaal-ID is gevind.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Vroeër (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Later (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Stel normale vertraging terug (0,00 s)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Onderskrifte</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Sinkroniseer: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Kon nie opmerkings laai nie.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Tema</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Sonder titel</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Donker</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Die videoskakel is na die knipbord gekopieer.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Lig</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} video's</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Hierdie week</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Duimnaelkwaliteit</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Taal</value>
+  <data name="Today" xml:space="preserve">
+    <value>Vandag</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Programtaal</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Komediesketse</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Taal</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Kookresepte</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Gebruik die Windows-taal by verstek.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Doen-dit-self-tutoriale</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Stelselverstek</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Speletjiehoogtepunte</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Engels</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Flieksleepwaens</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Russies</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Musiekvideo's</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube-video</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Sporthoogtepunte</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Kanaal</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Tegnologie-resensies</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Kon nie TV-verfristoken vir toegangstoken omruil nie.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Onbekend</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Geen titel nie</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Kon nie die TV-verfristoken vir 'n toegangstoken omruil nie. Meld weer aan en maak seker die verfristoken is steeds geldig.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>TV-verfristoken is nie gevind nie. Meld weer aan en probeer weer.</value>
@@ -516,194 +891,23 @@ Weergawe {0}</value>
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>TV-verfristoken is nie gevind nie. Meld weer aan sodat yt_refresh_token gestoor word en probeer dan weer.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>Kon nie TV-verfristoken vir toegangstoken omruil nie.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Kon nie verfristoken vir toegangstoken omruil nie.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Terugspeel het misluk</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Kan nie hierdie Short speel nie</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Videolaai het uitgetel. Gaan jou internetverbinding na.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Kon nie die video laai nie. Probeer weer.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Kon nie die video speel nie. Die speler is nie geïnitialiseer nie.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Kon nie die video laai nie. Die skakel het dalk verval of die formaat word nie ondersteun nie.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Netwerkfout. Gaan jou internetverbinding na.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Videoterugspeelfout. Probeer 'n laer gehalte kies.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Kon nie die video speel nie.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Musiekvideo's</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Speletjiehoogtepunte</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Kookresepte</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Tegnologie-resensies</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Flieksleepwaens</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Sporthoogtepunte</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Komediesketse</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>Doen-dit-self-tutoriale</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Aanbevole video</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Is jy seker jy wil afmeld?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Bevestig afmelding</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Ja</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Nee</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>Meld aan om jou YouTube-kennisgewings te sien.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Kon nie kennisgewings laai nie</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Maak hierdie bladsy later weer oop.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>Snitlys-ID is leeg</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} video's</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Onbekend</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Meld aan om Shorts te kyk.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Geen Shorts gevind nie.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Kon nie opmerkings laai nie.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Kon nie Shorts laai nie.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Kan nie hierdie Short speel nie</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Kan nie hierdie Short speel nie.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Gehalte</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Onbekend</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Terugspeelspoed</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Oudiosnit</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Onderskrifte</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Kon nie video speel nie: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Foutkode: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Vandag</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} dae gelede</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} weke gelede</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} maande gelede</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} jaar gelede</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Terug</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube-video</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>intekenaar</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>intekenare</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>intekenare</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>video's</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>video's</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Teken in</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Hou van</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Opmerkings</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Nuwe opdaterings van jou intekeninge sal hier verskyn.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube het die intekeningversoek verwerp. Maak seker die TV-token is geldig en die kanaal-ID is gevind.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube het die graderingsversoek verwerp. Maak seker die TV-token is geldig en het YouTube-graderingstoestemming.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>Kon nie die TV-verfristoken vir 'n toegangstoken omruil nie. Meld weer aan en maak seker die verfristoken is steeds geldig.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Gister</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Hierdie week</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Sonder titel</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Het 'n video opgelaai</value>
@@ -711,146 +915,73 @@ Weergawe {0}</value>
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>Het 'n video “{0}” opgelaai</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Van intekeninge</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Video is by “{0}” gevoeg</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Alles</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>video's</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Film en animasie</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Die videoskakel is na die knipbord gekopieer.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Motors en voertuie</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Kon nie die video laai nie. Die skakel het dalk verval of die formaat word nie ondersteun nie.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Musiek</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Videolaai het uitgetel. Gaan jou internetverbinding na.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Troeteldiere en diere</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>video's</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Sport</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Kortfilms</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Videoterugspeelfout. Probeer 'n laer gehalte kies.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Reis en geleenthede</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Video is uit “{0}” verwyder</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Speletjies</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} video's</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Videoblogging</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} video's</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Mense en blogs</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} weke gelede</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Komedie</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} jaar gelede</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Vermaak</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Nuus en politiek</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Gister</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Hoe-om en styl</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Onderwys</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube-video</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Wetenskap en tegnologie</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube-video</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Niewinsorganisasies en aktivisme</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Verwyder afgelaaide video's</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Flieks</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Skrap alle afgelaaide video's en gekasde duimnaels</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Anime/Animasie</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Alle afgelaaide video's en hul duimnaels sal permanent verwyder word.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Aksie/Avontuur</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Maak skoon</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Klassieke</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Dokumentêr</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Drama</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Familie</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Buitelands</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Gruwel</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Wetenskapsfiksie/Fantasie</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Riller</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Programme</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Sleepwaens</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Regstreeks</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Leer</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Videospeletjies</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Nuus</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Podsendings</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Voorkoms</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Tema</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Lig</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Donker</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Lewende teël</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Wys aanbevelings op die Start-skerm</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Duimnaelkwaliteit</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Kanaalikone</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Wys kanaalikone op videokaarte</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Kanselleer</value>
   </data>
 </root>

@@ -7,20 +7,25 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource AppBackgroundBrush}">
+    <Grid Background="Transparent">
         <Grid.RowDefinitions>
             <RowDefinition Height="2"/>
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
+        <Border x:Name="TabbarGlassHost"
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Background="Transparent"
+                IsHitTestVisible="False" />
         <!-- Top dark gray bar -->
         <Border Grid.Row="0" Background="{ThemeResource AppDividerBrush}"/>
         <!-- Bottom TabBar -->
-        <Grid Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}">
+        <Grid Grid.Row="1" Background="Transparent">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition x:Name="HomeColumn" Width="*"/>
+                <ColumnDefinition x:Name="ShortsColumn" Width="*"/>
+                <ColumnDefinition x:Name="SubscriptionsColumn" Width="*"/>
+                <ColumnDefinition x:Name="AccountColumn" Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Home -->

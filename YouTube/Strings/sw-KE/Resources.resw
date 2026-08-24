@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>Imetengenezwa na timu ya LegacyProjects.
@@ -18,11 +45,146 @@ Inaungwa mkono na YouTube API Legacy.
 
 Toleo {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Akaunti</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Mwonekano</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Wimbo wa sauti</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Otomatiki</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Tafsiri otomatiki &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Rudi</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Vitendo/Vituko</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Zote</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Uhuishaji</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Magari na Vyombo</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Klasiki</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Vichekesho</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Nyaraka</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Tamthilia</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Elimu</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Burudani</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Familia</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Filamu na Uhuishaji</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Kigeni</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Michezo ya video</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Kutisha</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Jinsi ya Kufanya na Mtindo</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Kujifunza</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Moja kwa moja</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Filamu</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Muziki</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Habari</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Habari na Siasa</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Mashirika Yasiyo ya Faida na Uanaharakati</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Watu na Blogu</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Wanyama Vipenzi na Wanyama</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podikasti</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Sayansi na Teknolojia</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Sayansi ya Kubuni/Fantasia</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Filamu Fupi</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Vipindi</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Michezo</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Msisimko</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Trela</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Usafiri na Matukio</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Videoblogging</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Michezo ya video</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Kituo</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Aikoni za vituo</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Onyesha aikoni za vituo kwenye kadi za video</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Hitilafu ya kupakia kituo</value>
@@ -30,14 +192,71 @@ Toleo {0}</value>
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Kituo hakikutolewa</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Maoni</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Una uhakika unataka kuondoka?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Thibitisha kuondoka</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Imeshindikana kupakia kituo</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Imeshindikana kupakia arifa</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Imeshindikana kupakia orodha ya kucheza</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Imeshindikana kupakia video. Tafadhali jaribu tena.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Imeshindikana kucheza video.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>siku {0} zilizopita</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Maelezo hayapatikani</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Pakua</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Imepakuliwa</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Vipakuliwa vyako</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Folda ya vipakuliwa</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Chagua mahali video zilizopakuliwa zinahifadhiwa</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Ubora wa upakuaji</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Vipakuliwa</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Video unazopakua zitaonekana hapa.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Vipakuliwa vyako</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Vipakuliwa</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Video hii haiwezi kupakuliwa</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Msimbo wa Hitilafu: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Hitilafu: {0}</value>
@@ -62,6 +281,18 @@ Toleo {0}</value>
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Kila dakika {0}</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Imeshindikana kucheza video: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Kutoka usajili</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Athari ya kioo</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Tia ukungu pau za uelekezaji</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Imeshindikana kupakia historia</value>
@@ -90,8 +321,17 @@ Toleo {0}</value>
   <data name="LanguageSystem" xml:space="preserve">
     <value>Chaguo-msingi la mfumo</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Penda</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Kiungo kimenakiliwa</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Kigae hai</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Onyesha mapendekezo kwenye skrini ya Mwanzo</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Inapakia maelezo...</value>
@@ -237,6 +477,9 @@ Toleo {0}</value>
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Hakuna video katika orodha hii ya kucheza</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>Sawa</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Iliyobinafsishwa</value>
   </data>
@@ -375,6 +618,15 @@ Toleo {0}</value>
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>miezi {0} iliyopita</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Hitilafu ya mtandao. Angalia muunganisho wako wa Intaneti.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Hapana</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Hakuna maoni yaliyopatikana.</value>
   </data>
@@ -393,11 +645,26 @@ Toleo {0}</value>
   <data name="NoNotifications" xml:space="preserve">
     <value>Hakuna arifa</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Hakuna Shorts zilizopatikana.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Imeshindikana kusasisha mapendeleo ya arifa.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Arifa zimeshindikana</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Masasisho mapya kutoka usajili wako yataonekana hapa.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Ingia ili uone arifa zako za YouTube.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Fungua ukurasa huu tena baadaye.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Hakuna kichwa</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Hujaingia</value>
@@ -414,8 +681,23 @@ Toleo {0}</value>
   <data name="PlaybackError" xml:space="preserve">
     <value>Hitilafu ya Kucheza</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Uchezaji umeshindikana</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Kasi ya kucheza</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Imeshindikana kucheza video. Kichezaji hakijaanzishwa.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Orodha ya kucheza</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Kitambulisho cha orodha ya kucheza ni tupu</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Imeshindwa kusasisha orodha ya kucheza</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>Msimbo wa QR</value>
@@ -423,11 +705,62 @@ Toleo {0}</value>
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>Hitilafu ya kuonyesha QR: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Ubora</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Ukadiriaji umeshindikana</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube imekataa ombi la ukadiriaji. Hakikisha tokeni ya TV ni halali na ina ruhusa ya ukadiriaji wa YouTube.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Video iliyopendekezwa</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Imeshindikana kubadilisha tokeni ya kuonyesha upya kuwa tokeni ya ufikiaji.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>majibu</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} majibu</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Hifadhi</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Hitilafu ya utafutaji: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Haijulikani</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Chagua akaunti</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Chagua orodha ya kucheza</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Kiingereza</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Hutumia lugha ya Windows kwa chaguo-msingi.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Lugha ya programu</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Kirusi</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Lugha</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Lugha</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Chaguo-msingi la mfumo</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Shiriki YouTube Short hii</value>
@@ -435,11 +768,47 @@ Toleo {0}</value>
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Shiriki video hii ya YouTube</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Onyesha Shorts katika programu</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Onyesha machache</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Zaidi</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>Imeshindikana kubadilisha tokeni ya kuonyesha upya ya TV kuwa tokeni ya ufikiaji. Ingia tena na uhakikishe tokeni ya kuonyesha upya bado ni halali.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Kuingia kunahitajika</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Ingia ili kutazama Shorts.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Sehemu za matangazo kwenye upau wa kutafuta</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Onyesha masafa ya SponsorBlock yenye rangi</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Jisajili</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>wafuatiliaji</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>wafuatiliaji</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>mfuatiliaji</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>wafuatiliaji {0} • video {1}</value>
@@ -450,65 +819,71 @@ Toleo {0}</value>
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube imekataa ombi la usajili.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube imekataa ombi la usajili. Hakikisha tokeni ya TV ni halali na kitambulisho cha kituo kimepatikana.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Mapema (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Baadaye (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Rejesha uhamishaji wa kawaida (0.00 s)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Manukuu</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Sawazisha: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Imeshindikana kupakia maoni.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Mandhari</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Haina kichwa</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Giza</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Kiungo cha video kimenakiliwa kwenye ubao wa kunakili.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Angavu</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>video {0}</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Wiki hii</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Ubora wa kijipicha</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Lugha</value>
+  <data name="Today" xml:space="preserve">
+    <value>Leo</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Lugha ya programu</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Vichekesho vifupi</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Lugha</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Mapishi ya kupika</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Hutumia lugha ya Windows kwa chaguo-msingi.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Mafunzo ya DIY</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Chaguo-msingi la mfumo</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Vivutio vya michezo ya video</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Kiingereza</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Trela za filamu</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Kirusi</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Video za muziki</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>Video ya YouTube</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Vivutio vya michezo</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Kituo</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Mapitio ya teknolojia</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Imeshindikana kubadilisha tokeni ya kuonyesha upya ya TV kuwa tokeni ya ufikiaji.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Haijulikani</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Hakuna kichwa</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Imeshindikana kubadilisha tokeni ya kuonyesha upya ya TV kuwa tokeni ya ufikiaji. Ingia tena na uhakikishe tokeni ya kuonyesha upya bado ni halali.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>Tokeni ya kuonyesha upya ya TV haikupatikana. Ingia tena na ujaribu tena.</value>
@@ -516,194 +891,23 @@ Toleo {0}</value>
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>Tokeni ya kuonyesha upya ya TV haikupatikana. Ingia tena ili yt_refresh_token ihifadhiwe, kisha ujaribu tena.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>Imeshindikana kubadilisha tokeni ya kuonyesha upya ya TV kuwa tokeni ya ufikiaji.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Imeshindikana kubadilisha tokeni ya kuonyesha upya kuwa tokeni ya ufikiaji.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Uchezaji umeshindikana</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Haiwezekani kucheza Short hii</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Muda wa kupakia video umeisha. Angalia muunganisho wako wa Intaneti.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Imeshindikana kupakia video. Tafadhali jaribu tena.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Imeshindikana kucheza video. Kichezaji hakijaanzishwa.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Imeshindikana kupakia video. Kiungo kinaweza kuwa kimeisha muda au umbizo halitumiki.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Hitilafu ya mtandao. Angalia muunganisho wako wa Intaneti.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Hitilafu ya kucheza video. Jaribu kuchagua ubora wa chini.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Imeshindikana kucheza video.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Video za muziki</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Vivutio vya michezo ya video</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Mapishi ya kupika</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Mapitio ya teknolojia</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Trela za filamu</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Vivutio vya michezo</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Vichekesho vifupi</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>Mafunzo ya DIY</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Video iliyopendekezwa</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Una uhakika unataka kuondoka?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Thibitisha kuondoka</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Ndiyo</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Hapana</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>Ingia ili uone arifa zako za YouTube.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Imeshindikana kupakia arifa</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Fungua ukurasa huu tena baadaye.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>Kitambulisho cha orodha ya kucheza ni tupu</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>video {0}</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Haijulikani</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Ingia ili kutazama Shorts.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Hakuna Shorts zilizopatikana.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Imeshindikana kupakia maoni.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Imeshindikana kupakia Shorts.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Haiwezekani kucheza Short hii</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Haiwezekani kucheza Short hii.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Ubora</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Haijulikani</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Kasi ya kucheza</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Wimbo wa sauti</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Manukuu</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Imeshindikana kucheza video: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Msimbo wa Hitilafu: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Leo</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>siku {0} zilizopita</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>wiki {0} zilizopita</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>miezi {0} iliyopita</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>miaka {0} iliyopita</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Rudi</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>Video ya YouTube</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>mfuatiliaji</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>wafuatiliaji</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>wafuatiliaji</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Jisajili</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Penda</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Maoni</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Masasisho mapya kutoka usajili wako yataonekana hapa.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube imekataa ombi la usajili. Hakikisha tokeni ya TV ni halali na kitambulisho cha kituo kimepatikana.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube imekataa ombi la ukadiriaji. Hakikisha tokeni ya TV ni halali na ina ruhusa ya ukadiriaji wa YouTube.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>Imeshindikana kubadilisha tokeni ya kuonyesha upya ya TV kuwa tokeni ya ufikiaji. Ingia tena na uhakikishe tokeni ya kuonyesha upya bado ni halali.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>Sawa</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Jana</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Wiki hii</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Haina kichwa</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Amepakia video</value>
@@ -711,146 +915,73 @@ Toleo {0}</value>
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>Amepakia video “{0}”</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Kutoka usajili</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Video imeongezwa kwenye “{0}”</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Zote</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Filamu na Uhuishaji</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Kiungo cha video kimenakiliwa kwenye ubao wa kunakili.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Magari na Vyombo</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Imeshindikana kupakia video. Kiungo kinaweza kuwa kimeisha muda au umbizo halitumiki.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Muziki</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Muda wa kupakia video umeisha. Angalia muunganisho wako wa Intaneti.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Wanyama Vipenzi na Wanyama</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Michezo</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Filamu Fupi</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Hitilafu ya kucheza video. Jaribu kuchagua ubora wa chini.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Usafiri na Matukio</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Video imeondolewa kwenye “{0}”</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Michezo ya video</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>video {0}</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Videoblogging</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>video {0}</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Watu na Blogu</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>wiki {0} zilizopita</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Vichekesho</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>miaka {0} iliyopita</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Burudani</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Ndiyo</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Habari na Siasa</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Jana</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Jinsi ya Kufanya na Mtindo</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Elimu</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>Video ya YouTube</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Sayansi na Teknolojia</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>Video ya YouTube</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Mashirika Yasiyo ya Faida na Uanaharakati</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Futa video zilizopakuliwa</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Filamu</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Futa video zote zilizopakuliwa na vijipicha vilivyohifadhiwa</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Anime/Uhuishaji</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Video zote zilizopakuliwa na vijipicha vyake vitafutwa kabisa.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Vitendo/Vituko</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Futa</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Klasiki</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Nyaraka</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Tamthilia</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Familia</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Kigeni</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Kutisha</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Sayansi ya Kubuni/Fantasia</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Msisimko</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Vipindi</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Trela</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Moja kwa moja</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Kujifunza</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Michezo ya video</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Habari</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Podikasti</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Mwonekano</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Mandhari</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Angavu</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Giza</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Kigae hai</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Onyesha mapendekezo kwenye skrini ya Mwanzo</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Ubora wa kijipicha</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Aikoni za vituo</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Onyesha aikoni za vituo kwenye kadi za video</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Sitisha</value>
   </data>
 </root>

@@ -15,6 +15,16 @@
             <Setter Property="Padding" Value="0" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
             <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <Style x:Key="SubscriptionIconButtonStyle" TargetType="Button">
@@ -54,7 +64,7 @@
             <RowDefinition Height="52" />
         </Grid.RowDefinitions>
 
-        <local:Navbar x:Name="navbar" Grid.Row="0" />
+        <local:Navbar x:Name="navbar" Grid.Row="0" Canvas.ZIndex="20" />
 
         <Grid x:Name="LoadingGrid" Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}" Visibility="Visible">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -73,7 +83,8 @@
         </Grid>
 
         <ScrollViewer x:Name="MainContent"
-                      Grid.Row="1"
+                      Grid.Row="0"
+                      Grid.RowSpan="3"
                       Background="{ThemeResource AppBackgroundBrush}"
                       Visibility="Collapsed"
                       ZoomMode="Disabled"
@@ -81,7 +92,7 @@
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       ViewChanged="MainContent_ViewChanged">
-            <StackPanel Background="{ThemeResource AppBackgroundBrush}" Padding="0,8,0,24">
+            <StackPanel Background="{ThemeResource AppBackgroundBrush}" Padding="0,64,0,76">
 
                 <!--  Collapsed when the channel has no banner art, so no empty box is shown.  -->
                 <Grid x:Name="ChannelBannerSection" Margin="12,0,12,0" Visibility="Collapsed">
@@ -190,11 +201,16 @@
                 </Border>
 
                 <!-- Compact channel tabs: left aligned, no Button pressed animation. -->
-                <Grid Margin="18,2,12,8" Height="48" HorizontalAlignment="Left">
+                <ScrollViewer x:Name="ChannelTabsScrollViewer"
+                              Margin="18,2,12,8" Height="48"
+                              HorizontalScrollMode="Enabled"
+                              HorizontalScrollBarVisibility="Hidden"
+                              VerticalScrollMode="Disabled"
+                              VerticalScrollBarVisibility="Disabled">
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Stretch">
-                        <Grid Width="Auto" MinWidth="58" Margin="0,0,16,0"
+                        <Grid x:Name="VideosTabButton" Width="Auto" MinWidth="58" Margin="0,0,16,0"
                               Background="Transparent" Tapped="VideosTab_Tapped">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -208,7 +224,7 @@
                                     HorizontalAlignment="Stretch" />
                         </Grid>
 
-                        <Grid Width="Auto" MinWidth="58" Margin="0,0,16,0"
+                        <Grid x:Name="ShortsTabButton" Width="Auto" MinWidth="58" Margin="0,0,16,0"
                               Background="Transparent" Tapped="ShortsTab_Tapped">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -222,7 +238,7 @@
                                     HorizontalAlignment="Stretch" />
                         </Grid>
 
-                        <Grid Width="Auto" MinWidth="72" Margin="0,0,16,0"
+                        <Grid x:Name="PlaylistsTabButton" Width="Auto" MinWidth="72" Margin="0,0,16,0"
                               Background="Transparent" Tapped="PlaylistsTab_Tapped">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -236,7 +252,7 @@
                                     HorizontalAlignment="Stretch" />
                         </Grid>
 
-                        <Grid Width="Auto" MinWidth="52"
+                        <Grid x:Name="PostsTabButton" Width="Auto" MinWidth="52"
                               Background="Transparent" Tapped="PostsTab_Tapped">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*" />
@@ -250,7 +266,7 @@
                                     HorizontalAlignment="Stretch" />
                         </Grid>
                     </StackPanel>
-                </Grid>
+                </ScrollViewer>
 
                 <!-- Centered loading animation used when a tab is opened for the first time. -->
                 <StackPanel x:Name="ChannelTabLoadingPanel"
@@ -289,10 +305,15 @@
                                 <StackPanel Orientation="Vertical" Background="{ThemeResource AppBackgroundBrush}"
                                             HorizontalAlignment="Stretch">
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged" Tag="VideoCardThumbnailChrome">
-                                        <Border Tag="VideoCardThumbnailChrome" CornerRadius="8" Background="{ThemeResource AppSurfaceAltBrush}" />
-                                        <Border Tag="VideoCardThumbnailChrome" CornerRadius="8">
-                                            <Image DataContextChanged="CardThumbnail_DataContextChanged"
-                                                   Stretch="UniformToFill" />
+                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" />
+                                        <Border Tag="VideoCardThumbnailChrome">
+                                            <Grid>
+                                                <Image DataContextChanged="CardThumbnail_DataContextChanged"
+                                                       Stretch="UniformToFill" />
+                                                <ProgressBar Style="{StaticResource VideoWatchedProgressStyle}"
+                                                             Value="{Binding WatchedPercent}"
+                                                             Visibility="{Binding WatchedProgressVisibility}" />
+                                            </Grid>
                                         </Border>
                                         <Border HorizontalAlignment="Right" VerticalAlignment="Bottom"
                                                 Margin="0,0,8,8" Padding="6,2"
@@ -329,7 +350,8 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
 
-                <!-- Shorts: same 9:16 two-column portrait cards as Search. -->
+                <!-- Shorts card structure matches youtube-ios: 9:16 thumbnail with
+                     title and view-count metadata below, not text over the image. -->
                 <ItemsControl x:Name="ShortsItemsControl"
                               Background="{ThemeResource AppBackgroundBrush}"
                               HorizontalAlignment="Stretch"
@@ -345,32 +367,36 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Style="{StaticResource CardButtonStyle}" Background="Transparent" BorderThickness="0" Padding="0"
+                            <Button Style="{StaticResource ShortsNoPressButtonStyle}" Background="Transparent" BorderThickness="0" Padding="0"
                                     HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
                                     Margin="6,0,6,22" Click="ShortCard_Click">
-                                <Grid SizeChanged="ShortThumbnailHost_SizeChanged">
-                                    <Border CornerRadius="10">
-                                        <Border.Background>
-                                            <ImageBrush
-                                                ImageSource="{Binding ThumbnailUrl}"
-                                                Stretch="UniformToFill" />
-                                        </Border.Background>
-                                    </Border>
-                                    <Border Height="112" HorizontalAlignment="Stretch"
-                                            VerticalAlignment="Bottom" CornerRadius="0,0,10,10">
-                                        <Border.Background>
-                                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                                                <GradientStop Offset="0" Color="#00000000" />
-                                                <GradientStop Offset="1" Color="#D9000000" />
-                                            </LinearGradientBrush>
-                                        </Border.Background>
-                                    </Border>
-                                    <TextBlock Margin="12,0,12,12" MaxLines="2"
-                                               VerticalAlignment="Bottom" FontFamily="Roboto"
-                                               FontSize="16" FontWeight="SemiBold" Foreground="{ThemeResource AppPrimaryTextBrush}"
-                                               Text="{Binding Title}" TextTrimming="CharacterEllipsis"
-                                               TextWrapping="WrapWholeWords" />
-                                </Grid>
+                                <StackPanel>
+                                    <Grid SizeChanged="ShortThumbnailHost_SizeChanged">
+                                        <Border CornerRadius="8">
+                                            <Border.Background>
+                                                <ImageBrush
+                                                    ImageSource="{Binding ThumbnailUrl}"
+                                                    Stretch="UniformToFill" />
+                                            </Border.Background>
+                                        </Border>
+                                    </Grid>
+                                    <StackPanel Margin="0,12,0,0">
+                                        <TextBlock Text="{Binding Title}"
+                                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                                   FontFamily="Roboto"
+                                                   FontSize="14"
+                                                   FontWeight="Medium"
+                                                   TextWrapping="NoWrap"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding ViewCount}"
+                                                   Foreground="{ThemeResource AppMutedTextBrush}"
+                                                   FontFamily="Roboto"
+                                                   FontSize="12"
+                                                   Margin="0,4,0,0"
+                                                   TextWrapping="NoWrap"
+                                                   TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                </StackPanel>
                             </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
@@ -397,10 +423,22 @@
                                     SizeChanged="ResponsiveCard_SizeChanged" Margin="0,0,0,16"
                                     Click="ChannelPlaylistCard_Click">
                                 <StackPanel>
-                                    <Grid SizeChanged="VideoThumbnailHost_SizeChanged">
-                                        <Border CornerRadius="8" Background="{ThemeResource AppSurfaceAltBrush}" />
-                                        <Border CornerRadius="8">
+                                    <Grid SizeChanged="VideoThumbnailHost_SizeChanged" Tag="VideoCardThumbnailChrome">
+                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" />
+                                        <Border Tag="VideoCardThumbnailChrome">
                                             <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill" />
+                                        </Border>
+                                        <Border Margin="0,0,8,8"
+                                                Padding="6,2"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Bottom"
+                                                Visibility="{Binding VideoCountVisibility}"
+                                                CornerRadius="4"
+                                                Background="#CC000000">
+                                            <TextBlock Text="{Binding VideoCountText}"
+                                                       Foreground="White"
+                                                       FontSize="12"
+                                                       FontWeight="Medium" />
                                         </Border>
                                     </Grid>
                                     <StackPanel Margin="0,12,0,0">
@@ -408,7 +446,7 @@
                                                    FontFamily="Roboto" FontSize="14" FontWeight="Medium"
                                                    MaxLines="2" TextWrapping="WrapWholeWords"
                                                    TextTrimming="CharacterEllipsis" />
-                                        <TextBlock x:Uid="Loc_Playlist_Text" Foreground="{ThemeResource AppMutedTextBrush}"
+                                        <TextBlock Text="{Binding AuthorName}" Foreground="{ThemeResource AppMutedTextBrush}"
                                                    FontFamily="Roboto" FontSize="12" Margin="0,4,0,0" />
                                     </StackPanel>
                                 </StackPanel>
@@ -517,13 +555,17 @@
         </ScrollViewer>
 
         <Grid x:Name="OverlayGrid"
-              Grid.Row="1"
+              Grid.Row="0"
+              Grid.RowSpan="3"
+              Canvas.ZIndex="100"
               Background="#80000000"
               Visibility="Collapsed"
               Tapped="OverlayGrid_Tapped" />
 
         <Border x:Name="DescriptionBottomSheetPanel"
-                Grid.Row="1"
+                Grid.Row="0"
+                Grid.RowSpan="3"
+                Canvas.ZIndex="101"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Stretch"
                 Background="{ThemeResource AppSurfaceAltBrush}"
@@ -582,7 +624,9 @@
         </Border>
 
         <Border x:Name="SubscriptionMenuBottomSheetPanel"
-                Grid.Row="1"
+                Grid.Row="0"
+                Grid.RowSpan="3"
+                Canvas.ZIndex="101"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Stretch"
                 Background="{ThemeResource AppDividerBrush}"
@@ -712,6 +756,6 @@
             </Grid>
         </Border>
 
-        <local:Tabbar x:Name="tabbar" Grid.Row="2" />
+        <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20" />
     </Grid>
 </Page>

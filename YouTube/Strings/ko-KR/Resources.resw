@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>LegacyProjects 팀에서 개발했습니다.
@@ -18,11 +45,146 @@ YouTube API Legacy를 지원합니다.
 
 버전 {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>계정</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>모양</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>오디오 트랙</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>자동</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>자동 번역 &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; 뒤로</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>액션/어드벤처</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>전체</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>애니메이션</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>자동차 및 차량</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>클래식</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>코미디</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>다큐멘터리</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>드라마</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>교육</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>엔터테인먼트</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>가족</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>영화 및 애니메이션</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>해외</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>게임</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>공포</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>노하우 및 스타일</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>학습</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>실시간</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>영화</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>음악</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>뉴스</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>뉴스 및 정치</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>비영리 및 사회운동</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>인물 및 블로그</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>반려동물 및 동물</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>팟캐스트</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>과학 및 기술</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>SF/판타지</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>단편 영화</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>프로그램</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>스포츠</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>스릴러</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>예고편</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>여행 및 이벤트</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>비디오 블로그</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>비디오 게임</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>채널</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>채널 아이콘</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>동영상 카드에 채널 아이콘 표시</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>채널 로드 오류</value>
@@ -30,14 +192,71 @@ YouTube API Legacy를 지원합니다.
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>채널이 제공되지 않았습니다</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>댓글</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>로그아웃하시겠습니까?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>로그아웃 확인</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>채널을 불러올 수 없습니다</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>알림을 불러올 수 없습니다</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>재생목록을 불러올 수 없습니다</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>동영상을 불러올 수 없습니다. 다시 시도하세요.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>동영상을 재생할 수 없습니다.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0}일 전</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>설명을 사용할 수 없습니다</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>다운로드</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>다운로드됨</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>다운로드한 동영상</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>다운로드 폴더</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>다운로드한 동영상을 저장할 위치 선택</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>다운로드 화질</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>다운로드</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>다운로드한 동영상이 여기에 표시됩니다.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>내 다운로드</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>다운로드</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>이 동영상은 다운로드할 수 없습니다</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>오류 코드: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>오류: {0}</value>
@@ -62,6 +281,18 @@ YouTube API Legacy를 지원합니다.
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>{0}분마다</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>동영상 재생 실패: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>구독에서</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>유리 효과</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>탐색 모음 흐리게 표시</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>기록을 불러오지 못했습니다</value>
@@ -90,8 +321,17 @@ YouTube API Legacy를 지원합니다.
   <data name="LanguageSystem" xml:space="preserve">
     <value>시스템 기본값</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>좋아요</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>링크가 복사되었습니다</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>라이브 타일</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>시작 화면에 추천 표시</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>설명 불러오는 중...</value>
@@ -237,6 +477,9 @@ YouTube API Legacy를 지원합니다.
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>이 재생목록에 동영상이 없습니다</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>확인</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>맞춤설정</value>
   </data>
@@ -375,6 +618,15 @@ YouTube API Legacy를 지원합니다.
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0}개월 전</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>네트워크 오류. 인터넷 연결을 확인하세요.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>아니요</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>댓글을 찾을 수 없습니다.</value>
   </data>
@@ -393,11 +645,26 @@ YouTube API Legacy를 지원합니다.
   <data name="NoNotifications" xml:space="preserve">
     <value>알림 없음</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts를 찾을 수 없습니다.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>알림 환경설정을 업데이트할 수 없습니다.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>알림 실패</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>구독의 새로운 업데이트가 여기에 표시됩니다.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>YouTube 알림을 보려면 로그인하세요.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>나중에 이 페이지를 다시 열어보세요.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>제목 없음</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>로그인하지 않음</value>
@@ -414,8 +681,23 @@ YouTube API Legacy를 지원합니다.
   <data name="PlaybackError" xml:space="preserve">
     <value>재생 오류</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>재생 실패</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>재생 속도</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>동영상을 재생할 수 없습니다. 플레이어가 초기화되지 않았습니다.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>재생목록</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>재생목록 ID가 비어 있습니다</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>재생목록을 업데이트하지 못했습니다</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR 코드</value>
@@ -423,11 +705,62 @@ YouTube API Legacy를 지원합니다.
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>QR 표시 오류: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>화질</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>평가 실패</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube에서 평가 요청을 거부했습니다. TV 토큰이 유효하고 YouTube 평가 권한이 있는지 확인하세요.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>추천 동영상</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>새로고침 토큰을 액세스 토큰으로 교환할 수 없습니다.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>답글</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} 답글</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>저장</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>검색 오류: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>알 수 없음</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>계정 선택</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>재생목록 선택</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>영어</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>기본적으로 Windows 언어를 사용합니다.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>앱 언어</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>러시아어</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>언어</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>언어</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>시스템 기본값</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>이 YouTube Short 공유</value>
@@ -435,11 +768,47 @@ YouTube API Legacy를 지원합니다.
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>이 YouTube 동영상 공유</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>앱에 Shorts 표시</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>간략히</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>더보기</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>TV 새로고침 토큰을 액세스 토큰으로 교환할 수 없습니다. 다시 로그인하고 새로고침 토큰이 아직 유효한지 확인하세요.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>로그인 필요</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Shorts를 시청하려면 로그인하세요.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>탐색 막대에 광고 구간 표시</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>색상으로 SponsorBlock 구간 표시</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>구독</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>구독자</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>구독자</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>구독자</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>구독자 {0}명 • 동영상 {1}개</value>
@@ -450,65 +819,71 @@ YouTube API Legacy를 지원합니다.
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube에서 구독 요청을 거부했습니다.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube에서 구독 요청을 거부했습니다. TV 토큰이 유효하고 채널 ID를 찾았는지 확인하세요.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   빠르게 (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   느리게 (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>일반 오프셋으로 복원(0.00초)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>자막</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>동기화: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>댓글을 불러올 수 없습니다.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>테마</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>제목 없음</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>어둡게</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>동영상 링크가 클립보드에 복사되었습니다.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>밝게</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>동영상 {0}개</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>이번 주</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>썸네일 화질</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>언어</value>
+  <data name="Today" xml:space="preserve">
+    <value>오늘</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>앱 언어</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>코미디 스케치</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>언어</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>요리 레시피</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>기본적으로 Windows 언어를 사용합니다.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>DIY 튜토리얼</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>시스템 기본값</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>게임 하이라이트</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>영어</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>영화 예고편</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>러시아어</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>뮤직비디오</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube 동영상</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>스포츠 하이라이트</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>채널</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>기술 리뷰</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>TV 새로고침 토큰을 액세스 토큰으로 교환할 수 없습니다.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>알 수 없음</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>제목 없음</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>TV 새로고침 토큰을 액세스 토큰으로 교환할 수 없습니다. 다시 로그인하고 새로고침 토큰이 아직 유효한지 확인하세요.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>TV 새로고침 토큰을 찾을 수 없습니다. 다시 로그인하고 재시도하세요.</value>
@@ -516,194 +891,23 @@ YouTube API Legacy를 지원합니다.
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>TV 새로고침 토큰을 찾을 수 없습니다. yt_refresh_token이 저장되도록 다시 로그인한 후 재시도하세요.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>TV 새로고침 토큰을 액세스 토큰으로 교환할 수 없습니다.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>새로고침 토큰을 액세스 토큰으로 교환할 수 없습니다.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>재생 실패</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>이 Short를 재생할 수 없습니다</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>동영상 로드 시간이 초과되었습니다. 인터넷 연결을 확인하세요.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>동영상을 불러올 수 없습니다. 다시 시도하세요.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>동영상을 재생할 수 없습니다. 플레이어가 초기화되지 않았습니다.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>동영상을 불러올 수 없습니다. 링크가 만료되었거나 형식이 지원되지 않을 수 있습니다.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>네트워크 오류. 인터넷 연결을 확인하세요.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>동영상 재생 오류. 더 낮은 화질을 선택해 보세요.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>동영상을 재생할 수 없습니다.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>뮤직비디오</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>게임 하이라이트</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>요리 레시피</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>기술 리뷰</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>영화 예고편</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>스포츠 하이라이트</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>코미디 스케치</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>DIY 튜토리얼</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>추천 동영상</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>로그아웃하시겠습니까?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>로그아웃 확인</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>예</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>아니요</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>YouTube 알림을 보려면 로그인하세요.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>알림을 불러올 수 없습니다</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>나중에 이 페이지를 다시 열어보세요.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>재생목록 ID가 비어 있습니다</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>동영상 {0}개</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>알 수 없음</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Shorts를 시청하려면 로그인하세요.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Shorts를 찾을 수 없습니다.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>댓글을 불러올 수 없습니다.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Shorts를 불러올 수 없습니다.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>이 Short를 재생할 수 없습니다</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>이 Short를 재생할 수 없습니다.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>화질</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>알 수 없음</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>재생 속도</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>오디오 트랙</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>자막</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>동영상 재생 실패: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>오류 코드: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>오늘</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0}일 전</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0}주 전</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0}개월 전</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0}년 전</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; 뒤로</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube 동영상</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>구독자</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>구독자</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>구독자</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>동영상</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>동영상</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>동영상</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>구독</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>좋아요</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>댓글</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>구독의 새로운 업데이트가 여기에 표시됩니다.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube에서 구독 요청을 거부했습니다. TV 토큰이 유효하고 채널 ID를 찾았는지 확인하세요.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube에서 평가 요청을 거부했습니다. TV 토큰이 유효하고 YouTube 평가 권한이 있는지 확인하세요.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>TV 새로고침 토큰을 액세스 토큰으로 교환할 수 없습니다. 다시 로그인하고 새로고침 토큰이 아직 유효한지 확인하세요.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>확인</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>어제</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>이번 주</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>제목 없음</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>동영상을 업로드했습니다</value>
@@ -711,146 +915,73 @@ YouTube API Legacy를 지원합니다.
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>동영상 “{0}”을 업로드했습니다</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>구독에서</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>동영상이 ‘{0}’에 추가되었습니다</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>전체</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>동영상</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>영화 및 애니메이션</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>동영상 링크가 클립보드에 복사되었습니다.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>자동차 및 차량</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>동영상을 불러올 수 없습니다. 링크가 만료되었거나 형식이 지원되지 않을 수 있습니다.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>음악</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>동영상 로드 시간이 초과되었습니다. 인터넷 연결을 확인하세요.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>반려동물 및 동물</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>동영상</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>스포츠</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>동영상</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>단편 영화</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>동영상 재생 오류. 더 낮은 화질을 선택해 보세요.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>여행 및 이벤트</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>동영상이 ‘{0}’에서 삭제되었습니다</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>게임</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>동영상 {0}개</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>비디오 블로그</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>동영상 {0}개</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>인물 및 블로그</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0}주 전</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>코미디</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0}년 전</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>엔터테인먼트</value>
+  <data name="Yes" xml:space="preserve">
+    <value>예</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>뉴스 및 정치</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>어제</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>노하우 및 스타일</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>교육</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube 동영상</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>과학 및 기술</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube 동영상</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>비영리 및 사회운동</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>다운로드한 동영상 지우기</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>영화</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>다운로드한 모든 동영상과 캐시된 썸네일 삭제</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>애니메이션</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>다운로드한 모든 동영상과 썸네일이 영구적으로 삭제됩니다.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>액션/어드벤처</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>지우기</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>클래식</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>다큐멘터리</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>드라마</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>가족</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>해외</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>공포</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>SF/판타지</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>스릴러</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>프로그램</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>예고편</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>실시간</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>학습</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>비디오 게임</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>뉴스</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>팟캐스트</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>모양</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>테마</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>밝게</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>어둡게</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>라이브 타일</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>시작 화면에 추천 표시</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>썸네일 화질</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>채널 아이콘</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>동영상 카드에 채널 아이콘 표시</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>취소</value>
   </data>
 </root>

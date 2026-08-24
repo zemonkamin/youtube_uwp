@@ -43,6 +43,121 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <DataTemplate x:Key="ShortCommentThreadTemplate">
+            <StackPanel Margin="0,10,0,10" HorizontalAlignment="Stretch">
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Width="36" Height="36" Margin="0,0,10,0" VerticalAlignment="Top">
+                        <Ellipse Fill="{ThemeResource AvatarPlaceholderBrush}"/>
+                        <Ellipse DataContextChanged="CommentAuthorImage_DataContextChanged"
+                                 Loaded="CommentAuthorImage_Loaded">
+                            <Ellipse.Fill>
+                                <ImageBrush Stretch="UniformToFill"/>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                    </Grid>
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Stretch">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                            <TextBlock Text="{Binding Author}"
+                                       FontSize="13" FontWeight="Bold"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Text="{Binding PublishedAt}"
+                                       Margin="8,0,0,0" FontSize="12"
+                                       Foreground="{ThemeResource AppMutedTextBrush}"/>
+                        </StackPanel>
+                        <RichTextBlock Margin="0,4,0,0" FontSize="14"
+                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                       IsTextSelectionEnabled="False"
+                                       Loaded="CommentTextRichTextBlock_Loaded"
+                                       Tag="{Binding Text}" TextWrapping="Wrap"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                            <Image Width="17" Height="17"
+                                   local:ThemeAsset.Path="Assets/player/like.png"/>
+                            <TextBlock Text="{Binding LikeCount}"
+                                       Margin="6,0,0,0"
+                                       FontSize="12"
+                                       VerticalAlignment="Center"
+                                       Foreground="{ThemeResource AppSecondaryTextBrush}"/>
+                            <Image Width="17" Height="17" Margin="14,0,0,0"
+                                   local:ThemeAsset.Path="Assets/player/dislike.png"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+
+                <Button Style="{StaticResource CardButtonStyle}"
+                        Visibility="{Binding RepliesButtonVisibility}"
+                        Margin="46,8,0,0" Padding="0"
+                        HorizontalAlignment="Left"
+                        Click="CommentRepliesButton_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding RepliesText}" Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   VerticalAlignment="Center"/>
+                        <Image Width="16" Height="16" Margin="8,0,0,0"
+                               Stretch="Uniform" VerticalAlignment="Center"
+                               local:ThemeAsset.Path="Assets/down_arrow.png"/>
+                    </StackPanel>
+                </Button>
+                <local:AndroidLoadingRing Width="20" Height="20"
+                                          Margin="46,8,0,0"
+                                          HorizontalAlignment="Left"
+                                          IsActive="{Binding RepliesLoadingActive}"
+                                          Visibility="{Binding RepliesLoadingVisibility}"/>
+
+                <ItemsControl ItemsSource="{Binding Replies}" Margin="30,4,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,8,0,8" HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Width="34" Height="34" Margin="0,0,10,0" VerticalAlignment="Top">
+                                    <Ellipse Fill="{ThemeResource AvatarPlaceholderBrush}"/>
+                                    <Ellipse DataContextChanged="CommentAuthorImage_DataContextChanged"
+                                             Loaded="CommentAuthorImage_Loaded">
+                                        <Ellipse.Fill>
+                                            <ImageBrush Stretch="UniformToFill"/>
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+                                </Grid>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Stretch">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                        <TextBlock Text="{Binding Author}"
+                                                   FontWeight="Bold"
+                                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding PublishedAt}"
+                                                   Margin="8,0,0,0" FontSize="12"
+                                                   Foreground="{ThemeResource AppMutedTextBrush}"/>
+                                    </StackPanel>
+                                    <RichTextBlock Margin="0,4,0,0" FontSize="14"
+                                                   Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                                   IsTextSelectionEnabled="False"
+                                                   Loaded="CommentTextRichTextBlock_Loaded"
+                                                   Tag="{Binding Text}" TextWrapping="Wrap"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                        <Image Width="17" Height="17"
+                                               local:ThemeAsset.Path="Assets/player/like.png"/>
+                                        <TextBlock Text="{Binding LikeCount}"
+                                                   Margin="6,0,0,0"
+                                                   FontSize="12"
+                                                   VerticalAlignment="Center"
+                                                   Foreground="{ThemeResource AppSecondaryTextBrush}"/>
+                                        <Image Width="17" Height="17" Margin="14,0,0,0"
+                                               local:ThemeAsset.Path="Assets/player/dislike.png"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </DataTemplate>
     </Page.Resources>
 
     <Grid Background="#0F0F0F">
@@ -272,13 +387,21 @@
                        Margin="32"
                        Visibility="Collapsed"/>
 
+        </Grid>
+
             <Grid x:Name="ShortsOverlayGrid"
+                  Grid.Row="0"
+                  Grid.RowSpan="3"
+                  Canvas.ZIndex="100"
                   Background="#99000000"
                   Visibility="Collapsed"
                   Tapped="ShortsOverlayGrid_Tapped"/>
 
             <!-- Bottom Sheet Panel for Comments -->
             <Border x:Name="CommentsBottomSheetPanel"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
                     Background="{ThemeResource AppSurfaceBrush}"
@@ -331,37 +454,8 @@
                                           HorizontalScrollBarVisibility="Disabled"
                                           HorizontalScrollMode="Disabled"
                                           VerticalScrollBarVisibility="Auto">
-                                <ItemsControl x:Name="CommentsItemsControl">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,10,0,10">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid Width="34" Height="34" Margin="0,0,10,0" VerticalAlignment="Top">
-                                                    <Ellipse Fill="{ThemeResource AvatarPlaceholderBrush}"/>
-                                                    <Ellipse>
-                                                        <Ellipse.Fill>
-                                                            <ImageBrush ImageSource="{Binding AuthorThumbnail}" Stretch="UniformToFill"/>
-                                                        </Ellipse.Fill>
-                                                    </Ellipse>
-                                                </Grid>
-                                                <StackPanel Grid.Column="1">
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="*"/>
-                                                            <ColumnDefinition Width="Auto"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <TextBlock Grid.Column="0" Text="{Binding Author}" Foreground="{ThemeResource AppSecondaryTextBrush}" FontWeight="Bold" TextTrimming="CharacterEllipsis"/>
-                                                        <TextBlock Grid.Column="1" Text="{Binding PublishedAt}" Foreground="{ThemeResource AppMutedTextBrush}" FontSize="12" Margin="8,0,0,0"/>
-                                                    </Grid>
-                                                    <TextBlock Text="{Binding Text}" Foreground="{ThemeResource AppPrimaryTextBrush}" TextWrapping="Wrap" Margin="0,4,0,0"/>
-                                                </StackPanel>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
+                                <ItemsControl x:Name="CommentsItemsControl"
+                                              ItemTemplate="{StaticResource ShortCommentThreadTemplate}"/>
                             </ScrollViewer>
 
                             <Grid x:Name="CommentsLoadingPanel" Background="{ThemeResource AppSurfaceBrush}" Visibility="Collapsed">
@@ -395,6 +489,9 @@
 
             <!-- Bottom Sheet Panel for Share -->
             <Border x:Name="ShareBottomSheetPanel"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
                     Background="#222222"
@@ -560,6 +657,9 @@
             </Border>
 
             <Border x:Name="DescriptionBottomSheetPanel"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
                     Background="{ThemeResource AppSurfaceBrush}"
@@ -625,6 +725,9 @@
 
             <!-- Copy-link / QR result sheet. Same bottom-sheet shape and gesture as Share. -->
             <Border x:Name="ShareResultPopupPanel"
+                    Grid.Row="0"
+                    Grid.RowSpan="3"
+                    Canvas.ZIndex="102"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Bottom"
                     Background="#222222"
@@ -690,14 +793,14 @@
                     </StackPanel>
                 </Grid>
             </Border>
-        </Grid>
 
-        <local:Tabbar x:Name="tabbar" Grid.Row="2"/>
+        <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20"/>
 
         <!-- Compact Shorts settings bottom sheet (quality / speed / optional audio). -->
         <Grid x:Name="ShortsSettingsOverlay"
               Grid.Row="0"
               Grid.RowSpan="3"
+              Canvas.ZIndex="100"
               Background="#80000000"
               Visibility="Collapsed"
               Tapped="ShortsSettingsOverlay_Tapped"/>
@@ -707,6 +810,7 @@
         <Grid x:Name="ShortsSettingsSheet"
               Grid.Row="0"
               Grid.RowSpan="3"
+              Canvas.ZIndex="101"
               VerticalAlignment="Bottom"
               HorizontalAlignment="Stretch"
               Background="#222222"

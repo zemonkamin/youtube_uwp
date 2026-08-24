@@ -32,6 +32,9 @@ public static class Config
     private const string AccountAvatarTokenKeySetting = "yt_account_avatar_token_key";
     private const string AccountAvatarUrlSetting = "yt_account_avatar_url";
     private const string AccountAvatarReadySetting = "yt_account_avatar_ready";
+    private const string SelectedYouTubeAccountBrandIdSetting = "yt_selected_account_brand_id";
+    private const string SelectedYouTubeAccountKeySetting = "yt_selected_account_key";
+    private const string SelectedYouTubeAccountInitializedSetting = "yt_selected_account_initialized";
 
     private static readonly SemaphoreSlim _tokenRefreshGate = new SemaphoreSlim(1, 1);
     private static readonly SemaphoreSlim _accountAvatarCacheGate = new SemaphoreSlim(1, 1);
@@ -108,9 +111,16 @@ public static class Config
 
     public static void SetUserToken(string token)
     {
+        var tokenChanged = !string.Equals(_usertoken ?? string.Empty, token ?? string.Empty, StringComparison.Ordinal);
         _usertoken = token;
         // Save to local settings
         ApplicationData.Current.LocalSettings.Values["yt_refresh_token"] = token;
+        if (tokenChanged)
+        {
+            ApplicationData.Current.LocalSettings.Values.Remove(SelectedYouTubeAccountBrandIdSetting);
+            ApplicationData.Current.LocalSettings.Values.Remove(SelectedYouTubeAccountKeySetting);
+            ApplicationData.Current.LocalSettings.Values.Remove(SelectedYouTubeAccountInitializedSetting);
+        }
         System.Diagnostics.Debug.WriteLine($"Config: Saved token to local settings");
     }
 
@@ -129,11 +139,142 @@ public static class Config
         }
     }
 
+    public static string SelectedYouTubeAccountBrandId
+    {
+        get
+        {
+            try
+            {
+                object value;
+                if (ApplicationData.Current.LocalSettings.Values.TryGetValue(
+                    SelectedYouTubeAccountBrandIdSetting, out value) && value != null)
+                {
+                    return value.ToString();
+                }
+            }
+            catch
+            {
+            }
+
+            return string.Empty;
+        }
+    }
+
+    private static string SelectedYouTubeAccountKey
+    {
+        get
+        {
+            try
+            {
+                object value;
+                if (ApplicationData.Current.LocalSettings.Values.TryGetValue(
+                    SelectedYouTubeAccountKeySetting, out value) && value != null)
+                {
+                    return value.ToString();
+                }
+            }
+            catch
+            {
+            }
+
+            return string.Empty;
+        }
+    }
+
+    public static void SelectYouTubeAccount(YouTubeAccountItem account)
+    {
+        if (account == null)
+        {
+            return;
+        }
+
+        try
+        {
+            ApplicationData.Current.LocalSettings.Values[SelectedYouTubeAccountBrandIdSetting] =
+                account.BrandId ?? string.Empty;
+            ApplicationData.Current.LocalSettings.Values[SelectedYouTubeAccountKeySetting] =
+                account.AccountKey ?? string.Empty;
+            ApplicationData.Current.LocalSettings.Values[SelectedYouTubeAccountInitializedSetting] = true;
+        }
+        catch
+        {
+        }
+
+        lock (_cacheGate)
+        {
+            _videoListCache.Clear();
+            _subscriptionsCache = null;
+            _accountCache = null;
+            _channelAvatarById.Clear();
+            _channelAvatarByTitle.Clear();
+        }
+    }
+
+    // Brand channels share the same OAuth token as the primary Google identity. InnerTube
+    // selects one of them through context.user.onBehalfOfUser; X-Goog-AuthUser alone does not.
+    internal static string ApplySelectedAccountContext(string payload, bool authenticated)
+    {
+        var brandId = authenticated ? SelectedYouTubeAccountBrandId : string.Empty;
+        if (string.IsNullOrWhiteSpace(brandId) || string.IsNullOrWhiteSpace(payload))
+        {
+            return payload;
+        }
+
+        try
+        {
+            var root = JsonObject.Parse(payload);
+            IJsonValue contextValue;
+            if (!root.TryGetValue("context", out contextValue)
+                || contextValue.ValueType != JsonValueType.Object)
+            {
+                return payload;
+            }
+
+            var context = contextValue.GetObject();
+            JsonObject user;
+            IJsonValue userValue;
+            if (context.TryGetValue("user", out userValue)
+                && userValue.ValueType == JsonValueType.Object)
+            {
+                user = userValue.GetObject();
+            }
+            else
+            {
+                user = new JsonObject();
+                context["user"] = user;
+            }
+
+            user["onBehalfOfUser"] = JsonValue.CreateStringValue(brandId);
+            return root.Stringify();
+        }
+        catch
+        {
+            return payload;
+        }
+    }
+
+    internal static void ApplySelectedAccountHeader(HttpRequestMessage request, bool authenticated)
+    {
+        if (request == null || !authenticated)
+        {
+            return;
+        }
+
+        var brandId = SelectedYouTubeAccountBrandId;
+        if (!string.IsNullOrWhiteSpace(brandId))
+        {
+            request.Headers.TryAddWithoutValidation("X-Goog-PageId", brandId);
+        }
+    }
+
     public static void ClearUserToken()
     {
         _usertoken = "";
         ApplicationData.Current.LocalSettings.Values.Remove("yt_refresh_token");
         ApplicationData.Current.LocalSettings.Values.Remove("AuthToken");
+        ApplicationData.Current.LocalSettings.Values.Remove(SelectedYouTubeAccountBrandIdSetting);
+        ApplicationData.Current.LocalSettings.Values.Remove(SelectedYouTubeAccountKeySetting);
+        ApplicationData.Current.LocalSettings.Values.Remove(SelectedYouTubeAccountInitializedSetting);
         System.Diagnostics.Debug.WriteLine("Config: Cleared token from local settings");
     }
 
@@ -348,7 +489,8 @@ public static class Config
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "85");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "7.20250209.19.00");
             request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
-            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+            ApplySelectedAccountHeader(request, true);
+            request.Content = new StringContent(ApplySelectedAccountContext(payload, true), Encoding.UTF8, "application/json");
 
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             System.Diagnostics.Debug.WriteLine($"[Subscriptions] Response: {response.StatusCode}");
@@ -418,7 +560,8 @@ public static class Config
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "85");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "7.20250209.19.00");
             request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
-            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+            ApplySelectedAccountHeader(request, true);
+            request.Content = new StringContent(ApplySelectedAccountContext(payload, true), Encoding.UTF8, "application/json");
 
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             
@@ -577,14 +720,76 @@ public static class Config
             : new List<VideoCardItem>();
     }
 
-    public static Task<List<VideoCardItem>> GetSubscriptionsFeedVideosAsync(string refreshToken, int count)
+    public sealed class SubscriptionsFeedPage
     {
+        public List<VideoCardItem> Videos { get; set; }
+        public string ContinuationToken { get; set; }
+
+        public SubscriptionsFeedPage()
+        {
+            Videos = new List<VideoCardItem>();
+            ContinuationToken = string.Empty;
+        }
+    }
+
+    public static async Task<SubscriptionsFeedPage> GetSubscriptionsFeedPageAsync(
+        string refreshToken,
+        string continuationToken,
+        int count)
+    {
+        var page = new SubscriptionsFeedPage();
+
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            return page;
+        }
+
         if (count <= 0)
         {
             count = 50;
         }
 
-        return GetBrowseVideosAsync(refreshToken, "FEsubscriptions", count);
+        var accessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(accessToken))
+        {
+            return page;
+        }
+
+        var json = string.IsNullOrWhiteSpace(continuationToken)
+            ? await PostTvBrowseAsync(accessToken, "FEsubscriptions", null, null).ConfigureAwait(false)
+            : await PostTvBrowseAsync(accessToken, null, null, continuationToken).ConfigureAwait(false);
+
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return page;
+        }
+
+        page.Videos = ParseVideoCards(json, count);
+        await HydrateMissingChannelThumbnailsAsync(page.Videos, accessToken).ConfigureAwait(false);
+
+        try
+        {
+            page.ContinuationToken = ExtractHomeContinuationToken(JsonValue.Parse(json));
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine(
+                "[Subscriptions] Continuation parse failed: " + ex.Message);
+        }
+
+        System.Diagnostics.Debug.WriteLine(
+            "[Subscriptions] Page parsed: videos=" + page.Videos.Count
+            + ", continuation=" + (!string.IsNullOrWhiteSpace(page.ContinuationToken)));
+
+        return page;
+    }
+
+    public static async Task<List<VideoCardItem>> GetSubscriptionsFeedVideosAsync(string refreshToken, int count)
+    {
+        var page = await GetSubscriptionsFeedPageAsync(refreshToken, null, count).ConfigureAwait(false);
+        return page != null && page.Videos != null
+            ? page.Videos
+            : new List<VideoCardItem>();
     }
 
     public static Task<List<HomeCategoryItem>> GetHomeCategoriesAsync(string refreshToken)
@@ -722,6 +927,55 @@ public static class Config
         return result;
     }
 
+    // Lightweight signed-in TV history read used to merge resume positions into search.
+    // Unlike GetHistoryAsync it deliberately skips channel-avatar hydration: search needs only
+    // VideoId + percentDurationWatched and should not wait for unrelated image requests.
+    internal static async Task<List<VideoCardItem>> GetHistoryProgressItemsAsync(string refreshToken, int count)
+    {
+        var result = new List<VideoCardItem>();
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            return result;
+        }
+
+        var accessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(accessToken))
+        {
+            return result;
+        }
+
+        var json = await PostHistoryBrowseAsync(accessToken, null).ConfigureAwait(false);
+        var page = ParseHistoryFeedPage(json, count);
+        if (page == null || page.Groups == null)
+        {
+            return result;
+        }
+
+        foreach (var group in page.Groups)
+        {
+            if (group == null || group.Videos == null)
+            {
+                continue;
+            }
+
+            foreach (var video in group.Videos)
+            {
+                if (video == null)
+                {
+                    continue;
+                }
+
+                result.Add(video);
+                if (count > 0 && result.Count >= count)
+                {
+                    return result;
+                }
+            }
+        }
+
+        return result;
+    }
+
     public static async Task<HistoryFeedPage> GetHistoryFeedPageAsync(string refreshToken, string continuationToken, int count)
     {
         var empty = new HistoryFeedPage();
@@ -772,11 +1026,14 @@ public static class Config
         using (var request = new HttpRequestMessage(HttpMethod.Post, url))
         {
             request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
-            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "85");
+            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "7");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
-            request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
+            request.Headers.TryAddWithoutValidation("User-Agent", TvUserAgent);
             request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
-            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+            request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
+            request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/tv");
+            ApplySelectedAccountHeader(request, true);
+            request.Content = new StringContent(ApplySelectedAccountContext(payload, true), Encoding.UTF8, "application/json");
 
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -962,7 +1219,9 @@ public static class Config
             request.Headers.TryAddWithoutValidation("User-Agent", "com.google.android.youtube/" + clientVersion + " (Linux; U; Android 11) gzip");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "3");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
-            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+            var authenticated = !string.IsNullOrWhiteSpace(accessToken);
+            ApplySelectedAccountHeader(request, authenticated);
+            request.Content = new StringContent(ApplySelectedAccountContext(payload, authenticated), Encoding.UTF8, "application/json");
 
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -1006,7 +1265,9 @@ public static class Config
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "85");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
             request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
-            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+            var authenticated = !string.IsNullOrWhiteSpace(accessToken);
+            ApplySelectedAccountHeader(request, authenticated);
+            request.Content = new StringContent(ApplySelectedAccountContext(payload, authenticated), Encoding.UTF8, "application/json");
 
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -1066,7 +1327,9 @@ public static class Config
             {
                 request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
             }
-            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+            var authenticated = !string.IsNullOrWhiteSpace(accessToken);
+            ApplySelectedAccountHeader(request, authenticated);
+            request.Content = new StringContent(ApplySelectedAccountContext(payload, authenticated), Encoding.UTF8, "application/json");
 
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -1504,7 +1767,8 @@ public static class Config
         {
             request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
             request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
-            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+            ApplySelectedAccountHeader(request, true);
+            request.Content = new StringContent(ApplySelectedAccountContext(payload, true), Encoding.UTF8, "application/json");
 
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             
@@ -2504,6 +2768,22 @@ public static class Config
         return TryGetCachedAccount(refreshToken, out cachedAccount) ? cachedAccount : null;
     }
 
+    public static async Task<List<YouTubeAccountItem>> GetYouTubeAccountsAsync(string refreshToken)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken))
+        {
+            return new List<YouTubeAccountItem>();
+        }
+
+        var accessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(accessToken))
+        {
+            return new List<YouTubeAccountItem>();
+        }
+
+        return await RequestYouTubeAccountsAsync(accessToken).ConfigureAwait(false);
+    }
+
     private static async Task<AccountInfo> GetAccountInfoInternalAsync(string refreshToken, bool forceRefresh)
     {
         if (string.IsNullOrWhiteSpace(refreshToken))
@@ -2523,31 +2803,52 @@ public static class Config
             return null;
         }
 
-        var payload = "{\"context\":{\"client\":{\"clientName\":\"TVHTML5\",\"clientVersion\":\"7.20251217.19.00\",\"hl\":\"" + Hl + "\",\"gl\":\"" + Gl + "\",\"platform\":\"TV\"},\"user\":{\"enableSafetyMode\":false}},\"accountReadMask\":{\"returnOwner\":true,\"returnBrandAccounts\":true,\"returnPersonaAccounts\":true,\"returnFamilyChildAccounts\":true,\"returnFamilyMembersAccounts\":false}}";
+        var accounts = await RequestYouTubeAccountsAsync(accessToken).ConfigureAwait(false);
+        var selected = accounts.FirstOrDefault(item => item != null && item.IsSelected);
+        if (selected == null)
+        {
+            return null;
+        }
+
+        var account = new AccountInfo
+        {
+            DisplayName = selected.DisplayName,
+            ChannelHandle = selected.ChannelHandle,
+            SubscribersCount = 0,
+            ThumbnailUrl = selected.ThumbnailUrl
+        };
+        SaveCachedAccount(refreshToken, account);
+        return account;
+    }
+
+    private static async Task<List<YouTubeAccountItem>> RequestYouTubeAccountsAsync(string accessToken)
+    {
+        var clientVersion = "7.20251217.19.00";
+        var payload = "{\"context\":{\"client\":{\"clientName\":\"TVHTML5\",\"clientVersion\":\"" + clientVersion + "\",\"hl\":\"" + Hl + "\",\"gl\":\"" + Gl + "\",\"platform\":\"TV\"},\"user\":{\"enableSafetyMode\":false}},\"accountReadMask\":{\"returnOwner\":true,\"returnBrandAccounts\":true,\"returnPersonaAccounts\":true,\"returnFamilyChildAccounts\":true,\"returnFamilyMembersAccounts\":false}}";
         var url = "https://www.youtube.com/youtubei/v1/account/accounts_list?prettyPrint=false";
 
-        System.Diagnostics.Debug.WriteLine($"GetAccountInfoAsync: Requesting {url}");
+        System.Diagnostics.Debug.WriteLine("[Accounts] Requesting accounts list");
 
         using (var request = new HttpRequestMessage(HttpMethod.Post, url))
         {
             request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
-            request.Headers.TryAddWithoutValidation("X-Youtube-Client-Name", "85");
-            request.Headers.TryAddWithoutValidation("X-Youtube-Client-Version", "7.20251217.19.00");
-            request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
+            request.Headers.TryAddWithoutValidation("X-Youtube-Client-Name", "7");
+            request.Headers.TryAddWithoutValidation("X-Youtube-Client-Version", clientVersion);
+            request.Headers.TryAddWithoutValidation("User-Agent", TvUserAgent);
+            request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
+            request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/tv");
             request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
 
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-            System.Diagnostics.Debug.WriteLine($"GetAccountInfoAsync: Response status = {response.StatusCode}");
+            System.Diagnostics.Debug.WriteLine("[Accounts] Response status = " + response.StatusCode);
             
             if (!response.IsSuccessStatusCode)
             {
-                return null;
+                return new List<YouTubeAccountItem>();
             }
 
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var account = ParseAccountInfoFromAccountsList(json);
-            SaveCachedAccount(refreshToken, account);
-            return account;
+            return ApplyPersistedAccountSelection(ParseYouTubeAccountsList(json));
         }
     }
 
@@ -2581,6 +2882,439 @@ public static class Config
         return await GetMyPlaylistsViaDataApiAsync(accessToken, maxResults).ConfigureAwait(false);
     }
 
+    public static async Task<List<PlaylistSaveState>> GetSavePlaylistStatesAsync(
+        string refreshToken,
+        string videoId,
+        int maxResults)
+    {
+        var result = new List<PlaylistSaveState>();
+        if (string.IsNullOrWhiteSpace(refreshToken) || string.IsNullOrWhiteSpace(videoId))
+        {
+            return result;
+        }
+
+        if (maxResults <= 0)
+        {
+            maxResults = 25;
+        }
+        maxResults = Math.Min(maxResults, 50);
+
+        var accessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(accessToken))
+        {
+            return result;
+        }
+
+        var playlistsTask = GetMyPlaylistsAsync(refreshToken, maxResults);
+
+        // The OAuth bearer belongs to the TV device flow. Query membership with a matching
+        // TVHTML5 body and headers first; WEB can return the playlist rows but omit the signed-in
+        // containsSelectedVideos state for this kind of token.
+        var tvPayload = "{\"context\":{" + BuildSavePlaylistTvClientJson()
+            + "},\"videoIds\":[\"" + JsonEscape(videoId.Trim())
+            + "\"],\"excludeWatchLater\":false}";
+        string json = await PostSavePlaylistTvJsonAsync(
+            "playlist/get_add_to_playlist",
+            tvPayload,
+            accessToken).ConfigureAwait(false);
+        if (!string.IsNullOrWhiteSpace(json)
+            && json.IndexOf("\"playlistAddToOptionRenderer\"", StringComparison.Ordinal) >= 0)
+        {
+            System.Diagnostics.Debug.WriteLine("[SavePlaylist] Membership loaded via TVHTML5/85");
+        }
+        else
+        {
+            json = null;
+        }
+
+        var membershipClients = new[] { "MWEB", "WEB" };
+        for (var clientIndex = 0; clientIndex < membershipClients.Length; clientIndex++)
+        {
+            if (!string.IsNullOrWhiteSpace(json))
+            {
+                break;
+            }
+
+            var clientName = membershipClients[clientIndex];
+            var clientVersion = ShortsClientVersion(clientName);
+            var payload = "{\"context\":{" + BuildShortsClientJson(clientName)
+                + "},\"videoIds\":[\"" + JsonEscape(videoId.Trim())
+                + "\"],\"excludeWatchLater\":false}";
+            var attempt = await PostInnertubeJsonAsync(
+                "playlist/get_add_to_playlist",
+                payload,
+                accessToken,
+                clientName,
+                clientVersion,
+                true).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(attempt)
+                && attempt.IndexOf("\"playlistAddToOptionRenderer\"", StringComparison.Ordinal) >= 0)
+            {
+                json = attempt;
+                System.Diagnostics.Debug.WriteLine("[SavePlaylist] Membership loaded via " + clientName);
+                break;
+            }
+        }
+
+        var playlists = await playlistsTask.ConfigureAwait(false) ?? new List<PlaylistItem>();
+        var playlistById = new Dictionary<string, PlaylistItem>(StringComparer.OrdinalIgnoreCase);
+        foreach (var playlist in playlists)
+        {
+            if (playlist == null || string.IsNullOrWhiteSpace(playlist.PlaylistId))
+            {
+                continue;
+            }
+            playlistById[NormalizeSavePlaylistId(playlist.PlaylistId)] = playlist;
+        }
+
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (!string.IsNullOrWhiteSpace(json))
+        {
+            try
+            {
+                var root = JsonValue.Parse(json);
+                foreach (var obj in EnumerateObjects(root, 16000))
+                {
+                    IJsonValue rendererValue;
+                    if (!obj.TryGetValue("playlistAddToOptionRenderer", out rendererValue)
+                        || rendererValue == null
+                        || rendererValue.ValueType != JsonValueType.Object)
+                    {
+                        continue;
+                    }
+
+                    var renderer = rendererValue.GetObject();
+                    var playlistId = GetJsonString(renderer, "playlistId");
+                    var normalizedId = NormalizeSavePlaylistId(playlistId);
+                    if (string.IsNullOrWhiteSpace(normalizedId) || !seen.Add(normalizedId))
+                    {
+                        continue;
+                    }
+
+                    PlaylistItem playlist;
+                    if (!playlistById.TryGetValue(normalizedId, out playlist))
+                    {
+                        playlist = new PlaylistItem
+                        {
+                            PlaylistId = playlistId,
+                            Title = ExtractTextFromField(renderer, "title", Localization.GetString("Playlist")),
+                            ThumbnailUrl = ExtractBestThumbnailUrl(renderer, "thumbnail"),
+                            VideoCountText = string.Empty,
+                            PrivacyText = ExtractTextFromField(renderer, "privacy", Localization.GetString("Playlist"))
+                        };
+                    }
+
+                    result.Add(new PlaylistSaveState
+                    {
+                        Playlist = playlist,
+                        ContainsVideo = PlaylistContainsSelectedVideo(renderer)
+                    });
+
+                    if (result.Count >= maxResults)
+                    {
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[SavePlaylist] get_add_to_playlist parse failed: " + ex.Message);
+            }
+        }
+
+        foreach (var playlist in playlists)
+        {
+            if (result.Count >= maxResults || playlist == null)
+            {
+                break;
+            }
+
+            var normalizedId = NormalizeSavePlaylistId(playlist.PlaylistId);
+            if (string.IsNullOrWhiteSpace(normalizedId) || !seen.Add(normalizedId))
+            {
+                continue;
+            }
+
+            var playlistItemId = await GetPlaylistItemIdForVideoAsync(
+                accessToken,
+                normalizedId,
+                videoId).ConfigureAwait(false);
+            result.Add(new PlaylistSaveState
+            {
+                Playlist = playlist,
+                ContainsVideo = !string.IsNullOrWhiteSpace(playlistItemId)
+            });
+        }
+
+        return result;
+    }
+
+    private const string SavePlaylistTvClientVersion = "7.20250209.19.00";
+
+    private static string BuildSavePlaylistTvClientJson()
+    {
+        return "\"client\":{\"clientName\":\"TVHTML5\",\"clientVersion\":\""
+            + SavePlaylistTvClientVersion + "\",\"hl\":\"" + Hl + "\",\"gl\":\"" + Gl
+            + "\",\"platform\":\"TV\",\"deviceMake\":\"Samsung\",\"deviceModel\":\"SmartTV\""
+            + ",\"osName\":\"Tizen\",\"osVersion\":\"5.0\"}";
+    }
+
+    private static async Task<string> PostSavePlaylistTvJsonAsync(
+        string endpoint,
+        string payload,
+        string accessToken)
+    {
+        var url = "https://www.youtube.com/youtubei/v1/" + endpoint
+            + "?key=" + InnertubeApiKey + "&prettyPrint=false";
+        using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+        {
+            request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
+            request.Headers.TryAddWithoutValidation("Accept", "application/json");
+            request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
+            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "85");
+            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", SavePlaylistTvClientVersion);
+            request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
+            ApplySelectedAccountHeader(request, true);
+            request.Content = new StringContent(ApplySelectedAccountContext(payload, true), Encoding.UTF8, "application/json");
+
+            try
+            {
+                var response = await httpClient.SendAsync(
+                    request,
+                    HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "[SavePlaylist][TV85] " + endpoint + " failed: " + (int)response.StatusCode);
+                    return string.Empty;
+                }
+                return json;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[SavePlaylist][TV85] " + endpoint + " error: " + ex.Message);
+                return string.Empty;
+            }
+        }
+    }
+
+    private static bool PlaylistContainsSelectedVideo(JsonObject renderer)
+    {
+        if (renderer == null || !renderer.ContainsKey("containsSelectedVideos"))
+        {
+            return false;
+        }
+
+        try
+        {
+            var value = renderer["containsSelectedVideos"];
+            if (value == null)
+            {
+                return false;
+            }
+
+            if (value.ValueType == JsonValueType.Boolean)
+            {
+                return value.GetBoolean();
+            }
+
+            if (value.ValueType == JsonValueType.String)
+            {
+                var state = value.GetString();
+                return string.Equals(state, "ALL", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(state, "SOME", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(state, "true", StringComparison.OrdinalIgnoreCase);
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("[SavePlaylist] Membership state parse failed: " + ex.Message);
+        }
+
+        return false;
+    }
+
+    public static async Task<bool> SetVideoSavedToPlaylistAsync(
+        string refreshToken,
+        string playlistId,
+        string videoId,
+        bool shouldSave)
+    {
+        if (string.IsNullOrWhiteSpace(refreshToken)
+            || string.IsNullOrWhiteSpace(playlistId)
+            || string.IsNullOrWhiteSpace(videoId))
+        {
+            return false;
+        }
+
+        var normalizedPlaylistId = NormalizeSavePlaylistId(playlistId);
+        if (string.Equals(normalizedPlaylistId, "LL", StringComparison.OrdinalIgnoreCase))
+        {
+            return await SetVideoRatingAsync(videoId, shouldSave ? "like" : "none").ConfigureAwait(false);
+        }
+
+        var accessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
+        if (string.IsNullOrWhiteSpace(accessToken))
+        {
+            return false;
+        }
+
+        var action = shouldSave ? "ACTION_ADD_VIDEO" : "ACTION_REMOVE_VIDEO_BY_VIDEO_ID";
+        var videoKey = shouldSave ? "addedVideoId" : "removedVideoId";
+
+        // The command metadata returned by YouTube points to /youtubei/v1/browse/edit_playlist.
+        // /playlist/edit is not the playlistEditEndpoint and always rejects this action shape.
+        // Try the TV client first because the stored bearer was minted by the TV device flow;
+        // each fallback keeps the client in the JSON body and HTTP headers identical.
+        var tvPayload = "{\"context\":{" + BuildSavePlaylistTvClientJson() + "},\"playlistId\":\""
+            + JsonEscape(normalizedPlaylistId) + "\",\"actions\":[{\"action\":\""
+            + action + "\",\"" + videoKey + "\":\"" + JsonEscape(videoId.Trim()) + "\"}]}";
+        var tvJson = await PostSavePlaylistTvJsonAsync(
+            "browse/edit_playlist",
+            tvPayload,
+            accessToken).ConfigureAwait(false);
+        if (!string.IsNullOrWhiteSpace(tvJson))
+        {
+            System.Diagnostics.Debug.WriteLine("[SavePlaylist] Updated via TVHTML5/85");
+            return true;
+        }
+
+        var clients = new[] { "MWEB", "WEB" };
+        for (var index = 0; index < clients.Length; index++)
+        {
+            var clientName = clients[index];
+            var clientVersion = ShortsClientVersion(clientName);
+            var clientJson = BuildShortsClientJson(clientName);
+            var payload = "{\"context\":{" + clientJson + "},\"playlistId\":\""
+                + JsonEscape(normalizedPlaylistId) + "\",\"actions\":[{\"action\":\""
+                + action + "\",\"" + videoKey + "\":\"" + JsonEscape(videoId.Trim()) + "\"}]}";
+            var json = await PostInnertubeJsonAsync(
+                "browse/edit_playlist",
+                payload,
+                accessToken,
+                clientName,
+                clientVersion,
+                true).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(json))
+            {
+                System.Diagnostics.Debug.WriteLine("[SavePlaylist] Updated via " + clientName);
+                return true;
+            }
+        }
+
+        // This standards-based fallback works for sessions that were authorized with the
+        // official youtube/youtube.force-ssl OAuth scope.
+        return await SetVideoSavedToPlaylistViaDataApiAsync(
+            accessToken,
+            normalizedPlaylistId,
+            videoId,
+            shouldSave).ConfigureAwait(false);
+    }
+
+    private static string NormalizeSavePlaylistId(string playlistId)
+    {
+        var value = (playlistId ?? string.Empty).Trim();
+        if (value.StartsWith("VL", StringComparison.OrdinalIgnoreCase) && value.Length > 2)
+        {
+            value = value.Substring(2);
+        }
+        return value;
+    }
+
+    private static async Task<string> GetPlaylistItemIdForVideoAsync(
+        string accessToken,
+        string playlistId,
+        string videoId)
+    {
+        if (string.IsNullOrWhiteSpace(accessToken)
+            || string.IsNullOrWhiteSpace(playlistId)
+            || string.IsNullOrWhiteSpace(videoId))
+        {
+            return string.Empty;
+        }
+
+        var url = "https://www.googleapis.com/youtube/v3/playlistItems?part=id&playlistId="
+            + Uri.EscapeDataString(playlistId)
+            + "&videoId=" + Uri.EscapeDataString(videoId)
+            + "&maxResults=1&prettyPrint=false";
+        try
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+            {
+                request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
+                request.Headers.TryAddWithoutValidation("User-Agent", WebUserAgent);
+                var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
+                var responseJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode || string.IsNullOrWhiteSpace(responseJson))
+                {
+                    return string.Empty;
+                }
+
+                var root = JsonObject.Parse(responseJson);
+                var items = root.GetNamedArray("items", new JsonArray());
+                if (items.Count == 0 || items[0].ValueType != JsonValueType.Object)
+                {
+                    return string.Empty;
+                }
+                return GetJsonString(items[0].GetObject(), "id");
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("[SavePlaylist] Membership check failed: " + ex.Message);
+            return string.Empty;
+        }
+    }
+
+    private static async Task<bool> SetVideoSavedToPlaylistViaDataApiAsync(
+        string accessToken,
+        string playlistId,
+        string videoId,
+        bool shouldSave)
+    {
+        try
+        {
+            if (!shouldSave)
+            {
+                var itemId = await GetPlaylistItemIdForVideoAsync(accessToken, playlistId, videoId).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(itemId))
+                {
+                    return true;
+                }
+
+                using (var request = new HttpRequestMessage(
+                    HttpMethod.Delete,
+                    "https://www.googleapis.com/youtube/v3/playlistItems?id=" + Uri.EscapeDataString(itemId)))
+                {
+                    request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
+                    request.Headers.TryAddWithoutValidation("User-Agent", WebUserAgent);
+                    var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                    return response.IsSuccessStatusCode;
+                }
+            }
+
+            var url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&prettyPrint=false";
+            var body = "{\"snippet\":{\"playlistId\":\"" + JsonEscape(playlistId)
+                + "\",\"resourceId\":{\"kind\":\"youtube#video\",\"videoId\":\""
+                + JsonEscape(videoId) + "\"}}}";
+            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+            {
+                request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
+                request.Headers.TryAddWithoutValidation("User-Agent", WebUserAgent);
+                request.Content = new StringContent(body, Encoding.UTF8, "application/json");
+                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                return response.IsSuccessStatusCode;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("[SavePlaylist] Data API update failed: " + ex.Message);
+            return false;
+        }
+    }
+
     private static async Task<List<PlaylistItem>> GetMyPlaylistsViaInnertubeAsync(string accessToken, int maxResults)
     {
         var payload = "{\"context\":{\"client\":{\"clientName\":\"TVHTML5\",\"clientVersion\":\"7.20250209.19.00\",\"hl\":\"" + Hl + "\",\"gl\":\"" + Gl + "\",\"platform\":\"TV\"}},\"browseId\":\"FEplaylist_aggregation\"}";
@@ -2592,7 +3326,8 @@ public static class Config
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "85");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "7.20250209.19.00");
             request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
-            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+            ApplySelectedAccountHeader(request, true);
+            request.Content = new StringContent(ApplySelectedAccountContext(payload, true), Encoding.UTF8, "application/json");
 
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
             System.Diagnostics.Debug.WriteLine("[Playlists] InnerTube response: " + response.StatusCode);
@@ -2830,7 +3565,9 @@ public static class Config
                 request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
             }
 
-            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+            var authenticated = !string.IsNullOrWhiteSpace(accessToken);
+            ApplySelectedAccountHeader(request, authenticated);
+            request.Content = new StringContent(ApplySelectedAccountContext(payload, authenticated), Encoding.UTF8, "application/json");
 
             try
             {
@@ -3313,7 +4050,7 @@ public static class Config
     private const string StsSettingKey = "PlayerSignatureTimestamp";
     private static int _cachedSts;
 
-    private static async Task<int> GetSignatureTimestampAsync(bool forceRefresh)
+    internal static async Task<int> GetSignatureTimestampAsync(bool forceRefresh)
     {
         if (!forceRefresh)
         {
@@ -5835,12 +6572,16 @@ public static class Config
         var url = "https://www.youtube.com/youtubei/v1/" + endpoint + "?key=" + InnertubeApiKey;
         using (var request = new HttpRequestMessage(HttpMethod.Post, url))
         {
-            request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+            request.Content = new StringContent(
+                ApplySelectedAccountContext(payload, !string.IsNullOrWhiteSpace(accessToken)),
+                Encoding.UTF8,
+                "application/json");
             request.Headers.TryAddWithoutValidation("Accept", "application/json");
 
             if (!string.IsNullOrWhiteSpace(accessToken))
             {
                 request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
+                ApplySelectedAccountHeader(request, true);
             }
 
             if (clientName == "ANDROID")
@@ -6149,7 +6890,56 @@ public static class Config
         }
     }
 
-    // True when an audioTrack id ("ru.4", "en-US.4", …) belongs to the account's language.
+    // Match an audioTrack id ("ru.4", "en-US.4", …) against Windows' system language.
+    // Exact regional matches outrank primary-language matches. The first system language wins.
+    public static int SystemAudioTrackMatchScore(string audioTrackId)
+    {
+        if (string.IsNullOrWhiteSpace(audioTrackId))
+        {
+            return 0;
+        }
+
+        var dot = audioTrackId.IndexOf('.');
+        var trackLanguage = (dot > 0 ? audioTrackId.Substring(0, dot) : audioTrackId)
+            .Replace('_', '-')
+            .ToLowerInvariant();
+        var trackDash = trackLanguage.IndexOf('-');
+        var trackPrimary = trackDash > 0 ? trackLanguage.Substring(0, trackDash) : trackLanguage;
+
+        try
+        {
+            var languages = Windows.System.UserProfile.GlobalizationPreferences.Languages;
+            for (int i = 0; i < languages.Count; i++)
+            {
+                var systemLanguage = (languages[i] ?? string.Empty).Replace('_', '-').ToLowerInvariant();
+                if (string.IsNullOrEmpty(systemLanguage))
+                {
+                    continue;
+                }
+                if (string.Equals(trackLanguage, systemLanguage, StringComparison.OrdinalIgnoreCase))
+                {
+                    return 100010 - (i * 100);
+                }
+
+                var systemDash = systemLanguage.IndexOf('-');
+                var systemPrimary = systemDash > 0
+                    ? systemLanguage.Substring(0, systemDash)
+                    : systemLanguage;
+                if (string.Equals(trackPrimary, systemPrimary, StringComparison.OrdinalIgnoreCase))
+                {
+                    return 100000 - (i * 100);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("[Audio] System language query failed: " + ex.Message);
+        }
+
+        return 0;
+    }
+
+    // True when an audioTrack id belongs to the account/app locale.
     public static bool AudioTrackMatchesLocale(string audioTrackId)
     {
         if (string.IsNullOrEmpty(audioTrackId))
@@ -6234,7 +7024,7 @@ public static class Config
     }
 
     // Narrows a set of audio-only formats to a single language track: an explicit choice first,
-    // then the account's locale, then whatever YouTube marks default, then everything.
+    // then the Windows system language, then whatever YouTube marks default, then everything.
     private static List<PlayerFormatModel> ChooseAudioTrackPool(
         List<PlayerFormatModel> audio, string preferredTrackId)
     {
@@ -6247,10 +7037,14 @@ public static class Config
             }
         }
 
-        var localeMatch = audio.FindAll(f => AudioTrackMatchesLocale(f.AudioTrackId));
-        if (localeMatch.Count > 0)
+        var systemScore = 0;
+        foreach (var f in audio)
         {
-            return localeMatch;
+            systemScore = Math.Max(systemScore, SystemAudioTrackMatchScore(f.AudioTrackId));
+        }
+        if (systemScore > 0)
+        {
+            return audio.FindAll(f => SystemAudioTrackMatchScore(f.AudioTrackId) == systemScore);
         }
 
         var defaults = audio.FindAll(f => f.AudioIsDefault);
@@ -6830,6 +7624,7 @@ public static class Config
                 }
 
                 var title = "Playlist";
+                var authorName = string.Empty;
                 var thumbnail = string.Empty;
                 var privacy = string.Empty;
                 var countText = string.Empty;
@@ -6842,6 +7637,9 @@ public static class Config
                     {
                         title = "Playlist";
                     }
+                    authorName = FirstNonEmpty(
+                        GetJsonString(snippet, "channelTitle"),
+                        GetJsonString(snippet, "localizedChannelTitle"));
                     thumbnail = ExtractDataApiPlaylistThumbnail(snippet);
                 }
 
@@ -6877,6 +7675,7 @@ public static class Config
                 {
                     PlaylistId = playlistId,
                     Title = title,
+                    AuthorName = authorName,
                     ThumbnailUrl = thumbnail,
                     VideoCountText = countText,
                     PrivacyText = privacy
@@ -6982,8 +7781,12 @@ public static class Config
         {
             PlaylistId = playlistId,
             Title = ExtractTextFromField(renderer, "title", "Playlist"),
+            AuthorName = ExtractPlaylistCardAuthor(renderer),
             ThumbnailUrl = ExtractBestThumbnailUrl(renderer, "thumbnail"),
-            VideoCountText = ExtractTextFromField(renderer, "videoCountText", string.Empty),
+            VideoCountText = FirstNonEmpty(
+                ExtractPlaylistBadgeText(renderer),
+                ExtractTextFromField(renderer, "videoCountShortText", string.Empty),
+                ExtractTextFromField(renderer, "videoCountText", string.Empty)),
             PrivacyText = ExtractTextFromField(renderer, "privacy", string.Empty)
         };
     }
@@ -7030,8 +7833,11 @@ public static class Config
         {
             PlaylistId = playlistId,
             Title = title,
+            AuthorName = ExtractPlaylistCardAuthor(renderer),
             ThumbnailUrl = thumbnail,
-            VideoCountText = ExtractPlaylistCountFromText(subtitle),
+            VideoCountText = FirstNonEmpty(
+                ExtractPlaylistBadgeText(renderer),
+                ExtractPlaylistCountFromText(subtitle)),
             PrivacyText = "Playlist"
         };
     }
@@ -7054,8 +7860,11 @@ public static class Config
         {
             PlaylistId = playlistId,
             Title = ExtractPlaylistLockupTitle(renderer),
+            AuthorName = ExtractPlaylistCardAuthor(renderer),
             ThumbnailUrl = ExtractFirstUrlFromAnyValue(renderer),
-            VideoCountText = ExtractPlaylistCountFromText(allText),
+            VideoCountText = FirstNonEmpty(
+                ExtractPlaylistBadgeText(renderer),
+                ExtractPlaylistCountFromText(allText)),
             PrivacyText = "Playlist"
         };
     }
@@ -7249,6 +8058,39 @@ public static class Config
         }
 
         return string.Empty;
+    }
+
+    private static string ExtractPlaylistBadgeText(JsonObject renderer)
+    {
+        if (renderer == null)
+        {
+            return string.Empty;
+        }
+
+        foreach (var key in new[]
+        {
+            "thumbnailBadgeViewModel",
+            "thumbnailOverlayTimeStatusRenderer",
+            "thumbnailOverlayBottomPanelRenderer"
+        })
+        {
+            var wrapper = FindFirstObjectWithKey(renderer, key);
+            if (wrapper == null || !wrapper.ContainsKey(key)
+                || wrapper[key].ValueType != JsonValueType.Object)
+            {
+                continue;
+            }
+
+            var text = ExtractTextFromField(wrapper[key].GetObject(), "text", string.Empty);
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                return text;
+            }
+        }
+
+        return FirstNonEmpty(
+            ExtractTextFromField(renderer, "videoCountShortText", string.Empty),
+            ExtractTextFromField(renderer, "videoCountText", string.Empty));
     }
 
     private static string FormatPlaylistCountText(int count)
@@ -7453,8 +8295,8 @@ public static class Config
             if (page.Groups.Count == 0)
             {
                 var fallback = new HistoryDateGroup { DateTitle = Localization.GetString("Older") };
-                ExtractHistoryVideosFromValue(root, seen, fallback.Videos, ref added, count);
-                if (fallback.Videos.Count > 0)
+                ExtractHistoryItemsFromValue(root, seen, fallback.Videos, fallback.Shorts, ref added, count);
+                if (fallback.Videos.Count > 0 || fallback.Shorts.Count > 0)
                 {
                     page.Groups.Add(fallback);
                 }
@@ -7462,7 +8304,9 @@ public static class Config
 
             for (var i = page.Groups.Count - 1; i >= 0; i--)
             {
-                if (page.Groups[i].Videos == null || page.Groups[i].Videos.Count == 0)
+                var group = page.Groups[i];
+                if ((group.Videos == null || group.Videos.Count == 0) &&
+                    (group.Shorts == null || group.Shorts.Count == 0))
                 {
                     page.Groups.RemoveAt(i);
                 }
@@ -7501,8 +8345,8 @@ public static class Config
                 if (TryGetHistorySectionRenderer(obj, out sectionRenderer, out sectionTitle))
                 {
                     var group = new HistoryDateGroup { DateTitle = NormalizeHistoryDateTitle(sectionTitle) };
-                    ExtractHistoryVideosFromValue(sectionRenderer, seen, group.Videos, ref added, limit);
-                    if (group.Videos.Count > 0)
+                    ExtractHistoryItemsFromValue(sectionRenderer, seen, group.Videos, group.Shorts, ref added, limit);
+                    if (group.Videos.Count > 0 || group.Shorts.Count > 0)
                     {
                         groups.Add(group);
                     }
@@ -7681,9 +8525,10 @@ public static class Config
         return value;
     }
 
-    private static void ExtractHistoryVideosFromValue(IJsonValue value, HashSet<string> seen, List<VideoCardItem> output, ref int added, int limit)
+    private static void ExtractHistoryItemsFromValue(IJsonValue value, HashSet<string> seen,
+        List<VideoCardItem> videos, List<VideoCardItem> shorts, ref int added, int limit)
     {
-        if (value == null || output == null)
+        if (value == null || videos == null || shorts == null)
         {
             return;
         }
@@ -7699,59 +8544,65 @@ public static class Config
             {
                 var obj = value.GetObject();
                 VideoCardItem item = null;
+                var isShort = false;
                 IJsonValue rendererValue;
 
                 if (obj.TryGetValue("videoRenderer", out rendererValue) && rendererValue.ValueType == JsonValueType.Object)
                 {
                     var renderer = rendererValue.GetObject();
-                    if (!IsShortsLikeRenderer(renderer))
-                    {
-                        item = ParseVideoRenderer(renderer);
-                    }
+                    isShort = IsShortsLikeRenderer(renderer);
+                    item = ParseVideoRenderer(renderer);
                 }
                 else if (obj.TryGetValue("gridVideoRenderer", out rendererValue) && rendererValue.ValueType == JsonValueType.Object)
                 {
                     var renderer = rendererValue.GetObject();
-                    if (!IsShortsLikeRenderer(renderer))
-                    {
-                        item = ParseVideoRenderer(renderer);
-                    }
+                    isShort = IsShortsLikeRenderer(renderer);
+                    item = ParseVideoRenderer(renderer);
                 }
                 else if (obj.TryGetValue("compactVideoRenderer", out rendererValue) && rendererValue.ValueType == JsonValueType.Object)
                 {
                     var renderer = rendererValue.GetObject();
-                    if (!IsShortsLikeRenderer(renderer))
-                    {
-                        item = ParseVideoRenderer(renderer);
-                    }
+                    isShort = IsShortsLikeRenderer(renderer);
+                    item = ParseVideoRenderer(renderer);
                 }
                 else if (obj.TryGetValue("playlistVideoRenderer", out rendererValue) && rendererValue.ValueType == JsonValueType.Object)
                 {
                     var renderer = rendererValue.GetObject();
-                    if (!IsShortsLikeRenderer(renderer))
-                    {
-                        item = ParsePlaylistVideoRenderer(renderer);
-                    }
+                    isShort = IsShortsLikeRenderer(renderer);
+                    item = ParsePlaylistVideoRenderer(renderer);
                 }
                 else if (obj.TryGetValue("playlistPanelVideoRenderer", out rendererValue) && rendererValue.ValueType == JsonValueType.Object)
                 {
                     var renderer = rendererValue.GetObject();
-                    if (!IsShortsLikeRenderer(renderer))
-                    {
-                        item = ParsePlaylistPanelVideoRenderer(renderer);
-                    }
+                    isShort = IsShortsLikeRenderer(renderer);
+                    item = ParsePlaylistPanelVideoRenderer(renderer);
                 }
                 else if (obj.TryGetValue("tileRenderer", out rendererValue) && rendererValue.ValueType == JsonValueType.Object)
                 {
                     var renderer = rendererValue.GetObject();
-                    if (!IsShortsLikeRenderer(renderer))
-                    {
-                        item = ParseTileRenderer(renderer);
-                    }
+                    isShort = IsShortsLikeRenderer(renderer);
+                    item = ParseTileRenderer(renderer);
                 }
-                else if (obj.ContainsKey("reelItemRenderer") || obj.ContainsKey("shortsLockupViewModel") || obj.ContainsKey("shortsLockupView"))
+                else if (obj.TryGetValue("lockupViewModel", out rendererValue) && rendererValue.ValueType == JsonValueType.Object)
                 {
-                    return;
+                    var renderer = rendererValue.GetObject();
+                    isShort = IsShortsLikeRenderer(renderer);
+                    item = ParseLockupViewModel(renderer);
+                }
+                else if (obj.TryGetValue("reelItemRenderer", out rendererValue) && rendererValue.ValueType == JsonValueType.Object)
+                {
+                    isShort = true;
+                    item = ParseReelItemRenderer(rendererValue.GetObject());
+                }
+                else if (obj.TryGetValue("shortsLockupViewModel", out rendererValue) && rendererValue.ValueType == JsonValueType.Object)
+                {
+                    isShort = true;
+                    item = ParseShortsLockupViewModel(rendererValue.GetObject());
+                }
+                else if (obj.TryGetValue("shortsLockupView", out rendererValue) && rendererValue.ValueType == JsonValueType.Object)
+                {
+                    isShort = true;
+                    item = ParseShortsLockupViewModel(rendererValue.GetObject());
                 }
 
                 if (item != null && !string.IsNullOrWhiteSpace(item.VideoId))
@@ -7768,7 +8619,14 @@ public static class Config
                             item.Title = Localization.GetString("Untitled");
                         }
 
-                        output.Add(item);
+                        if (isShort)
+                        {
+                            shorts.Add(item);
+                        }
+                        else
+                        {
+                            videos.Add(item);
+                        }
                         added++;
                     }
                     return;
@@ -7776,7 +8634,7 @@ public static class Config
 
                 foreach (var pair in obj)
                 {
-                    ExtractHistoryVideosFromValue(pair.Value, seen, output, ref added, limit);
+                    ExtractHistoryItemsFromValue(pair.Value, seen, videos, shorts, ref added, limit);
                     if (limit > 0 && added >= limit)
                     {
                         return;
@@ -7788,7 +8646,7 @@ public static class Config
                 var arr = value.GetArray();
                 for (var i = 0; i < arr.Count; i++)
                 {
-                    ExtractHistoryVideosFromValue(arr[i], seen, output, ref added, limit);
+                    ExtractHistoryItemsFromValue(arr[i], seen, videos, shorts, ref added, limit);
                     if (limit > 0 && added >= limit)
                     {
                         return;
@@ -8199,8 +9057,7 @@ public static class Config
         if (string.IsNullOrWhiteSpace(videoId)) return null;
 
         var channelTitle = FirstNonEmpty(
-            ExtractTextFromField(renderer, "shortBylineText", string.Empty),
-            ExtractTextFromField(renderer, "ownerText", string.Empty),
+            ExtractVideoCardAuthor(renderer),
             Localization.GetString("Unknown"));
 
         return new VideoCardItem
@@ -8221,8 +9078,147 @@ public static class Config
                 ExtractTextFromField(renderer, "shortViewCountText", string.Empty),
                 string.Empty),
             PublishedText = ExtractTextFromField(renderer, "publishedTimeText", string.Empty),
-            PlaylistId = ExtractPlaylistIdFromWatchEndpoints(renderer)
+            PlaylistId = ExtractPlaylistIdFromWatchEndpoints(renderer),
+            WatchedPercent = ExtractWatchedPercent(renderer)
         };
+    }
+
+    // Personalized TVHTML5 browse/search responses expose resume progress either in the
+    // classic thumbnailOverlayResumePlaybackRenderer.percentDurationWatched shape or in
+    // the current thumbnail bottom overlay progressBar.startPercent view-model shape.
+    // Renderer shapes vary between classic, lockup and tile cards, so keep this bounded
+    // recursive lookup in one place and let every card parser use it.
+    internal static double ExtractWatchedPercent(JsonObject renderer)
+    {
+        if (renderer == null)
+        {
+            return 0;
+        }
+
+        foreach (var obj in EnumerateObjects(renderer, 800))
+        {
+            IJsonValue value;
+            if ((!obj.TryGetValue("percentDurationWatched", out value) || value == null)
+                && (!obj.TryGetValue("startPercent", out value) || value == null))
+            {
+                continue;
+            }
+
+            double percent;
+            if (value.ValueType == JsonValueType.Number)
+            {
+                percent = value.GetNumber();
+            }
+            else if (value.ValueType == JsonValueType.String &&
+                     double.TryParse(value.GetString(), System.Globalization.NumberStyles.Float,
+                         System.Globalization.CultureInfo.InvariantCulture, out percent))
+            {
+            }
+            else
+            {
+                continue;
+            }
+
+            return Math.Max(0, Math.Min(100, percent));
+        }
+
+        return 0;
+    }
+
+    // WEB and TVHTML5 put the author in different places. In TV search it is commonly
+    // metadataRows[0].metadataParts[0] (lockup) or the first tile metadata line, while
+    // classic WEB renderers use ownerText/shortBylineText.
+    internal static string ExtractVideoCardAuthor(JsonObject renderer)
+    {
+        if (renderer == null)
+        {
+            return string.Empty;
+        }
+
+        var author = FirstNonEmpty(
+            ExtractTextFromField(renderer, "shortBylineText", string.Empty),
+            ExtractTextFromField(renderer, "longBylineText", string.Empty),
+            ExtractTextFromField(renderer, "ownerText", string.Empty),
+            ExtractLockupMetadataPart(renderer, 0, 0),
+            ExtractLockupChannelTitle(renderer));
+        if (!string.IsNullOrWhiteSpace(author))
+        {
+            return author;
+        }
+
+        try
+        {
+            if (renderer.ContainsKey("metadata"))
+            {
+                var metadata = renderer.GetNamedObject("metadata");
+                if (metadata.ContainsKey("tileMetadataRenderer"))
+                {
+                    var tileMetadata = metadata.GetNamedObject("tileMetadataRenderer");
+                    if (tileMetadata.ContainsKey("lines"))
+                    {
+                        var lines = tileMetadata.GetNamedArray("lines");
+                        if (lines.Count > 0 && lines[0].ValueType == JsonValueType.Object)
+                        {
+                            return ExtractTileLineItemText(lines[0].GetObject(), 0);
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+        }
+
+        return string.Empty;
+    }
+
+    // Playlist lockups use the same author fields as videos, but their first generic
+    // metadata part can be the video count. Do not accept that unfiltered value as the owner.
+    internal static string ExtractPlaylistCardAuthor(JsonObject renderer)
+    {
+        if (renderer == null)
+        {
+            return string.Empty;
+        }
+
+        var author = FirstNonEmpty(
+            ExtractTextFromField(renderer, "shortBylineText", string.Empty),
+            ExtractTextFromField(renderer, "longBylineText", string.Empty),
+            ExtractTextFromField(renderer, "ownerText", string.Empty),
+            ExtractLockupChannelTitle(renderer));
+        if (!string.IsNullOrWhiteSpace(author) && !LooksLikePlaylistMetadata(author))
+        {
+            return author;
+        }
+
+        try
+        {
+            if (renderer.ContainsKey("metadata"))
+            {
+                var metadata = renderer.GetNamedObject("metadata");
+                if (metadata.ContainsKey("tileMetadataRenderer"))
+                {
+                    var tileMetadata = metadata.GetNamedObject("tileMetadataRenderer");
+                    if (tileMetadata.ContainsKey("lines"))
+                    {
+                        var lines = tileMetadata.GetNamedArray("lines");
+                        if (lines.Count > 0 && lines[0].ValueType == JsonValueType.Object)
+                        {
+                            author = ExtractTileLineItemText(lines[0].GetObject(), 0);
+                            if (!LooksLikePlaylistMetadata(author))
+                            {
+                                return author;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+        }
+
+        return string.Empty;
     }
 
 
@@ -8263,7 +9259,8 @@ public static class Config
             ViewCount = FirstNonEmpty(
                 ExtractTextFromField(renderer, "viewCountText", string.Empty),
                 ExtractTextFromField(renderer, "shortViewCountText", string.Empty),
-                string.Empty)
+                string.Empty),
+            WatchedPercent = ExtractWatchedPercent(renderer)
         };
     }
 
@@ -8315,7 +9312,8 @@ public static class Config
                 BuildMqThumbnailUrl(videoId)),
             ViewCount = ExtractLockupMetadataPart(renderer, 1, 0),
             PublishedText = ExtractLockupMetadataPart(renderer, 1, 1),
-            PlaylistId = ExtractPlaylistIdFromWatchEndpoints(renderer)
+            PlaylistId = ExtractPlaylistIdFromWatchEndpoints(renderer),
+            WatchedPercent = ExtractWatchedPercent(renderer)
         };
     }
 
@@ -8496,7 +9494,12 @@ public static class Config
             ThumbnailUrl = FirstNonEmpty(
                 ExtractBestThumbnailUrl(renderer, "thumbnail"),
                 ExtractFirstUrlFromAnyValue(renderer),
-                BuildMqThumbnailUrl(videoId))
+                BuildMqThumbnailUrl(videoId)),
+            ViewCount = FirstNonEmpty(
+                ExtractTextFromField(renderer, "viewCountText", string.Empty),
+                ExtractTextFromField(renderer, "shortViewCountText", string.Empty),
+                ExtractTextFromField(renderer, "viewCount", string.Empty),
+                string.Empty)
         };
     }
 
@@ -8536,7 +9539,12 @@ public static class Config
             ThumbnailUrl = FirstNonEmpty(
                 ExtractBestThumbnailUrl(renderer, "thumbnail"),
                 ExtractFirstUrlFromAnyValue(renderer),
-                BuildMqThumbnailUrl(videoId))
+                BuildMqThumbnailUrl(videoId)),
+            ViewCount = FirstNonEmpty(
+                ExtractShortsLockupText(renderer, "secondaryText"),
+                ExtractTextFromField(renderer, "viewCountText", string.Empty),
+                ExtractTextFromField(renderer, "shortViewCountText", string.Empty),
+                string.Empty)
         };
     }
 
@@ -8840,11 +9848,17 @@ public static class Config
 
         var lower = text.Trim().ToLowerInvariant();
         return lower == "playlist" ||
+               lower == "плейлист" ||
                lower == "play all" ||
                lower == "view full playlist" ||
                lower == "public" ||
                lower == "private" ||
                lower == "unlisted" ||
+               lower == "общедоступный" ||
+               lower == "ограниченный доступ" ||
+               lower.IndexOf("видео", StringComparison.OrdinalIgnoreCase) >= 0 ||
+               lower.IndexOf("просмотр", StringComparison.OrdinalIgnoreCase) >= 0 ||
+               lower.IndexOf("обновлен", StringComparison.OrdinalIgnoreCase) >= 0 ||
                lower.IndexOf(" video", StringComparison.OrdinalIgnoreCase) >= 0 ||
                lower.IndexOf(" videos", StringComparison.OrdinalIgnoreCase) >= 0 ||
                lower.IndexOf(" view", StringComparison.OrdinalIgnoreCase) >= 0 ||
@@ -8888,11 +9902,12 @@ public static class Config
                 string.Empty),
             ThumbnailUrl = FirstNonEmpty(
                 ExtractBestThumbnailUrl(renderer, "thumbnail"),
-                BuildMqThumbnailUrl(videoId))
+                BuildMqThumbnailUrl(videoId)),
+            WatchedPercent = ExtractWatchedPercent(renderer)
         };
     }
 
-    private static VideoCardItem ParseTileRenderer(JsonObject tileRenderer)
+    internal static VideoCardItem ParseTileRenderer(JsonObject tileRenderer)
     {
         if (tileRenderer == null) return null;
 
@@ -9011,14 +10026,15 @@ public static class Config
         {
             VideoId = videoId,
             Title = title,
-            ChannelTitle = channelTitle,
+            ChannelTitle = FirstNonEmpty(ExtractVideoCardAuthor(tileRenderer), channelTitle),
             ChannelId = ExtractVideoCardChannelId(tileRenderer),
             ChannelThumbnailUrl = ExtractVideoCardChannelThumbnail(tileRenderer),
             Duration = duration,
             ThumbnailUrl = BuildMqThumbnailUrl(videoId),
             ViewCount = viewCount,
             PublishedText = publishedText,
-            PlaylistId = playlistId
+            PlaylistId = playlistId,
+            WatchedPercent = ExtractWatchedPercent(tileRenderer)
         };
     }
 
@@ -9068,6 +10084,12 @@ public static class Config
         }
 
         var field = obj.GetNamedValue(fieldName);
+        if (field.ValueType == JsonValueType.String)
+        {
+            var direct = field.GetString();
+            return string.IsNullOrWhiteSpace(direct) ? fallback : direct.Trim();
+        }
+
         if (field.ValueType != JsonValueType.Object)
         {
             return fallback;
@@ -9077,6 +10099,16 @@ public static class Config
         if (fieldObject.ContainsKey("simpleText"))
         {
             return fieldObject.GetNamedString("simpleText", fallback);
+        }
+
+        if (fieldObject.ContainsKey("content")
+            && fieldObject["content"].ValueType == JsonValueType.String)
+        {
+            var content = fieldObject["content"].GetString();
+            if (!string.IsNullOrWhiteSpace(content))
+            {
+                return content.Trim();
+            }
         }
 
         if (fieldObject.ContainsKey("runs"))
@@ -9290,7 +10322,9 @@ public static class Config
         // Do not store/log the whole token as a cache key. Length + tail is enough to
         // separate accounts in memory and avoids keeping another full token copy.
         var tailLength = Math.Min(16, refreshToken.Length);
-        return refreshToken.Length.ToString(System.Globalization.CultureInfo.InvariantCulture) + ":" + refreshToken.Substring(refreshToken.Length - tailLength, tailLength);
+        return refreshToken.Length.ToString(System.Globalization.CultureInfo.InvariantCulture)
+            + ":" + refreshToken.Substring(refreshToken.Length - tailLength, tailLength)
+            + ":" + SelectedYouTubeAccountBrandId;
     }
 
     private static void RememberSubscriptionChannelAvatars(List<SubscriptionChannel> channels)
@@ -9805,6 +10839,162 @@ public static class Config
         }
     }
 
+    private static List<YouTubeAccountItem> ParseYouTubeAccountsList(string json)
+    {
+        var result = new List<YouTubeAccountItem>();
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return result;
+        }
+
+        try
+        {
+            var root = JsonValue.Parse(json);
+            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var obj in EnumerateObjects(root, 12000))
+            {
+                IJsonValue accountValue;
+                if (!obj.TryGetValue("accountItem", out accountValue)
+                    || accountValue.ValueType != JsonValueType.Object)
+                {
+                    continue;
+                }
+
+                var account = accountValue.GetObject();
+                var displayName = ExtractTextFromField(account, "accountName", string.Empty);
+                if (string.IsNullOrWhiteSpace(displayName))
+                {
+                    continue;
+                }
+
+                var handle = ExtractTextFromField(account, "channelHandle", string.Empty);
+                var brandId = string.Empty;
+                foreach (var nested in EnumerateObjects(account, 160))
+                {
+                    IJsonValue pageIdTokenValue;
+                    if (nested.TryGetValue("pageIdToken", out pageIdTokenValue)
+                        && pageIdTokenValue.ValueType == JsonValueType.Object)
+                    {
+                        brandId = GetJsonString(pageIdTokenValue.GetObject(), "pageId");
+                        if (!string.IsNullOrWhiteSpace(brandId))
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                var uniqueKey = string.IsNullOrWhiteSpace(brandId)
+                    ? "primary:" + displayName + ":" + handle
+                    : "brand:" + brandId;
+                if (!seen.Add(uniqueKey))
+                {
+                    continue;
+                }
+
+                var selected = false;
+                IJsonValue selectedValue;
+                if (account.TryGetValue("isSelected", out selectedValue)
+                    && selectedValue.ValueType == JsonValueType.Boolean)
+                {
+                    selected = selectedValue.GetBoolean();
+                }
+
+                result.Add(new YouTubeAccountItem
+                {
+                    AccountKey = uniqueKey,
+                    DisplayName = displayName,
+                    ChannelHandle = handle,
+                    ThumbnailUrl = ExtractBestThumbnailUrl(account, "accountPhoto"),
+                    BrandId = brandId,
+                    IsPrimaryOwner = account.ContainsKey("accountByline"),
+                    IsSelected = selected
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("[Accounts] Parse failed: " + ex.Message);
+        }
+
+        System.Diagnostics.Debug.WriteLine("[Accounts] Parsed " + result.Count + " account(s)");
+        return result;
+    }
+
+    private static List<YouTubeAccountItem> ApplyPersistedAccountSelection(List<YouTubeAccountItem> accounts)
+    {
+        accounts = accounts ?? new List<YouTubeAccountItem>();
+        if (accounts.Count == 0)
+        {
+            return accounts;
+        }
+
+        var values = ApplicationData.Current.LocalSettings.Values;
+        var initialized = values.ContainsKey(SelectedYouTubeAccountInitializedSetting)
+            && values[SelectedYouTubeAccountInitializedSetting] is bool
+            && (bool)values[SelectedYouTubeAccountInitializedSetting];
+        var selectedAccountKey = SelectedYouTubeAccountKey;
+
+        // Older builds persisted only BrandId. Several owner/persona/Kids rows legitimately
+        // have an empty BrandId, so comparing that value made every one of them look selected.
+        // Migrate those settings to the exact account row and prefer the same primary-account
+        // marker (accountByline) that the original profile parser used.
+        if (!initialized || string.IsNullOrWhiteSpace(selectedAccountKey))
+        {
+            var persistedBrandId = SelectedYouTubeAccountBrandId;
+            var persistedBrandAccount = !string.IsNullOrWhiteSpace(persistedBrandId)
+                ? accounts.FirstOrDefault(item => item != null && string.Equals(
+                    item.BrandId ?? string.Empty,
+                    persistedBrandId,
+                    StringComparison.Ordinal))
+                : null;
+            var serverSelectedItems = accounts.Where(item => item != null && item.IsSelected).ToList();
+            var serverSelected = serverSelectedItems.Count == 1 ? serverSelectedItems[0] : null;
+            var selected = persistedBrandAccount
+                ?? accounts.FirstOrDefault(item => item != null && item.IsPrimaryOwner)
+                ?? serverSelected
+                ?? accounts.FirstOrDefault(item => item != null && string.IsNullOrWhiteSpace(item.BrandId))
+                ?? accounts[0];
+            values[SelectedYouTubeAccountBrandIdSetting] = selected.BrandId ?? string.Empty;
+            values[SelectedYouTubeAccountKeySetting] = selected.AccountKey ?? string.Empty;
+            values[SelectedYouTubeAccountInitializedSetting] = true;
+            selectedAccountKey = selected.AccountKey ?? string.Empty;
+        }
+
+        var matched = false;
+        for (var i = 0; i < accounts.Count; i++)
+        {
+            var account = accounts[i];
+            if (account == null)
+            {
+                continue;
+            }
+
+            account.IsSelected = !matched && string.Equals(
+                account.AccountKey ?? string.Empty,
+                selectedAccountKey ?? string.Empty,
+                StringComparison.Ordinal);
+            matched = matched || account.IsSelected;
+        }
+
+        if (!matched)
+        {
+            var fallback = accounts.FirstOrDefault(item => item != null && item.IsPrimaryOwner)
+                ?? accounts.FirstOrDefault(item => item != null && string.IsNullOrWhiteSpace(item.BrandId))
+                ?? accounts[0];
+            values[SelectedYouTubeAccountBrandIdSetting] = fallback.BrandId ?? string.Empty;
+            values[SelectedYouTubeAccountKeySetting] = fallback.AccountKey ?? string.Empty;
+            for (var i = 0; i < accounts.Count; i++)
+            {
+                if (accounts[i] != null)
+                {
+                    accounts[i].IsSelected = object.ReferenceEquals(accounts[i], fallback);
+                }
+            }
+        }
+
+        return accounts;
+    }
+
     private static AccountInfo ParseAccountInfoFromAccountsList(string json)
     {
         try
@@ -9976,11 +11166,13 @@ public sealed class HistoryDateGroup
 {
     public string DateTitle { get; set; }
     public List<VideoCardItem> Videos { get; set; }
+    public List<VideoCardItem> Shorts { get; set; }
 
     public HistoryDateGroup()
     {
         DateTitle = string.Empty;
         Videos = new List<VideoCardItem>();
+        Shorts = new List<VideoCardItem>();
     }
 }
 
@@ -10052,6 +11244,17 @@ public sealed class VideoCardItem
     // Set when the card's watch endpoint points at a playlist — a mix / "jam" card does. It
     // must travel to the video page, otherwise the mix plays as a single video with no queue.
     public string PlaylistId { get; set; }
+    public double WatchedPercent { get; set; }
+
+    public Windows.UI.Xaml.Visibility WatchedProgressVisibility
+    {
+        get
+        {
+            return WatchedPercent > 0
+                ? Windows.UI.Xaml.Visibility.Visible
+                : Windows.UI.Xaml.Visibility.Collapsed;
+        }
+    }
 
     // "Channel • 1.2M views • 3 days ago" — the line under the thumbnail, official-app style.
     // Empty pieces are dropped so a card never shows a dangling separator.
@@ -10095,6 +11298,7 @@ public sealed class ShortsVideoItem
     public string ChannelName { get; set; }
     public string ChannelThumbnailUrl { get; set; }
     public string ThumbnailUrl { get; set; }
+    public string ViewCount { get; set; }
     public string VideoUrl { get; set; }
     public string LikeCount { get; set; }
     public string CommentCount { get; set; }
@@ -10106,11 +11310,122 @@ public sealed class ShortsVideoItem
 
 public sealed class PlaylistItem
 {
+    private static readonly Windows.UI.Color[][] AccentPalettes =
+    {
+        new[] { Windows.UI.Color.FromArgb(255, 140, 83, 102), Windows.UI.Color.FromArgb(255, 208, 136, 156) },
+        new[] { Windows.UI.Color.FromArgb(255, 72, 95, 135), Windows.UI.Color.FromArgb(255, 118, 153, 204) },
+        new[] { Windows.UI.Color.FromArgb(255, 109, 85, 144), Windows.UI.Color.FromArgb(255, 167, 133, 201) },
+        new[] { Windows.UI.Color.FromArgb(255, 52, 122, 120), Windows.UI.Color.FromArgb(255, 99, 170, 163) },
+        new[] { Windows.UI.Color.FromArgb(255, 154, 106, 56), Windows.UI.Color.FromArgb(255, 212, 164, 103) },
+        new[] { Windows.UI.Color.FromArgb(255, 82, 117, 73), Windows.UI.Color.FromArgb(255, 130, 173, 117) },
+        new[] { Windows.UI.Color.FromArgb(255, 147, 78, 72), Windows.UI.Color.FromArgb(255, 207, 126, 115) },
+        new[] { Windows.UI.Color.FromArgb(255, 98, 104, 116), Windows.UI.Color.FromArgb(255, 149, 157, 170) }
+    };
+
     public string PlaylistId { get; set; }
     public string Title { get; set; }
+    public string AuthorName { get; set; }
     public string ThumbnailUrl { get; set; }
     public string VideoCountText { get; set; }
     public string PrivacyText { get; set; }
+
+    public Windows.UI.Xaml.Visibility VideoCountVisibility
+    {
+        get
+        {
+            return string.IsNullOrWhiteSpace(VideoCountText)
+                ? Windows.UI.Xaml.Visibility.Collapsed
+                : Windows.UI.Xaml.Visibility.Visible;
+        }
+    }
+
+    public string OverlayIconSource
+    {
+        get
+        {
+            return GetPersonalPlaylistCode() == "LL"
+                ? "ms-appx:///Assets/Dark/player/like.png"
+                : string.Empty;
+        }
+    }
+
+    public double OverlayIconImageOpacity
+    {
+        get { return GetPersonalPlaylistCode() == "LL" ? 1.0 : 0.0; }
+    }
+
+    public double OverlayIconGlyphOpacity
+    {
+        get { return GetPersonalPlaylistCode() == "LL" ? 0.0 : 1.0; }
+    }
+
+    public string OverlayIconGlyph
+    {
+        get
+        {
+            var code = GetPersonalPlaylistCode();
+            if (code == "WL" || code == "HL")
+                return "\uE121";
+            if (code == "LM")
+                return "\uE142";
+            return "\uE133";
+        }
+    }
+
+    public Windows.UI.Xaml.Media.SolidColorBrush AccentBackColor
+    {
+        get { return new Windows.UI.Xaml.Media.SolidColorBrush(AccentPalettes[GetAccentPaletteIndex()][0]); }
+    }
+
+    public Windows.UI.Xaml.Media.SolidColorBrush AccentFrontColor
+    {
+        get { return new Windows.UI.Xaml.Media.SolidColorBrush(AccentPalettes[GetAccentPaletteIndex()][1]); }
+    }
+
+    public string MetadataText
+    {
+        get
+        {
+            var privacy = (PrivacyText ?? string.Empty).Trim();
+            var count = (VideoCountText ?? string.Empty).Trim();
+            if (privacy.Length == 0)
+                return count;
+            if (count.Length == 0)
+                return privacy;
+            return privacy + " · " + count;
+        }
+    }
+
+    private string GetPersonalPlaylistCode()
+    {
+        var id = (PlaylistId ?? string.Empty).Trim().ToUpperInvariant();
+        if (id.StartsWith("VL", StringComparison.Ordinal) && id.Length > 2)
+            id = id.Substring(2);
+        return id;
+    }
+
+    private int GetAccentPaletteIndex()
+    {
+        var source = string.IsNullOrWhiteSpace(PlaylistId) ? Title : PlaylistId;
+        source = source ?? string.Empty;
+
+        unchecked
+        {
+            uint hash = 2166136261;
+            for (var index = 0; index < source.Length; index++)
+            {
+                hash ^= char.ToUpperInvariant(source[index]);
+                hash *= 16777619;
+            }
+            return (int)(hash % (uint)AccentPalettes.Length);
+        }
+    }
+}
+
+public sealed class PlaylistSaveState
+{
+    public PlaylistItem Playlist { get; set; }
+    public bool ContainsVideo { get; set; }
 }
 
 // Navigation payload for the video page when a video is opened as part of a playlist or an
@@ -10164,6 +11479,22 @@ public sealed class AccountInfo
     public string ThumbnailUrl { get; set; }
 }
 
+public sealed class YouTubeAccountItem
+{
+    public string AccountKey { get; set; }
+    public string DisplayName { get; set; }
+    public string ChannelHandle { get; set; }
+    public string ThumbnailUrl { get; set; }
+    public string BrandId { get; set; }
+    public bool IsPrimaryOwner { get; set; }
+    public bool IsSelected { get; set; }
+
+    public Windows.UI.Xaml.Visibility SelectedVisibility
+    {
+        get { return IsSelected ? Windows.UI.Xaml.Visibility.Visible : Windows.UI.Xaml.Visibility.Collapsed; }
+    }
+}
+
 public sealed class VideoDetails
 {
     public string VideoId { get; set; }
@@ -10182,13 +11513,125 @@ public sealed class VideoDetails
     public List<VideoCardItem> RelatedVideos { get; set; }
 }
 
-public sealed class CommentItem
+public sealed class CommentItem : System.ComponentModel.INotifyPropertyChanged
 {
+    private string _replyContinuationToken;
+    private string _repliesText;
+    private bool _repliesLoading;
+    private bool _repliesExpanded;
+
     public string Author { get; set; }
     public string AuthorThumbnail { get; set; }
     public string Text { get; set; }
     public string PublishedAt { get; set; }
+    public string LikeCount { get; set; }
     public string ContinuationToken { get; set; }
+    public string ToolbarStateKey { get; set; }
+    public string ReplyCount { get; set; }
+    public bool IsReply { get; set; }
+
+    public System.Collections.ObjectModel.ObservableCollection<CommentItem> Replies { get; private set; }
+
+    public string ReplyContinuationToken
+    {
+        get { return _replyContinuationToken; }
+        set
+        {
+            _replyContinuationToken = value ?? string.Empty;
+            RaiseReplyStateChanged();
+        }
+    }
+
+    public string RepliesText
+    {
+        get { return string.IsNullOrWhiteSpace(_repliesText) ? Localization.GetString("Replies") : _repliesText; }
+        set
+        {
+            _repliesText = value ?? string.Empty;
+            OnPropertyChanged("RepliesText");
+        }
+    }
+
+    public Windows.UI.Xaml.Visibility RepliesButtonVisibility
+    {
+        get
+        {
+            return !string.IsNullOrWhiteSpace(_replyContinuationToken)
+                && !_repliesExpanded && !_repliesLoading
+                ? Windows.UI.Xaml.Visibility.Visible
+                : Windows.UI.Xaml.Visibility.Collapsed;
+        }
+    }
+
+    public Windows.UI.Xaml.Visibility RepliesLoadingVisibility
+    {
+        get
+        {
+            return _repliesLoading
+                ? Windows.UI.Xaml.Visibility.Visible
+                : Windows.UI.Xaml.Visibility.Collapsed;
+        }
+    }
+
+    public bool RepliesLoadingActive
+    {
+        get { return _repliesLoading; }
+    }
+
+    public CommentItem()
+    {
+        _replyContinuationToken = string.Empty;
+        _repliesText = string.Empty;
+        Replies = new System.Collections.ObjectModel.ObservableCollection<CommentItem>();
+    }
+
+    public bool TryBeginLoadingReplies()
+    {
+        if (_repliesLoading || _repliesExpanded || string.IsNullOrWhiteSpace(_replyContinuationToken))
+        {
+            return false;
+        }
+        _repliesLoading = true;
+        RaiseReplyStateChanged();
+        return true;
+    }
+
+    public void FinishLoadingReplies(IEnumerable<CommentItem> replies, bool succeeded)
+    {
+        Replies.Clear();
+        if (succeeded && replies != null)
+        {
+            foreach (var reply in replies)
+            {
+                if (reply == null) continue;
+                reply.IsReply = true;
+                reply.ReplyContinuationToken = string.Empty;
+                Replies.Add(reply);
+            }
+        }
+
+        _repliesLoading = false;
+        _repliesExpanded = succeeded;
+        RaiseReplyStateChanged();
+    }
+
+    private void RaiseReplyStateChanged()
+    {
+        OnPropertyChanged("RepliesButtonVisibility");
+        OnPropertyChanged("RepliesLoadingVisibility");
+        OnPropertyChanged("RepliesLoadingActive");
+    }
+
+    public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+    private void OnPropertyChanged(string propertyName)
+    {
+        var handler = PropertyChanged;
+        if (handler != null)
+        {
+            handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+        }
+    }
 }
 
 public static class VideoParser
@@ -10570,6 +12013,64 @@ public static class VideoParser
 
             var root = JsonValue.Parse(json);
             WalkForComments(root, comments);
+
+            // youtube-ios links commentThreadRenderer.replies to commentEntityPayload by
+            // toolbarStateKey. The reply bodies are not part of this page; only their
+            // continuation is, so keep that token on the parent and load the branch on tap.
+            var replyThreads = ExtractCommentReplyThreads(root);
+            var unusedThreads = new List<CommentReplyThreadInfo>(replyThreads);
+            for (var i = 0; i < comments.Count; i++)
+            {
+                var comment = comments[i];
+                if (comment == null)
+                {
+                    continue;
+                }
+
+                CommentReplyThreadInfo matched = null;
+                if (!string.IsNullOrWhiteSpace(comment.ToolbarStateKey))
+                {
+                    for (var j = 0; j < unusedThreads.Count; j++)
+                    {
+                        if (string.Equals(unusedThreads[j].ToolbarStateKey,
+                            comment.ToolbarStateKey, StringComparison.Ordinal))
+                        {
+                            matched = unusedThreads[j];
+                            unusedThreads.RemoveAt(j);
+                            break;
+                        }
+                    }
+                }
+
+                if (matched != null && !string.IsNullOrWhiteSpace(matched.ContinuationToken))
+                {
+                    comment.ReplyContinuationToken = matched.ContinuationToken;
+                    comment.RepliesText = FirstNonEmptyText(
+                        matched.DisplayText,
+                        BuildRepliesFallbackText(comment.ReplyCount));
+                }
+            }
+
+            // Same positional fallback as youtube-ios, but only after every exact key match
+            // had a chance to claim its thread. Restrict it to comments whose toolbar says
+            // they have replies so a missing key cannot attach a branch to a plain comment.
+            for (var i = 0; i < comments.Count && unusedThreads.Count > 0; i++)
+            {
+                var comment = comments[i];
+                if (comment == null
+                    || !string.IsNullOrWhiteSpace(comment.ReplyContinuationToken)
+                    || string.IsNullOrWhiteSpace(comment.ReplyCount))
+                {
+                    continue;
+                }
+
+                var matched = unusedThreads[0];
+                unusedThreads.RemoveAt(0);
+                comment.ReplyContinuationToken = matched.ContinuationToken;
+                comment.RepliesText = FirstNonEmptyText(
+                    matched.DisplayText,
+                    BuildRepliesFallbackText(comment.ReplyCount));
+            }
             
             System.Diagnostics.Debug.WriteLine($"[Comments] Parsed {comments.Count} comments from JSON");
         }
@@ -10591,7 +12092,9 @@ public static class VideoParser
         stack.Push(value);
         var visitedObjects = 0;
 
-        while (stack.Count > 0 && comments.Count < 80 && visitedObjects < 7000)
+        // Current comment pages can contain far more than 7000 objects. Reply threads are
+        // commonly located after that old ceiling, which made them disappear completely.
+        while (stack.Count > 0 && comments.Count < 80 && visitedObjects < 200000)
         {
             var current = stack.Pop();
             if (current == null)
@@ -10745,7 +12248,10 @@ public static class VideoParser
                 Author = author,
                 Text = text.Trim(),
                 PublishedAt = publishedTime,
-                AuthorThumbnail = thumbnail
+                AuthorThumbnail = thumbnail,
+                ToolbarStateKey = props.GetNamedString("toolbarStateKey", string.Empty),
+                LikeCount = ExtractCommentLikeCount(payload),
+                ReplyCount = ExtractCommentReplyCount(payload)
             };
         }
         catch (Exception ex)
@@ -10804,13 +12310,338 @@ public static class VideoParser
                 Text = text,
                 PublishedAt = publishedTime,
                 AuthorThumbnail = thumbnail,
-                ContinuationToken = token
+                ContinuationToken = token,
+                ToolbarStateKey = token,
+                LikeCount = renderer.ContainsKey("voteCount")
+                    ? ExtractTextFromJsonValue(renderer.GetNamedValue("voteCount"))
+                    : string.Empty,
+                ReplyCount = FirstNonEmptyText(
+                    renderer.ContainsKey("replyCount")
+                        ? ExtractTextFromJsonValue(renderer.GetNamedValue("replyCount"))
+                        : string.Empty,
+                    renderer.ContainsKey("replyCountText")
+                        ? ExtractTextFromJsonValue(renderer.GetNamedValue("replyCountText"))
+                        : string.Empty)
             };
         }
         catch
         {
             return null;
         }
+    }
+
+    private sealed class CommentReplyThreadInfo
+    {
+        public string ContinuationToken;
+        public string ToolbarStateKey;
+        public string DisplayText;
+    }
+
+    private static List<CommentReplyThreadInfo> ExtractCommentReplyThreads(IJsonValue root)
+    {
+        var result = new List<CommentReplyThreadInfo>();
+        foreach (var thread in FindCommentObjects(root, "commentThreadRenderer", 200000))
+        {
+            try
+            {
+                var replies = thread.ContainsKey("replies")
+                    && thread.GetNamedValue("replies").ValueType == JsonValueType.Object
+                    ? thread.GetNamedObject("replies")
+                    : null;
+                if (replies == null)
+                {
+                    continue;
+                }
+
+                var token = FindCommentContinuationToken(replies);
+                if (string.IsNullOrWhiteSpace(token))
+                {
+                    continue;
+                }
+
+                var toolbarKey = string.Empty;
+                foreach (var view in FindCommentObjects(thread, "commentViewModel", 700))
+                {
+                    toolbarKey = view.GetNamedString("toolbarStateKey", string.Empty);
+                    if (!string.IsNullOrWhiteSpace(toolbarKey))
+                    {
+                        break;
+                    }
+                }
+                if (string.IsNullOrWhiteSpace(toolbarKey))
+                {
+                    foreach (var classic in FindCommentObjects(thread, "commentRenderer", 700))
+                    {
+                        toolbarKey = classic.GetNamedString("commentId", string.Empty);
+                        if (!string.IsNullOrWhiteSpace(toolbarKey))
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                result.Add(new CommentReplyThreadInfo
+                {
+                    ContinuationToken = token,
+                    ToolbarStateKey = toolbarKey,
+                    DisplayText = FindRepliesDisplayText(replies)
+                });
+            }
+            catch
+            {
+            }
+        }
+        return result;
+    }
+
+    private static List<JsonObject> FindCommentObjects(IJsonValue root, string key, int maxObjects)
+    {
+        var found = new List<JsonObject>();
+        if (root == null || string.IsNullOrWhiteSpace(key))
+        {
+            return found;
+        }
+
+        var stack = new Stack<IJsonValue>();
+        stack.Push(root);
+        var visited = 0;
+        while (stack.Count > 0 && visited < maxObjects)
+        {
+            var value = stack.Pop();
+            if (value == null)
+            {
+                continue;
+            }
+
+            if (value.ValueType == JsonValueType.Array)
+            {
+                var array = value.GetArray();
+                for (var i = array.Count - 1; i >= 0; i--)
+                {
+                    stack.Push(array[i]);
+                }
+                continue;
+            }
+
+            if (value.ValueType != JsonValueType.Object)
+            {
+                continue;
+            }
+
+            visited++;
+            var obj = value.GetObject();
+            IJsonValue match;
+            if (obj.TryGetValue(key, out match) && match != null
+                && match.ValueType == JsonValueType.Object)
+            {
+                found.Add(match.GetObject());
+            }
+
+            var children = new List<IJsonValue>();
+            foreach (var pair in obj)
+            {
+                if (pair.Value != null
+                    && (pair.Value.ValueType == JsonValueType.Object
+                        || pair.Value.ValueType == JsonValueType.Array))
+                {
+                    children.Add(pair.Value);
+                }
+            }
+            for (var i = children.Count - 1; i >= 0; i--)
+            {
+                stack.Push(children[i]);
+            }
+        }
+        return found;
+    }
+
+    private static string FindCommentContinuationToken(IJsonValue root)
+    {
+        var stack = new Stack<IJsonValue>();
+        stack.Push(root);
+        var visited = 0;
+        while (stack.Count > 0 && visited < 2000)
+        {
+            var value = stack.Pop();
+            if (value == null)
+            {
+                continue;
+            }
+
+            if (value.ValueType == JsonValueType.Array)
+            {
+                var array = value.GetArray();
+                for (var i = array.Count - 1; i >= 0; i--)
+                {
+                    stack.Push(array[i]);
+                }
+                continue;
+            }
+            if (value.ValueType != JsonValueType.Object)
+            {
+                continue;
+            }
+
+            visited++;
+            var obj = value.GetObject();
+            if (obj.ContainsKey("continuationCommand"))
+            {
+                var command = obj.GetNamedObject("continuationCommand");
+                var token = command.GetNamedString("token", string.Empty);
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    return token;
+                }
+            }
+            if (obj.ContainsKey("nextContinuationData"))
+            {
+                var next = obj.GetNamedObject("nextContinuationData");
+                var token = next.GetNamedString("continuation", string.Empty);
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    return token;
+                }
+            }
+
+            foreach (var pair in obj)
+            {
+                if (pair.Value != null
+                    && (pair.Value.ValueType == JsonValueType.Object
+                        || pair.Value.ValueType == JsonValueType.Array))
+                {
+                    stack.Push(pair.Value);
+                }
+            }
+        }
+        return string.Empty;
+    }
+
+    private static string FindRepliesDisplayText(IJsonValue root)
+    {
+        var preferredKeys = new[] { "moreText", "buttonText", "text", "title" };
+        foreach (var obj in FindAllCommentObjects(root, 2400))
+        {
+            for (var i = 0; i < preferredKeys.Length; i++)
+            {
+                IJsonValue value;
+                if (!obj.TryGetValue(preferredKeys[i], out value))
+                {
+                    continue;
+                }
+
+                var text = ExtractTextFromJsonValue(value);
+                var lower = (text ?? string.Empty).ToLowerInvariant();
+                if (lower.Contains("repl") || lower.Contains("ответ")
+                    || lower.Contains("respuesta") || lower.Contains("réponse")
+                    || lower.Contains("antwort"))
+                {
+                    return text.Trim();
+                }
+            }
+        }
+        return string.Empty;
+    }
+
+    private static List<JsonObject> FindAllCommentObjects(IJsonValue root, int maxObjects)
+    {
+        var result = new List<JsonObject>();
+        var stack = new Stack<IJsonValue>();
+        stack.Push(root);
+        while (stack.Count > 0 && result.Count < maxObjects)
+        {
+            var value = stack.Pop();
+            if (value == null)
+            {
+                continue;
+            }
+            if (value.ValueType == JsonValueType.Array)
+            {
+                var array = value.GetArray();
+                for (var i = array.Count - 1; i >= 0; i--) stack.Push(array[i]);
+                continue;
+            }
+            if (value.ValueType != JsonValueType.Object)
+            {
+                continue;
+            }
+
+            var obj = value.GetObject();
+            result.Add(obj);
+            foreach (var pair in obj)
+            {
+                if (pair.Value != null
+                    && (pair.Value.ValueType == JsonValueType.Object
+                        || pair.Value.ValueType == JsonValueType.Array))
+                {
+                    stack.Push(pair.Value);
+                }
+            }
+        }
+        return result;
+    }
+
+    private static string ExtractCommentReplyCount(JsonObject payload)
+    {
+        try
+        {
+            if (payload != null && payload.ContainsKey("toolbar"))
+            {
+                var toolbar = payload.GetNamedObject("toolbar");
+                if (toolbar.ContainsKey("replyCount"))
+                {
+                    return ExtractTextFromJsonValue(toolbar.GetNamedValue("replyCount"));
+                }
+            }
+        }
+        catch
+        {
+        }
+        return string.Empty;
+    }
+
+    private static string ExtractCommentLikeCount(JsonObject payload)
+    {
+        try
+        {
+            if (payload != null && payload.ContainsKey("toolbar"))
+            {
+                var toolbar = payload.GetNamedObject("toolbar");
+                var keys = new[] { "likeCountLiked", "likeCountNotliked", "likeCount" };
+                for (var i = 0; i < keys.Length; i++)
+                {
+                    if (!toolbar.ContainsKey(keys[i]))
+                        continue;
+
+                    var value = ExtractTextFromJsonValue(toolbar.GetNamedValue(keys[i]));
+                    if (!string.IsNullOrWhiteSpace(value))
+                        return value;
+                }
+            }
+        }
+        catch
+        {
+        }
+        return string.Empty;
+    }
+
+    private static string BuildRepliesFallbackText(string count)
+    {
+        var value = (count ?? string.Empty).Trim();
+        return string.IsNullOrWhiteSpace(value)
+            ? Localization.GetString("Replies")
+            : Localization.Format("RepliesFormat", value);
+    }
+
+    private static string FirstNonEmptyText(params string[] values)
+    {
+        if (values != null)
+        {
+            for (var i = 0; i < values.Length; i++)
+            {
+                if (!string.IsNullOrWhiteSpace(values[i])) return values[i];
+            }
+        }
+        return string.Empty;
     }
 
     private static string ExtractTextFromJsonValue(Windows.Data.Json.IJsonValue value)

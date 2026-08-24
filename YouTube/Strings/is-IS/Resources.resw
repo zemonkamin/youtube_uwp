@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>Þróað af LegacyProjects-teyminu.
@@ -18,11 +45,146 @@ Stutt af YouTube API Legacy.
 
 Útgáfa {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Reikningar</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Útlit</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Hljóðrás</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Sjálfvirkt</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Sjálfvirk þýðing &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Til baka</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Hasar/Ævintýri</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Allt</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Hreyfimyndir</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Bílar og ökutæki</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Klassík</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Gaman</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Heimildarmynd</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Drama</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Menntun</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Afþreying</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Fjölskylda</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Kvikmyndir og hreyfimyndir</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Erlent</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Leikir</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Hryllingur</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Leiðbeiningar og stíll</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Nám</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Í beinni</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Kvikmyndir</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Tónlist</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Fréttir</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Fréttir og stjórnmál</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Góðgerðastarf og aðgerðasinnar</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Fólk og blogg</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Gæludýr og dýr</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Hlaðvörp</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Vísindi og tækni</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Vísindaskáldskapur/Fantasía</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Stuttmyndir</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Þættir</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Íþróttir</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Spennumynd</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Stiklur</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Ferðalög og viðburðir</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Myndbandsblogg</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Tölvuleikir</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Rás</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Rásartákn</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Sýna rásartákn á myndbandsspjöldum</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Villa við hleðslu rásar</value>
@@ -30,14 +192,71 @@ Stutt af YouTube API Legacy.
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Rás var ekki tilgreind</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Athugasemdir</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Ertu viss um að þú viljir skrá þig út?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Staðfesta útskráningu</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Ekki tókst að hlaða rás</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Ekki tókst að hlaða tilkynningum</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Ekki tókst að hlaða spilunarlista</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Ekki tókst að hlaða myndskeiðinu. Reyndu aftur.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Ekki tókst að spila myndskeiðið.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>fyrir {0} dögum</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Lýsing ekki tiltæk</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Sækja</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Sótt</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Niðurhölin þín</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Niðurhalsmappa</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Veldu hvar sótt myndskeið eru vistuð</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Gæði niðurhals</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Niðurhöl</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Myndskeið sem þú sækir birtast hér.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Niðurhölin þín</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Niðurhöl</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Ekki er hægt að sækja þetta myndskeið</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Villukóði: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Villa: {0}</value>
@@ -62,6 +281,18 @@ Stutt af YouTube API Legacy.
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Á {0} mín. fresti</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Ekki tókst að spila myndskeið: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Úr áskriftum</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Gleráhrif</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Móða yfirlitsstikur</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Ekki tókst að hlaða ferli</value>
@@ -90,8 +321,17 @@ Stutt af YouTube API Legacy.
   <data name="LanguageSystem" xml:space="preserve">
     <value>Sjálfgefið kerfi</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Líkar við</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Tengill afritaður</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Lifandi reitur</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Sýna tillögur á upphafsskjánum</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Hleð lýsingu...</value>
@@ -237,6 +477,9 @@ Stutt af YouTube API Legacy.
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Engin myndskeið á þessum spilunarlista</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>Í lagi</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Sérsniðið</value>
   </data>
@@ -375,6 +618,15 @@ Stutt af YouTube API Legacy.
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>fyrir {0} mánuðum</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Netvilla. Athugaðu nettenginguna.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nei</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Engar athugasemdir fundust.</value>
   </data>
@@ -393,11 +645,26 @@ Stutt af YouTube API Legacy.
   <data name="NoNotifications" xml:space="preserve">
     <value>Engar tilkynningar</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Engin Shorts fundust.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Ekki tókst að uppfæra tilkynningastillingu.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Tilkynningar mistókust</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Nýjar uppfærslur frá áskriftunum þínum birtast hér.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Skráðu þig inn til að sjá YouTube-tilkynningarnar þínar.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Opnaðu þessa síðu aftur síðar.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Enginn titill</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Ekki skráð inn</value>
@@ -414,8 +681,23 @@ Stutt af YouTube API Legacy.
   <data name="PlaybackError" xml:space="preserve">
     <value>Spilunarvilla</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Spilun mistókst</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Spilunarhraði</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Ekki tókst að spila myndskeiðið. Spilarinn er ekki frumstilltur.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Spilunarlisti</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>Auðkenni spilunarlista er tómt</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Ekki tókst að uppfæra spilunarlistann</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>QR-kóði</value>
@@ -423,11 +705,62 @@ Stutt af YouTube API Legacy.
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>QR-birtingarvilla: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Gæði</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Einkunn mistókst</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube hafnaði einkunnarbeiðninni. Athugaðu að TV-tókinn sé gildur og hafi YouTube-einkunnarheimild.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Mælt með myndskeiði</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Ekki tókst að skipta endurnýjunartóka fyrir aðgangstóka.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>svör</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} svör</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Vista</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Leitarvilla: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Óþekkt</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Veldu reikning</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Veldu spilunarlista</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Enska</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Notar sjálfgefið tungumál Windows.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Tungumál forrits</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Rússneska</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Tungumál</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Tungumál</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Sjálfgefið kerfi</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Deila þessu YouTube Short</value>
@@ -435,11 +768,47 @@ Stutt af YouTube API Legacy.
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Deila þessu YouTube-myndskeiði</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Sýna Shorts í forritinu</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Sýna minna</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Meira</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>Ekki tókst að skipta TV-endurnýjunartókanum fyrir aðgangstóka. Skráðu þig inn aftur og athugaðu að endurnýjunartókinn sé enn gildur.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Innskráning nauðsynleg</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Skráðu þig inn til að horfa á Shorts.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Auglýsingahlutar á leitarstikunni</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Sýna lituð SponsorBlock-svið</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Gerast áskrifandi</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>áskrifendur</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>áskrifendur</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>áskrifandi</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} áskrifendur • {1} myndskeið</value>
@@ -450,65 +819,71 @@ Stutt af YouTube API Legacy.
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube hafnaði áskriftarbeiðninni.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube hafnaði áskriftarbeiðninni. Athugaðu að TV-tókinn sé gildur og að auðkenni rásarinnar hafi fundist.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Fyrr (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Seinna (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Endurstilla venjulega hliðrun (0,00 s)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Skjátextar</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Samstilling: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Ekki tókst að hlaða athugasemdum.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Þema</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Án titils</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Dökkt</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Myndskeiðstengillinn var afritaður á klippiborðið.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Ljóst</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} myndskeið</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Í þessari viku</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Gæði smámyndar</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Tungumál</value>
+  <data name="Today" xml:space="preserve">
+    <value>Í dag</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Tungumál forrits</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Gamanatriði</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Tungumál</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Matreiðsluuppskriftir</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Notar sjálfgefið tungumál Windows.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Gjörðu það sjálfur leiðbeiningar</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Sjálfgefið kerfi</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Hápunktar úr leikjum</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Enska</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Kvikmyndastiklur</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Rússneska</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Tónlistarmyndbönd</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>YouTube-myndskeið</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Íþróttahápunktar</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Rás</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Tækniumfjallanir</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Ekki tókst að skipta TV-endurnýjunartóka fyrir aðgangstóka.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Óþekkt</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Enginn titill</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Ekki tókst að skipta TV-endurnýjunartókanum fyrir aðgangstóka. Skráðu þig inn aftur og athugaðu að endurnýjunartókinn sé enn gildur.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>TV-endurnýjunartóki fannst ekki. Skráðu þig inn aftur og reyndu aftur.</value>
@@ -516,194 +891,23 @@ Stutt af YouTube API Legacy.
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>TV-endurnýjunartóki fannst ekki. Skráðu þig inn aftur svo yt_refresh_token vistist og reyndu svo aftur.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>Ekki tókst að skipta TV-endurnýjunartóka fyrir aðgangstóka.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Ekki tókst að skipta endurnýjunartóka fyrir aðgangstóka.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Spilun mistókst</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Ekki er hægt að spila þetta Short</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Hleðsla myndskeiðs rann út á tíma. Athugaðu nettenginguna.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Ekki tókst að hlaða myndskeiðinu. Reyndu aftur.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Ekki tókst að spila myndskeiðið. Spilarinn er ekki frumstilltur.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Ekki tókst að hlaða myndskeiðinu. Tengillinn gæti verið útrunninn eða sniðið ekki stutt.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Netvilla. Athugaðu nettenginguna.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Villa við spilun myndskeiðs. Prófaðu að velja minni gæði.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Ekki tókst að spila myndskeiðið.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Tónlistarmyndbönd</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Hápunktar úr leikjum</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Matreiðsluuppskriftir</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Tækniumfjallanir</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Kvikmyndastiklur</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Íþróttahápunktar</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Gamanatriði</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>Gjörðu það sjálfur leiðbeiningar</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Mælt með myndskeiði</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Ertu viss um að þú viljir skrá þig út?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Staðfesta útskráningu</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Já</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Nei</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>Skráðu þig inn til að sjá YouTube-tilkynningarnar þínar.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Ekki tókst að hlaða tilkynningum</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Opnaðu þessa síðu aftur síðar.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>Auðkenni spilunarlista er tómt</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} myndskeið</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Óþekkt</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Skráðu þig inn til að horfa á Shorts.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Engin Shorts fundust.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Ekki tókst að hlaða athugasemdum.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Ekki tókst að hlaða Shorts.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Ekki er hægt að spila þetta Short</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Ekki er hægt að spila þetta Short.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Gæði</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Óþekkt</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Spilunarhraði</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Hljóðrás</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Skjátextar</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Ekki tókst að spila myndskeið: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Villukóði: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Í dag</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>fyrir {0} dögum</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>fyrir {0} vikum</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>fyrir {0} mánuðum</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>fyrir {0} árum</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Til baka</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>YouTube-myndskeið</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>áskrifandi</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>áskrifendur</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>áskrifendur</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>myndskeið</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>myndskeið</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>myndskeið</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Gerast áskrifandi</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Líkar við</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Athugasemdir</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Nýjar uppfærslur frá áskriftunum þínum birtast hér.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube hafnaði áskriftarbeiðninni. Athugaðu að TV-tókinn sé gildur og að auðkenni rásarinnar hafi fundist.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube hafnaði einkunnarbeiðninni. Athugaðu að TV-tókinn sé gildur og hafi YouTube-einkunnarheimild.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>Ekki tókst að skipta TV-endurnýjunartókanum fyrir aðgangstóka. Skráðu þig inn aftur og athugaðu að endurnýjunartókinn sé enn gildur.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>Í lagi</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Í gær</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Í þessari viku</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Án titils</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Hlaðið upp myndskeiði</value>
@@ -711,146 +915,73 @@ Stutt af YouTube API Legacy.
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>Hlaðið upp myndskeiði „{0}“</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Úr áskriftum</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Myndskeiðinu var bætt við „{0}“</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Allt</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>myndskeið</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Kvikmyndir og hreyfimyndir</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Myndskeiðstengillinn var afritaður á klippiborðið.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Bílar og ökutæki</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Ekki tókst að hlaða myndskeiðinu. Tengillinn gæti verið útrunninn eða sniðið ekki stutt.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Tónlist</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Hleðsla myndskeiðs rann út á tíma. Athugaðu nettenginguna.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Gæludýr og dýr</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>myndskeið</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Íþróttir</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>myndskeið</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Stuttmyndir</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Villa við spilun myndskeiðs. Prófaðu að velja minni gæði.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Ferðalög og viðburðir</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Myndskeiðið var fjarlægt úr „{0}“</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Leikir</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} myndskeið</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Myndbandsblogg</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} myndskeið</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Fólk og blogg</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>fyrir {0} vikum</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Gaman</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>fyrir {0} árum</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Afþreying</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Já</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Fréttir og stjórnmál</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Í gær</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Leiðbeiningar og stíll</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Menntun</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube-myndskeið</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Vísindi og tækni</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube-myndskeið</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Góðgerðastarf og aðgerðasinnar</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Hreinsa niðurhlaðin myndskeið</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Kvikmyndir</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Eyða öllum myndskeiðum sem hlaðið hefur verið niður og smámyndum í skyndiminni</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Anime/Hreyfimyndir</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Öllum myndskeiðum sem hlaðið hefur verið niður og smámyndum þeirra verður eytt varanlega.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Hasar/Ævintýri</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Hreinsa</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Klassík</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Heimildarmynd</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Drama</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Fjölskylda</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Erlent</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Hryllingur</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Vísindaskáldskapur/Fantasía</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Spennumynd</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Þættir</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Stiklur</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Í beinni</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Nám</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Tölvuleikir</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Fréttir</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Hlaðvörp</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Útlit</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Þema</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Ljóst</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Dökkt</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Lifandi reitur</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Sýna tillögur á upphafsskjánum</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Gæði smámyndar</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Rásartákn</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Sýna rásartákn á myndbandsspjöldum</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Hætta við</value>
   </data>
 </root>

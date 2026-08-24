@@ -77,6 +77,8 @@ namespace YouTube
         private readonly ObservableCollection<ShortsVideoItem> _shorts = new ObservableCollection<ShortsVideoItem>();
         private readonly ObservableCollection<PlaylistItem> _playlists = new ObservableCollection<PlaylistItem>();
         private readonly ObservableCollection<ChannelPostItem> _posts = new ObservableCollection<ChannelPostItem>();
+        private readonly Dictionary<string, double> _watchedProgressByVideoId =
+            new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
         private ChannelContentTab _activeTab = ChannelContentTab.Videos;
         private readonly Dictionary<ChannelContentTab, string> _tabContinuations =
             new Dictionary<ChannelContentTab, string>();
@@ -89,10 +91,12 @@ namespace YouTube
             public string BrowseId;
             public string Params;
             public string Url;
+            public string Title;
         }
 
         private readonly Dictionary<ChannelContentTab, ChannelTabEndpoint> _tabEndpoints =
             new Dictionary<ChannelContentTab, ChannelTabEndpoint>();
+        private readonly List<ChannelContentTab> _tabOrder = new List<ChannelContentTab>();
 
         private readonly HashSet<ChannelContentTab> _loadedTabs = new HashSet<ChannelContentTab>();
         private bool _isLoadingTab;
@@ -153,17 +157,37 @@ namespace YouTube
 
         private void Channel_Loaded(object sender, RoutedEventArgs e)
         {
+            ShortsFeatureController.EnabledChanged -= ShortsFeature_EnabledChanged;
+            ShortsFeatureController.EnabledChanged += ShortsFeature_EnabledChanged;
             Window.Current.SizeChanged -= Window_SizeChanged;
             Window.Current.SizeChanged += Window_SizeChanged;
             VideosItemsControl.SizeChanged -= VideosItemsControl_SizeChanged;
             VideosItemsControl.SizeChanged += VideosItemsControl_SizeChanged;
+            ApplyAvailableChannelTabs();
             UpdateResponsiveCardLayouts();
         }
 
         private void Channel_Unloaded(object sender, RoutedEventArgs e)
         {
+            ShortsFeatureController.EnabledChanged -= ShortsFeature_EnabledChanged;
             Window.Current.SizeChanged -= Window_SizeChanged;
             VideosItemsControl.SizeChanged -= VideosItemsControl_SizeChanged;
+        }
+
+        private async void ShortsFeature_EnabledChanged(object sender, EventArgs e)
+        {
+            ApplyAvailableChannelTabs();
+            if (ShortsFeatureController.IsEnabled() || _activeTab != ChannelContentTab.Shorts)
+                return;
+
+            ChannelContentTab replacement;
+            if (TryGetFirstEnabledChannelTab(out replacement))
+                await SwitchChannelTabAsync(replacement);
+            else
+            {
+                _activeTab = ChannelContentTab.Videos;
+                UpdateChannelTabVisuals();
+            }
         }
 
         private async Task LoadChannelDataAsync()
@@ -190,6 +214,8 @@ namespace YouTube
                 _loadedTabs.Clear();
                 _tabContinuations.Clear();
                 _tabEndpoints.Clear();
+                _tabOrder.Clear();
+                _watchedProgressByVideoId.Clear();
                 _activeTab = ChannelContentTab.Videos;
                 ResetSubscriptionUi();
 
@@ -202,15 +228,29 @@ namespace YouTube
 
                 ApplyChannelInfo(data.Info);
                 ApplySubscriptionEndpointData(data.SubscriptionState);
-                await LoadChannelSubscriptionStateAsync(_currentChannelId, data.SubscriptionState);
 
-                foreach (var video in data.Videos)
+                ApplyAvailableChannelTabs();
+
+                if (_tabEndpoints.ContainsKey(ChannelContentTab.Videos))
                 {
-                    _videos.Add(video);
-                }
+                    _activeTab = ChannelContentTab.Videos;
+                    foreach (var video in data.Videos)
+                    {
+                        _videos.Add(video);
+                    }
 
-                _loadedTabs.Add(ChannelContentTab.Videos);
-                _tabContinuations[ChannelContentTab.Videos] = data.Continuation ?? string.Empty;
+                    _loadedTabs.Add(ChannelContentTab.Videos);
+                    _tabContinuations[ChannelContentTab.Videos] = data.Continuation ?? string.Empty;
+                }
+                else
+                {
+                    ChannelContentTab initialTab;
+                    if (TryGetFirstEnabledChannelTab(out initialTab))
+                    {
+                        _activeTab = initialTab;
+                        await LoadChannelTabFirstPageAsync(_activeTab);
+                    }
+                }
                 UpdateChannelTabVisuals();
 
                 LoadingGrid.Visibility = Visibility.Collapsed;
@@ -220,11 +260,30 @@ namespace YouTube
                 }
                 MainContent.Visibility = Visibility.Visible;
                 UpdateResponsiveCardLayouts();
+
+                // Authentication and subscription-state discovery can require an additional
+                // TV/MWEB request. It must not hold the whole channel page behind the spinner.
+                BeginLoadChannelSubscriptionState(_currentChannelId, data.SubscriptionState);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("[Channel] Load error: " + ex.Message);
                 ShowErrorPanel(Localization.GetString("ChannelLoadingError"));
+            }
+        }
+
+        private async void BeginLoadChannelSubscriptionState(
+            string channelId,
+            SubscriptionLoadResult preliminaryResult)
+        {
+            try
+            {
+                await LoadChannelSubscriptionStateAsync(channelId, preliminaryResult);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Channel] Deferred subscription-state load failed: " + ex.Message);
             }
         }
 
@@ -237,7 +296,7 @@ namespace YouTube
                 return;
             }
 
-            Frame.Navigate(typeof(Playlist), item.PlaylistId);
+            Frame.Navigate(typeof(Playlist), item);
         }
 
         private void ApplyChannelInfo(ChannelPageInfo info)
@@ -343,6 +402,9 @@ namespace YouTube
         private async void ShortsTab_Tapped(object sender, TappedRoutedEventArgs e)
         {
             e.Handled = true;
+            if (!ShortsFeatureController.IsEnabled())
+                return;
+
             await SwitchChannelTabAsync(ChannelContentTab.Shorts);
         }
 
@@ -360,6 +422,9 @@ namespace YouTube
 
         private async Task SwitchChannelTabAsync(ChannelContentTab tab)
         {
+            if (tab == ChannelContentTab.Shorts && !ShortsFeatureController.IsEnabled())
+                return;
+
             if (_activeTab == tab && _loadedTabs.Contains(tab))
             {
                 return;
@@ -367,13 +432,6 @@ namespace YouTube
 
             _activeTab = tab;
             UpdateChannelTabVisuals();
-
-            if (tab != ChannelContentTab.Videos)
-            {
-                // Refresh against the normal channel page before opening a sibling tab. This is
-                // the exact ordering used by YouTube.js TabbedFeed.getTabByURL().
-                await RefreshCanonicalChannelTabEndpointsAsync(_currentChannelId);
-            }
 
             if (_loadedTabs.Contains(tab))
             {
@@ -480,6 +538,46 @@ namespace YouTube
             SetTabIndicator(PostsTabIndicator, PostsTabText, _activeTab == ChannelContentTab.Posts);
         }
 
+        private void ApplyAvailableChannelTabs()
+        {
+            ApplyAvailableChannelTab(ChannelContentTab.Videos, VideosTabButton, VideosTabText);
+            ApplyAvailableChannelTab(ChannelContentTab.Shorts, ShortsTabButton, ShortsTabText);
+            ApplyAvailableChannelTab(ChannelContentTab.Playlists, PlaylistsTabButton, PlaylistsTabText);
+            ApplyAvailableChannelTab(ChannelContentTab.Posts, PostsTabButton, PostsTabText);
+        }
+
+        private void ApplyAvailableChannelTab(ChannelContentTab tab, FrameworkElement container, TextBlock text)
+        {
+            ChannelTabEndpoint endpoint;
+            var available = _tabEndpoints.TryGetValue(tab, out endpoint)
+                && endpoint != null
+                && (tab != ChannelContentTab.Shorts || ShortsFeatureController.IsEnabled());
+            if (container != null)
+            {
+                container.Visibility = available ? Visibility.Visible : Visibility.Collapsed;
+            }
+            if (available && text != null && !string.IsNullOrWhiteSpace(endpoint.Title))
+            {
+                text.Text = endpoint.Title;
+            }
+        }
+
+        private bool TryGetFirstEnabledChannelTab(out ChannelContentTab tab)
+        {
+            for (var i = 0; i < _tabOrder.Count; i++)
+            {
+                var candidate = _tabOrder[i];
+                if (candidate != ChannelContentTab.Shorts || ShortsFeatureController.IsEnabled())
+                {
+                    tab = candidate;
+                    return true;
+                }
+            }
+
+            tab = ChannelContentTab.Videos;
+            return false;
+        }
+
         private static void SetTabIndicator(Border indicator, TextBlock text, bool selected)
         {
             if (indicator != null)
@@ -536,6 +634,19 @@ namespace YouTube
             }
         }
 
+        private async void BeginPreloadPostImages(List<ChannelPostItem> posts)
+        {
+            try
+            {
+                await PreloadPostImagesAsync(posts);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Channel] Deferred post image preload failed: " + ex.Message);
+            }
+        }
+
         private async Task PreloadPostImageAsync(ChannelPostItem item)
         {
             try
@@ -550,10 +661,37 @@ namespace YouTube
             }
             catch (Exception ex)
             {
-                item.ImageSource = null;
+                item.ImageSource = CreateRemoteBitmapSource(item.ImageUrl, 1200);
                 System.Diagnostics.Debug.WriteLine(
                     "[Channel] Post image preload exception for "
                     + item.ImageUrl + ": " + ex.Message);
+            }
+        }
+
+        private static BitmapImage CreateRemoteBitmapSource(string rawUrl, int decodePixelWidth)
+        {
+            var candidates = BuildCommunityImageCandidates(rawUrl);
+            if (candidates.Count == 0)
+            {
+                return null;
+            }
+
+            try
+            {
+                // Prefer the plain-size ggpht variant for the native UWP image pipeline.
+                var url = candidates.Count > 1 ? candidates[1] : candidates[0];
+                var bitmap = new BitmapImage();
+                if (decodePixelWidth > 0)
+                {
+                    bitmap.DecodePixelType = DecodePixelType.Logical;
+                    bitmap.DecodePixelWidth = decodePixelWidth;
+                }
+                bitmap.UriSource = new Uri(url);
+                return bitmap;
+            }
+            catch
+            {
+                return null;
             }
         }
 
@@ -652,6 +790,8 @@ namespace YouTube
                     "Mozilla/5.0 (Windows NT 10.0; ARM; Touch) AppleWebKit/537.36 "
                     + "(KHTML, like Gecko) Edge/15.15063");
                 request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/");
+                request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
+                request.Headers.TryAddWithoutValidation("Accept-Language", "en-US,en;q=0.9");
                 request.Headers.TryAddWithoutValidation(
                     "Accept",
                     "image/jpeg,image/png,image/*;q=0.8,*/*;q=0.5");
@@ -795,8 +935,18 @@ namespace YouTube
                 return null;
             }
 
-            var payload = BuildBrowsePayload(channelId);
-            var json = await PostInnertubeAsync("browse", payload);
+            var canonicalPayload = new JsonObject();
+            canonicalPayload["context"] = BuildContext();
+            canonicalPayload["browseId"] = JsonValue.CreateStringValue(channelId);
+
+            // The Videos response and the canonical channel response are independent. Starting
+            // both together removes one complete network round trip from initial page loading.
+            var videosRequest = PostInnertubeAsync("browse", BuildBrowsePayload(channelId));
+            var canonicalRequest = PostInnertubeAsync("browse", canonicalPayload.Stringify());
+            // Public WEB channel renderers frequently omit resume overlays. Ask the signed-in
+            // TV client for the same Videos tab in parallel and merge only the progress field.
+            var tvVideosRequest = Config.GetChannelVideosAsync(channelId);
+            var json = await videosRequest;
             if (string.IsNullOrWhiteSpace(json))
             {
                 return null;
@@ -811,7 +961,21 @@ namespace YouTube
             // Keep the endpoints from this response as a fallback, then refresh them from a
             // canonical browse without params. This is important for Playlists on current WEB.
             ExtractChannelTabEndpoints(root, channelId);
-            await RefreshCanonicalChannelTabEndpointsAsync(channelId);
+            try
+            {
+                var canonicalJson = await canonicalRequest;
+                if (!string.IsNullOrWhiteSpace(canonicalJson))
+                {
+                    ApplyCanonicalChannelTabEndpoints(
+                        JsonValue.Parse(canonicalJson).GetObject(),
+                        channelId);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Channel] Parallel canonical browse failed: " + ex.Message);
+            }
 
             var info = ExtractChannelInfo(root, channelId);
             var subscriptionState = ExtractSubscriptionStateFromBrowse(root, "public /browse", channelId);
@@ -822,6 +986,14 @@ namespace YouTube
 
             ExtractVideosRecursively(videosContent ?? root, videos, info.Title, seen, count, ref visited);
             ApplyKnownChannelAvatarToVideos(videos, info.ChannelId, info.ThumbnailUrl);
+            try
+            {
+                RememberAndApplyWatchedProgress(videos, await tvVideosRequest);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Channel] TV progress merge failed: " + ex.Message);
+            }
 
             return new ChannelPageData
             {
@@ -914,6 +1086,7 @@ namespace YouTube
                 ExtractVideosRecursively(root, page.Videos, ChannelTitle != null ? ChannelTitle.Text : string.Empty,
                     seen, 60, ref visited);
                 ApplyKnownChannelAvatarToVideos(page.Videos, _currentChannelId, _channelAvatarUrl);
+                ApplyRememberedWatchedProgress(page.Videos);
             }
             else if (tab == ChannelContentTab.Shorts)
             {
@@ -921,7 +1094,10 @@ namespace YouTube
             }
             else if (tab == ChannelContentTab.Playlists)
             {
-                page.Playlists = ParseChannelPlaylists(root, 200);
+                page.Playlists = ParseChannelPlaylists(
+                    root,
+                    200,
+                    ChannelTitle != null ? ChannelTitle.Text : string.Empty);
 
                 // Some YouTube builds accept the tab endpoint but return a shell whose actual
                 // playlist data is hydrated only on the /playlists web route. YouTube.js follows
@@ -959,13 +1135,49 @@ namespace YouTube
             {
                 page.Posts = ParseChannelPosts(root, 50, _channelAvatarUrl);
 
-                // Resolve community media before the models are added to ItemsControl.
-                // This avoids relying on Loaded/DataContextChanged from an initially collapsed
-                // DataTemplate, which is unreliable on older UWP builds.
-                await PreloadPostImagesAsync(page.Posts);
+                // Show post text immediately. ImageSource notifies the template when each
+                // attachment finishes, so media no longer blocks the entire Posts page.
+                BeginPreloadPostImages(page.Posts);
             }
 
             return page;
+        }
+
+        private void RememberAndApplyWatchedProgress(
+            IList<VideoCardItem> target,
+            IEnumerable<VideoCardItem> tvVideos)
+        {
+            if (tvVideos != null)
+            {
+                foreach (var video in tvVideos)
+                {
+                    if (video != null && !string.IsNullOrWhiteSpace(video.VideoId) && video.WatchedPercent > 0)
+                    {
+                        _watchedProgressByVideoId[video.VideoId] = video.WatchedPercent;
+                    }
+                }
+            }
+
+            ApplyRememberedWatchedProgress(target);
+        }
+
+        private void ApplyRememberedWatchedProgress(IEnumerable<VideoCardItem> videos)
+        {
+            if (videos == null)
+            {
+                return;
+            }
+
+            foreach (var video in videos)
+            {
+                double percent;
+                if (video != null
+                    && !string.IsNullOrWhiteSpace(video.VideoId)
+                    && _watchedProgressByVideoId.TryGetValue(video.VideoId, out percent))
+                {
+                    video.WatchedPercent = percent;
+                }
+            }
         }
 
         private sealed class PlaylistHtmlPage
@@ -1022,7 +1234,10 @@ namespace YouTube
                     var root = JsonValue.Parse(initialDataJson);
                     return new PlaylistHtmlPage
                     {
-                        Items = ParseChannelPlaylists(root, 200),
+                        Items = ParseChannelPlaylists(
+                            root,
+                            200,
+                            ChannelTitle != null ? ChannelTitle.Text : string.Empty),
                         Continuation = ExtractContinuationToken(root)
                     };
                 }
@@ -1154,22 +1369,7 @@ namespace YouTube
                     return;
                 }
 
-                var root = JsonValue.Parse(json).GetObject();
-
-                // Do not lose a working fallback if YouTube gives us an incomplete tab list.
-                var oldEndpoints = new Dictionary<ChannelContentTab, ChannelTabEndpoint>(_tabEndpoints);
-                ExtractChannelTabEndpoints(root, channelId);
-
-                foreach (var pair in oldEndpoints)
-                {
-                    if (!_tabEndpoints.ContainsKey(pair.Key))
-                    {
-                        _tabEndpoints[pair.Key] = pair.Value;
-                    }
-                }
-
-                System.Diagnostics.Debug.WriteLine(
-                    "[Channel] Canonical tab endpoints refreshed: " + _tabEndpoints.Count);
+                ApplyCanonicalChannelTabEndpoints(JsonValue.Parse(json).GetObject(), channelId);
             }
             catch (Exception ex)
             {
@@ -1178,9 +1378,32 @@ namespace YouTube
             }
         }
 
+        private void ApplyCanonicalChannelTabEndpoints(JsonObject root, string channelId)
+        {
+            // The canonical page is the source of truth, just like youtube-ios. Keep the
+            // earlier list only when parsing the canonical response found no tabs at all.
+            var oldEndpoints = new Dictionary<ChannelContentTab, ChannelTabEndpoint>(_tabEndpoints);
+            var oldOrder = new List<ChannelContentTab>(_tabOrder);
+            ExtractChannelTabEndpoints(root, channelId);
+
+            if (_tabEndpoints.Count == 0)
+            {
+                foreach (var pair in oldEndpoints)
+                {
+                    _tabEndpoints[pair.Key] = pair.Value;
+                }
+                _tabOrder.Clear();
+                _tabOrder.AddRange(oldOrder);
+            }
+
+            System.Diagnostics.Debug.WriteLine(
+                "[Channel] Canonical tab endpoints refreshed: " + _tabEndpoints.Count);
+        }
+
         private void ExtractChannelTabEndpoints(JsonObject root, string fallbackChannelId)
         {
             _tabEndpoints.Clear();
+            _tabOrder.Clear();
 
             if (root == null)
             {
@@ -1189,6 +1412,9 @@ namespace YouTube
 
             var tabRenderers = new List<JsonObject>();
             FindObjectsByKey(root, "tabRenderer", tabRenderers, 0, 12);
+            var expandableTabs = new List<JsonObject>();
+            FindObjectsByKey(root, "expandableTabRenderer", expandableTabs, 0, 12);
+            tabRenderers.AddRange(expandableTabs);
 
             for (int i = 0; i < tabRenderers.Count; i++)
             {
@@ -1228,12 +1454,23 @@ namespace YouTube
                     continue;
                 }
 
+                if (string.Equals(title, "Search", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(title, Localization.GetString("Search"), StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 _tabEndpoints[tab] = new ChannelTabEndpoint
                 {
                     BrowseId = browseId,
                     Params = browseParams,
-                    Url = url
+                    Url = url,
+                    Title = title
                 };
+                if (!_tabOrder.Contains(tab))
+                {
+                    _tabOrder.Add(tab);
+                }
 
                 System.Diagnostics.Debug.WriteLine(
                     "[Channel] Captured tab endpoint " + tab
@@ -1242,17 +1479,6 @@ namespace YouTube
                     + ", params=" + browseParams);
             }
 
-            // The page was initially requested with Videos selected. Keep a reliable Videos
-            // fallback even if YouTube omitted endpoint data from the selected tab renderer.
-            if (!_tabEndpoints.ContainsKey(ChannelContentTab.Videos))
-            {
-                _tabEndpoints[ChannelContentTab.Videos] = new ChannelTabEndpoint
-                {
-                    BrowseId = fallbackChannelId,
-                    Params = ChannelVideosTabParams,
-                    Url = "/channel/" + fallbackChannelId + "/videos"
-                };
-            }
         }
 
         private static JsonObject FirstObject(params JsonObject[] objects)
@@ -1407,6 +1633,7 @@ namespace YouTube
                 }
 
                 var title = FirstNonEmpty(
+                    ExtractShortsMetadataText(renderer, "primaryText"),
                     ExtractText(GetObject(renderer, "headline")),
                     ExtractText(GetObject(renderer, "title")),
                     FindFirstTextByKey(renderer, "headline", 0, 10),
@@ -1416,14 +1643,22 @@ namespace YouTube
                     ExtractThumbnailUrl(GetObject(renderer, "thumbnail")),
                     ExtractFirstImageUrl(renderer, "thumbnail"),
                     ExtractFirstImageUrl(renderer, "image"),
-                    "https://i.ytimg.com/vi/" + videoId + "/oardefault.jpg");
+                    "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg");
+
+                var viewCount = FirstNonEmpty(
+                    ExtractShortsMetadataText(renderer, "secondaryText"),
+                    ExtractText(GetObject(renderer, "shortViewCountText")),
+                    ExtractText(GetObject(renderer, "viewCountText")),
+                    FindFirstTextByKey(renderer, "shortViewCountText", 0, 12),
+                    FindFirstTextByKey(renderer, "viewCountText", 0, 12));
 
                 result.Add(new ShortsVideoItem
                 {
                     VideoId = videoId,
                     Title = title,
                     ChannelName = string.Empty,
-                    ThumbnailUrl = thumbnail
+                    ThumbnailUrl = thumbnail,
+                    ViewCount = viewCount
                 });
             }
 
@@ -1438,10 +1673,8 @@ namespace YouTube
                     continue;
                 }
 
-                var overlay = GetObject(renderer, "overlayMetadata");
-                var primary = GetObject(overlay, "primaryText");
                 var title = FirstNonEmpty(
-                    ExtractText(primary),
+                    ExtractShortsMetadataText(renderer, "primaryText"),
                     FindFirstTextByKey(renderer, "primaryText", 0, 10),
                     FindFirstTextByKey(renderer, "title", 0, 10),
                     "Shorts");
@@ -1450,14 +1683,18 @@ namespace YouTube
                     ExtractThumbnailUrl(GetObject(renderer, "thumbnail")),
                     ExtractFirstImageUrl(renderer, "thumbnail"),
                     ExtractFirstImageUrl(renderer, "image"),
-                    "https://i.ytimg.com/vi/" + videoId + "/oardefault.jpg");
+                    "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg");
 
                 result.Add(new ShortsVideoItem
                 {
                     VideoId = videoId,
                     Title = title,
                     ChannelName = string.Empty,
-                    ThumbnailUrl = thumbnail
+                    ThumbnailUrl = thumbnail,
+                    ViewCount = FirstNonEmpty(
+                        ExtractShortsMetadataText(renderer, "secondaryText"),
+                        FindFirstTextByKey(renderer, "secondaryText", 0, 12),
+                        FindFirstTextByKey(renderer, "viewCountText", 0, 12))
                 });
             }
 
@@ -1469,7 +1706,41 @@ namespace YouTube
             return result;
         }
 
-        private static List<PlaylistItem> ParseChannelPlaylists(IJsonValue root, int maxCount)
+        // Matches youtube-ios: prefer overlayMetadata and then find the rendered
+        // primary/secondary value anywhere in the Shorts view-model.
+        private static string ExtractShortsMetadataText(JsonObject renderer, string fieldName)
+        {
+            if (renderer == null || string.IsNullOrWhiteSpace(fieldName)) return string.Empty;
+
+            var overlays = new List<JsonObject>();
+            FindObjectsByKey(renderer, "overlayMetadata", overlays, 0, 32);
+            for (int i = 0; i < overlays.Count; i++)
+            {
+                var text = ExtractRenderedField(overlays[i], fieldName);
+                if (!string.IsNullOrWhiteSpace(text)) return text;
+            }
+
+            return FindFirstTextByKey(renderer, fieldName, 0, 32);
+        }
+
+        private static string ExtractRenderedField(JsonObject parent, string key)
+        {
+            if (parent == null || !parent.ContainsKey(key) || parent[key] == null)
+                return string.Empty;
+
+            var value = parent[key];
+            if (value.ValueType == JsonValueType.String)
+                return value.GetString();
+
+            return value.ValueType == JsonValueType.Object
+                ? ExtractText(value.GetObject())
+                : string.Empty;
+        }
+
+        private static List<PlaylistItem> ParseChannelPlaylists(
+            IJsonValue root,
+            int maxCount,
+            string fallbackAuthor)
         {
             var result = new List<PlaylistItem>();
             var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -1515,12 +1786,17 @@ namespace YouTube
                     "Playlist");
 
                 var thumbnail = ExtractPlaylistLockupThumbnail(renderer);
-                var countText = ExtractPlaylistLockupCount(lockupMetadata);
+                var countText = FirstNonEmpty(
+                    ExtractPlaylistBadgeText(renderer),
+                    ExtractPlaylistLockupCount(lockupMetadata));
 
                 result.Add(new PlaylistItem
                 {
                     PlaylistId = playlistId,
                     Title = title,
+                    AuthorName = FirstNonEmpty(
+                        fallbackAuthor,
+                        Config.ExtractPlaylistCardAuthor(renderer)),
                     ThumbnailUrl = thumbnail,
                     VideoCountText = countText
                 });
@@ -1537,7 +1813,13 @@ namespace YouTube
                 var renderer = legacy[i];
                 var playlistId = FirstNonEmpty(
                     GetString(renderer, "playlistId"),
+                    GetString(renderer, "contentId"),
                     FindPlaylistIdFromNavigation(renderer));
+
+                if (playlistId.StartsWith("VL", StringComparison.OrdinalIgnoreCase))
+                {
+                    playlistId = playlistId.Substring(2);
+                }
 
                 if (string.IsNullOrWhiteSpace(playlistId) || !seen.Add(playlistId))
                 {
@@ -1551,11 +1833,17 @@ namespace YouTube
                         ExtractText(GetObject(renderer, "title")),
                         FindFirstTextByKey(renderer, "title", 0, 10),
                         "Playlist"),
+                    AuthorName = FirstNonEmpty(
+                        fallbackAuthor,
+                        Config.ExtractPlaylistCardAuthor(renderer)),
                     ThumbnailUrl = FirstNonEmpty(
+                        ExtractFirstImageUrl(GetObject(GetObject(renderer, "header"), "tileHeaderRenderer"), "thumbnail"),
                         ExtractThumbnailUrl(GetObject(renderer, "thumbnail")),
                         ExtractFirstImageUrl(renderer, "thumbnail"),
                         ExtractFirstImageUrl(renderer, "image")),
                     VideoCountText = FirstNonEmpty(
+                        ExtractPlaylistBadgeText(renderer),
+                        ExtractText(GetObject(renderer, "videoCountShortText")),
                         ExtractText(GetObject(renderer, "videoCountText")),
                         GetString(renderer, "videoCount"),
                         FindFirstTextByKey(renderer, "videoCountText", 0, 12))
@@ -1639,6 +1927,44 @@ namespace YouTube
             }
 
             return string.Empty;
+        }
+
+        private static string ExtractPlaylistBadgeText(JsonObject renderer)
+        {
+            if (renderer == null)
+            {
+                return string.Empty;
+            }
+
+            foreach (var key in new[]
+            {
+                "thumbnailBadgeViewModel",
+                "thumbnailOverlayTimeStatusRenderer",
+                "thumbnailOverlayBottomPanelRenderer"
+            })
+            {
+                var nodes = new List<JsonObject>();
+                FindObjectsByKey(renderer, key, nodes, 0, 18);
+                for (var i = 0; i < nodes.Count; i++)
+                {
+                    var text = FirstNonEmpty(
+                        GetString(nodes[i], "text"),
+                        ExtractText(GetObject(nodes[i], "text")),
+                        ExtractText(nodes[i]));
+                    if (!string.IsNullOrWhiteSpace(text))
+                    {
+                        return text;
+                    }
+                }
+            }
+
+            return FirstNonEmpty(
+                GetString(renderer, "videoCountShortText"),
+                GetString(renderer, "videoCountText"),
+                ExtractText(GetObject(renderer, "videoCountShortText")),
+                ExtractText(GetObject(renderer, "videoCountText")),
+                FindFirstTextByKey(renderer, "videoCountShortText", 0, 14),
+                FindFirstTextByKey(renderer, "videoCountText", 0, 14));
         }
 
         private static string ExtractLargestThumbnailSource(JsonObject image)
@@ -1796,7 +2122,14 @@ namespace YouTube
                 return string.Empty;
             }
 
-            var attachment = GetObject(renderer, "backstageAttachment");
+            var attachment = FirstObject(
+                GetObject(renderer, "backstageAttachment"),
+                GetObject(renderer, "attachment"),
+                GetObject(renderer, "postAttachment"),
+                GetObject(renderer, "contentAttachment"),
+                GetObject(renderer, "imageAttachmentViewModel"),
+                GetObject(renderer, "postMultiImageRenderer"),
+                GetObject(renderer, "backstageImageRenderer"));
             if (attachment == null)
             {
                 return string.Empty;
@@ -1823,6 +2156,10 @@ namespace YouTube
             // backstageAttachment.postMultiImageRenderer.images[]
             //     .backstageImageRenderer.image.thumbnails[]
             var multi = GetObject(attachment, "postMultiImageRenderer");
+            if (multi == null && attachment.ContainsKey("images"))
+            {
+                multi = attachment;
+            }
             var images = GetArray(multi, "images");
             if (images != null)
             {
@@ -1848,7 +2185,7 @@ namespace YouTube
             }
 
             // YouTube periodically wraps the same media in a new view-model layer.
-            // Restrict the fallback to backstageAttachment, then select its largest image.
+            // Restrict the fallback to the attachment, then select its largest image.
             // This catches imageAttachmentViewModel/new community wrappers without ever
             // walking the full post/page and accidentally selecting an avatar.
             var fallback = ExtractLargestImageUrl(attachment);
@@ -1868,18 +2205,9 @@ namespace YouTube
                 return string.Empty;
             }
 
-            // Community thumbnails are commonly ggpht URLs with a dynamic =wNNN-hNNN... suffix.
-            // Requesting a simple size form avoids formats/variants that old Win10 BitmapImage
-            // cannot decode reliably.
-            var equals = url.LastIndexOf('=');
-            if (equals > url.IndexOf("://", StringComparison.Ordinal) + 3
-                && (url.IndexOf("ggpht", StringComparison.OrdinalIgnoreCase) >= 0
-                    || url.IndexOf("googleusercontent", StringComparison.OrdinalIgnoreCase) >= 0))
-            {
-                url = url.Substring(0, equals) + "=s1200";
-            }
-
-            return url;
+            // Preserve the server URL here. BuildCommunityImageCandidates will try it first and
+            // then derive plain JPEG-compatible size transforms for older Windows image codecs.
+            return url.Replace("&amp;", "&");
         }
 
 
@@ -2521,7 +2849,8 @@ namespace YouTube
                 ChannelId = Config.ExtractVideoCardChannelId(renderer),
                 ChannelThumbnailUrl = Config.ExtractVideoCardChannelThumbnail(renderer),
                 Duration = FirstNonEmpty(ExtractText(GetObject(renderer, "lengthText")), ExtractDurationFromOverlays(renderer), string.Empty),
-                ThumbnailUrl = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg"
+                ThumbnailUrl = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg",
+                WatchedPercent = Config.ExtractWatchedPercent(renderer)
             };
         }
 
@@ -2613,7 +2942,8 @@ namespace YouTube
                 Duration = ExtractDurationFromLockup(lockup),
                 ThumbnailUrl = "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg",
                 ViewCount = views,
-                PublishedText = published
+                PublishedText = published,
+                WatchedPercent = Config.ExtractWatchedPercent(lockup)
             };
         }
 
@@ -4160,7 +4490,7 @@ namespace YouTube
             var payload = new JsonObject();
             payload["context"] = mobileWebClient ? BuildMwebContext() : BuildTvContext();
             payload["browseId"] = JsonValue.CreateStringValue(channelId);
-            return payload.Stringify();
+            return global::Config.ApplySelectedAccountContext(payload.Stringify(), true);
         }
 
         private static JsonObject BuildTvContext()
@@ -4221,7 +4551,7 @@ namespace YouTube
                 payload["context"].GetObject()["clickTracking"] = clickTracking;
             }
 
-            return payload.Stringify();
+            return global::Config.ApplySelectedAccountContext(payload.Stringify(), true);
         }
 
         private static string BuildNotificationPreferencePayload(string parameters)
@@ -4232,7 +4562,7 @@ namespace YouTube
             {
                 payload["params"] = JsonValue.CreateStringValue(parameters);
             }
-            return payload.Stringify();
+            return global::Config.ApplySelectedAccountContext(payload.Stringify(), true);
         }
 
         private static string BuildNotificationPreferenceParams(string channelId, ChannelNotificationState targetState)
@@ -4277,6 +4607,7 @@ namespace YouTube
         private static void AddInnertubeAuthHeadersForClient(HttpRequestMessage request, string accessToken, string clientNameHeader, string clientVersion, string userAgent)
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            global::Config.ApplySelectedAccountHeader(request, true);
             request.Headers.TryAddWithoutValidation("User-Agent", userAgent);
             request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", clientNameHeader);
@@ -5362,14 +5693,26 @@ namespace YouTube
             return (text ?? string.Empty).Replace("_", string.Empty).Replace("-", string.Empty).Replace(" ", string.Empty).ToUpperInvariant();
         }
 
-        private sealed class ChannelPostItem
+        private sealed class ChannelPostItem : System.ComponentModel.INotifyPropertyChanged
         {
+            private BitmapImage _imageSource;
+
             public string Text { get; set; }
             public string Author { get; set; }
             public string PublishedText { get; set; }
             public string AuthorThumbnailUrl { get; set; }
             public string ImageUrl { get; set; }
-            public BitmapImage ImageSource { get; set; }
+            public BitmapImage ImageSource
+            {
+                get { return _imageSource; }
+                set
+                {
+                    if (ReferenceEquals(_imageSource, value)) return;
+                    _imageSource = value;
+                    RaisePropertyChanged("ImageSource");
+                    RaisePropertyChanged("ImageVisibility");
+                }
+            }
 
             public string MetaLine
             {
@@ -5383,7 +5726,23 @@ namespace YouTube
 
             public Visibility ImageVisibility
             {
-                get { return ImageSource != null ? Visibility.Visible : Visibility.Collapsed; }
+                get
+                {
+                    return !string.IsNullOrWhiteSpace(ImageUrl)
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
+                }
+            }
+
+            public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+            private void RaisePropertyChanged(string propertyName)
+            {
+                var handler = PropertyChanged;
+                if (handler != null)
+                {
+                    handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+                }
             }
         }
 

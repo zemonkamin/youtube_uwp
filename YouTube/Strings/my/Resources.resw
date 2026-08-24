@@ -1,28 +1,987 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
           </xsd:element>
-          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
-          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /><xsd:element name="comment" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
-          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
         </xsd:choice>
       </xsd:complexType>
     </xsd:element>
   </xsd:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutText" xml:space="preserve">
+    <value>LegacyProjects အဖွဲ့မှ ဖန်တီးထားသည်။
+YouTube API Legacy မှ ပံ့ပိုးထားသည်။
+
+ဗားရှင်း {0}</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>အကောင့်များ</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>အသွင်အပြင်</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>အသံလမ်းကြောင်း</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>အလိုအလျောက်</value>
+  </data>
+  <data name="AutoTranslate" xml:space="preserve">
+    <value>အလိုအလျောက် ဘာသာပြန် &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; နောက်သို့</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>အက်ရှင်/စွန့်စားခန်း</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>အားလုံး</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>အန်နီမေး/အန်နီမေးရှင်း</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>မော်တော်ယာဉ် &amp; ယာဉ်များ</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>ဂန္ထဝင်</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>ဟာသ</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>မှတ်တမ်းရုပ်ရှင်</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>ဒရာမာ</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>ပညာရေး</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>ဖျော်ဖြေရေး</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>မိသားစု</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>ရုပ်ရှင် &amp; အန်နီမေးရှင်း</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>နိုင်ငံခြား</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>ဂိမ်း</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>ထိတ်လန့်</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>လုပ်နည်း &amp; စတိုင်</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>သင်ယူခြင်း</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>တိုက်ရိုက်</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>ရုပ်ရှင်များ</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>တေးဂီတ</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>သတင်း</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>သတင်း &amp; နိုင်ငံရေး</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>အကျိုးအမြတ်မယူ &amp; လှုပ်ရှားမှု</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>လူများ &amp; ဘလော့ဂ်များ</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>အိမ်မွေးတိရစ္ဆာန် &amp; တိရစ္ဆာန်များ</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>ပေါ့ဒ်ကတ်စ်</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>သိပ္ပံ &amp; နည်းပညာ</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>သိပ္ပံစိတ်ကူး/ဖန်တစီ</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>ရုပ်ရှင်တိုများ</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>ရှိုးများ</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>အားကစား</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>သည်းထိတ်ရင်ဖို</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>အမြည်းများ</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>ခရီးသွား &amp; ပွဲများ</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>ဗီဒီယိုဘလော့ဂ်</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>ဗီဒီယိုဂိမ်းများ</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>ချန်နယ်</value>
+  </data>
   <data name="ChannelIcons" xml:space="preserve">
     <value>ချန်နယ် အိုင်ကွန်များ</value>
   </data>
   <data name="ChannelIconsDescription" xml:space="preserve">
     <value>ဗီဒီယိုကတ်များပေါ်တွင် ချန်နယ်အိုင်ကွန်များကို ပြပါ</value>
+  </data>
+  <data name="ChannelLoadingError" xml:space="preserve">
+    <value>ချန်နယ်တင်ရာတွင် အမှား</value>
+  </data>
+  <data name="ChannelWasNotProvided" xml:space="preserve">
+    <value>ချန်နယ် မပေးထားပါ</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>မှတ်ချက်များ</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>အကောင့်ထွက်ရန် သေချာပါသလား?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>အကောင့်ထွက်ခြင်း အတည်ပြု</value>
+  </data>
+  <data name="CouldNotLoadChannel" xml:space="preserve">
+    <value>ချန်နယ်ကို တင်၍မရပါ</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>အသိပေးချက်များကို တင်၍မရပါ</value>
+  </data>
+  <data name="CouldNotLoadPlaylist" xml:space="preserve">
+    <value>အစီအစဉ်စာရင်းကို တင်၍မရပါ</value>
+  </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>ဗီဒီယိုကို တင်၍မရပါ။ ထပ်ကြိုးစားပါ။</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>ဗီဒီယိုကို ဖွင့်၍မရပါ။</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>လွန်ခဲ့သော {0} ရက်</value>
+  </data>
+  <data name="DescriptionNotAvailable" xml:space="preserve">
+    <value>ဖော်ပြချက် မရနိုင်ပါ</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>ဒေါင်းလုဒ်လုပ်ရန်</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>ဒေါင်းလုဒ်ပြီးပါပြီ</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>သင့်ဒေါင်းလုဒ်များ</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>ဒေါင်းလုဒ်ဖိုင်တွဲ</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>ဒေါင်းလုဒ်ဗီဒီယိုများ သိမ်းမည့်နေရာကို ရွေးပါ</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>ဒေါင်းလုဒ်အရည်အသွေး</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>ဒေါင်းလုဒ်များ</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>သင်ဒေါင်းလုဒ်လုပ်သော ဗီဒီယိုများကို ဤနေရာတွင် ပြပါမည်။</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>သင့်ဒေါင်းလုဒ်များ</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>ဒေါင်းလုဒ်များ</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>ဤဗီဒီယိုကို ဒေါင်းလုဒ်လုပ်၍မရပါ</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>အမှားကုဒ်: {0}</value>
+  </data>
+  <data name="ErrorFormat" xml:space="preserve">
+    <value>အမှား: {0}</value>
+  </data>
+  <data name="Every15Min" xml:space="preserve">
+    <value>15 မိနစ်တိုင်း</value>
+  </data>
+  <data name="Every2Hours" xml:space="preserve">
+    <value>2 နာရီတိုင်း</value>
+  </data>
+  <data name="Every30Min" xml:space="preserve">
+    <value>30 မိနစ်တိုင်း</value>
+  </data>
+  <data name="Every6Hours" xml:space="preserve">
+    <value>6 နာရီတိုင်း</value>
+  </data>
+  <data name="EveryHour" xml:space="preserve">
+    <value>တစ်နာရီတိုင်း</value>
+  </data>
+  <data name="EveryHours" xml:space="preserve">
+    <value>{0} နာရီတိုင်း</value>
+  </data>
+  <data name="EveryMinutes" xml:space="preserve">
+    <value>{0} မိနစ်တိုင်း</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>ဗီဒီယိုဖွင့်ခြင်း မအောင်မြင်ပါ: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>စာရင်းသွင်းမှုများမှ</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>မှန်အကျိုးသက်ရောက်မှု</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>လမ်းညွှန်ဘားများကို မှုန်ဝါးစေမည်</value>
+  </data>
+  <data name="HistoryLoadFailed" xml:space="preserve">
+    <value>မှတ်တမ်း တင်ခြင်း မအောင်မြင်ပါ</value>
+  </data>
+  <data name="HistorySignIn" xml:space="preserve">
+    <value>သင်၏ ကြည့်ရှုမှတ်တမ်းကို ကြည့်ရန် အကောင့်ဝင်ပါ</value>
+  </data>
+  <data name="HomeAll" xml:space="preserve">
+    <value>အားလုံး</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>အက်ပ်ဘာသာစကား</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>အင်္ဂလိပ်</value>
+  </data>
+  <data name="LanguageRestartHint" xml:space="preserve">
+    <value>အင်တာဖေ့စ်သည် ချက်ချင်း အပ်ဒိတ်ဖြစ်မည်။</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>ရုရှား</value>
+  </data>
+  <data name="LanguageSection" xml:space="preserve">
+    <value>ဘာသာစကား</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>စနစ် မူလသတ်မှတ်ချက်</value>
+  </data>
+  <data name="Like" xml:space="preserve">
+    <value>ကြိုက်သည်</value>
+  </data>
+  <data name="LinkCopied" xml:space="preserve">
+    <value>လင့်ခ် ကူးပြီးပြီ</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Live tile</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>စတင်မျက်နှာပြင်တွင် အကြံပြုချက်များကို ပြပါ</value>
+  </data>
+  <data name="LoadingDescription" xml:space="preserve">
+    <value>ဖော်ပြချက် တင်နေသည်...</value>
+  </data>
+  <data name="LoadingFailed" xml:space="preserve">
+    <value>တင်ခြင်း မအောင်မြင်ပါ</value>
+  </data>
+  <data name="Loc_0Subscribers0Videos_Text.Text" xml:space="preserve">
+    <value>စာရင်းသွင်းသူ 0 • ဗီဒီယို 0</value>
+  </data>
+  <data name="Loc_About_Text.Text" xml:space="preserve">
+    <value>အကြောင်း</value>
+  </data>
+  <data name="Loc_Account_Text.Text" xml:space="preserve">
+    <value>အကောင့်</value>
+  </data>
+  <data name="Loc_All_Text.Text" xml:space="preserve">
+    <value>အားလုံး</value>
+  </data>
+  <data name="Loc_AudioTrack_Text.Text" xml:space="preserve">
+    <value>အသံလမ်းကြောင်း</value>
+  </data>
+  <data name="Loc_Auto_Text.Text" xml:space="preserve">
+    <value>အလိုအလျောက်</value>
+  </data>
+  <data name="Loc_AutoFullscreenInLandscape_Text.Text" xml:space="preserve">
+    <value>အလျားလိုက်တွင် အလိုအလျောက် မျက်နှာပြင်အပြည့်</value>
+  </data>
+  <data name="Loc_BackgroundToastsFromYouTubeNotifications_Text.Text" xml:space="preserve">
+    <value>YouTube အသိပေးချက်များမှ နောက်ခံ toast</value>
+  </data>
+  <data name="Loc_Channel_Text.Text" xml:space="preserve">
+    <value>ချန်နယ်</value>
+  </data>
+  <data name="Loc_Channels_Text.Text" xml:space="preserve">
+    <value>ချန်နယ်များ</value>
+  </data>
+  <data name="Loc_CheckYourConnectionAndTryAgain_Text.Text" xml:space="preserve">
+    <value>ချိတ်ဆက်မှုကို စစ်ဆေးပြီး ထပ်ကြိုးစားပါ</value>
+  </data>
+  <data name="Loc_Close_Content.Content" xml:space="preserve">
+    <value>ပိတ်</value>
+  </data>
+  <data name="Loc_Comments_Text.Text" xml:space="preserve">
+    <value>မှတ်ချက်များ</value>
+  </data>
+  <data name="Loc_CopyLink_Text.Text" xml:space="preserve">
+    <value>လင့်ခ် ကူးပါ</value>
+  </data>
+  <data name="Loc_CouldNotLoadChannel_Text.Text" xml:space="preserve">
+    <value>ချန်နယ်ကို တင်၍မရပါ</value>
+  </data>
+  <data name="Loc_CouldNotLoadPlaylist_Text.Text" xml:space="preserve">
+    <value>အစီအစဉ်စာရင်းကို တင်၍မရပါ</value>
+  </data>
+  <data name="Loc_Description_Text.Text" xml:space="preserve">
+    <value>ဖော်ပြချက်</value>
+  </data>
+  <data name="Loc_EveryHour_Text.Text" xml:space="preserve">
+    <value>တစ်နာရီတိုင်း</value>
+  </data>
+  <data name="Loc_ExpandTheVideoWhenThePhoneRotates_Text.Text" xml:space="preserve">
+    <value>ဖုန်းလှည့်သည့်အခါ ဗီဒီယိုကို ချဲ့ပါ</value>
+  </data>
+  <data name="Loc_Frequency_Text.Text" xml:space="preserve">
+    <value>ကြိမ်နှုန်း</value>
+  </data>
+  <data name="Loc_History_Text.Text" xml:space="preserve">
+    <value>မှတ်တမ်း</value>
+  </data>
+  <data name="Loc_Home_Text.Text" xml:space="preserve">
+    <value>ပင်မ</value>
+  </data>
+  <data name="Loc_Information_Text.Text" xml:space="preserve">
+    <value>အချက်အလက်</value>
+  </data>
+  <data name="Loc_Like_Text.Text" xml:space="preserve">
+    <value>ကြိုက်သည်</value>
+  </data>
+  <data name="Loc_Likes_Text.Text" xml:space="preserve">
+    <value>ကြိုက်နှစ်သက်မှုများ</value>
+  </data>
+  <data name="Loc_LinkCopied_Text.Text" xml:space="preserve">
+    <value>လင့်ခ် ကူးပြီးပြီ</value>
+  </data>
+  <data name="Loc_Loading_Text.Text" xml:space="preserve">
+    <value>တင်နေသည်...</value>
+  </data>
+  <data name="Loc_LoadingChannel_Text.Text" xml:space="preserve">
+    <value>ချန်နယ် တင်နေသည်...</value>
+  </data>
+  <data name="Loc_LoadingComments_Text.Text" xml:space="preserve">
+    <value>မှတ်ချက်များ တင်နေသည်...</value>
+  </data>
+  <data name="Loc_LoadingMore_Text.Text" xml:space="preserve">
+    <value>နောက်ထပ် တင်နေသည်...</value>
+  </data>
+  <data name="Loc_LoadingMoreHistory_Text.Text" xml:space="preserve">
+    <value>မှတ်တမ်း နောက်ထပ် တင်နေသည်...</value>
+  </data>
+  <data name="Loc_LoadingMoreResults_Text.Text" xml:space="preserve">
+    <value>ရလဒ် နောက်ထပ် တင်နေသည်...</value>
+  </data>
+  <data name="Loc_LoadingMoreVideos_Text.Text" xml:space="preserve">
+    <value>ဗီဒီယို နောက်ထပ် တင်နေသည်...</value>
+  </data>
+  <data name="Loc_LoadingPlaylist_Text.Text" xml:space="preserve">
+    <value>အစီအစဉ်စာရင်း တင်နေသည်...</value>
+  </data>
+  <data name="Loc_LogOut_Text.Text" xml:space="preserve">
+    <value>အကောင့်ထွက်</value>
+  </data>
+  <data name="Loc_LooksLikeWeCanTLoadVideosForYou_Text.Text" xml:space="preserve">
+    <value>သင့်အတွက် ဗီဒီယိုများကို တင်မရသလို ဖြစ်နေသည်။</value>
+  </data>
+  <data name="Loc_More_Text.Text" xml:space="preserve">
+    <value>...နောက်ထပ်</value>
+  </data>
+  <data name="Loc_NewUpdatesFromYourSubscriptionsWillAppearHere_Text.Text" xml:space="preserve">
+    <value>သင်စာရင်းသွင်းထားသော အရာများမှ အပ်ဒိတ်အသစ်များ ဤနေရာတွင် ပေါ်လာမည်။</value>
+  </data>
+  <data name="Loc_NoCommentsFound_Text.Text" xml:space="preserve">
+    <value>မှတ်ချက် မတွေ့ပါ။</value>
+  </data>
+  <data name="Loc_NoConnectionToTheInternet_Text.Text" xml:space="preserve">
+    <value>အင်တာနက် ချိတ်ဆက်မှု မရှိပါ</value>
+  </data>
+  <data name="Loc_NoData_Text.Text" xml:space="preserve">
+    <value>ဒေတာ မရှိပါ</value>
+  </data>
+  <data name="Loc_NoHistoryYet_Text.Text" xml:space="preserve">
+    <value>မှတ်တမ်း မရှိသေးပါ</value>
+  </data>
+  <data name="Loc_None_Text.Text" xml:space="preserve">
+    <value>မရှိပါ</value>
+  </data>
+  <data name="Loc_NoNotifications_Text.Text" xml:space="preserve">
+    <value>အသိပေးချက် မရှိပါ</value>
+  </data>
+  <data name="Loc_Notifications_Text.Text" xml:space="preserve">
+    <value>အသိပေးချက်များ</value>
+  </data>
+  <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
+    <value>ဤအစီအစဉ်စာရင်းတွင် ဗီဒီယို မရှိပါ</value>
+  </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>အိုကေ</value>
+  </data>
+  <data name="Loc_Personalized_Text.Text" xml:space="preserve">
+    <value>သင့်အတွက် စိတ်ကြိုက်</value>
+  </data>
+  <data name="Loc_PlaybackSpeed_Text.Text" xml:space="preserve">
+    <value>ဖွင့်နှုန်း</value>
+  </data>
+  <data name="Loc_Playlist_Text.Text" xml:space="preserve">
+    <value>အစီအစဉ်စာရင်း</value>
+  </data>
+  <data name="Loc_Playlists_Text.Text" xml:space="preserve">
+    <value>အစီအစဉ်စာရင်းများ</value>
+  </data>
+  <data name="Loc_Posts_Text.Text" xml:space="preserve">
+    <value>ပို့စ်များ</value>
+  </data>
+  <data name="Loc_PreferredShortsQuality_Text.Text" xml:space="preserve">
+    <value>နှစ်သက်ရာ Shorts အရည်အသွေး</value>
+  </data>
+  <data name="Loc_PreferredVideoQuality_Text.Text" xml:space="preserve">
+    <value>နှစ်သက်ရာ ဗီဒီယို အရည်အသွေး</value>
+  </data>
+  <data name="Loc_Published_Text.Text" xml:space="preserve">
+    <value>ထုတ်ဝေပြီး</value>
+  </data>
+  <data name="Loc_QRCode_Text.Text" xml:space="preserve">
+    <value>QR ကုဒ်</value>
+  </data>
+  <data name="Loc_Quality_Text.Text" xml:space="preserve">
+    <value>အရည်အသွေး</value>
+  </data>
+  <data name="Loc_RefreshQRCode_Content.Content" xml:space="preserve">
+    <value>QR ကုဒ် ပြန်လည်စစ်ပါ</value>
+  </data>
+  <data name="Loc_ReloadVideo_Text.Text" xml:space="preserve">
+    <value>ဗီဒီယို ပြန်တင်ပါ</value>
+  </data>
+  <data name="Loc_Retry_Content.Content" xml:space="preserve">
+    <value>ထပ်ကြိုးစားပါ</value>
+  </data>
+  <data name="Loc_ScanTheQRCodeToSignIn_Text.Text" xml:space="preserve">
+    <value>အကောင့်ဝင်ရန် QR ကုဒ်ကို စကင်ဖတ်ပါ</value>
+  </data>
+  <data name="Loc_Search_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>ရှာဖွေ</value>
+  </data>
+  <data name="Loc_Searching_Text.Text" xml:space="preserve">
+    <value>ရှာဖွေနေသည်...</value>
+  </data>
+  <data name="Loc_SearchYouTube_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>YouTube တွင် ရှာဖွေပါ</value>
+  </data>
+  <data name="Loc_SearchYouTube_Text.Text" xml:space="preserve">
+    <value>YouTube တွင် ရှာဖွေပါ</value>
+  </data>
+  <data name="Loc_SeekPreview_Text.Text" xml:space="preserve">
+    <value>ရွှေ့ရှာ အကြိုကြည့်</value>
+  </data>
+  <data name="Loc_SendNotifications_Text.Text" xml:space="preserve">
+    <value>အသိပေးချက်များ ပို့ပါ</value>
+  </data>
+  <data name="Loc_Settings_Text.Text" xml:space="preserve">
+    <value>ဆက်တင်များ</value>
+  </data>
+  <data name="Loc_Share_Text.Text" xml:space="preserve">
+    <value>မျှဝေ</value>
+  </data>
+  <data name="Loc_ShareVia_Text.Text" xml:space="preserve">
+    <value>ဖြင့် မျှဝေ...</value>
+  </data>
+  <data name="Loc_Shorts_Text.Text" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="Loc_ShortsLinkHasBeenCopiedToClipboard_Text.Text" xml:space="preserve">
+    <value>Shorts လင့်ခ်ကို clipboard သို့ ကူးပြီးပြီ</value>
+  </data>
+  <data name="Loc_ShowQRCode_Text.Text" xml:space="preserve">
+    <value>QR ကုဒ် ပြပါ</value>
+  </data>
+  <data name="Loc_ShowVideoThumbnailWhileSeeking_Text.Text" xml:space="preserve">
+    <value>ရွှေ့ရှာနေစဉ် ဗီဒီယို ပုံသေး ပြပါ</value>
+  </data>
+  <data name="Loc_Subscribe_Text.Text" xml:space="preserve">
+    <value>စာရင်းသွင်း</value>
+  </data>
+  <data name="Loc_Subscriptions_Text.Text" xml:space="preserve">
+    <value>စာရင်းသွင်းမှုများ</value>
+  </data>
+  <data name="Loc_Subtitles_Text.Text" xml:space="preserve">
+    <value>စာတန်းထိုးများ</value>
+  </data>
+  <data name="Loc_TrendingSearches_Text.Text" xml:space="preserve">
+    <value>လူကြိုက်များသော ရှာဖွေမှုများ</value>
+  </data>
+  <data name="Loc_TryAgain_Content.Content" xml:space="preserve">
+    <value>ထပ်ကြိုးစားပါ</value>
+  </data>
+  <data name="Loc_Type_Text.Text" xml:space="preserve">
+    <value>အမျိုးအစား</value>
+  </data>
+  <data name="Loc_Unsubscribe_Text.Text" xml:space="preserve">
+    <value>စာရင်းမှ ပယ်ဖျက်</value>
+  </data>
+  <data name="Loc_VerificationCode_Text.Text" xml:space="preserve">
+    <value>အတည်ပြုကုဒ်</value>
+  </data>
+  <data name="Loc_Video_Text.Text" xml:space="preserve">
+    <value>ဗီဒီယို</value>
+  </data>
+  <data name="Loc_Videos_Text.Text" xml:space="preserve">
+    <value>ဗီဒီယိုများ</value>
+  </data>
+  <data name="Loc_ViewChannel_Text.Text" xml:space="preserve">
+    <value>ချန်နယ် ကြည့်ပါ</value>
+  </data>
+  <data name="Loc_Views_Text.Text" xml:space="preserve">
+    <value>ကြည့်ရှုမှုများ</value>
+  </data>
+  <data name="Loc_You_Text.Text" xml:space="preserve">
+    <value>သင်</value>
+  </data>
+  <data name="LoginLoadingQr" xml:space="preserve">
+    <value>QR ကုဒ် တင်နေသည်...</value>
+  </data>
+  <data name="LoginQrFailed" xml:space="preserve">
+    <value>QR ကုဒ် တင်ခြင်း မအောင်မြင်ပါ။</value>
+  </data>
+  <data name="LoginScanQr" xml:space="preserve">
+    <value>သင့်ဖုန်းကင်မရာကို ဖွင့်ပြီး QR ကုဒ်ကို စကင်ဖတ်ပါ။</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>အကောင့်ဝင်ခြင်း အောင်မြင်ပါသည်! ပြန်ညွှန်းနေသည်...</value>
+  </data>
+  <data name="MeSignIn" xml:space="preserve">
+    <value>သင်၏ မှတ်တမ်းနှင့် အစီအစဉ်စာရင်းများကို ကြည့်ရန် အကောင့်ဝင်ပါ</value>
+  </data>
+  <data name="Mix" xml:space="preserve">
+    <value>Mix</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>လွန်ခဲ့သော {0} လ</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>ကွန်ရက် အမှား။ အင်တာနက်ချိတ်ဆက်မှုကို စစ်ဆေးပါ။</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>မဟုတ်ပါ</value>
+  </data>
+  <data name="NoCommentsFound" xml:space="preserve">
+    <value>မှတ်ချက် မတွေ့ပါ။</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>ဒေတာ မရှိပါ</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>ဖော်ပြချက် မရှိပါ။</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>ဖော်ပြချက် မရနိုင်ပါ။</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>အမည် မရှိပါ</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>အသိပေးချက် မရှိပါ</value>
+  </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts မတွေ့ပါ။</value>
+  </data>
+  <data name="NotificationPreferenceFailed" xml:space="preserve">
+    <value>အသိပေးချက် စိတ်ကြိုက်ကို အပ်ဒိတ်မလုပ်နိုင်ပါ။</value>
+  </data>
+  <data name="NotificationsFailed" xml:space="preserve">
+    <value>အသိပေးချက် မအောင်မြင်ပါ</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>သင်စာရင်းသွင်းထားသော အရာများမှ အပ်ဒိတ်အသစ်များ ဤနေရာတွင် ပေါ်လာမည်။</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>သင်၏ YouTube အသိပေးချက်များကို ကြည့်ရန် အကောင့်ဝင်ပါ။</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>ဤစာမျက်နှာကို နောက်မှ ထပ်ဖွင့်ပါ။</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>ခေါင်းစဉ် မရှိပါ</value>
+  </data>
+  <data name="NotSignedIn" xml:space="preserve">
+    <value>အကောင့် မဝင်ထားပါ</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>ပိတ်</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>အိုကေ</value>
+  </data>
+  <data name="Older" xml:space="preserve">
+    <value>အဟောင်း</value>
+  </data>
+  <data name="PlaybackError" xml:space="preserve">
+    <value>ဖွင့်ခြင်း အမှား</value>
+  </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>ဖွင့်ခြင်း မအောင်မြင်ပါ</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>ဖွင့်နှုန်း</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>ဗီဒီယိုကို ဖွင့်၍မရပါ။ ပလေယာကို စတင်မထားပါ။</value>
+  </data>
+  <data name="Playlist" xml:space="preserve">
+    <value>အစီအစဉ်စာရင်း</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>playlist id သည် ဗလာဖြစ်သည်</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>အစီအစဉ်ကို အပ်ဒိတ်မလုပ်နိုင်ပါ</value>
+  </data>
+  <data name="QrCode" xml:space="preserve">
+    <value>QR ကုဒ်</value>
+  </data>
+  <data name="QrDisplayErrorFormat" xml:space="preserve">
+    <value>QR ပြသမှု အမှား: {0}</value>
+  </data>
+  <data name="Quality" xml:space="preserve">
+    <value>အရည်အသွေး</value>
+  </data>
+  <data name="RatingFailed" xml:space="preserve">
+    <value>အဆင့်သတ်မှတ်မှု မအောင်မြင်ပါ</value>
+  </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube က အဆင့်သတ်မှတ်မှု တောင်းဆိုချက်ကို ငြင်းပယ်ခဲ့သည်။ TV token မှန်ကန်ပြီး YouTube rating scope ပါရှိကြောင်း စစ်ဆေးပါ။</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>အကြံပြု ဗီဒီယို</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>refresh token ကို access token သို့ ပြောင်းမရပါ။</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>ပြန်စာများ</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} ပြန်စာများ</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>သိမ်းရန်</value>
+  </data>
+  <data name="SearchErrorFormat" xml:space="preserve">
+    <value>ရှာဖွေမှု အမှား: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>မသိပါ</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>အကောင့်ရွေးပါ</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>အစီအစဉ်ကို ရွေးပါ</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>အင်္ဂလိပ်</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>မူလအနေဖြင့် Windows ဘာသာစကားကို အသုံးပြုသည်။</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>အက်ပ်ဘာသာစကား</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>ရုရှား</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>ဘာသာစကား</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>ဘာသာစကား</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>စနစ် မူလသတ်မှတ်ချက်</value>
+  </data>
+  <data name="ShareShortDescription" xml:space="preserve">
+    <value>ဤ YouTube Short ကို မျှဝေပါ</value>
+  </data>
+  <data name="ShareVideoDescription" xml:space="preserve">
+    <value>ဤ YouTube ဗီဒီယိုကို မျှဝေပါ</value>
+  </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>အက်ပ်တွင် Shorts ကို ပြပါ</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>လျှော့ပြရန်</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>နောက်ထပ်</value>
+  </data>
+  <data name="SignInAgain" xml:space="preserve">
+    <value>TV refresh token ကို access token သို့ ပြောင်းမရပါ။ ထပ်မံ အကောင့်ဝင်ပြီး refresh token သည် အသုံးပြုနိုင်သေးကြောင်း စစ်ဆေးပါ။</value>
+  </data>
+  <data name="SignInRequired" xml:space="preserve">
+    <value>အကောင့်ဝင်ရန် လိုအပ်သည်</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Shorts ကြည့်ရန် အကောင့်ဝင်ပါ။</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>ရှာဖွေဘားပေါ်ရှိ ကြော်ငြာအပိုင်းများ</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>အရောင်ဖြင့် SponsorBlock အပိုင်းများကို ပြရန်</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>စာရင်းသွင်း</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>စာရင်းသွင်းသူများ</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>စာရင်းသွင်းသူများ</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>စာရင်းသွင်းသူ</value>
+  </data>
+  <data name="SubscribersVideosFormat" xml:space="preserve">
+    <value>စာရင်းသွင်းသူ {0} • ဗီဒီယို {1}</value>
+  </data>
+  <data name="SubscriptionFailed" xml:space="preserve">
+    <value>စာရင်းသွင်းမှု မအောင်မြင်ပါ</value>
+  </data>
+  <data name="SubscriptionRejected" xml:space="preserve">
+    <value>YouTube က စာရင်းသွင်းမှု တောင်းဆိုချက်ကို ငြင်းပယ်ခဲ့သည်။</value>
+  </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube က စာရင်းသွင်းမှု တောင်းဆိုချက်ကို ငြင်းပယ်ခဲ့သည်။ TV token မှန်ကန်ပြီး channel id ကို တွေ့ထားကြောင်း စစ်ဆေးပါ။</value>
+  </data>
+  <data name="SubtitleEarlier" xml:space="preserve">
+    <value>   စောစော (+0.25စက္ကန့်)</value>
+  </data>
+  <data name="SubtitleLater" xml:space="preserve">
+    <value>   နောက်ကျ (-0.25စက္ကန့်)</value>
+  </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>ပုံမှန်အချိန်ရွှေ့မှုကို ပြန်ထားရန် (0.00 စက္ကန့်)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>စာတန်းထိုးများ</value>
+  </data>
+  <data name="SyncFormat" xml:space="preserve">
+    <value>စင့်ခ်: {0}</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>အပြင်အဆင်</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>အမှောင်</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>အလင်း</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>ဒီပတ်</value>
+  </data>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>ပုံသေး အရည်အသွေး</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>ယနေ့</value>
+  </data>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>ဟာသ ပြကွက်များ</value>
+  </data>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>ချက်ပြုတ်နည်းများ</value>
+  </data>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>DIY သင်ခန်းစာများ</value>
+  </data>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>ဂိမ်း အထူးအသားပေးများ</value>
+  </data>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>ရုပ်ရှင် အမြည်းများ</value>
+  </data>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>တေးဂီတ ဗီဒီယိုများ</value>
+  </data>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>အားကစား အထူးအသားပေးများ</value>
+  </data>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>နည်းပညာ သုံးသပ်ချက်များ</value>
+  </data>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>TV refresh token ကို access token သို့ ပြောင်းမရပါ။</value>
+  </data>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>TV refresh token ကို access token သို့ ပြောင်းမရပါ။ ထပ်မံ အကောင့်ဝင်ပြီး refresh token သည် အသုံးပြုနိုင်သေးကြောင်း စစ်ဆေးပါ။</value>
+  </data>
+  <data name="TvTokenMissing" xml:space="preserve">
+    <value>TV refresh token မတွေ့ပါ။ ထပ်မံ အကောင့်ဝင်ပြီး ထပ်ကြိုးစားပါ။</value>
+  </data>
+  <data name="TvTokenMissingDetailed" xml:space="preserve">
+    <value>TV refresh token မတွေ့ပါ။ yt_refresh_token သိမ်းရန် ထပ်မံ အကောင့်ဝင်ပြီးနောက် ထပ်ကြိုးစားပါ။</value>
+  </data>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>မှတ်ချက်များကို တင်၍မရပါ။</value>
+  </data>
+  <data name="UnableLoadShorts" xml:space="preserve">
+    <value>Shorts ကို တင်၍မရပါ။</value>
+  </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>ဤ Short ကို ဖွင့်၍မရပါ</value>
+  </data>
+  <data name="UnablePlayShortPeriod" xml:space="preserve">
+    <value>ဤ Short ကို ဖွင့်၍မရပါ။</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>မသိပါ</value>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>ခေါင်းစဉ်မဲ့</value>
+  </data>
+  <data name="UploadedVideo" xml:space="preserve">
+    <value>ဗီဒီယိုတစ်ခု တင်ခဲ့သည်</value>
+  </data>
+  <data name="UploadedVideoTitleFormat" xml:space="preserve">
+    <value>“{0}” ဗီဒီယိုကို တင်ခဲ့သည်</value>
+  </data>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>ဗီဒီယိုကို “{0}” သို့ ထည့်ပြီးပါပြီ</value>
+  </data>
+  <data name="VideoFew" xml:space="preserve">
+    <value>ဗီဒီယိုများ</value>
+  </data>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>ဗီဒီယိုလင့်ခ်ကို clipboard သို့ ကူးပြီးပြီ။</value>
+  </data>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>ဗီဒီယိုကို တင်၍မရပါ။ လင့်ခ် သက်တမ်းကုန်သွားနိုင်သည် သို့မဟုတ် ဖော်မတ်ကို မပံ့ပိုးပါ။</value>
+  </data>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>ဗီဒီယို တင်ချိန်ကုန်သွားသည်။ အင်တာနက်ချိတ်ဆက်မှုကို စစ်ဆေးပါ။</value>
+  </data>
+  <data name="VideoMany" xml:space="preserve">
+    <value>ဗီဒီယိုများ</value>
+  </data>
+  <data name="VideoOne" xml:space="preserve">
+    <value>ဗီဒီယို</value>
+  </data>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>ဗီဒီယို ဖွင့်ခြင်း အမှား။ အရည်အသွေး ပိုနိမ့်တာကို ရွေးပြီး ကြိုးစားပါ။</value>
+  </data>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>ဗီဒီယိုကို “{0}” မှ ဖယ်ရှားပြီးပါပြီ</value>
+  </data>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>ဗီဒီယို {0}</value>
+  </data>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>ဗီဒီယို {0}</value>
+  </data>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>လွန်ခဲ့သော {0} ပတ်</value>
+  </data>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>လွန်ခဲ့သော {0} နှစ်</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>ဟုတ်ကဲ့</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>မနေ့က</value>
+  </data>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
+  </data>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube ဗီဒီယို</value>
+  </data>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube ဗီဒီယို</value>
+  </data>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>ဒေါင်းလုဒ်လုပ်ထားသော ဗီဒီယိုများကို ရှင်းလင်းပါ</value>
+  </data>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Download လုပ်ထားသောဗီဒီယိုများနှင့် cached thumbnails အားလုံးကိုဖျက်ပါ</value>
+  </data>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>ဒေါင်းလုပ်လုပ်ထားသော ဗွီဒီယိုများနှင့် ၎ င်းတို့ ၏ thumbnails အားလုံးကို အမြဲတမ်း ဖျက်ပစ်ပါမည် ။</value>
+  </data>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>ရှင်းလင်းမည်</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>ပယ္ဖ်က္မည္</value>
   </data>
 </root>

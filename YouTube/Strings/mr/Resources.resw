@@ -1,28 +1,987 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
           </xsd:element>
-          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
-          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /><xsd:element name="comment" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
-          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
         </xsd:choice>
       </xsd:complexType>
     </xsd:element>
   </xsd:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutText" xml:space="preserve">
+    <value>LegacyProjects टीमने विकसित केले.
+YouTube API Legacy द्वारे समर्थित.
+
+आवृत्ती {0}</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>खाती</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>देखावा</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>ऑडिओ ट्रॅक</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>स्वयंचलित</value>
+  </data>
+  <data name="AutoTranslate" xml:space="preserve">
+    <value>स्वयंचलित भाषांतर &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; मागे</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>अॅक्शन/अॅडव्हेंचर</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>सर्व</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>अॅनिमे/अॅनिमेशन</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>ऑटो आणि वाहने</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>क्लासिक्स</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>कॉमेडी</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>माहितीपट</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>नाटक</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>शिक्षण</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>मनोरंजन</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>कुटुंब</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>चित्रपट आणि अॅनिमेशन</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>परदेशी</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>गेमिंग</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>भयपट</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>कसे करावे आणि शैली</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>शिकणे</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>लाइव्ह</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>चित्रपट</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>संगीत</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>बातम्या</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>बातम्या आणि राजकारण</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>ना-नफा आणि सक्रियता</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>लोक आणि ब्लॉग</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>पाळीव प्राणी आणि प्राणी</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>पॉडकास्ट</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>विज्ञान आणि तंत्रज्ञान</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>साय-फाय/फँटसी</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>लघुपट</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>शो</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>क्रीडा</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>थ्रिलर</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>ट्रेलर</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>प्रवास आणि कार्यक्रम</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>व्हिडिओब्लॉगिंग</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>व्हिडिओ गेम</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>चॅनल</value>
+  </data>
   <data name="ChannelIcons" xml:space="preserve">
     <value>चॅनेल आयकॉन</value>
   </data>
   <data name="ChannelIconsDescription" xml:space="preserve">
     <value>व्हिडिओ कार्डवर चॅनेल आयकॉन दाखवा</value>
+  </data>
+  <data name="ChannelLoadingError" xml:space="preserve">
+    <value>चॅनल लोड करण्याची त्रुटी</value>
+  </data>
+  <data name="ChannelWasNotProvided" xml:space="preserve">
+    <value>चॅनल दिलेले नाही</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>टिप्पण्या</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>तुम्हाला नक्की साइन आउट करायचे आहे का?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>साइन आउटची पुष्टी करा</value>
+  </data>
+  <data name="CouldNotLoadChannel" xml:space="preserve">
+    <value>चॅनल लोड करता आले नाही</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>सूचना लोड करता आल्या नाहीत</value>
+  </data>
+  <data name="CouldNotLoadPlaylist" xml:space="preserve">
+    <value>प्लेलिस्ट लोड करता आली नाही</value>
+  </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>व्हिडिओ लोड करता आला नाही. पुन्हा प्रयत्न करा.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>व्हिडिओ प्ले करता आला नाही.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} दिवसांपूर्वी</value>
+  </data>
+  <data name="DescriptionNotAvailable" xml:space="preserve">
+    <value>वर्णन उपलब्ध नाही</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>डाउनलोड करा</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>डाउनलोड झाले</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>तुमचे डाउनलोड</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>डाउनलोड फोल्डर</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>डाउनलोड केलेले व्हिडिओ कुठे सेव्ह करायचे ते निवडा</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>डाउनलोड गुणवत्ता</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>डाउनलोड</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>तुम्ही डाउनलोड केलेले व्हिडिओ येथे दिसतील.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>तुमचे डाउनलोड</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>डाउनलोड</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>हा व्हिडिओ डाउनलोड करता येत नाही</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>त्रुटी कोड: {0}</value>
+  </data>
+  <data name="ErrorFormat" xml:space="preserve">
+    <value>त्रुटी: {0}</value>
+  </data>
+  <data name="Every15Min" xml:space="preserve">
+    <value>दर 15 मिनिटांनी</value>
+  </data>
+  <data name="Every2Hours" xml:space="preserve">
+    <value>दर 2 तासांनी</value>
+  </data>
+  <data name="Every30Min" xml:space="preserve">
+    <value>दर 30 मिनिटांनी</value>
+  </data>
+  <data name="Every6Hours" xml:space="preserve">
+    <value>दर 6 तासांनी</value>
+  </data>
+  <data name="EveryHour" xml:space="preserve">
+    <value>दर तासाला</value>
+  </data>
+  <data name="EveryHours" xml:space="preserve">
+    <value>दर {0} तासांनी</value>
+  </data>
+  <data name="EveryMinutes" xml:space="preserve">
+    <value>दर {0} मिनिटांनी</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>व्हिडिओ प्ले करण्यात अयशस्वी: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>सदस्यतांमधून</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>ग्लास इफेक्ट</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>नेव्हिगेशन बार अस्पष्ट करा</value>
+  </data>
+  <data name="HistoryLoadFailed" xml:space="preserve">
+    <value>इतिहास लोड करण्यात अयशस्वी</value>
+  </data>
+  <data name="HistorySignIn" xml:space="preserve">
+    <value>तुमचा पाहण्याचा इतिहास पाहण्यासाठी साइन इन करा</value>
+  </data>
+  <data name="HomeAll" xml:space="preserve">
+    <value>सर्व</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>अॅप भाषा</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>इंग्रजी</value>
+  </data>
+  <data name="LanguageRestartHint" xml:space="preserve">
+    <value>इंटरफेस त्वरित अपडेट होईल.</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>रशियन</value>
+  </data>
+  <data name="LanguageSection" xml:space="preserve">
+    <value>भाषा</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>सिस्टम डीफॉल्ट</value>
+  </data>
+  <data name="Like" xml:space="preserve">
+    <value>आवडले</value>
+  </data>
+  <data name="LinkCopied" xml:space="preserve">
+    <value>लिंक कॉपी केली</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>लाइव्ह टाइल</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>प्रारंभ स्क्रीनवर शिफारसी दाखवा</value>
+  </data>
+  <data name="LoadingDescription" xml:space="preserve">
+    <value>वर्णन लोड होत आहे...</value>
+  </data>
+  <data name="LoadingFailed" xml:space="preserve">
+    <value>लोड अयशस्वी</value>
+  </data>
+  <data name="Loc_0Subscribers0Videos_Text.Text" xml:space="preserve">
+    <value>0 सदस्य • 0 व्हिडिओ</value>
+  </data>
+  <data name="Loc_About_Text.Text" xml:space="preserve">
+    <value>याबद्दल</value>
+  </data>
+  <data name="Loc_Account_Text.Text" xml:space="preserve">
+    <value>खाते</value>
+  </data>
+  <data name="Loc_All_Text.Text" xml:space="preserve">
+    <value>सर्व</value>
+  </data>
+  <data name="Loc_AudioTrack_Text.Text" xml:space="preserve">
+    <value>ऑडिओ ट्रॅक</value>
+  </data>
+  <data name="Loc_Auto_Text.Text" xml:space="preserve">
+    <value>स्वयंचलित</value>
+  </data>
+  <data name="Loc_AutoFullscreenInLandscape_Text.Text" xml:space="preserve">
+    <value>लँडस्केपमध्ये स्वयंचलित पूर्ण स्क्रीन</value>
+  </data>
+  <data name="Loc_BackgroundToastsFromYouTubeNotifications_Text.Text" xml:space="preserve">
+    <value>YouTube सूचनांमधून पार्श्वभूमी टोस्ट</value>
+  </data>
+  <data name="Loc_Channel_Text.Text" xml:space="preserve">
+    <value>चॅनल</value>
+  </data>
+  <data name="Loc_Channels_Text.Text" xml:space="preserve">
+    <value>चॅनल</value>
+  </data>
+  <data name="Loc_CheckYourConnectionAndTryAgain_Text.Text" xml:space="preserve">
+    <value>कनेक्शन तपासा आणि पुन्हा प्रयत्न करा</value>
+  </data>
+  <data name="Loc_Close_Content.Content" xml:space="preserve">
+    <value>बंद करा</value>
+  </data>
+  <data name="Loc_Comments_Text.Text" xml:space="preserve">
+    <value>टिप्पण्या</value>
+  </data>
+  <data name="Loc_CopyLink_Text.Text" xml:space="preserve">
+    <value>लिंक कॉपी करा</value>
+  </data>
+  <data name="Loc_CouldNotLoadChannel_Text.Text" xml:space="preserve">
+    <value>चॅनल लोड करता आले नाही</value>
+  </data>
+  <data name="Loc_CouldNotLoadPlaylist_Text.Text" xml:space="preserve">
+    <value>प्लेलिस्ट लोड करता आली नाही</value>
+  </data>
+  <data name="Loc_Description_Text.Text" xml:space="preserve">
+    <value>वर्णन</value>
+  </data>
+  <data name="Loc_EveryHour_Text.Text" xml:space="preserve">
+    <value>दर तासाला</value>
+  </data>
+  <data name="Loc_ExpandTheVideoWhenThePhoneRotates_Text.Text" xml:space="preserve">
+    <value>फोन फिरवल्यावर व्हिडिओ मोठा करा</value>
+  </data>
+  <data name="Loc_Frequency_Text.Text" xml:space="preserve">
+    <value>वारंवारता</value>
+  </data>
+  <data name="Loc_History_Text.Text" xml:space="preserve">
+    <value>इतिहास</value>
+  </data>
+  <data name="Loc_Home_Text.Text" xml:space="preserve">
+    <value>होम</value>
+  </data>
+  <data name="Loc_Information_Text.Text" xml:space="preserve">
+    <value>माहिती</value>
+  </data>
+  <data name="Loc_Like_Text.Text" xml:space="preserve">
+    <value>आवडले</value>
+  </data>
+  <data name="Loc_Likes_Text.Text" xml:space="preserve">
+    <value>आवडी</value>
+  </data>
+  <data name="Loc_LinkCopied_Text.Text" xml:space="preserve">
+    <value>लिंक कॉपी केली</value>
+  </data>
+  <data name="Loc_Loading_Text.Text" xml:space="preserve">
+    <value>लोड होत आहे...</value>
+  </data>
+  <data name="Loc_LoadingChannel_Text.Text" xml:space="preserve">
+    <value>चॅनल लोड होत आहे...</value>
+  </data>
+  <data name="Loc_LoadingComments_Text.Text" xml:space="preserve">
+    <value>टिप्पण्या लोड होत आहेत...</value>
+  </data>
+  <data name="Loc_LoadingMore_Text.Text" xml:space="preserve">
+    <value>आणखी लोड होत आहे...</value>
+  </data>
+  <data name="Loc_LoadingMoreHistory_Text.Text" xml:space="preserve">
+    <value>अधिक इतिहास लोड होत आहे...</value>
+  </data>
+  <data name="Loc_LoadingMoreResults_Text.Text" xml:space="preserve">
+    <value>अधिक निकाल लोड होत आहेत...</value>
+  </data>
+  <data name="Loc_LoadingMoreVideos_Text.Text" xml:space="preserve">
+    <value>अधिक व्हिडिओ लोड होत आहेत...</value>
+  </data>
+  <data name="Loc_LoadingPlaylist_Text.Text" xml:space="preserve">
+    <value>प्लेलिस्ट लोड होत आहे...</value>
+  </data>
+  <data name="Loc_LogOut_Text.Text" xml:space="preserve">
+    <value>साइन आउट</value>
+  </data>
+  <data name="Loc_LooksLikeWeCanTLoadVideosForYou_Text.Text" xml:space="preserve">
+    <value>आम्ही तुमच्यासाठी व्हिडिओ लोड करू शकत नाही असे दिसते.</value>
+  </data>
+  <data name="Loc_More_Text.Text" xml:space="preserve">
+    <value>...अधिक</value>
+  </data>
+  <data name="Loc_NewUpdatesFromYourSubscriptionsWillAppearHere_Text.Text" xml:space="preserve">
+    <value>तुमच्या सदस्यतांमधील नवीन अपडेट येथे दिसतील.</value>
+  </data>
+  <data name="Loc_NoCommentsFound_Text.Text" xml:space="preserve">
+    <value>कोणत्याही टिप्पण्या सापडल्या नाहीत.</value>
+  </data>
+  <data name="Loc_NoConnectionToTheInternet_Text.Text" xml:space="preserve">
+    <value>इंटरनेट कनेक्शन नाही</value>
+  </data>
+  <data name="Loc_NoData_Text.Text" xml:space="preserve">
+    <value>डेटा नाही</value>
+  </data>
+  <data name="Loc_NoHistoryYet_Text.Text" xml:space="preserve">
+    <value>अजून इतिहास नाही</value>
+  </data>
+  <data name="Loc_None_Text.Text" xml:space="preserve">
+    <value>काहीही नाही</value>
+  </data>
+  <data name="Loc_NoNotifications_Text.Text" xml:space="preserve">
+    <value>सूचना नाहीत</value>
+  </data>
+  <data name="Loc_Notifications_Text.Text" xml:space="preserve">
+    <value>सूचना</value>
+  </data>
+  <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
+    <value>या प्लेलिस्टमध्ये व्हिडिओ नाहीत</value>
+  </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>ठीक आहे</value>
+  </data>
+  <data name="Loc_Personalized_Text.Text" xml:space="preserve">
+    <value>वैयक्तिकृत</value>
+  </data>
+  <data name="Loc_PlaybackSpeed_Text.Text" xml:space="preserve">
+    <value>प्लेबॅक गती</value>
+  </data>
+  <data name="Loc_Playlist_Text.Text" xml:space="preserve">
+    <value>प्लेलिस्ट</value>
+  </data>
+  <data name="Loc_Playlists_Text.Text" xml:space="preserve">
+    <value>प्लेलिस्ट</value>
+  </data>
+  <data name="Loc_Posts_Text.Text" xml:space="preserve">
+    <value>पोस्ट</value>
+  </data>
+  <data name="Loc_PreferredShortsQuality_Text.Text" xml:space="preserve">
+    <value>पसंतीची Shorts गुणवत्ता</value>
+  </data>
+  <data name="Loc_PreferredVideoQuality_Text.Text" xml:space="preserve">
+    <value>पसंतीची व्हिडिओ गुणवत्ता</value>
+  </data>
+  <data name="Loc_Published_Text.Text" xml:space="preserve">
+    <value>प्रकाशित</value>
+  </data>
+  <data name="Loc_QRCode_Text.Text" xml:space="preserve">
+    <value>QR कोड</value>
+  </data>
+  <data name="Loc_Quality_Text.Text" xml:space="preserve">
+    <value>गुणवत्ता</value>
+  </data>
+  <data name="Loc_RefreshQRCode_Content.Content" xml:space="preserve">
+    <value>QR कोड रिफ्रेश करा</value>
+  </data>
+  <data name="Loc_ReloadVideo_Text.Text" xml:space="preserve">
+    <value>व्हिडिओ पुन्हा लोड करा</value>
+  </data>
+  <data name="Loc_Retry_Content.Content" xml:space="preserve">
+    <value>पुन्हा प्रयत्न करा</value>
+  </data>
+  <data name="Loc_ScanTheQRCodeToSignIn_Text.Text" xml:space="preserve">
+    <value>साइन इन करण्यासाठी QR कोड स्कॅन करा</value>
+  </data>
+  <data name="Loc_Search_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>शोधा</value>
+  </data>
+  <data name="Loc_Searching_Text.Text" xml:space="preserve">
+    <value>शोधत आहे...</value>
+  </data>
+  <data name="Loc_SearchYouTube_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>YouTube शोधा</value>
+  </data>
+  <data name="Loc_SearchYouTube_Text.Text" xml:space="preserve">
+    <value>YouTube शोधा</value>
+  </data>
+  <data name="Loc_SeekPreview_Text.Text" xml:space="preserve">
+    <value>सीक पूर्वावलोकन</value>
+  </data>
+  <data name="Loc_SendNotifications_Text.Text" xml:space="preserve">
+    <value>सूचना पाठवा</value>
+  </data>
+  <data name="Loc_Settings_Text.Text" xml:space="preserve">
+    <value>सेटिंग्ज</value>
+  </data>
+  <data name="Loc_Share_Text.Text" xml:space="preserve">
+    <value>शेअर करा</value>
+  </data>
+  <data name="Loc_ShareVia_Text.Text" xml:space="preserve">
+    <value>याद्वारे शेअर करा...</value>
+  </data>
+  <data name="Loc_Shorts_Text.Text" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="Loc_ShortsLinkHasBeenCopiedToClipboard_Text.Text" xml:space="preserve">
+    <value>Shorts लिंक क्लिपबोर्डवर कॉपी केली आहे</value>
+  </data>
+  <data name="Loc_ShowQRCode_Text.Text" xml:space="preserve">
+    <value>QR कोड दाखवा</value>
+  </data>
+  <data name="Loc_ShowVideoThumbnailWhileSeeking_Text.Text" xml:space="preserve">
+    <value>सीक करताना व्हिडिओ थंबनेल दाखवा</value>
+  </data>
+  <data name="Loc_Subscribe_Text.Text" xml:space="preserve">
+    <value>सदस्य व्हा</value>
+  </data>
+  <data name="Loc_Subscriptions_Text.Text" xml:space="preserve">
+    <value>सदस्यता</value>
+  </data>
+  <data name="Loc_Subtitles_Text.Text" xml:space="preserve">
+    <value>उपशीर्षके</value>
+  </data>
+  <data name="Loc_TrendingSearches_Text.Text" xml:space="preserve">
+    <value>ट्रेंडिंग शोध</value>
+  </data>
+  <data name="Loc_TryAgain_Content.Content" xml:space="preserve">
+    <value>पुन्हा प्रयत्न करा</value>
+  </data>
+  <data name="Loc_Type_Text.Text" xml:space="preserve">
+    <value>प्रकार</value>
+  </data>
+  <data name="Loc_Unsubscribe_Text.Text" xml:space="preserve">
+    <value>सदस्यता रद्द करा</value>
+  </data>
+  <data name="Loc_VerificationCode_Text.Text" xml:space="preserve">
+    <value>पडताळणी कोड</value>
+  </data>
+  <data name="Loc_Video_Text.Text" xml:space="preserve">
+    <value>व्हिडिओ</value>
+  </data>
+  <data name="Loc_Videos_Text.Text" xml:space="preserve">
+    <value>व्हिडिओ</value>
+  </data>
+  <data name="Loc_ViewChannel_Text.Text" xml:space="preserve">
+    <value>चॅनल पहा</value>
+  </data>
+  <data name="Loc_Views_Text.Text" xml:space="preserve">
+    <value>दृश्ये</value>
+  </data>
+  <data name="Loc_You_Text.Text" xml:space="preserve">
+    <value>तुम्ही</value>
+  </data>
+  <data name="LoginLoadingQr" xml:space="preserve">
+    <value>QR कोड लोड होत आहे...</value>
+  </data>
+  <data name="LoginQrFailed" xml:space="preserve">
+    <value>QR कोड लोड करता आला नाही.</value>
+  </data>
+  <data name="LoginScanQr" xml:space="preserve">
+    <value>फोनचा कॅमेरा उघडा आणि QR कोड स्कॅन करा.</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>साइन इन यशस्वी! पुनर्निर्देशित करत आहे...</value>
+  </data>
+  <data name="MeSignIn" xml:space="preserve">
+    <value>इतिहास आणि प्लेलिस्ट पाहण्यासाठी साइन इन करा</value>
+  </data>
+  <data name="Mix" xml:space="preserve">
+    <value>Mix</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} महिन्यांपूर्वी</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>नेटवर्क त्रुटी. इंटरनेट कनेक्शन तपासा.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>नाही</value>
+  </data>
+  <data name="NoCommentsFound" xml:space="preserve">
+    <value>कोणत्याही टिप्पण्या सापडल्या नाहीत.</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>डेटा नाही</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>वर्णन नाही.</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>वर्णन उपलब्ध नाही.</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>नाव नाही</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>सूचना नाहीत</value>
+  </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts सापडले नाहीत.</value>
+  </data>
+  <data name="NotificationPreferenceFailed" xml:space="preserve">
+    <value>सूचना प्राधान्य अपडेट करता आले नाही.</value>
+  </data>
+  <data name="NotificationsFailed" xml:space="preserve">
+    <value>सूचना अयशस्वी</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>तुमच्या सदस्यतांमधील नवीन अपडेट येथे दिसतील.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>तुमच्या YouTube सूचना पाहण्यासाठी साइन इन करा.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>हे पृष्ठ नंतर पुन्हा उघडा.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>शीर्षक नाही</value>
+  </data>
+  <data name="NotSignedIn" xml:space="preserve">
+    <value>साइन इन केलेले नाही</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>बंद</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>ठीक आहे</value>
+  </data>
+  <data name="Older" xml:space="preserve">
+    <value>जुने</value>
+  </data>
+  <data name="PlaybackError" xml:space="preserve">
+    <value>प्लेबॅक त्रुटी</value>
+  </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>प्लेबॅक अयशस्वी</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>प्लेबॅक गती</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>व्हिडिओ प्ले करता आला नाही. प्लेयर सुरू केलेला नाही.</value>
+  </data>
+  <data name="Playlist" xml:space="preserve">
+    <value>प्लेलिस्ट</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>प्लेलिस्ट ID रिकामा आहे</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>प्लेलिस्ट अपडेट करता आली नाही</value>
+  </data>
+  <data name="QrCode" xml:space="preserve">
+    <value>QR कोड</value>
+  </data>
+  <data name="QrDisplayErrorFormat" xml:space="preserve">
+    <value>QR प्रदर्शन त्रुटी: {0}</value>
+  </data>
+  <data name="Quality" xml:space="preserve">
+    <value>गुणवत्ता</value>
+  </data>
+  <data name="RatingFailed" xml:space="preserve">
+    <value>रेटिंग अयशस्वी</value>
+  </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube ने रेटिंग विनंती नाकारली. TV टोकन वैध आहे आणि त्याला YouTube रेटिंग परवानगी आहे का तपासा.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>शिफारस केलेला व्हिडिओ</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>रिफ्रेश टोकन अॅक्सेस टोकनमध्ये बदलता आले नाही.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>उत्तरे</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} उत्तरे</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>सेव्ह करा</value>
+  </data>
+  <data name="SearchErrorFormat" xml:space="preserve">
+    <value>शोध त्रुटी: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>अज्ञात</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>खाते निवडा</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>प्लेलिस्ट निवडा</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>इंग्रजी</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>डीफॉल्टने Windows भाषा वापरते.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>अॅप भाषा</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>रशियन</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>भाषा</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>भाषा</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>सिस्टम डीफॉल्ट</value>
+  </data>
+  <data name="ShareShortDescription" xml:space="preserve">
+    <value>हा YouTube Short शेअर करा</value>
+  </data>
+  <data name="ShareVideoDescription" xml:space="preserve">
+    <value>हा YouTube व्हिडिओ शेअर करा</value>
+  </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>ॲपमध्ये Shorts दाखवा</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>कमी दाखवा</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>आणखी</value>
+  </data>
+  <data name="SignInAgain" xml:space="preserve">
+    <value>TV रिफ्रेश टोकन अॅक्सेस टोकनमध्ये बदलता आले नाही. पुन्हा साइन इन करा आणि रिफ्रेश टोकन अजून वैध आहे का तपासा.</value>
+  </data>
+  <data name="SignInRequired" xml:space="preserve">
+    <value>साइन इन आवश्यक</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Shorts पाहण्यासाठी साइन इन करा.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>सीक बारवरील जाहिरात विभाग</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>रंगीत SponsorBlock श्रेणी दाखवा</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>सदस्य व्हा</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>सदस्य</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>सदस्य</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>सदस्य</value>
+  </data>
+  <data name="SubscribersVideosFormat" xml:space="preserve">
+    <value>{0} सदस्य • {1} व्हिडिओ</value>
+  </data>
+  <data name="SubscriptionFailed" xml:space="preserve">
+    <value>सदस्यता अयशस्वी</value>
+  </data>
+  <data name="SubscriptionRejected" xml:space="preserve">
+    <value>YouTube ने सदस्यता विनंती नाकारली.</value>
+  </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube ने सदस्यता विनंती नाकारली. TV टोकन वैध आहे आणि चॅनल ID सापडला आहे का तपासा.</value>
+  </data>
+  <data name="SubtitleEarlier" xml:space="preserve">
+    <value>   आधी (+0.25s)</value>
+  </data>
+  <data name="SubtitleLater" xml:space="preserve">
+    <value>   नंतर (-0.25s)</value>
+  </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>सामान्य ऑफसेट पुनर्संचयित करा (0.00 से)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>उपशीर्षके</value>
+  </data>
+  <data name="SyncFormat" xml:space="preserve">
+    <value>सिंक: {0}</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>थीम</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>गडद</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>उजळ</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>या आठवड्यात</value>
+  </data>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>थंबनेल गुणवत्ता</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>आज</value>
+  </data>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>कॉमेडी स्केच</value>
+  </data>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>स्वयंपाकाच्या पाककृती</value>
+  </data>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>DIY ट्यूटोरियल</value>
+  </data>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>गेमिंग हायलाइट्स</value>
+  </data>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>चित्रपट ट्रेलर</value>
+  </data>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>संगीत व्हिडिओ</value>
+  </data>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>क्रीडा हायलाइट्स</value>
+  </data>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>टेक पुनरावलोकने</value>
+  </data>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>TV रिफ्रेश टोकन अॅक्सेस टोकनमध्ये बदलता आले नाही.</value>
+  </data>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>TV रिफ्रेश टोकन अॅक्सेस टोकनमध्ये बदलता आले नाही. पुन्हा साइन इन करा आणि रिफ्रेश टोकन अजून वैध आहे का तपासा.</value>
+  </data>
+  <data name="TvTokenMissing" xml:space="preserve">
+    <value>TV रिफ्रेश टोकन सापडले नाही. पुन्हा साइन इन करून प्रयत्न करा.</value>
+  </data>
+  <data name="TvTokenMissingDetailed" xml:space="preserve">
+    <value>TV रिफ्रेश टोकन सापडले नाही. yt_refresh_token सेव्ह होण्यासाठी पुन्हा साइन इन करा, नंतर प्रयत्न करा.</value>
+  </data>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>टिप्पण्या लोड करता आल्या नाहीत.</value>
+  </data>
+  <data name="UnableLoadShorts" xml:space="preserve">
+    <value>Shorts लोड करता आले नाहीत.</value>
+  </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>हा Short प्ले करता येत नाही</value>
+  </data>
+  <data name="UnablePlayShortPeriod" xml:space="preserve">
+    <value>हा Short प्ले करता येत नाही.</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>अज्ञात</value>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>शीर्षकहीन</value>
+  </data>
+  <data name="UploadedVideo" xml:space="preserve">
+    <value>व्हिडिओ अपलोड केला</value>
+  </data>
+  <data name="UploadedVideoTitleFormat" xml:space="preserve">
+    <value>“{0}” व्हिडिओ अपलोड केला</value>
+  </data>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>व्हिडिओ “{0}” मध्ये जोडला</value>
+  </data>
+  <data name="VideoFew" xml:space="preserve">
+    <value>व्हिडिओ</value>
+  </data>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>व्हिडिओ लिंक क्लिपबोर्डवर कॉपी केली आहे.</value>
+  </data>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>व्हिडिओ लोड करता आला नाही. लिंक कालबाह्य झाली असेल किंवा फॉरमॅट समर्थित नसेल.</value>
+  </data>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>व्हिडिओ लोड होण्याची वेळ संपली. इंटरनेट कनेक्शन तपासा.</value>
+  </data>
+  <data name="VideoMany" xml:space="preserve">
+    <value>व्हिडिओ</value>
+  </data>
+  <data name="VideoOne" xml:space="preserve">
+    <value>व्हिडिओ</value>
+  </data>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>व्हिडिओ प्लेबॅक त्रुटी. कमी गुणवत्ता निवडून पहा.</value>
+  </data>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>व्हिडिओ “{0}” मधून काढला</value>
+  </data>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} व्हिडिओ</value>
+  </data>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} व्हिडिओ</value>
+  </data>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} आठवड्यांपूर्वी</value>
+  </data>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} वर्षांपूर्वी</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>होय</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>काल</value>
+  </data>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
+  </data>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube व्हिडिओ</value>
+  </data>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube व्हिडिओ</value>
+  </data>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>डाउनलोड केलेले व्हिडिओ साफ करा</value>
+  </data>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>सर्व डाउनलोड केलेले व्हिडिओ आणि कॅशे केलेले लघुप्रतिमा हटवा</value>
+  </data>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>डाउनलोड केलेले सर्व व्हिडिओ आणि त्यांचे लघुप्रतिमा कायमचे हटविले जातील.</value>
+  </data>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>साफ करा</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>रद्द करा</value>
   </data>
 </root>

@@ -7,17 +7,20 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource AppBackgroundBrush}">
+    <Grid Background="Transparent">
+        <Border x:Name="NavbarGlassHost"
+                Background="Transparent"
+                IsHitTestVisible="False" />
         <!-- Vertical Layout (Default) -->
         <Grid x:Name="VerticalLayout" Visibility="Visible">
             <!-- TopBar: YouTube logo and search icon -->
-            <Grid x:Name="TopBar" Background="{ThemeResource AppBackgroundBrush}" Height="56" VerticalAlignment="Top">
+            <Grid x:Name="TopBar" Background="Transparent" Height="56" VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Image x:Name="YouTubeLogo" local:ThemeAsset.Path="Assets/ytlogo.png" Height="32" Margin="16,0,0,0" VerticalAlignment="Center"/>
+                <Image x:Name="YouTubeLogo" local:ThemeAsset.Path="Assets/ytlogo.png" Height="32" Margin="16,0,0,0" VerticalAlignment="Center" Tapped="YouTubeLogo_Tapped"/>
                 <StackPanel Grid.Column="2"
                             Orientation="Horizontal"
                             VerticalAlignment="Center"
@@ -40,7 +43,7 @@
         </Grid>
 
         <!-- Horizontal Layout -->
-        <Grid x:Name="HorizontalLayout" Visibility="Collapsed" Height="56" VerticalAlignment="Top" Background="{ThemeResource AppBackgroundBrush}">
+        <Grid x:Name="HorizontalLayout" Visibility="Collapsed" Height="56" VerticalAlignment="Top" Background="Transparent">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -49,7 +52,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- YouTube Logo -->
-            <Image local:ThemeAsset.Path="Assets/ytlogo.png" Height="32" Margin="16,0,0,0" VerticalAlignment="Center" Grid.Column="0"/>
+            <Image local:ThemeAsset.Path="Assets/ytlogo.png" Height="32" Margin="16,0,0,0" VerticalAlignment="Center" Grid.Column="0" Tapped="YouTubeLogo_Tapped"/>
 
             <!-- Centered Search Input -->
             <Border Grid.Column="1" Grid.ColumnSpan="2" 

@@ -48,13 +48,10 @@ namespace YouTube
         private const int LoadMoreAttemptThrottleMs = 600;
 
         private const int LiveTileRecommendationCount = 5;
-        private const int LiveTileImageDisplaySeconds = 8;
-        private const int LiveTileInfoDisplaySeconds = 6;
-        private const int LiveTileScheduleCycles = 8;
         private const string LiveTileFolderName = "LiveTile";
         private const string LiveTileFallbackImage = "ms-appx:///Assets/Square150x150Logo.png";
         private static readonly HttpClient liveTileHttpClient = new HttpClient();
-        private bool isUpdatingLiveTile = false;
+        private int _liveTileUpdateVersion;
         private bool _postHomeStartupWorkScheduled;
         private bool _homeNotificationRefreshStarted;
 
@@ -81,6 +78,7 @@ namespace YouTube
                 Localization.GetString("TrendingComedySketches"),
                 Localization.GetString("TrendingDiyTutorials")
             };
+            OfflineDownloadsButtonText.Text = Localization.GetString("DownloadedVideos");
             TrendingSuggestionsList.ItemsSource = trendingSuggestions;
             if (SkeletonCardsList != null)
             {
@@ -187,10 +185,11 @@ namespace YouTube
 
                 var added = AppendUniqueRecommendations(recommendations);
                 UpdateResponsiveCardLayouts();
+                UpdateLiveTileFromLoadedRecommendations();
 
                 // The feed is the only critical startup work. Hide its loader immediately after
-                // the cards are in the ObservableCollection, before starting notifications,
-                // Live Tile thumbnails or any other network request.
+                // the cards are in the ObservableCollection, before starting notifications or
+                // any other network request. The text-only Live Tile update above is local.
                 if (SkeletonLoader != null)
                 {
                     SkeletonLoader.Visibility = Visibility.Collapsed;
@@ -198,7 +197,7 @@ namespace YouTube
                 ShowCategoryPlaceholders(false);
 
                 // Notifications are intentionally fetched from Home, but only AFTER recommendations
-                // are already visible. Live Tile image downloads are deferred for the same reason.
+                // are already visible.
                 SchedulePostHomeStartupWork();
 
                 System.Diagnostics.Debug.WriteLine(
@@ -449,6 +448,7 @@ namespace YouTube
                 var videos = await GetSelectedCategoryVideosAsync(recommendationRequestCount);
                 AppendUniqueRecommendations(videos);
                 UpdateResponsiveCardLayouts();
+                UpdateLiveTileFromLoadedRecommendations();
 
                 // Category cards should become interactive immediately; Live Tile is non-critical.
                 SchedulePostHomeStartupWork();
@@ -714,19 +714,6 @@ namespace YouTube
                     }
                 }
 
-                // Wait a little longer before downloading Live Tile artwork. Notification refresh
-                // can involve subscriptions requests, while Live Tile performs several image GETs.
-                await Task.Delay(1000);
-
-                try
-                {
-                    await UpdateLiveTileFromLoadedRecommendationsAsync();
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(
-                        "[Home] Deferred Live Tile update failed: " + ex.Message);
-                }
             }
             finally
             {
@@ -745,98 +732,78 @@ namespace YouTube
             public string ImageSource { get; set; }
         }
 
-        private async Task UpdateLiveTileFromLoadedRecommendationsAsync()
+        private async void UpdateLiveTileFromLoadedRecommendations()
         {
             if (!App.IsLiveTileEnabled())
             {
                 return;
             }
 
-            if (isUpdatingLiveTile || recommendationVideos == null || recommendationVideos.Count == 0)
+            if (recommendationVideos == null || recommendationVideos.Count == 0)
             {
                 return;
             }
 
-            var tileVideos = recommendationVideos
-                .Where(v => v != null && !string.IsNullOrWhiteSpace(v.VideoId) && !string.IsNullOrWhiteSpace(v.Title))
+            var updateVersion = ++_liveTileUpdateVersion;
+            var sourceItems = recommendationVideos
+                .Where(video => video != null
+                    && !string.IsNullOrWhiteSpace(video.VideoId)
+                    && !string.IsNullOrWhiteSpace(video.Title))
                 .Take(LiveTileRecommendationCount)
                 .ToList();
 
-            if (tileVideos.Count == 0)
+            var tileItems = new List<LiveTileRecommendationItem>();
+            foreach (var video in sourceItems)
             {
-                return;
-            }
-
-            isUpdatingLiveTile = true;
-
-            try
-            {
-                var tileItems = new List<LiveTileRecommendationItem>();
-                foreach (var video in tileVideos)
-                {
-                    var localImage = await GetLiveTileThumbnailAsync(video);
-                    tileItems.Add(new LiveTileRecommendationItem
-                    {
-                        VideoId = video.VideoId,
-                        Title = FirstNonEmpty(video.Title, Localization.GetString("RecommendedVideo")),
-                        Author = FirstNonEmpty(video.ChannelTitle, "YouTube"),
-                        ViewCount = FirstNonEmpty(video.ViewCount, string.Empty),
-                        ImageSource = FirstNonEmpty(localImage, LiveTileFallbackImage)
-                    });
-                }
-
-                if (tileItems.Count == 0 || !App.IsLiveTileEnabled())
+                var imageSource = await GetLiveTileThumbnailAsync(video);
+                if (updateVersion != _liveTileUpdateVersion || !App.IsLiveTileEnabled())
                 {
                     return;
                 }
 
+                tileItems.Add(new LiveTileRecommendationItem
+                {
+                    VideoId = video.VideoId,
+                    Title = video.Title,
+                    Author = video.ChannelTitle,
+                    ViewCount = video.ViewCount,
+                    ImageSource = imageSource
+                });
+            }
+
+            if (tileItems.Count == 0 || updateVersion != _liveTileUpdateVersion)
+            {
+                return;
+            }
+
+            try
+            {
                 var updater = TileUpdateManager.CreateTileUpdaterForApplication();
                 ResetLiveTileSchedule(updater);
-                updater.EnableNotificationQueue(false);
 
-                // Do not rely on the notification queue for timing. Windows chooses how long queued
-                // notifications stay visible, which can make peek/details appear very rarely.
-                // Instead, explicitly schedule image -> details -> next image -> details. The first
-                // image is applied immediately and the remaining states are scheduled for the next
-                // several minutes, so Start keeps moving even after the app is suspended.
-                var now = DateTimeOffset.Now;
-                var firstImageDocument = new XmlDocument();
-                firstImageDocument.LoadXml(BuildRecommendationImageTileXml(tileItems[0]));
-                var firstImageNotification = new TileNotification(firstImageDocument);
-                firstImageNotification.ExpirationTime = now.AddMinutes(15);
-                updater.Update(firstImageNotification);
-
-                var deliveryTime = now.AddSeconds(LiveTileImageDisplaySeconds);
-                var scheduleId = 0;
-                for (int cycle = 0; cycle < LiveTileScheduleCycles; cycle++)
+                // A peek template has a real front (thumbnail) and back (video details), so it
+                // animates even when only one recommendation is available. The queue additionally
+                // rotates through up to five different recommendations while the app is suspended.
+                updater.EnableNotificationQueue(true);
+                var expiration = DateTimeOffset.Now.AddDays(1);
+                for (var index = 0; index < tileItems.Count; index++)
                 {
-                    for (int i = 0; i < tileItems.Count; i++)
+                    var document = new XmlDocument();
+                    document.LoadXml(BuildRecommendationPeekTileXml(tileItems[index]));
+                    var notification = new TileNotification(document)
                     {
-                        var item = tileItems[i];
-
-                        // The very first image is already visible. Every video receives a forced
-                        // details phase, then the following video gets a fresh full-bleed image.
-                        ScheduleLiveTileState(updater, BuildRecommendationInfoTileXml(item), deliveryTime, scheduleId++);
-                        deliveryTime = deliveryTime.AddSeconds(LiveTileInfoDisplaySeconds);
-
-                        var nextIndex = (i + 1) % tileItems.Count;
-                        var nextItem = tileItems[nextIndex];
-                        ScheduleLiveTileState(updater, BuildRecommendationImageTileXml(nextItem), deliveryTime, scheduleId++);
-                        deliveryTime = deliveryTime.AddSeconds(LiveTileImageDisplaySeconds);
-                    }
+                        Tag = "video" + index,
+                        ExpirationTime = expiration
+                    };
+                    updater.Update(notification);
                 }
 
                 System.Diagnostics.Debug.WriteLine(
-                    "[LiveTile] Scheduled explicit image/details rotation for "
-                    + tileItems.Count + " videos until " + deliveryTime.ToString("u"));
+                    "[LiveTile] Queued " + tileItems.Count + " animated peek tile(s)");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("[LiveTile] Update error: " + ex.Message);
-            }
-            finally
-            {
-                isUpdatingLiveTile = false;
+                System.Diagnostics.Debug.WriteLine("[LiveTile] Peek tile update failed: " + ex.Message);
             }
         }
 
@@ -953,69 +920,30 @@ namespace YouTube
             updater.Clear();
         }
 
-        private static void ScheduleLiveTileState(TileUpdater updater, string xml, DateTimeOffset deliveryTime, int scheduleId)
-        {
-            if (updater == null || string.IsNullOrWhiteSpace(xml))
-            {
-                return;
-            }
-
-            var document = new XmlDocument();
-            document.LoadXml(xml);
-
-            // ScheduledTileNotification is available from the first Windows 10 UWP contract,
-            // including Windows 10 Mobile. Use an explicit delivery time instead of Shell queue
-            // heuristics so the details state appears regularly.
-            var scheduled = new ScheduledTileNotification(document, deliveryTime);
-            scheduled.Id = "YT" + scheduleId.ToString("D3");
-            scheduled.ExpirationTime = deliveryTime.AddMinutes(2);
-            updater.AddToSchedule(scheduled);
-        }
-
-        private static string BuildRecommendationImageTileXml(LiveTileRecommendationItem item)
+        private static string BuildRecommendationPeekTileXml(LiveTileRecommendationItem item)
         {
             var title = EscapeTileXml(TrimForTile(FirstNonEmpty(item.Title, Localization.GetString("RecommendedVideo")), 90));
+            var author = TrimForTile(FirstNonEmpty(item.Author, "YouTube"), 42);
+            var views = TrimForTile(FirstNonEmpty(item.ViewCount, string.Empty), 34);
             var image = EscapeTileXml(FirstNonEmpty(item.ImageSource, LiveTileFallbackImage));
-            var launch = EscapeTileXml("youtubehandler:https://www.youtube.com/watch?v=" + FirstNonEmpty(item.VideoId, string.Empty));
-
-            // Image phase: full-bleed artwork. On a wide tile the 16:9 YouTube maxres image fills
-            // the complete 310x150 surface. The next scheduled state is the information phase.
-            return "<tile launch=\"" + launch + "\">"
-                + "<visual version=\"2\" branding=\"none\">"
-                + "<binding template=\"TileSquare150x150Image\" fallback=\"TileSquareImage\" branding=\"none\">"
-                + "<image id=\"1\" src=\"" + image + "\" alt=\"" + title + "\"/>"
-                + "</binding>"
-                + "<binding template=\"TileWide310x150Image\" fallback=\"TileWideImage\" branding=\"none\">"
-                + "<image id=\"1\" src=\"" + image + "\" alt=\"" + title + "\"/>"
-                + "</binding>"
-                + "</visual>"
-                + "</tile>";
-        }
-
-        private static string BuildRecommendationInfoTileXml(LiveTileRecommendationItem item)
-        {
-            var title = EscapeTileXml(TrimForTile(FirstNonEmpty(item.Title, Localization.GetString("RecommendedVideo")), 78));
-            var author = EscapeTileXml(TrimForTile(FirstNonEmpty(item.Author, "YouTube"), 42));
-            var views = EscapeTileXml(TrimForTile(FirstNonEmpty(item.ViewCount, string.Empty), 34));
             var launch = EscapeTileXml("youtubehandler:https://www.youtube.com/watch?v=" + FirstNonEmpty(item.VideoId, string.Empty));
             var details = author;
             if (!string.IsNullOrWhiteSpace(views))
             {
-                details = string.IsNullOrWhiteSpace(details) ? views : details + " • " + views;
+                details += " • " + views;
             }
+            details = EscapeTileXml(TrimForTile(details, 72));
 
-            // Details phase is a separate scheduled notification. This guarantees that title and
-            // metadata become the visible face instead of waiting for the non-deterministic peek
-            // timer. On phone, tile content changes use the Start-screen transition animation.
             return "<tile launch=\"" + launch + "\">"
                 + "<visual version=\"2\" branding=\"none\">"
-                + "<binding template=\"TileSquare150x150Text02\" fallback=\"TileSquareText02\" branding=\"none\">"
+                + "<binding template=\"TileSquare150x150PeekImageAndText02\" fallback=\"TileSquarePeekImageAndText02\" branding=\"none\">"
+                + "<image id=\"1\" src=\"" + image + "\" alt=\"" + title + "\"/>"
                 + "<text id=\"1\">" + title + "</text>"
                 + "<text id=\"2\">" + details + "</text>"
                 + "</binding>"
-                + "<binding template=\"TileWide310x150Text09\" fallback=\"TileWideText09\" branding=\"none\">"
-                + "<text id=\"1\">" + title + "</text>"
-                + "<text id=\"2\">" + details + "</text>"
+                + "<binding template=\"TileWide310x150PeekImageAndText01\" fallback=\"TileWidePeekImageAndText01\" branding=\"none\">"
+                + "<image id=\"1\" src=\"" + image + "\" alt=\"" + title + "\"/>"
+                + "<text id=\"1\">" + title + "\n" + details + "</text>"
                 + "</binding>"
                 + "</visual>"
                 + "</tile>";
@@ -1123,6 +1051,11 @@ namespace YouTube
         private async void RetryButton_Click(object sender, RoutedEventArgs e)
         {
             await LoadHomeDataAsync();
+        }
+
+        private void OfflineDownloadsButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(Downloads));
         }
 
         private void TrendingItem_Click(object sender, ItemClickEventArgs e)

@@ -1,16 +1,43 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
   </resheader>
   <resheader name="version">
-    <value>2.0</value>
+    <value>1.3</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutText" xml:space="preserve">
     <value>Dibangunkan oleh pasukan LegacyProjects.
@@ -18,11 +45,146 @@ Disokong oleh YouTube API Legacy.
 
 Versi {0}</value>
   </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Akaun</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Penampilan</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Trek audio</value>
+  </data>
   <data name="Auto" xml:space="preserve">
     <value>Auto</value>
   </data>
   <data name="AutoTranslate" xml:space="preserve">
     <value>Terjemahan automatik &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Kembali</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Aksi/Pengembaraan</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Semua</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Anime/Animasi</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Kereta &amp; Kenderaan</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Klasik</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Komedi</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Dokumentari</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Drama</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Pendidikan</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Hiburan</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Keluarga</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Filem &amp; Animasi</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Asing</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Permainan</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Seram</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Cara &amp; Gaya</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Pembelajaran</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Langsung</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Filem</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Muzik</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Berita</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Berita &amp; Politik</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Bukan Untung &amp; Aktivisme</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Orang &amp; Blog</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Haiwan Peliharaan &amp; Haiwan</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Podcast</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Sains &amp; Teknologi</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Sains Fiksyen/Fantasi</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Filem Pendek</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Rancangan</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Sukan</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Thriller</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Treler</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Perjalanan &amp; Acara</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Videoblog</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Permainan video</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Saluran</value>
+  </data>
+  <data name="ChannelIcons" xml:space="preserve">
+    <value>Ikon saluran</value>
+  </data>
+  <data name="ChannelIconsDescription" xml:space="preserve">
+    <value>Tunjukkan ikon saluran pada kad video</value>
   </data>
   <data name="ChannelLoadingError" xml:space="preserve">
     <value>Ralat memuatkan saluran</value>
@@ -30,14 +192,71 @@ Versi {0}</value>
   <data name="ChannelWasNotProvided" xml:space="preserve">
     <value>Saluran tidak diberikan</value>
   </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Komen</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Adakah anda pasti mahu log keluar?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Sahkan log keluar</value>
+  </data>
   <data name="CouldNotLoadChannel" xml:space="preserve">
     <value>Tidak dapat memuatkan saluran</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Tidak dapat memuatkan pemberitahuan</value>
   </data>
   <data name="CouldNotLoadPlaylist" xml:space="preserve">
     <value>Tidak dapat memuatkan senarai main</value>
   </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Tidak dapat memuatkan video. Sila cuba lagi.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Tidak dapat memainkan video.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} hari lalu</value>
+  </data>
   <data name="DescriptionNotAvailable" xml:space="preserve">
     <value>Perihalan tidak tersedia</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Muat turun</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Dimuat turun</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Video yang dimuat turun</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Folder muat turun</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Pilih tempat video yang dimuat turun disimpan</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Kualiti muat turun</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Muat turun</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Video yang anda muat turun akan dipaparkan di sini.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Muat turun anda</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Muat turun</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Video ini tidak tersedia untuk dimuat turun</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Kod Ralat: {0}</value>
   </data>
   <data name="ErrorFormat" xml:space="preserve">
     <value>Ralat: {0}</value>
@@ -62,6 +281,18 @@ Versi {0}</value>
   </data>
   <data name="EveryMinutes" xml:space="preserve">
     <value>Setiap {0} min</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Gagal memainkan video: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Daripada langganan</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Kesan kaca</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Kaburkan bar navigasi</value>
   </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Gagal memuatkan sejarah</value>
@@ -90,8 +321,17 @@ Versi {0}</value>
   <data name="LanguageSystem" xml:space="preserve">
     <value>Lalai sistem</value>
   </data>
+  <data name="Like" xml:space="preserve">
+    <value>Suka</value>
+  </data>
   <data name="LinkCopied" xml:space="preserve">
     <value>Pautan disalin</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Jubin langsung</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Tunjukkan cadangan pada skrin Mula</value>
   </data>
   <data name="LoadingDescription" xml:space="preserve">
     <value>Memuatkan perihalan...</value>
@@ -237,6 +477,9 @@ Versi {0}</value>
   <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
     <value>Tiada video dalam senarai main ini</value>
   </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
   <data name="Loc_Personalized_Text.Text" xml:space="preserve">
     <value>Diperibadikan</value>
   </data>
@@ -375,6 +618,15 @@ Versi {0}</value>
   <data name="Mix" xml:space="preserve">
     <value>Mix</value>
   </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} bulan lalu</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Ralat rangkaian. Semak sambungan Internet anda.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Tidak</value>
+  </data>
   <data name="NoCommentsFound" xml:space="preserve">
     <value>Tiada komen ditemui.</value>
   </data>
@@ -393,11 +645,26 @@ Versi {0}</value>
   <data name="NoNotifications" xml:space="preserve">
     <value>Tiada pemberitahuan</value>
   </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Tiada Shorts ditemui.</value>
+  </data>
   <data name="NotificationPreferenceFailed" xml:space="preserve">
     <value>Tidak dapat mengemas kini pilihan pemberitahuan.</value>
   </data>
   <data name="NotificationsFailed" xml:space="preserve">
     <value>Pemberitahuan gagal</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Kemas kini baharu daripada langganan anda akan muncul di sini.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Log masuk untuk melihat pemberitahuan YouTube anda.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Buka halaman ini semula kemudian.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Tiada tajuk</value>
   </data>
   <data name="NotSignedIn" xml:space="preserve">
     <value>Belum log masuk</value>
@@ -414,8 +681,23 @@ Versi {0}</value>
   <data name="PlaybackError" xml:space="preserve">
     <value>Ralat Main Balik</value>
   </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Main balik gagal</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Kelajuan main balik</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Tidak dapat memainkan video. Pemain belum dimulakan.</value>
+  </data>
   <data name="Playlist" xml:space="preserve">
     <value>Senarai main</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>ID senarai main kosong</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Senarai main tidak dapat dikemas kini</value>
   </data>
   <data name="QrCode" xml:space="preserve">
     <value>Kod QR</value>
@@ -423,11 +705,62 @@ Versi {0}</value>
   <data name="QrDisplayErrorFormat" xml:space="preserve">
     <value>Ralat paparan QR: {0}</value>
   </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Kualiti</value>
+  </data>
   <data name="RatingFailed" xml:space="preserve">
     <value>Penilaian gagal</value>
   </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube menolak permintaan penilaian. Semak bahawa token TV sah dan mempunyai skop penilaian YouTube.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Video disyorkan</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Tidak dapat menukar token muat semula dengan token akses.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>balasan</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} balasan</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Simpan</value>
+  </data>
   <data name="SearchErrorFormat" xml:space="preserve">
     <value>Ralat carian: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Tidak diketahui</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Pilih akaun</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Pilih senarai main</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Inggeris</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Menggunakan bahasa Windows secara lalai.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Bahasa aplikasi</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Rusia</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Bahasa</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Bahasa</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Lalai sistem</value>
   </data>
   <data name="ShareShortDescription" xml:space="preserve">
     <value>Kongsi YouTube Short ini</value>
@@ -435,11 +768,47 @@ Versi {0}</value>
   <data name="ShareVideoDescription" xml:space="preserve">
     <value>Kongsi video YouTube ini</value>
   </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Tunjukkan Shorts dalam aplikasi</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Tunjukkan kurang</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Lagi</value>
+  </data>
   <data name="SignInAgain" xml:space="preserve">
     <value>Tidak dapat menukar token muat semula TV dengan token akses. Log masuk semula dan semak bahawa token muat semula masih sah.</value>
   </data>
   <data name="SignInRequired" xml:space="preserve">
     <value>Log masuk diperlukan</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Log masuk untuk menonton Shorts.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Segmen iklan pada bar carian</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Tunjukkan julat SponsorBlock berwarna</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Langgan</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>pelanggan</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>pelanggan</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>pelanggan</value>
   </data>
   <data name="SubscribersVideosFormat" xml:space="preserve">
     <value>{0} pelanggan • {1} video</value>
@@ -450,65 +819,71 @@ Versi {0}</value>
   <data name="SubscriptionRejected" xml:space="preserve">
     <value>YouTube menolak permintaan langganan.</value>
   </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube menolak permintaan langganan. Semak bahawa token TV sah dan ID saluran ditemui.</value>
+  </data>
   <data name="SubtitleEarlier" xml:space="preserve">
     <value>   Lebih awal (+0.25s)</value>
   </data>
   <data name="SubtitleLater" xml:space="preserve">
     <value>   Lebih lewat (-0.25s)</value>
   </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Pulihkan anjakan biasa (0.00 s)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Sari kata</value>
+  </data>
   <data name="SyncFormat" xml:space="preserve">
     <value>Segerak: {0}</value>
   </data>
-  <data name="UnableLoadComments" xml:space="preserve">
-    <value>Tidak dapat memuatkan komen.</value>
+  <data name="Theme" xml:space="preserve">
+    <value>Tema</value>
   </data>
-  <data name="Untitled" xml:space="preserve">
-    <value>Tanpa tajuk</value>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Gelap</value>
   </data>
-  <data name="VideoLinkCopied" xml:space="preserve">
-    <value>Pautan video telah disalin ke papan keratan.</value>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Cerah</value>
   </data>
-  <data name="VideosCountFormat" xml:space="preserve">
-    <value>{0} video</value>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Minggu ini</value>
   </data>
-  <data name="YouTubeShorts" xml:space="preserve">
-    <value>YouTube Shorts</value>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Kualiti lakaran kecil</value>
   </data>
-  <data name="SettingsLanguageSection.Text" xml:space="preserve">
-    <value>Bahasa</value>
+  <data name="Today" xml:space="preserve">
+    <value>Hari ini</value>
   </data>
-  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
-    <value>Bahasa aplikasi</value>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Sketsa komedi</value>
   </data>
-  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
-    <value>Bahasa</value>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Resipi masakan</value>
   </data>
-  <data name="SettingsLanguageHint.Text" xml:space="preserve">
-    <value>Menggunakan bahasa Windows secara lalai.</value>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Tutorial DIY</value>
   </data>
-  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
-    <value>Lalai sistem</value>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Sorotan permainan</value>
   </data>
-  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
-    <value>Inggeris</value>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Treler filem</value>
   </data>
-  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
-    <value>Rusia</value>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Video muzik</value>
   </data>
-  <data name="YouTubeVideo" xml:space="preserve">
-    <value>Video YouTube</value>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Sorotan sukan</value>
   </data>
-  <data name="Channel" xml:space="preserve">
-    <value>Saluran</value>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Ulasan teknologi</value>
   </data>
-  <data name="Shorts" xml:space="preserve">
-    <value>Shorts</value>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Tidak dapat menukar token muat semula TV dengan token akses.</value>
   </data>
-  <data name="Unknown" xml:space="preserve">
-    <value>Tidak diketahui</value>
-  </data>
-  <data name="NoTitle" xml:space="preserve">
-    <value>Tiada tajuk</value>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Tidak dapat menukar token muat semula TV dengan token akses. Log masuk semula dan semak bahawa token muat semula masih sah.</value>
   </data>
   <data name="TvTokenMissing" xml:space="preserve">
     <value>Token muat semula TV tidak ditemui. Log masuk semula dan cuba lagi.</value>
@@ -516,194 +891,23 @@ Versi {0}</value>
   <data name="TvTokenMissingDetailed" xml:space="preserve">
     <value>Token muat semula TV tidak ditemui. Log masuk semula supaya yt_refresh_token disimpan, kemudian cuba lagi.</value>
   </data>
-  <data name="TvTokenExchangeFailed" xml:space="preserve">
-    <value>Tidak dapat menukar token muat semula TV dengan token akses.</value>
-  </data>
-  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
-    <value>Tidak dapat menukar token muat semula dengan token akses.</value>
-  </data>
-  <data name="PlaybackFailed" xml:space="preserve">
-    <value>Main balik gagal</value>
-  </data>
-  <data name="UnablePlayShort" xml:space="preserve">
-    <value>Tidak dapat memainkan Short ini</value>
-  </data>
-  <data name="VideoLoadingTimedOut" xml:space="preserve">
-    <value>Masa memuatkan video tamat. Semak sambungan Internet anda.</value>
-  </data>
-  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
-    <value>Tidak dapat memuatkan video. Sila cuba lagi.</value>
-  </data>
-  <data name="PlayerNotInitialized" xml:space="preserve">
-    <value>Tidak dapat memainkan video. Pemain belum dimulakan.</value>
-  </data>
-  <data name="VideoLinkExpired" xml:space="preserve">
-    <value>Tidak dapat memuatkan video. Pautan mungkin telah tamat tempoh atau format tidak disokong.</value>
-  </data>
-  <data name="NetworkError" xml:space="preserve">
-    <value>Ralat rangkaian. Semak sambungan Internet anda.</value>
-  </data>
-  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
-    <value>Ralat main balik video. Cuba pilih kualiti yang lebih rendah.</value>
-  </data>
-  <data name="CouldNotPlayVideo" xml:space="preserve">
-    <value>Tidak dapat memainkan video.</value>
-  </data>
-  <data name="TrendingMusicVideos" xml:space="preserve">
-    <value>Video muzik</value>
-  </data>
-  <data name="TrendingGamingHighlights" xml:space="preserve">
-    <value>Sorotan permainan</value>
-  </data>
-  <data name="TrendingCookingRecipes" xml:space="preserve">
-    <value>Resipi masakan</value>
-  </data>
-  <data name="TrendingTechReviews" xml:space="preserve">
-    <value>Ulasan teknologi</value>
-  </data>
-  <data name="TrendingMovieTrailers" xml:space="preserve">
-    <value>Treler filem</value>
-  </data>
-  <data name="TrendingSportsHighlights" xml:space="preserve">
-    <value>Sorotan sukan</value>
-  </data>
-  <data name="TrendingComedySketches" xml:space="preserve">
-    <value>Sketsa komedi</value>
-  </data>
-  <data name="TrendingDiyTutorials" xml:space="preserve">
-    <value>Tutorial DIY</value>
-  </data>
-  <data name="RecommendedVideo" xml:space="preserve">
-    <value>Video disyorkan</value>
-  </data>
-  <data name="ConfirmSignOutMessage" xml:space="preserve">
-    <value>Adakah anda pasti mahu log keluar?</value>
-  </data>
-  <data name="ConfirmSignOutTitle" xml:space="preserve">
-    <value>Sahkan log keluar</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Ya</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>Tidak</value>
-  </data>
-  <data name="NotificationsSignIn" xml:space="preserve">
-    <value>Log masuk untuk melihat pemberitahuan YouTube anda.</value>
-  </data>
-  <data name="CouldNotLoadNotifications" xml:space="preserve">
-    <value>Tidak dapat memuatkan pemberitahuan</value>
-  </data>
-  <data name="NotificationsTryLater" xml:space="preserve">
-    <value>Buka halaman ini semula kemudian.</value>
-  </data>
-  <data name="PlaylistIdEmpty" xml:space="preserve">
-    <value>ID senarai main kosong</value>
-  </data>
-  <data name="VideosSuffixFormat" xml:space="preserve">
-    <value>{0} video</value>
-  </data>
-  <data name="SearchUnknown" xml:space="preserve">
-    <value>Tidak diketahui</value>
-  </data>
-  <data name="SignInWatchShorts" xml:space="preserve">
-    <value>Log masuk untuk menonton Shorts.</value>
-  </data>
-  <data name="NoShortsFound" xml:space="preserve">
-    <value>Tiada Shorts ditemui.</value>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Tidak dapat memuatkan komen.</value>
   </data>
   <data name="UnableLoadShorts" xml:space="preserve">
     <value>Tidak dapat memuatkan Shorts.</value>
   </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Tidak dapat memainkan Short ini</value>
+  </data>
   <data name="UnablePlayShortPeriod" xml:space="preserve">
     <value>Tidak dapat memainkan Short ini.</value>
   </data>
-  <data name="Quality" xml:space="preserve">
-    <value>Kualiti</value>
+  <data name="Unknown" xml:space="preserve">
+    <value>Tidak diketahui</value>
   </data>
-  <data name="PlaybackSpeed" xml:space="preserve">
-    <value>Kelajuan main balik</value>
-  </data>
-  <data name="AudioTrack" xml:space="preserve">
-    <value>Trek audio</value>
-  </data>
-  <data name="Subtitles" xml:space="preserve">
-    <value>Sari kata</value>
-  </data>
-  <data name="FailedPlayVideoFormat" xml:space="preserve">
-    <value>Gagal memainkan video: {0}</value>
-  </data>
-  <data name="ErrorCodeFormat" xml:space="preserve">
-    <value>Kod Ralat: {0}</value>
-  </data>
-  <data name="Today" xml:space="preserve">
-    <value>Hari ini</value>
-  </data>
-  <data name="DaysAgo" xml:space="preserve">
-    <value>{0} hari lalu</value>
-  </data>
-  <data name="WeeksAgo" xml:space="preserve">
-    <value>{0} minggu lalu</value>
-  </data>
-  <data name="MonthsAgo" xml:space="preserve">
-    <value>{0} bulan lalu</value>
-  </data>
-  <data name="YearsAgo" xml:space="preserve">
-    <value>{0} tahun lalu</value>
-  </data>
-  <data name="Back" xml:space="preserve">
-    <value>&lt; Kembali</value>
-  </data>
-  <data name="YouTubeVideoTitle" xml:space="preserve">
-    <value>Video YouTube</value>
-  </data>
-  <data name="SubscriberOne" xml:space="preserve">
-    <value>pelanggan</value>
-  </data>
-  <data name="SubscriberFew" xml:space="preserve">
-    <value>pelanggan</value>
-  </data>
-  <data name="SubscriberMany" xml:space="preserve">
-    <value>pelanggan</value>
-  </data>
-  <data name="VideoOne" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="VideoFew" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="VideoMany" xml:space="preserve">
-    <value>video</value>
-  </data>
-  <data name="Subscribe" xml:space="preserve">
-    <value>Langgan</value>
-  </data>
-  <data name="Like" xml:space="preserve">
-    <value>Suka</value>
-  </data>
-  <data name="Comments" xml:space="preserve">
-    <value>Komen</value>
-  </data>
-  <data name="NotificationsNewUpdates" xml:space="preserve">
-    <value>Kemas kini baharu daripada langganan anda akan muncul di sini.</value>
-  </data>
-  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
-    <value>YouTube menolak permintaan langganan. Semak bahawa token TV sah dan ID saluran ditemui.</value>
-  </data>
-  <data name="RatingRejectedDetailed" xml:space="preserve">
-    <value>YouTube menolak permintaan penilaian. Semak bahawa token TV sah dan mempunyai skop penilaian YouTube.</value>
-  </data>
-  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
-    <value>Tidak dapat menukar token muat semula TV dengan token akses. Log masuk semula dan semak bahawa token muat semula masih sah.</value>
-  </data>
-  <data name="Loc_OK_Content.Content" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Yesterday" xml:space="preserve">
-    <value>Semalam</value>
-  </data>
-  <data name="ThisWeek" xml:space="preserve">
-    <value>Minggu ini</value>
+  <data name="Untitled" xml:space="preserve">
+    <value>Tanpa tajuk</value>
   </data>
   <data name="UploadedVideo" xml:space="preserve">
     <value>Memuat naik video</value>
@@ -711,146 +915,73 @@ Versi {0}</value>
   <data name="UploadedVideoTitleFormat" xml:space="preserve">
     <value>Memuat naik video “{0}”</value>
   </data>
-  <data name="FromSubscriptions" xml:space="preserve">
-    <value>Daripada langganan</value>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Video ditambahkan pada “{0}”</value>
   </data>
-  <data name="CategoryAll" xml:space="preserve">
-    <value>Semua</value>
+  <data name="VideoFew" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategoryFilmAnimation" xml:space="preserve">
-    <value>Filem &amp; Animasi</value>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Pautan video telah disalin ke papan keratan.</value>
   </data>
-  <data name="CategoryAutosVehicles" xml:space="preserve">
-    <value>Kereta &amp; Kenderaan</value>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Tidak dapat memuatkan video. Pautan mungkin telah tamat tempoh atau format tidak disokong.</value>
   </data>
-  <data name="CategoryMusic" xml:space="preserve">
-    <value>Muzik</value>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Masa memuatkan video tamat. Semak sambungan Internet anda.</value>
   </data>
-  <data name="CategoryPetsAnimals" xml:space="preserve">
-    <value>Haiwan Peliharaan &amp; Haiwan</value>
+  <data name="VideoMany" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategorySports" xml:space="preserve">
-    <value>Sukan</value>
+  <data name="VideoOne" xml:space="preserve">
+    <value>video</value>
   </data>
-  <data name="CategoryShortMovies" xml:space="preserve">
-    <value>Filem Pendek</value>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Ralat main balik video. Cuba pilih kualiti yang lebih rendah.</value>
   </data>
-  <data name="CategoryTravelEvents" xml:space="preserve">
-    <value>Perjalanan &amp; Acara</value>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Video dialih keluar daripada “{0}”</value>
   </data>
-  <data name="CategoryGaming" xml:space="preserve">
-    <value>Permainan</value>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} video</value>
   </data>
-  <data name="CategoryVideoblogging" xml:space="preserve">
-    <value>Videoblog</value>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} video</value>
   </data>
-  <data name="CategoryPeopleBlogs" xml:space="preserve">
-    <value>Orang &amp; Blog</value>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} minggu lalu</value>
   </data>
-  <data name="CategoryComedy" xml:space="preserve">
-    <value>Komedi</value>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} tahun lalu</value>
   </data>
-  <data name="CategoryEntertainment" xml:space="preserve">
-    <value>Hiburan</value>
+  <data name="Yes" xml:space="preserve">
+    <value>Ya</value>
   </data>
-  <data name="CategoryNewsPolitics" xml:space="preserve">
-    <value>Berita &amp; Politik</value>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Semalam</value>
   </data>
-  <data name="CategoryHowtoStyle" xml:space="preserve">
-    <value>Cara &amp; Gaya</value>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
   </data>
-  <data name="CategoryEducation" xml:space="preserve">
-    <value>Pendidikan</value>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>Video YouTube</value>
   </data>
-  <data name="CategoryScienceTechnology" xml:space="preserve">
-    <value>Sains &amp; Teknologi</value>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>Video YouTube</value>
   </data>
-  <data name="CategoryNonprofitsActivism" xml:space="preserve">
-    <value>Bukan Untung &amp; Aktivisme</value>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Kosongkan video yang dimuat turun</value>
   </data>
-  <data name="CategoryMovies" xml:space="preserve">
-    <value>Filem</value>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Padam semua video yang dimuat turun dan lakaran kecil cache</value>
   </data>
-  <data name="CategoryAnimeAnimation" xml:space="preserve">
-    <value>Anime/Animasi</value>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Semua video yang dimuat turun dan lakaran kecilnya akan dipadamkan secara kekal.</value>
   </data>
-  <data name="CategoryActionAdventure" xml:space="preserve">
-    <value>Aksi/Pengembaraan</value>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Kosongkan</value>
   </data>
-  <data name="CategoryClassics" xml:space="preserve">
-    <value>Klasik</value>
-  </data>
-  <data name="CategoryDocumentary" xml:space="preserve">
-    <value>Dokumentari</value>
-  </data>
-  <data name="CategoryDrama" xml:space="preserve">
-    <value>Drama</value>
-  </data>
-  <data name="CategoryFamily" xml:space="preserve">
-    <value>Keluarga</value>
-  </data>
-  <data name="CategoryForeign" xml:space="preserve">
-    <value>Asing</value>
-  </data>
-  <data name="CategoryHorror" xml:space="preserve">
-    <value>Seram</value>
-  </data>
-  <data name="CategorySciFiFantasy" xml:space="preserve">
-    <value>Sains Fiksyen/Fantasi</value>
-  </data>
-  <data name="CategoryThriller" xml:space="preserve">
-    <value>Thriller</value>
-  </data>
-  <data name="CategoryShorts" xml:space="preserve">
-    <value>Shorts</value>
-  </data>
-  <data name="CategoryShows" xml:space="preserve">
-    <value>Rancangan</value>
-  </data>
-  <data name="CategoryTrailers" xml:space="preserve">
-    <value>Treler</value>
-  </data>
-  <data name="CategoryLive" xml:space="preserve">
-    <value>Langsung</value>
-  </data>
-  <data name="CategoryLearning" xml:space="preserve">
-    <value>Pembelajaran</value>
-  </data>
-  <data name="CategoryVideoGames" xml:space="preserve">
-    <value>Permainan video</value>
-  </data>
-  <data name="CategoryNews" xml:space="preserve">
-    <value>Berita</value>
-  </data>
-  <data name="CategoryPodcasts" xml:space="preserve">
-    <value>Podcast</value>
-  </data>
-
-  <data name="Appearance" xml:space="preserve">
-    <value>Penampilan</value>
-  </data>
-  <data name="Theme" xml:space="preserve">
-    <value>Tema</value>
-  </data>
-  <data name="ThemeLight" xml:space="preserve">
-    <value>Cerah</value>
-  </data>
-  <data name="ThemeDark" xml:space="preserve">
-    <value>Gelap</value>
-  </data>
-  <data name="LiveTile" xml:space="preserve">
-    <value>Jubin langsung</value>
-  </data>
-  <data name="LiveTileDescription" xml:space="preserve">
-    <value>Tunjukkan cadangan pada skrin Mula</value>
-  </data>
-  <data name="ThumbnailQuality" xml:space="preserve">
-    <value>Kualiti lakaran kecil</value>
-  </data>
-  <data name="ChannelIcons" xml:space="preserve">
-    <value>Ikon saluran</value>
-  </data>
-  <data name="ChannelIconsDescription" xml:space="preserve">
-    <value>Tunjukkan ikon saluran pada kad video</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Batal</value>
   </data>
 </root>

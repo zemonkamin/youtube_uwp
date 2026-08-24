@@ -370,9 +370,29 @@ namespace YouTube
         {
             this.InitializeComponent();
             InitializePlayer();
+            SponsorBlock.TimelineMarkerVisibilityChanged += SponsorBlock_TimelineMarkerVisibilityChanged;
             
             // Subscribe to window size changes
             Window.Current.SizeChanged += Current_SizeChanged;
+        }
+
+        private async void SponsorBlock_TimelineMarkerVisibilityChanged()
+        {
+            try
+            {
+                if (Dispatcher != null && !Dispatcher.HasThreadAccess)
+                {
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RebuildSponsorOverlay);
+                }
+                else
+                {
+                    RebuildSponsorOverlay();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[SponsorBlock] Marker visibility refresh failed: " + ex.Message);
+            }
         }
 
         private void Current_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
@@ -754,6 +774,11 @@ namespace YouTube
         {
             _minimizeSwipeTracking = false;
 
+            if (TryBeginSubtitleDrag(e))
+            {
+                return;
+            }
+
             if (_isMiniMode || _isFullscreen || PlayerGrid == null)
             {
                 return;
@@ -772,6 +797,17 @@ namespace YouTube
 
         private void PlayerGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
+            if (_subtitleDragTracking && PlayerGrid != null)
+            {
+                var subtitlePoint = e.GetCurrentPoint(PlayerGrid).Position;
+                SetSubtitlePosition(
+                    subtitlePoint.X / Math.Max(1.0, PlayerGrid.ActualWidth),
+                    subtitlePoint.Y / Math.Max(1.0, PlayerGrid.ActualHeight));
+                UpdateSubtitleOverlayMetrics();
+                e.Handled = true;
+                return;
+            }
+
             if (!_minimizeSwipeTracking || PlayerGrid == null)
             {
                 return;
@@ -792,6 +828,15 @@ namespace YouTube
 
         private void PlayerGrid_PointerReleased(object sender, PointerRoutedEventArgs e)
         {
+            if (_subtitleDragTracking)
+            {
+                _subtitleDragTracking = false;
+                if (PlayerGrid != null && e != null && e.Pointer != null)
+                {
+                    PlayerGrid.ReleasePointerCapture(e.Pointer);
+                }
+                e.Handled = true;
+            }
             _minimizeSwipeTracking = false;
         }
 
@@ -3046,17 +3091,21 @@ namespace YouTube
         private readonly List<Subtitles.SubtitleCue> _subtitleCues = new List<Subtitles.SubtitleCue>();
         private DispatcherTimer _subtitleTimer;
         private string _shownCueText;
+        private bool _subtitleDragTracking;
 
-        // How far ahead of the reported position cues are looked up.
-        //
-        // Polling accounts for at most ~100ms of this. The rest compensates for the position the
-        // pipeline reports running behind the picture on demuxed sources — measured on the device
-        // at roughly a second, and it varies by video, which is why this is adjustable and
-        // remembered rather than a fixed constant.
+        // User-selected correction applied to the media timeline. MediaPlayer's PlaybackSession
+        // already reports the decoded presentation position, including demuxer buffering and
+        // playback rate, so adding a permanent two-second lead made captions alternate between
+        // visibly early and late depending on the source. Zero is the neutral/default value.
         private const string SubtitleOffsetSettingKey = "SubtitleOffsetMs";
-        private const double DefaultSubtitleOffsetMs = 1000;
+        private const string SubtitleTimingV2SettingKey = "SubtitleTimingV2";
+        private const string SubtitlePlaceSettingKey = "SubtitlePlace";
+        private const string SubtitlePlaceXSettingKey = "SubtitlePlaceX";
+        private const double DefaultSubtitleOffsetMs = 0;
         private const double SubtitleOffsetStepMs = 250;
         private static double? _subtitleOffsetMs;
+        private static double? _subtitlePlace;
+        private static double? _subtitlePlaceX;
 
         public static TimeSpan SubtitleLeadOffset
         {
@@ -3067,11 +3116,23 @@ namespace YouTube
                     _subtitleOffsetMs = DefaultSubtitleOffsetMs;
                     try
                     {
-                        var stored = ApplicationData.Current.LocalSettings.Values[SubtitleOffsetSettingKey];
+                        var values = ApplicationData.Current.LocalSettings.Values;
+                        var stored = values[SubtitleOffsetSettingKey];
                         if (stored is double)
                         {
                             _subtitleOffsetMs = (double)stored;
                         }
+
+                        // Previous builds wrote +2000ms as the default. Migrate only that exact
+                        // legacy value; preserve every offset the user selected manually.
+                        var timingV2 = values[SubtitleTimingV2SettingKey] as bool?;
+                        if (timingV2 != true
+                            && Math.Abs(_subtitleOffsetMs.Value - 2000.0) < 0.5)
+                        {
+                            _subtitleOffsetMs = DefaultSubtitleOffsetMs;
+                            values[SubtitleOffsetSettingKey] = _subtitleOffsetMs.Value;
+                        }
+                        values[SubtitleTimingV2SettingKey] = true;
                     }
                     catch (Exception ex)
                     {
@@ -3086,7 +3147,12 @@ namespace YouTube
         // Positive delta makes subtitles appear earlier.
         public void AdjustSubtitleOffset(double deltaMs)
         {
-            var value = SubtitleLeadOffset.TotalMilliseconds + deltaMs;
+            SetSubtitleOffset(SubtitleLeadOffset.TotalMilliseconds + deltaMs);
+        }
+
+        public void SetSubtitleOffset(double valueMs)
+        {
+            var value = valueMs;
 
             // Beyond a few seconds either way the setting is no longer correcting anything.
             value = Math.Max(-5000, Math.Min(5000, value));
@@ -3112,6 +3178,61 @@ namespace YouTube
             {
                 var seconds = SubtitleLeadOffset.TotalSeconds;
                 return (seconds >= 0 ? "+" : "") + seconds.ToString("0.00") + "s";
+            }
+        }
+
+        private static double SubtitlePlace
+        {
+            get
+            {
+                if (_subtitlePlace == null)
+                {
+                    _subtitlePlace = ReadSubtitlePlace(SubtitlePlaceSettingKey, 0.86);
+                }
+                return _subtitlePlace.Value;
+            }
+        }
+
+        private static double SubtitlePlaceX
+        {
+            get
+            {
+                if (_subtitlePlaceX == null)
+                {
+                    _subtitlePlaceX = ReadSubtitlePlace(SubtitlePlaceXSettingKey, 0.5);
+                }
+                return _subtitlePlaceX.Value;
+            }
+        }
+
+        private static double ReadSubtitlePlace(string key, double fallback)
+        {
+            try
+            {
+                var stored = ApplicationData.Current.LocalSettings.Values[key];
+                if (stored is double)
+                {
+                    return Math.Max(0.05, Math.Min(0.95, (double)stored));
+                }
+            }
+            catch
+            {
+            }
+            return fallback;
+        }
+
+        private static void SetSubtitlePosition(double x, double y)
+        {
+            _subtitlePlaceX = Math.Max(0.05, Math.Min(0.95, x));
+            _subtitlePlace = Math.Max(0.05, Math.Min(0.95, y));
+            try
+            {
+                var values = ApplicationData.Current.LocalSettings.Values;
+                values[SubtitlePlaceXSettingKey] = _subtitlePlaceX.Value;
+                values[SubtitlePlaceSettingKey] = _subtitlePlace.Value;
+            }
+            catch
+            {
             }
         }
 
@@ -3223,7 +3344,7 @@ namespace YouTube
             if (_subtitleTimer == null)
             {
                 _subtitleTimer = new DispatcherTimer();
-                _subtitleTimer.Interval = TimeSpan.FromMilliseconds(100);
+                _subtitleTimer.Interval = TimeSpan.FromMilliseconds(50);
                 _subtitleTimer.Tick += SubtitleTimer_Tick;
             }
 
@@ -3250,10 +3371,8 @@ namespace YouTube
                 // the target instead — the caption then matches what the user is scrubbing to.
                 var position = _pendingSeekTarget ?? session.Position;
 
-                // A cue can only ever be found at or after its own timestamp, and the poll adds up
-                // to another interval on top, so without compensation subtitles always run late.
-                // Looking slightly ahead puts them a touch early instead, which is how captions
-                // are meant to read.
+                // Apply only the explicit user correction. PlaybackSession.Position is already
+                // the presentation timeline and must not receive an automatic pipeline offset.
                 position += SubtitleLeadOffset;
 
                 string text = null;
@@ -3266,8 +3385,10 @@ namespace YouTube
 
                     if (position < cue.End)
                     {
+                        // ASR/json3 cues frequently overlap. The latest cue that has started is
+                        // the current one; keeping the first match leaves an older, long cue on
+                        // screen after the next phrase has already begun.
                         text = cue.Text;
-                        break;
                     }
                 }
 
@@ -3283,6 +3404,10 @@ namespace YouTube
                 SubtitleOverlay.Visibility = (string.IsNullOrEmpty(text) || _isMiniMode)
                     ? Visibility.Collapsed
                     : Visibility.Visible;
+                if (SubtitleOverlay.Visibility == Visibility.Visible)
+                {
+                    UpdateSubtitleOverlayMetrics();
+                }
             }
             catch (Exception ex)
             {
@@ -3290,8 +3415,8 @@ namespace YouTube
             }
         }
 
-        // The caption sits above the seek bar in the normal player; in fullscreen there is more
-        // room, and in the mini-player there is none at all.
+        // youtube-ios stores the caption centre as a share of the video bounds, so rotations and
+        // fullscreen keep the same meaningful placement. Dragging the visible caption updates it.
         private void UpdateSubtitleOverlayMetrics()
         {
             if (SubtitleOverlay == null)
@@ -3305,10 +3430,66 @@ namespace YouTube
                 return;
             }
 
-            SubtitleOverlay.Margin = _isFullscreen
-                ? new Thickness(32, 0, 32, 80)
-                : new Thickness(16, 0, 16, 56);
-            SubtitleText.FontSize = _isFullscreen ? 20 : 16;
+            if (PlayerGrid == null || SubtitleOverlayTransform == null || SubtitleText == null)
+            {
+                return;
+            }
+
+            var boxWidth = PlayerGrid.ActualWidth;
+            var boxHeight = PlayerGrid.ActualHeight;
+            if (boxWidth <= 0 || boxHeight <= 0)
+            {
+                return;
+            }
+
+            SubtitleText.FontSize = _isFullscreen ? 18 : 15;
+            SubtitleOverlay.MaxWidth = Math.Max(24, boxWidth - 24);
+            SubtitleOverlay.UpdateLayout();
+
+            const double side = 12.0;
+            var width = Math.Max(1.0, SubtitleOverlay.ActualWidth);
+            var height = Math.Max(1.0, SubtitleOverlay.ActualHeight);
+            var left = (boxWidth * SubtitlePlaceX) - (width / 2.0);
+            var top = (boxHeight * SubtitlePlace) - (height / 2.0);
+            left = Math.Max(side, Math.Min(left, boxWidth - side - width));
+            top = Math.Max(side, Math.Min(top, boxHeight - side - height));
+            SubtitleOverlayTransform.X = left;
+            SubtitleOverlayTransform.Y = top;
+        }
+
+        private bool TryBeginSubtitleDrag(PointerRoutedEventArgs e)
+        {
+            if (e == null || PlayerGrid == null || SubtitleOverlay == null
+                || SubtitleOverlay.Visibility != Visibility.Visible
+                || SubtitleOverlay.ActualWidth <= 0 || SubtitleOverlay.ActualHeight <= 0)
+            {
+                return false;
+            }
+
+            try
+            {
+                var point = e.GetCurrentPoint(PlayerGrid).Position;
+                var origin = SubtitleOverlay.TransformToVisual(PlayerGrid)
+                    .TransformPoint(new Point(0, 0));
+                var bounds = new Rect(
+                    origin.X,
+                    origin.Y,
+                    SubtitleOverlay.ActualWidth,
+                    SubtitleOverlay.ActualHeight);
+                if (!bounds.Contains(point))
+                {
+                    return false;
+                }
+
+                _subtitleDragTracking = true;
+                PlayerGrid.CapturePointer(e.Pointer);
+                e.Handled = true;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         // --- SponsorBlock ---------------------------------------------------------------------
@@ -3385,7 +3566,9 @@ namespace YouTube
 
                 SponsorOverlay.Children.Clear();
 
-                if (_skipSegments.Count == 0 || _timelineSegmentVisuals.Count == 0)
+                if (!SponsorBlock.AreTimelineMarkersEnabled()
+                    || _skipSegments.Count == 0
+                    || _timelineSegmentVisuals.Count == 0)
                 {
                     return;
                 }
@@ -3896,6 +4079,16 @@ namespace YouTube
         public async Task SetSourceFromUriAsync(Uri uri, bool autoPlay)
         {
             await SetSourceFromUriInternalAsync(uri, null, true, null, autoPlay);
+        }
+
+        public Task SetSourceFromStorageFileAsync(Windows.Storage.StorageFile file, bool autoPlay)
+        {
+            if (file == null)
+                return Task.FromResult(false);
+
+            var source = MediaSource.CreateFromStorageFile(file);
+            SetSource(source, autoPlay);
+            return Task.FromResult(true);
         }
 
         // Try to play an adaptive manifest (YouTube's native DASH/HLS, or an app-generated
@@ -6413,6 +6606,13 @@ namespace YouTube
             {
                 _isMiniMode = on;
 
+                if (MediaPlayer != null)
+                {
+                    // MiniPlayer sizes its host to the source aspect ratio. Fill the remaining
+                    // sub-pixel edge instead of producing a thin black letterbox line.
+                    MediaPlayer.Stretch = on ? Stretch.UniformToFill : Stretch.Uniform;
+                }
+
                 if (ControlsOverlay != null)
                 {
                     ControlsOverlay.Visibility = on ? Visibility.Collapsed : Visibility.Visible;
@@ -6893,6 +7093,7 @@ namespace YouTube
 
             // Unsubscribe from window size changes and keyboard hooks.
             Window.Current.SizeChanged -= Current_SizeChanged;
+            SponsorBlock.TimelineMarkerVisibilityChanged -= SponsorBlock_TimelineMarkerVisibilityChanged;
             DetachKeyboardShortcuts();
             this.Loaded -= CustomVideoPlayer_Loaded;
             this.Unloaded -= CustomVideoPlayer_Unloaded;

@@ -1,28 +1,987 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
           </xsd:element>
-          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
-          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /><xsd:element name="comment" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
-          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
         </xsd:choice>
       </xsd:complexType>
     </xsd:element>
   </xsd:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutText" xml:space="preserve">
+    <value>LegacyProjects チームによって開発されました。
+YouTube API Legacy に対応しています。
+
+バージョン {0}</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>アカウント</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>外観</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>音声トラック</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="AutoTranslate" xml:space="preserve">
+    <value>自動翻訳 &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; 戻る</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>アクション/アドベンチャー</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>すべて</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>アニメ/アニメーション</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>自動車と乗り物</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>クラシック</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>コメディー</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>ドキュメンタリー</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>ドラマ</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>教育</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>エンターテイメント</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>ファミリー</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>映画とアニメーション</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>海外</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>ゲーム</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>ホラー</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>ハウツーとスタイル</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>学習</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>ライブ</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>映画</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>音楽</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>ニュース</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>ニュースと政治</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>非営利団体と社会活動</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>人物とブログ</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>ペットと動物</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>ポッドキャスト</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>科学と技術</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>SF/ファンタジー</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>短編映画</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>番組</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>スポーツ</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>スリラー</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>予告編</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>旅行とイベント</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>ビデオブログ</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>ビデオゲーム</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>チャンネル</value>
+  </data>
   <data name="ChannelIcons" xml:space="preserve">
     <value>チャンネル アイコン</value>
   </data>
   <data name="ChannelIconsDescription" xml:space="preserve">
     <value>動画カードにチャンネル アイコンを表示</value>
+  </data>
+  <data name="ChannelLoadingError" xml:space="preserve">
+    <value>チャンネルの読み込みエラー</value>
+  </data>
+  <data name="ChannelWasNotProvided" xml:space="preserve">
+    <value>チャンネルが指定されていません</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>コメント</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>ログアウトしてもよろしいですか？</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>ログアウトの確認</value>
+  </data>
+  <data name="CouldNotLoadChannel" xml:space="preserve">
+    <value>チャンネルを読み込めませんでした</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>通知を読み込めませんでした</value>
+  </data>
+  <data name="CouldNotLoadPlaylist" xml:space="preserve">
+    <value>再生リストを読み込めませんでした</value>
+  </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>動画を読み込めませんでした。もう一度お試しください。</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>動画を再生できませんでした。</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>{0} 日前</value>
+  </data>
+  <data name="DescriptionNotAvailable" xml:space="preserve">
+    <value>説明を利用できません</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>ダウンロード</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>ダウンロード済み</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>ダウンロードした動画</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>ダウンロード フォルダー</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>ダウンロードした動画の保存先を選択</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>ダウンロード画質</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>ダウンロード</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>ダウンロードした動画はここに表示されます。</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>あなたのダウンロード</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>ダウンロード</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>この動画はダウンロードできません</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>エラーコード: {0}</value>
+  </data>
+  <data name="ErrorFormat" xml:space="preserve">
+    <value>エラー: {0}</value>
+  </data>
+  <data name="Every15Min" xml:space="preserve">
+    <value>15 分ごと</value>
+  </data>
+  <data name="Every2Hours" xml:space="preserve">
+    <value>2 時間ごと</value>
+  </data>
+  <data name="Every30Min" xml:space="preserve">
+    <value>30 分ごと</value>
+  </data>
+  <data name="Every6Hours" xml:space="preserve">
+    <value>6 時間ごと</value>
+  </data>
+  <data name="EveryHour" xml:space="preserve">
+    <value>1 時間ごと</value>
+  </data>
+  <data name="EveryHours" xml:space="preserve">
+    <value>{0} 時間ごと</value>
+  </data>
+  <data name="EveryMinutes" xml:space="preserve">
+    <value>{0} 分ごと</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>動画の再生に失敗しました: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>登録チャンネルから</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>ガラス効果</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>ナビゲーションバーをぼかす</value>
+  </data>
+  <data name="HistoryLoadFailed" xml:space="preserve">
+    <value>履歴を読み込めませんでした</value>
+  </data>
+  <data name="HistorySignIn" xml:space="preserve">
+    <value>再生履歴を見るにはログインしてください</value>
+  </data>
+  <data name="HomeAll" xml:space="preserve">
+    <value>すべて</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>アプリの言語</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>英語</value>
+  </data>
+  <data name="LanguageRestartHint" xml:space="preserve">
+    <value>インターフェースはすぐに更新されます。</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>ロシア語</value>
+  </data>
+  <data name="LanguageSection" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>システムの既定値</value>
+  </data>
+  <data name="Like" xml:space="preserve">
+    <value>高く評価</value>
+  </data>
+  <data name="LinkCopied" xml:space="preserve">
+    <value>リンクをコピーしました</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>ライブ タイル</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>スタート画面におすすめを表示</value>
+  </data>
+  <data name="LoadingDescription" xml:space="preserve">
+    <value>説明を読み込んでいます...</value>
+  </data>
+  <data name="LoadingFailed" xml:space="preserve">
+    <value>読み込みに失敗しました</value>
+  </data>
+  <data name="Loc_0Subscribers0Videos_Text.Text" xml:space="preserve">
+    <value>チャンネル登録者 0 人 • 動画 0 本</value>
+  </data>
+  <data name="Loc_About_Text.Text" xml:space="preserve">
+    <value>概要</value>
+  </data>
+  <data name="Loc_Account_Text.Text" xml:space="preserve">
+    <value>アカウント</value>
+  </data>
+  <data name="Loc_All_Text.Text" xml:space="preserve">
+    <value>すべて</value>
+  </data>
+  <data name="Loc_AudioTrack_Text.Text" xml:space="preserve">
+    <value>音声トラック</value>
+  </data>
+  <data name="Loc_Auto_Text.Text" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="Loc_AutoFullscreenInLandscape_Text.Text" xml:space="preserve">
+    <value>横向きで自動的に全画面表示</value>
+  </data>
+  <data name="Loc_BackgroundToastsFromYouTubeNotifications_Text.Text" xml:space="preserve">
+    <value>YouTube 通知のバックグラウンド通知</value>
+  </data>
+  <data name="Loc_Channel_Text.Text" xml:space="preserve">
+    <value>チャンネル</value>
+  </data>
+  <data name="Loc_Channels_Text.Text" xml:space="preserve">
+    <value>チャンネル</value>
+  </data>
+  <data name="Loc_CheckYourConnectionAndTryAgain_Text.Text" xml:space="preserve">
+    <value>接続を確認してもう一度お試しください</value>
+  </data>
+  <data name="Loc_Close_Content.Content" xml:space="preserve">
+    <value>閉じる</value>
+  </data>
+  <data name="Loc_Comments_Text.Text" xml:space="preserve">
+    <value>コメント</value>
+  </data>
+  <data name="Loc_CopyLink_Text.Text" xml:space="preserve">
+    <value>リンクをコピー</value>
+  </data>
+  <data name="Loc_CouldNotLoadChannel_Text.Text" xml:space="preserve">
+    <value>チャンネルを読み込めませんでした</value>
+  </data>
+  <data name="Loc_CouldNotLoadPlaylist_Text.Text" xml:space="preserve">
+    <value>再生リストを読み込めませんでした</value>
+  </data>
+  <data name="Loc_Description_Text.Text" xml:space="preserve">
+    <value>説明</value>
+  </data>
+  <data name="Loc_EveryHour_Text.Text" xml:space="preserve">
+    <value>1 時間ごと</value>
+  </data>
+  <data name="Loc_ExpandTheVideoWhenThePhoneRotates_Text.Text" xml:space="preserve">
+    <value>スマートフォンを回転したときに動画を拡大</value>
+  </data>
+  <data name="Loc_Frequency_Text.Text" xml:space="preserve">
+    <value>頻度</value>
+  </data>
+  <data name="Loc_History_Text.Text" xml:space="preserve">
+    <value>履歴</value>
+  </data>
+  <data name="Loc_Home_Text.Text" xml:space="preserve">
+    <value>ホーム</value>
+  </data>
+  <data name="Loc_Information_Text.Text" xml:space="preserve">
+    <value>情報</value>
+  </data>
+  <data name="Loc_Like_Text.Text" xml:space="preserve">
+    <value>高く評価</value>
+  </data>
+  <data name="Loc_Likes_Text.Text" xml:space="preserve">
+    <value>高評価</value>
+  </data>
+  <data name="Loc_LinkCopied_Text.Text" xml:space="preserve">
+    <value>リンクをコピーしました</value>
+  </data>
+  <data name="Loc_Loading_Text.Text" xml:space="preserve">
+    <value>読み込み中...</value>
+  </data>
+  <data name="Loc_LoadingChannel_Text.Text" xml:space="preserve">
+    <value>チャンネルを読み込んでいます...</value>
+  </data>
+  <data name="Loc_LoadingComments_Text.Text" xml:space="preserve">
+    <value>コメントを読み込んでいます...</value>
+  </data>
+  <data name="Loc_LoadingMore_Text.Text" xml:space="preserve">
+    <value>さらに読み込んでいます...</value>
+  </data>
+  <data name="Loc_LoadingMoreHistory_Text.Text" xml:space="preserve">
+    <value>履歴をさらに読み込んでいます...</value>
+  </data>
+  <data name="Loc_LoadingMoreResults_Text.Text" xml:space="preserve">
+    <value>結果をさらに読み込んでいます...</value>
+  </data>
+  <data name="Loc_LoadingMoreVideos_Text.Text" xml:space="preserve">
+    <value>動画をさらに読み込んでいます...</value>
+  </data>
+  <data name="Loc_LoadingPlaylist_Text.Text" xml:space="preserve">
+    <value>再生リストを読み込んでいます...</value>
+  </data>
+  <data name="Loc_LogOut_Text.Text" xml:space="preserve">
+    <value>ログアウト</value>
+  </data>
+  <data name="Loc_LooksLikeWeCanTLoadVideosForYou_Text.Text" xml:space="preserve">
+    <value>動画を読み込めないようです。</value>
+  </data>
+  <data name="Loc_More_Text.Text" xml:space="preserve">
+    <value>...もっと見る</value>
+  </data>
+  <data name="Loc_NewUpdatesFromYourSubscriptionsWillAppearHere_Text.Text" xml:space="preserve">
+    <value>登録チャンネルの新しい更新がここに表示されます。</value>
+  </data>
+  <data name="Loc_NoCommentsFound_Text.Text" xml:space="preserve">
+    <value>コメントが見つかりませんでした。</value>
+  </data>
+  <data name="Loc_NoConnectionToTheInternet_Text.Text" xml:space="preserve">
+    <value>インターネットに接続されていません</value>
+  </data>
+  <data name="Loc_NoData_Text.Text" xml:space="preserve">
+    <value>データがありません</value>
+  </data>
+  <data name="Loc_NoHistoryYet_Text.Text" xml:space="preserve">
+    <value>履歴はまだありません</value>
+  </data>
+  <data name="Loc_None_Text.Text" xml:space="preserve">
+    <value>なし</value>
+  </data>
+  <data name="Loc_NoNotifications_Text.Text" xml:space="preserve">
+    <value>通知はありません</value>
+  </data>
+  <data name="Loc_Notifications_Text.Text" xml:space="preserve">
+    <value>通知</value>
+  </data>
+  <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
+    <value>この再生リストには動画がありません</value>
+  </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Loc_Personalized_Text.Text" xml:space="preserve">
+    <value>カスタマイズ</value>
+  </data>
+  <data name="Loc_PlaybackSpeed_Text.Text" xml:space="preserve">
+    <value>再生速度</value>
+  </data>
+  <data name="Loc_Playlist_Text.Text" xml:space="preserve">
+    <value>再生リスト</value>
+  </data>
+  <data name="Loc_Playlists_Text.Text" xml:space="preserve">
+    <value>再生リスト</value>
+  </data>
+  <data name="Loc_Posts_Text.Text" xml:space="preserve">
+    <value>投稿</value>
+  </data>
+  <data name="Loc_PreferredShortsQuality_Text.Text" xml:space="preserve">
+    <value>Shorts の優先画質</value>
+  </data>
+  <data name="Loc_PreferredVideoQuality_Text.Text" xml:space="preserve">
+    <value>動画の優先画質</value>
+  </data>
+  <data name="Loc_Published_Text.Text" xml:space="preserve">
+    <value>公開済み</value>
+  </data>
+  <data name="Loc_QRCode_Text.Text" xml:space="preserve">
+    <value>QR コード</value>
+  </data>
+  <data name="Loc_Quality_Text.Text" xml:space="preserve">
+    <value>画質</value>
+  </data>
+  <data name="Loc_RefreshQRCode_Content.Content" xml:space="preserve">
+    <value>QR コードを更新</value>
+  </data>
+  <data name="Loc_ReloadVideo_Text.Text" xml:space="preserve">
+    <value>動画を再読み込み</value>
+  </data>
+  <data name="Loc_Retry_Content.Content" xml:space="preserve">
+    <value>再試行</value>
+  </data>
+  <data name="Loc_ScanTheQRCodeToSignIn_Text.Text" xml:space="preserve">
+    <value>QR コードをスキャンしてログイン</value>
+  </data>
+  <data name="Loc_Search_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>検索</value>
+  </data>
+  <data name="Loc_Searching_Text.Text" xml:space="preserve">
+    <value>検索中...</value>
+  </data>
+  <data name="Loc_SearchYouTube_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>YouTube を検索</value>
+  </data>
+  <data name="Loc_SearchYouTube_Text.Text" xml:space="preserve">
+    <value>YouTube を検索</value>
+  </data>
+  <data name="Loc_SeekPreview_Text.Text" xml:space="preserve">
+    <value>シークプレビュー</value>
+  </data>
+  <data name="Loc_SendNotifications_Text.Text" xml:space="preserve">
+    <value>通知を送信</value>
+  </data>
+  <data name="Loc_Settings_Text.Text" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="Loc_Share_Text.Text" xml:space="preserve">
+    <value>共有</value>
+  </data>
+  <data name="Loc_ShareVia_Text.Text" xml:space="preserve">
+    <value>共有方法...</value>
+  </data>
+  <data name="Loc_Shorts_Text.Text" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="Loc_ShortsLinkHasBeenCopiedToClipboard_Text.Text" xml:space="preserve">
+    <value>Shorts のリンクをクリップボードにコピーしました</value>
+  </data>
+  <data name="Loc_ShowQRCode_Text.Text" xml:space="preserve">
+    <value>QR コードを表示</value>
+  </data>
+  <data name="Loc_ShowVideoThumbnailWhileSeeking_Text.Text" xml:space="preserve">
+    <value>シーク中に動画のサムネイルを表示</value>
+  </data>
+  <data name="Loc_Subscribe_Text.Text" xml:space="preserve">
+    <value>チャンネル登録</value>
+  </data>
+  <data name="Loc_Subscriptions_Text.Text" xml:space="preserve">
+    <value>登録チャンネル</value>
+  </data>
+  <data name="Loc_Subtitles_Text.Text" xml:space="preserve">
+    <value>字幕</value>
+  </data>
+  <data name="Loc_TrendingSearches_Text.Text" xml:space="preserve">
+    <value>急上昇検索</value>
+  </data>
+  <data name="Loc_TryAgain_Content.Content" xml:space="preserve">
+    <value>もう一度試す</value>
+  </data>
+  <data name="Loc_Type_Text.Text" xml:space="preserve">
+    <value>種類</value>
+  </data>
+  <data name="Loc_Unsubscribe_Text.Text" xml:space="preserve">
+    <value>チャンネル登録を解除</value>
+  </data>
+  <data name="Loc_VerificationCode_Text.Text" xml:space="preserve">
+    <value>確認コード</value>
+  </data>
+  <data name="Loc_Video_Text.Text" xml:space="preserve">
+    <value>動画</value>
+  </data>
+  <data name="Loc_Videos_Text.Text" xml:space="preserve">
+    <value>動画</value>
+  </data>
+  <data name="Loc_ViewChannel_Text.Text" xml:space="preserve">
+    <value>チャンネルを表示</value>
+  </data>
+  <data name="Loc_Views_Text.Text" xml:space="preserve">
+    <value>視聴回数</value>
+  </data>
+  <data name="Loc_You_Text.Text" xml:space="preserve">
+    <value>あなた</value>
+  </data>
+  <data name="LoginLoadingQr" xml:space="preserve">
+    <value>QR コードを読み込んでいます...</value>
+  </data>
+  <data name="LoginQrFailed" xml:space="preserve">
+    <value>QR コードを読み込めませんでした。</value>
+  </data>
+  <data name="LoginScanQr" xml:space="preserve">
+    <value>スマートフォンのカメラを開いて QR コードをスキャンしてください。</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>ログインしました。リダイレクトしています...</value>
+  </data>
+  <data name="MeSignIn" xml:space="preserve">
+    <value>履歴と再生リストを見るにはログインしてください</value>
+  </data>
+  <data name="Mix" xml:space="preserve">
+    <value>Mix</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>{0} か月前</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>ネットワークエラー。インターネット接続を確認してください。</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>いいえ</value>
+  </data>
+  <data name="NoCommentsFound" xml:space="preserve">
+    <value>コメントが見つかりませんでした。</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>データがありません</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>説明はありません。</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>説明を利用できません。</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>名前なし</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>通知はありません</value>
+  </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Shorts が見つかりませんでした。</value>
+  </data>
+  <data name="NotificationPreferenceFailed" xml:space="preserve">
+    <value>通知設定を更新できませんでした。</value>
+  </data>
+  <data name="NotificationsFailed" xml:space="preserve">
+    <value>通知に失敗しました</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>登録チャンネルの新しい更新がここに表示されます。</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>YouTube の通知を見るにはログインしてください。</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>後でもう一度このページを開いてください。</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>タイトルなし</value>
+  </data>
+  <data name="NotSignedIn" xml:space="preserve">
+    <value>ログインしていません</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>オフ</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Older" xml:space="preserve">
+    <value>古い順</value>
+  </data>
+  <data name="PlaybackError" xml:space="preserve">
+    <value>再生エラー</value>
+  </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>再生に失敗しました</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>再生速度</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>動画を再生できませんでした。プレーヤーが初期化されていません。</value>
+  </data>
+  <data name="Playlist" xml:space="preserve">
+    <value>再生リスト</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>再生リスト ID が空です</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>再生リストを更新できませんでした</value>
+  </data>
+  <data name="QrCode" xml:space="preserve">
+    <value>QR コード</value>
+  </data>
+  <data name="QrDisplayErrorFormat" xml:space="preserve">
+    <value>QR 表示エラー: {0}</value>
+  </data>
+  <data name="Quality" xml:space="preserve">
+    <value>画質</value>
+  </data>
+  <data name="RatingFailed" xml:space="preserve">
+    <value>評価に失敗しました</value>
+  </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>YouTube が評価リクエストを拒否しました。TV トークンが有効で、YouTube の評価権限があることを確認してください。</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>おすすめ動画</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>更新トークンをアクセストークンに交換できませんでした。</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>件の返信</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} 件の返信</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="SearchErrorFormat" xml:space="preserve">
+    <value>検索エラー: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>不明</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>アカウントを選択</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>再生リストを選択</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>英語</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>既定では Windows の言語を使用します。</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>アプリの言語</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>ロシア語</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>システムの既定値</value>
+  </data>
+  <data name="ShareShortDescription" xml:space="preserve">
+    <value>この YouTube Short を共有</value>
+  </data>
+  <data name="ShareVideoDescription" xml:space="preserve">
+    <value>この YouTube 動画を共有</value>
+  </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>アプリにショート動画を表示</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>一部を表示</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>もっと見る</value>
+  </data>
+  <data name="SignInAgain" xml:space="preserve">
+    <value>TV 更新トークンをアクセストークンに交換できませんでした。もう一度ログインして、更新トークンがまだ有効か確認してください。</value>
+  </data>
+  <data name="SignInRequired" xml:space="preserve">
+    <value>ログインが必要です</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Shorts を見るにはログインしてください。</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>シークバーに広告区間を表示</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>SponsorBlockの区間を色分けして表示</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>チャンネル登録</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>チャンネル登録者</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>チャンネル登録者</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>チャンネル登録者</value>
+  </data>
+  <data name="SubscribersVideosFormat" xml:space="preserve">
+    <value>チャンネル登録者 {0} 人 • 動画 {1} 本</value>
+  </data>
+  <data name="SubscriptionFailed" xml:space="preserve">
+    <value>チャンネル登録に失敗しました</value>
+  </data>
+  <data name="SubscriptionRejected" xml:space="preserve">
+    <value>YouTube がチャンネル登録リクエストを拒否しました。</value>
+  </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>YouTube がチャンネル登録リクエストを拒否しました。TV トークンが有効で、チャンネル ID が見つかったことを確認してください。</value>
+  </data>
+  <data name="SubtitleEarlier" xml:space="preserve">
+    <value>   早く (+0.25s)</value>
+  </data>
+  <data name="SubtitleLater" xml:space="preserve">
+    <value>   遅く (-0.25s)</value>
+  </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>通常のずれに戻す（0.00秒）</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>字幕</value>
+  </data>
+  <data name="SyncFormat" xml:space="preserve">
+    <value>同期: {0}</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>テーマ</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>ダーク</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>ライト</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>今週</value>
+  </data>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>サムネイル画質</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>今日</value>
+  </data>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>コメディ スケッチ</value>
+  </data>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>料理レシピ</value>
+  </data>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>DIY チュートリアル</value>
+  </data>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>ゲームのハイライト</value>
+  </data>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>映画予告編</value>
+  </data>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>ミュージック ビデオ</value>
+  </data>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>スポーツのハイライト</value>
+  </data>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>テクノロジー レビュー</value>
+  </data>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>TV 更新トークンをアクセストークンに交換できませんでした。</value>
+  </data>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>TV 更新トークンをアクセストークンに交換できませんでした。もう一度ログインして、更新トークンがまだ有効か確認してください。</value>
+  </data>
+  <data name="TvTokenMissing" xml:space="preserve">
+    <value>TV 更新トークンが見つかりませんでした。もう一度ログインして再試行してください。</value>
+  </data>
+  <data name="TvTokenMissingDetailed" xml:space="preserve">
+    <value>TV 更新トークンが見つかりませんでした。yt_refresh_token が保存されるようにもう一度ログインして再試行してください。</value>
+  </data>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>コメントを読み込めませんでした。</value>
+  </data>
+  <data name="UnableLoadShorts" xml:space="preserve">
+    <value>Shorts を読み込めませんでした。</value>
+  </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>この Short を再生できません</value>
+  </data>
+  <data name="UnablePlayShortPeriod" xml:space="preserve">
+    <value>この Short を再生できません。</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>不明</value>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>無題</value>
+  </data>
+  <data name="UploadedVideo" xml:space="preserve">
+    <value>動画をアップロードしました</value>
+  </data>
+  <data name="UploadedVideoTitleFormat" xml:space="preserve">
+    <value>動画「{0}」をアップロードしました</value>
+  </data>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>動画を「{0}」に追加しました</value>
+  </data>
+  <data name="VideoFew" xml:space="preserve">
+    <value>動画</value>
+  </data>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>動画のリンクをクリップボードにコピーしました。</value>
+  </data>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>動画を読み込めませんでした。リンクの有効期限が切れているか、形式がサポートされていない可能性があります。</value>
+  </data>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>動画の読み込みがタイムアウトしました。インターネット接続を確認してください。</value>
+  </data>
+  <data name="VideoMany" xml:space="preserve">
+    <value>動画</value>
+  </data>
+  <data name="VideoOne" xml:space="preserve">
+    <value>動画</value>
+  </data>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>動画再生エラー。低い画質を選択してみてください。</value>
+  </data>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>動画を「{0}」から削除しました</value>
+  </data>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>動画 {0} 本</value>
+  </data>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>動画 {0} 本</value>
+  </data>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>{0} 週間前</value>
+  </data>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>{0} 年前</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>はい</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>昨日</value>
+  </data>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>YouTube Shorts</value>
+  </data>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>YouTube 動画</value>
+  </data>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>YouTube 動画</value>
+  </data>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>ダウンロードした動画を消去</value>
+  </data>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>ダウンロードした動画とキャッシュ済みのサムネイルをすべて削除します</value>
+  </data>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>ダウンロードした動画とサムネイルは完全に削除されます。</value>
+  </data>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>消去</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>キャンセル</value>
   </data>
 </root>

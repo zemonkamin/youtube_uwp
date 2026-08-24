@@ -46,6 +46,15 @@ namespace YouTube
             PlayerFormatModel video,
             PlayerFormatModel audio)
         {
+            return await CreateAsync(http, video, audio, null).ConfigureAwait(false);
+        }
+
+        internal static async Task<MediaStreamSource> CreateAsync(
+            HttpClient http,
+            PlayerFormatModel video,
+            PlayerFormatModel audio,
+            string mediaUserAgent)
+        {
             try
             {
                 if (http == null || video == null || audio == null)
@@ -55,8 +64,8 @@ namespace YouTube
 
                 // Fetch + parse both init/index segments concurrently (each is a separate
                 // googlevideo host + TLS handshake, so serial setup was the slow part).
-                var videoTask = DashTrack.CreateAsync(http, video, isVideo: true);
-                var audioTask = DashTrack.CreateAsync(http, audio, isVideo: false);
+                var videoTask = DashTrack.CreateAsync(http, video, isVideo: true, mediaUserAgent: mediaUserAgent);
+                var audioTask = DashTrack.CreateAsync(http, audio, isVideo: false, mediaUserAgent: mediaUserAgent);
                 var videoTrack = await videoTask.ConfigureAwait(false);
                 var audioTrack = await audioTask.ConfigureAwait(false);
                 if (videoTrack == null || audioTrack == null)
@@ -285,6 +294,10 @@ namespace YouTube
     {
         public int Offset;
         public int Size;
+        // Exact values in the track timescale. Download muxing must preserve these without
+        // converting through 100-ns TimeSpan ticks (which can round long sample tables).
+        public uint DurationUnits;
+        public int CompositionOffsetUnits;
         public long PtsTicks;
         public long DtsTicks;
         public long DurTicks;
@@ -296,6 +309,7 @@ namespace YouTube
     {
         private readonly HttpClient _http;
         private readonly string _url;
+        private readonly string _mediaUserAgent;
         private readonly bool _isVideo;
         private readonly List<DashFragment> _fragments;
         // Exactly one fragment is held in memory at a time; samples are cut out of it on demand.
@@ -321,17 +335,18 @@ namespace YouTube
         public DashTrackInit Init { get; }
         public TimeSpan TotalDuration { get; }
 
-        private DashTrack(HttpClient http, string url, bool isVideo, DashTrackInit init, List<DashFragment> fragments, TimeSpan total)
+        private DashTrack(HttpClient http, string url, string mediaUserAgent, bool isVideo, DashTrackInit init, List<DashFragment> fragments, TimeSpan total)
         {
             _http = http;
             _url = url;
+            _mediaUserAgent = mediaUserAgent;
             _isVideo = isVideo;
             Init = init;
             _fragments = fragments;
             TotalDuration = total;
         }
 
-        public static async Task<DashTrack> CreateAsync(HttpClient http, PlayerFormatModel format, bool isVideo)
+        public static async Task<DashTrack> CreateAsync(HttpClient http, PlayerFormatModel format, bool isVideo, string mediaUserAgent)
         {
             long initStart = ParseLong(format.InitRangeStart);
             long initEnd = ParseLong(format.InitRangeEnd);
@@ -343,7 +358,7 @@ namespace YouTube
             }
 
             // init + sidx are contiguous at the head of the file; fetch them in one range.
-            var head = await FetchRangeAsync(http, format.Url, 0, indexEnd).ConfigureAwait(false);
+            var head = await FetchRangeAsync(http, format.Url, 0, indexEnd, mediaUserAgent).ConfigureAwait(false);
             if (head == null || head.Length <= indexEnd)
             {
                 System.Diagnostics.Debug.WriteLine("[Dash] head fetch too short (" + (head == null ? -1 : head.Length) + " <= " + indexEnd + ")");
@@ -370,7 +385,7 @@ namespace YouTube
                 + (isVideo ? (", " + init.Width + "x" + init.Height + ", sps=" + init.Sps.Count + ", pps=" + init.Pps.Count) : (", " + init.SampleRate + "Hz ch=" + init.Channels + ", asc=" + (init.CodecPrivate == null ? 0 : init.CodecPrivate.Length)))
                 + ", fragments=" + fragments.Count);
 
-            return new DashTrack(http, format.Url, isVideo, init, fragments, totalDuration);
+            return new DashTrack(http, format.Url, mediaUserAgent, isVideo, init, fragments, totalDuration);
         }
 
         public TimeSpan SeekTo(TimeSpan position)
@@ -576,7 +591,7 @@ namespace YouTube
             {
                 try
                 {
-                    var bytes = await FetchRangeAsync(_http, _url, frag.Offset, frag.Offset + frag.Size - 1)
+                    var bytes = await FetchRangeAsync(_http, _url, frag.Offset, frag.Offset + frag.Size - 1, _mediaUserAgent)
                         .ConfigureAwait(false);
                     if (bytes != null && bytes.Length > 0)
                     {
@@ -616,11 +631,15 @@ namespace YouTube
             return long.TryParse(s, out v) ? v : 0;
         }
 
-        private static async Task<byte[]> FetchRangeAsync(HttpClient http, string url, long start, long end)
+        private static async Task<byte[]> FetchRangeAsync(HttpClient http, string url, long start, long end, string mediaUserAgent)
         {
             using (var req = new HttpRequestMessage(HttpMethod.Get, url))
             {
                 req.Headers.Range = new RangeHeaderValue(start, end);
+                if (!string.IsNullOrWhiteSpace(mediaUserAgent))
+                {
+                    req.Headers.TryAddWithoutValidation("User-Agent", mediaUserAgent);
+                }
                 using (var resp = await http.SendAsync(req, HttpCompletionOption.ResponseContentRead).ConfigureAwait(false))
                 {
                     if (!resp.IsSuccessStatusCode)
@@ -1020,14 +1039,36 @@ namespace YouTube
 
         public static List<DashSampleRef> ParseFragment(byte[] b, DashTrackInit init, bool isVideo)
         {
+            return ParseFragmentCore(b, b == null ? 0 : b.Length, init, isVideo);
+        }
+
+        // The download muxer only needs the moof metadata. logicalLength includes the following
+        // mdat payload, so offsets can be validated without allocating and reading that payload
+        // a second time merely to build the sample table.
+        public static List<DashSampleRef> ParseFragmentMetadata(
+            byte[] moofBytes,
+            int logicalLength,
+            DashTrackInit init,
+            bool isVideo)
+        {
+            return ParseFragmentCore(moofBytes, logicalLength, init, isVideo);
+        }
+
+        private static List<DashSampleRef> ParseFragmentCore(
+            byte[] b,
+            int logicalLength,
+            DashTrackInit init,
+            bool isVideo)
+        {
             var result = new List<DashSampleRef>();
+            if (b == null || b.Length == 0) return result;
             try
             {
                 ForEachBox(b, 0, b.Length, (type, ps, pl) =>
                 {
                     if (type == "moof")
                     {
-                        ParseMoof(b, ps, pl, init, isVideo, result);
+                        ParseMoof(b, ps, pl, logicalLength, init, isVideo, result);
                     }
                 });
             }
@@ -1038,7 +1079,8 @@ namespace YouTube
             return result;
         }
 
-        private static void ParseMoof(byte[] b, int start, int len, DashTrackInit init, bool isVideo, List<DashSampleRef> outSamples)
+        private static void ParseMoof(byte[] b, int start, int len, int logicalLength,
+            DashTrackInit init, bool isVideo, List<DashSampleRef> outSamples)
         {
             // moof box begins 8 bytes before its payload (size+type). data_offset in trun is
             // relative to the first byte of the moof box.
@@ -1114,9 +1156,9 @@ namespace YouTube
                         uint effectiveFlags = (i == 0 && hasFirstSampleFlags) ? firstSampleFlags : sFlags;
                         bool keyFrame = !isVideo || (effectiveFlags & 0x00010000) == 0;
 
-                        if (dataPos < 0 || dataPos + (int)sSize > b.Length)
+                        if (dataPos < 0 || dataPos + (int)sSize > logicalLength)
                         {
-                            System.Diagnostics.Debug.WriteLine("[Dash] sample out of range: pos=" + dataPos + " size=" + sSize + " buf=" + b.Length);
+                            System.Diagnostics.Debug.WriteLine("[Dash] sample out of range: pos=" + dataPos + " size=" + sSize + " logical=" + logicalLength);
                             return;
                         }
 
@@ -1125,6 +1167,8 @@ namespace YouTube
                         {
                             Offset = dataPos,
                             Size = (int)sSize,
+                            DurationUnits = sDuration,
+                            CompositionOffsetUnits = cto,
                             PtsTicks = ToTicks((long)runningDts + cto, init.Timescale),
                             DtsTicks = ToTicks((long)runningDts, init.Timescale),
                             DurTicks = ToTicks(sDuration, init.Timescale),

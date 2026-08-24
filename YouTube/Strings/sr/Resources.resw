@@ -1,28 +1,987 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" use="required" type="xsd:string" /><xsd:attribute name="type" type="xsd:string" /><xsd:attribute name="mimetype" type="xsd:string" /><xsd:attribute ref="xml:space" /></xsd:complexType>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
           </xsd:element>
-          <xsd:element name="assembly"><xsd:complexType><xsd:attribute name="alias" type="xsd:string" /><xsd:attribute name="name" type="xsd:string" /></xsd:complexType></xsd:element>
-          <xsd:element name="data"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /><xsd:element name="comment" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" /><xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" /><xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" /><xsd:attribute ref="xml:space" /></xsd:complexType></xsd:element>
-          <xsd:element name="resheader"><xsd:complexType><xsd:sequence><xsd:element name="value" type="xsd:string" minOccurs="0" /></xsd:sequence><xsd:attribute name="name" type="xsd:string" use="required" /></xsd:complexType></xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
         </xsd:choice>
       </xsd:complexType>
     </xsd:element>
   </xsd:schema>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>1.3</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutText" xml:space="preserve">
+    <value>Развио тим @@ЛП@@.
+Подржава @@YОУТУБЕ@@ @@АПИ@@ Легацy.
+
+Верзија {0}</value>
+  </data>
+  <data name="Accounts" xml:space="preserve">
+    <value>Налози</value>
+  </data>
+  <data name="AccountsLoadFailed" xml:space="preserve">
+    <value>Could not load accounts</value>
+  </data>
+  <data name="Appearance" xml:space="preserve">
+    <value>Изглед</value>
+  </data>
+  <data name="AudioTrack" xml:space="preserve">
+    <value>Аудиозапис</value>
+  </data>
+  <data name="Auto" xml:space="preserve">
+    <value>Аутоматски</value>
+  </data>
+  <data name="AutoTranslate" xml:space="preserve">
+    <value>Аутоматски пријевод &gt;</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>&lt; Натраг</value>
+  </data>
+  <data name="CategoryActionAdventure" xml:space="preserve">
+    <value>Акција/Авантура</value>
+  </data>
+  <data name="CategoryAll" xml:space="preserve">
+    <value>Све</value>
+  </data>
+  <data name="CategoryAnimeAnimation" xml:space="preserve">
+    <value>Аниме/Анимација</value>
+  </data>
+  <data name="CategoryAutosVehicles" xml:space="preserve">
+    <value>Аутомобили и возила</value>
+  </data>
+  <data name="CategoryClassics" xml:space="preserve">
+    <value>Класици</value>
+  </data>
+  <data name="CategoryComedy" xml:space="preserve">
+    <value>Комедија</value>
+  </data>
+  <data name="CategoryDocumentary" xml:space="preserve">
+    <value>Документарни</value>
+  </data>
+  <data name="CategoryDrama" xml:space="preserve">
+    <value>Драма</value>
+  </data>
+  <data name="CategoryEducation" xml:space="preserve">
+    <value>Образовање</value>
+  </data>
+  <data name="CategoryEntertainment" xml:space="preserve">
+    <value>Забава</value>
+  </data>
+  <data name="CategoryFamily" xml:space="preserve">
+    <value>Обитељ</value>
+  </data>
+  <data name="CategoryFilmAnimation" xml:space="preserve">
+    <value>Филм и анимација</value>
+  </data>
+  <data name="CategoryForeign" xml:space="preserve">
+    <value>Страни</value>
+  </data>
+  <data name="CategoryGaming" xml:space="preserve">
+    <value>Игре</value>
+  </data>
+  <data name="CategoryHorror" xml:space="preserve">
+    <value>Хорор</value>
+  </data>
+  <data name="CategoryHowtoStyle" xml:space="preserve">
+    <value>Упуте и стил</value>
+  </data>
+  <data name="CategoryLearning" xml:space="preserve">
+    <value>Учење</value>
+  </data>
+  <data name="CategoryLive" xml:space="preserve">
+    <value>Уживо</value>
+  </data>
+  <data name="CategoryMovies" xml:space="preserve">
+    <value>Филмови</value>
+  </data>
+  <data name="CategoryMusic" xml:space="preserve">
+    <value>Глазба</value>
+  </data>
+  <data name="CategoryNews" xml:space="preserve">
+    <value>Вијести</value>
+  </data>
+  <data name="CategoryNewsPolitics" xml:space="preserve">
+    <value>Вијести и политика</value>
+  </data>
+  <data name="CategoryNonprofitsActivism" xml:space="preserve">
+    <value>Непрофитне организације и активизам</value>
+  </data>
+  <data name="CategoryPeopleBlogs" xml:space="preserve">
+    <value>Људи и блогови</value>
+  </data>
+  <data name="CategoryPetsAnimals" xml:space="preserve">
+    <value>Кућни љубимци и животиње</value>
+  </data>
+  <data name="CategoryPodcasts" xml:space="preserve">
+    <value>Подцасти</value>
+  </data>
+  <data name="CategoryScienceTechnology" xml:space="preserve">
+    <value>Знаност и технологија</value>
+  </data>
+  <data name="CategorySciFiFantasy" xml:space="preserve">
+    <value>Знанствена фантастика/Фантазија</value>
+  </data>
+  <data name="CategoryShortMovies" xml:space="preserve">
+    <value>Кратки филмови</value>
+  </data>
+  <data name="CategoryShorts" xml:space="preserve">
+    <value>@@СХОРТС@@</value>
+  </data>
+  <data name="CategoryShows" xml:space="preserve">
+    <value>Емисије</value>
+  </data>
+  <data name="CategorySports" xml:space="preserve">
+    <value>Спорт</value>
+  </data>
+  <data name="CategoryThriller" xml:space="preserve">
+    <value>Трилер</value>
+  </data>
+  <data name="CategoryTrailers" xml:space="preserve">
+    <value>Најаве</value>
+  </data>
+  <data name="CategoryTravelEvents" xml:space="preserve">
+    <value>Путовања и догађаји</value>
+  </data>
+  <data name="CategoryVideoblogging" xml:space="preserve">
+    <value>Видеоблогови</value>
+  </data>
+  <data name="CategoryVideoGames" xml:space="preserve">
+    <value>Видеоигре</value>
+  </data>
+  <data name="Channel" xml:space="preserve">
+    <value>Канал</value>
+  </data>
   <data name="ChannelIcons" xml:space="preserve">
     <value>Иконе канала</value>
   </data>
   <data name="ChannelIconsDescription" xml:space="preserve">
     <value>Прикажи иконе канала на видео картицама</value>
+  </data>
+  <data name="ChannelLoadingError" xml:space="preserve">
+    <value>Погрешка при учитавању канала</value>
+  </data>
+  <data name="ChannelWasNotProvided" xml:space="preserve">
+    <value>Канал није наведен</value>
+  </data>
+  <data name="Comments" xml:space="preserve">
+    <value>Коментари</value>
+  </data>
+  <data name="ConfirmSignOutMessage" xml:space="preserve">
+    <value>Јесте ли сигурни да се желите одјавити?</value>
+  </data>
+  <data name="ConfirmSignOutTitle" xml:space="preserve">
+    <value>Потврди одјаву</value>
+  </data>
+  <data name="CouldNotLoadChannel" xml:space="preserve">
+    <value>Није могуће учитати канал</value>
+  </data>
+  <data name="CouldNotLoadNotifications" xml:space="preserve">
+    <value>Није могуће учитати обавијести</value>
+  </data>
+  <data name="CouldNotLoadPlaylist" xml:space="preserve">
+    <value>Није могуће учитати попис за репродукцију</value>
+  </data>
+  <data name="CouldNotLoadVideoTryAgain" xml:space="preserve">
+    <value>Није могуће учитати видеозапис. Покушајте поновно.</value>
+  </data>
+  <data name="CouldNotPlayVideo" xml:space="preserve">
+    <value>Није могуће репродуцирати видеозапис.</value>
+  </data>
+  <data name="DaysAgo" xml:space="preserve">
+    <value>прије {0} дана</value>
+  </data>
+  <data name="DescriptionNotAvailable" xml:space="preserve">
+    <value>Опис није доступан</value>
+  </data>
+  <data name="Download" xml:space="preserve">
+    <value>Преузми</value>
+  </data>
+  <data name="Downloaded" xml:space="preserve">
+    <value>Преузето</value>
+  </data>
+  <data name="DownloadedVideos" xml:space="preserve">
+    <value>Преузети видео-снимци</value>
+  </data>
+  <data name="DownloadFolder" xml:space="preserve">
+    <value>Фасцикла за преузимања</value>
+  </data>
+  <data name="DownloadFolderDescription" xml:space="preserve">
+    <value>Изаберите где се чувају преузети видео снимци</value>
+  </data>
+  <data name="DownloadQualityTitle" xml:space="preserve">
+    <value>Квалитет преузимања</value>
+  </data>
+  <data name="Downloads" xml:space="preserve">
+    <value>Преузимања</value>
+  </data>
+  <data name="DownloadsEmptyDescription" xml:space="preserve">
+    <value>Преузети видео снимци ће се приказати овде.</value>
+  </data>
+  <data name="DownloadsEmptyTitle" xml:space="preserve">
+    <value>Ваша преузимања</value>
+  </data>
+  <data name="DownloadsFolderDefault" xml:space="preserve">
+    <value>Преузимања</value>
+  </data>
+  <data name="DownloadUnavailable" xml:space="preserve">
+    <value>Овај видео није доступан за преузимање</value>
+  </data>
+  <data name="ErrorCodeFormat" xml:space="preserve">
+    <value>Кôд погрешке: {0}</value>
+  </data>
+  <data name="ErrorFormat" xml:space="preserve">
+    <value>Погрешка: {0}</value>
+  </data>
+  <data name="Every15Min" xml:space="preserve">
+    <value>Сваких 15 мин</value>
+  </data>
+  <data name="Every2Hours" xml:space="preserve">
+    <value>Свака 2 сата</value>
+  </data>
+  <data name="Every30Min" xml:space="preserve">
+    <value>Сваких 30 мин</value>
+  </data>
+  <data name="Every6Hours" xml:space="preserve">
+    <value>Сваких 6 сати</value>
+  </data>
+  <data name="EveryHour" xml:space="preserve">
+    <value>Сваки сат</value>
+  </data>
+  <data name="EveryHours" xml:space="preserve">
+    <value>Сваких {0} сати</value>
+  </data>
+  <data name="EveryMinutes" xml:space="preserve">
+    <value>Сваких {0} мин</value>
+  </data>
+  <data name="FailedPlayVideoFormat" xml:space="preserve">
+    <value>Репродукција видеозаписа није успјела: {0}</value>
+  </data>
+  <data name="FromSubscriptions" xml:space="preserve">
+    <value>Из претплата</value>
+  </data>
+  <data name="GlassEffect" xml:space="preserve">
+    <value>Ефекат стакла</value>
+  </data>
+  <data name="GlassEffectDescription" xml:space="preserve">
+    <value>Замагли траке за навигацију</value>
+  </data>
+  <data name="HistoryLoadFailed" xml:space="preserve">
+    <value>Није могуће учитати повијест</value>
+  </data>
+  <data name="HistorySignIn" xml:space="preserve">
+    <value>Пријавите се да бисте видјели повијест гледања</value>
+  </data>
+  <data name="HomeAll" xml:space="preserve">
+    <value>Све</value>
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value>Језик апликације</value>
+  </data>
+  <data name="LanguageEnglish" xml:space="preserve">
+    <value>Енглески</value>
+  </data>
+  <data name="LanguageRestartHint" xml:space="preserve">
+    <value>Сучеље ће се одмах ажурирати.</value>
+  </data>
+  <data name="LanguageRussian" xml:space="preserve">
+    <value>Руски</value>
+  </data>
+  <data name="LanguageSection" xml:space="preserve">
+    <value>Језик</value>
+  </data>
+  <data name="LanguageSystem" xml:space="preserve">
+    <value>Задано у суставу</value>
+  </data>
+  <data name="Like" xml:space="preserve">
+    <value>Свиђа ми се</value>
+  </data>
+  <data name="LinkCopied" xml:space="preserve">
+    <value>Веза је копирана</value>
+  </data>
+  <data name="LiveTile" xml:space="preserve">
+    <value>Жива плочица</value>
+  </data>
+  <data name="LiveTileDescription" xml:space="preserve">
+    <value>Прикажи препоруке на почетном екрану</value>
+  </data>
+  <data name="LoadingDescription" xml:space="preserve">
+    <value>Учитавање описа...</value>
+  </data>
+  <data name="LoadingFailed" xml:space="preserve">
+    <value>Учитавање није успјело</value>
+  </data>
+  <data name="Loc_0Subscribers0Videos_Text.Text" xml:space="preserve">
+    <value>0 претплатника • 0 видеозаписа</value>
+  </data>
+  <data name="Loc_About_Text.Text" xml:space="preserve">
+    <value>О апликацији</value>
+  </data>
+  <data name="Loc_Account_Text.Text" xml:space="preserve">
+    <value>Рачун</value>
+  </data>
+  <data name="Loc_All_Text.Text" xml:space="preserve">
+    <value>Све</value>
+  </data>
+  <data name="Loc_AudioTrack_Text.Text" xml:space="preserve">
+    <value>Аудиозапис</value>
+  </data>
+  <data name="Loc_Auto_Text.Text" xml:space="preserve">
+    <value>Аутоматски</value>
+  </data>
+  <data name="Loc_AutoFullscreenInLandscape_Text.Text" xml:space="preserve">
+    <value>Аутоматски пуни заслон у пејзажном приказу</value>
+  </data>
+  <data name="Loc_BackgroundToastsFromYouTubeNotifications_Text.Text" xml:space="preserve">
+    <value>Позадинске обавијести @@YОУТУБЕ@@а</value>
+  </data>
+  <data name="Loc_Channel_Text.Text" xml:space="preserve">
+    <value>Канал</value>
+  </data>
+  <data name="Loc_Channels_Text.Text" xml:space="preserve">
+    <value>Канали</value>
+  </data>
+  <data name="Loc_CheckYourConnectionAndTryAgain_Text.Text" xml:space="preserve">
+    <value>Провјерите везу и покушајте поновно</value>
+  </data>
+  <data name="Loc_Close_Content.Content" xml:space="preserve">
+    <value>Затвори</value>
+  </data>
+  <data name="Loc_Comments_Text.Text" xml:space="preserve">
+    <value>Коментари</value>
+  </data>
+  <data name="Loc_CopyLink_Text.Text" xml:space="preserve">
+    <value>Копирај везу</value>
+  </data>
+  <data name="Loc_CouldNotLoadChannel_Text.Text" xml:space="preserve">
+    <value>Није могуће учитати канал</value>
+  </data>
+  <data name="Loc_CouldNotLoadPlaylist_Text.Text" xml:space="preserve">
+    <value>Није могуће учитати попис за репродукцију</value>
+  </data>
+  <data name="Loc_Description_Text.Text" xml:space="preserve">
+    <value>Опис</value>
+  </data>
+  <data name="Loc_EveryHour_Text.Text" xml:space="preserve">
+    <value>Сваки сат</value>
+  </data>
+  <data name="Loc_ExpandTheVideoWhenThePhoneRotates_Text.Text" xml:space="preserve">
+    <value>Прошири видеозапис када се телефон закрене</value>
+  </data>
+  <data name="Loc_Frequency_Text.Text" xml:space="preserve">
+    <value>Учесталост</value>
+  </data>
+  <data name="Loc_History_Text.Text" xml:space="preserve">
+    <value>Повијест</value>
+  </data>
+  <data name="Loc_Home_Text.Text" xml:space="preserve">
+    <value>Почетна</value>
+  </data>
+  <data name="Loc_Information_Text.Text" xml:space="preserve">
+    <value>Информације</value>
+  </data>
+  <data name="Loc_Like_Text.Text" xml:space="preserve">
+    <value>Свиђа ми се</value>
+  </data>
+  <data name="Loc_Likes_Text.Text" xml:space="preserve">
+    <value>Ознаке свиђања</value>
+  </data>
+  <data name="Loc_LinkCopied_Text.Text" xml:space="preserve">
+    <value>Веза је копирана</value>
+  </data>
+  <data name="Loc_Loading_Text.Text" xml:space="preserve">
+    <value>Учитавање...</value>
+  </data>
+  <data name="Loc_LoadingChannel_Text.Text" xml:space="preserve">
+    <value>Учитавање канала...</value>
+  </data>
+  <data name="Loc_LoadingComments_Text.Text" xml:space="preserve">
+    <value>Учитавање коментара...</value>
+  </data>
+  <data name="Loc_LoadingMore_Text.Text" xml:space="preserve">
+    <value>Учитавање више садржаја...</value>
+  </data>
+  <data name="Loc_LoadingMoreHistory_Text.Text" xml:space="preserve">
+    <value>Учитавање додатне повијести...</value>
+  </data>
+  <data name="Loc_LoadingMoreResults_Text.Text" xml:space="preserve">
+    <value>Учитавање више резултата...</value>
+  </data>
+  <data name="Loc_LoadingMoreVideos_Text.Text" xml:space="preserve">
+    <value>Учитавање више видеозаписа...</value>
+  </data>
+  <data name="Loc_LoadingPlaylist_Text.Text" xml:space="preserve">
+    <value>Учитавање пописа за репродукцију...</value>
+  </data>
+  <data name="Loc_LogOut_Text.Text" xml:space="preserve">
+    <value>Одјава</value>
+  </data>
+  <data name="Loc_LooksLikeWeCanTLoadVideosForYou_Text.Text" xml:space="preserve">
+    <value>Чини се да вам не можемо учитати видеозаписе.</value>
+  </data>
+  <data name="Loc_More_Text.Text" xml:space="preserve">
+    <value>...више</value>
+  </data>
+  <data name="Loc_NewUpdatesFromYourSubscriptionsWillAppearHere_Text.Text" xml:space="preserve">
+    <value>Нова ажурирања ваших претплата појавит ће се овдје.</value>
+  </data>
+  <data name="Loc_NoCommentsFound_Text.Text" xml:space="preserve">
+    <value>Нема пронађених коментара.</value>
+  </data>
+  <data name="Loc_NoConnectionToTheInternet_Text.Text" xml:space="preserve">
+    <value>Нема интернетске везе</value>
+  </data>
+  <data name="Loc_NoData_Text.Text" xml:space="preserve">
+    <value>Нема података</value>
+  </data>
+  <data name="Loc_NoHistoryYet_Text.Text" xml:space="preserve">
+    <value>Још нема повијести</value>
+  </data>
+  <data name="Loc_None_Text.Text" xml:space="preserve">
+    <value>Ништа</value>
+  </data>
+  <data name="Loc_NoNotifications_Text.Text" xml:space="preserve">
+    <value>Нема обавијести</value>
+  </data>
+  <data name="Loc_Notifications_Text.Text" xml:space="preserve">
+    <value>Обавијести</value>
+  </data>
+  <data name="Loc_NoVideosInThisPlaylist_Text.Text" xml:space="preserve">
+    <value>Нема видеозаписа на овом попису за репродукцију</value>
+  </data>
+  <data name="Loc_OK_Content.Content" xml:space="preserve">
+    <value>У реду</value>
+  </data>
+  <data name="Loc_Personalized_Text.Text" xml:space="preserve">
+    <value>Прилагођено</value>
+  </data>
+  <data name="Loc_PlaybackSpeed_Text.Text" xml:space="preserve">
+    <value>Брзина репродукције</value>
+  </data>
+  <data name="Loc_Playlist_Text.Text" xml:space="preserve">
+    <value>Попис за репродукцију</value>
+  </data>
+  <data name="Loc_Playlists_Text.Text" xml:space="preserve">
+    <value>Пописи за репродукцију</value>
+  </data>
+  <data name="Loc_Posts_Text.Text" xml:space="preserve">
+    <value>Објаве</value>
+  </data>
+  <data name="Loc_PreferredShortsQuality_Text.Text" xml:space="preserve">
+    <value>Жељена квалитета @@СХОРТС@@а</value>
+  </data>
+  <data name="Loc_PreferredVideoQuality_Text.Text" xml:space="preserve">
+    <value>Жељена квалитета видеозаписа</value>
+  </data>
+  <data name="Loc_Published_Text.Text" xml:space="preserve">
+    <value>Објављено</value>
+  </data>
+  <data name="Loc_QRCode_Text.Text" xml:space="preserve">
+    <value>@@QР@@ кôд</value>
+  </data>
+  <data name="Loc_Quality_Text.Text" xml:space="preserve">
+    <value>Квалитета</value>
+  </data>
+  <data name="Loc_RefreshQRCode_Content.Content" xml:space="preserve">
+    <value>Освјежи @@QР@@ кôд</value>
+  </data>
+  <data name="Loc_ReloadVideo_Text.Text" xml:space="preserve">
+    <value>Поновно учитај видеозапис</value>
+  </data>
+  <data name="Loc_Retry_Content.Content" xml:space="preserve">
+    <value>Покушај поновно</value>
+  </data>
+  <data name="Loc_ScanTheQRCodeToSignIn_Text.Text" xml:space="preserve">
+    <value>Скенирајте @@QР@@ кôд за пријаву</value>
+  </data>
+  <data name="Loc_Search_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>Претражи</value>
+  </data>
+  <data name="Loc_Searching_Text.Text" xml:space="preserve">
+    <value>Претраживање...</value>
+  </data>
+  <data name="Loc_SearchYouTube_PlaceholderText.PlaceholderText" xml:space="preserve">
+    <value>Претражи @@YОУТУБЕ@@</value>
+  </data>
+  <data name="Loc_SearchYouTube_Text.Text" xml:space="preserve">
+    <value>Претражи @@YОУТУБЕ@@</value>
+  </data>
+  <data name="Loc_SeekPreview_Text.Text" xml:space="preserve">
+    <value>Претпреглед при тражењу</value>
+  </data>
+  <data name="Loc_SendNotifications_Text.Text" xml:space="preserve">
+    <value>Шаљи обавијести</value>
+  </data>
+  <data name="Loc_Settings_Text.Text" xml:space="preserve">
+    <value>Поставке</value>
+  </data>
+  <data name="Loc_Share_Text.Text" xml:space="preserve">
+    <value>Дијели</value>
+  </data>
+  <data name="Loc_ShareVia_Text.Text" xml:space="preserve">
+    <value>Дијели путем...</value>
+  </data>
+  <data name="Loc_Shorts_Text.Text" xml:space="preserve">
+    <value>@@СХОРТС@@</value>
+  </data>
+  <data name="Loc_ShortsLinkHasBeenCopiedToClipboard_Text.Text" xml:space="preserve">
+    <value>Веза @@СХОРТС@@а копирана је у међуспремник</value>
+  </data>
+  <data name="Loc_ShowQRCode_Text.Text" xml:space="preserve">
+    <value>Прикажи @@QР@@ кôд</value>
+  </data>
+  <data name="Loc_ShowVideoThumbnailWhileSeeking_Text.Text" xml:space="preserve">
+    <value>Прикажи минијатуру видеозаписа при тражењу</value>
+  </data>
+  <data name="Loc_Subscribe_Text.Text" xml:space="preserve">
+    <value>Претплати се</value>
+  </data>
+  <data name="Loc_Subscriptions_Text.Text" xml:space="preserve">
+    <value>Претплате</value>
+  </data>
+  <data name="Loc_Subtitles_Text.Text" xml:space="preserve">
+    <value>Титлови</value>
+  </data>
+  <data name="Loc_TrendingSearches_Text.Text" xml:space="preserve">
+    <value>Популарна претраживања</value>
+  </data>
+  <data name="Loc_TryAgain_Content.Content" xml:space="preserve">
+    <value>Покушај поновно</value>
+  </data>
+  <data name="Loc_Type_Text.Text" xml:space="preserve">
+    <value>Врста</value>
+  </data>
+  <data name="Loc_Unsubscribe_Text.Text" xml:space="preserve">
+    <value>Откажи претплату</value>
+  </data>
+  <data name="Loc_VerificationCode_Text.Text" xml:space="preserve">
+    <value>Кôд за потврду</value>
+  </data>
+  <data name="Loc_Video_Text.Text" xml:space="preserve">
+    <value>Видеозапис</value>
+  </data>
+  <data name="Loc_Videos_Text.Text" xml:space="preserve">
+    <value>Видеозаписи</value>
+  </data>
+  <data name="Loc_ViewChannel_Text.Text" xml:space="preserve">
+    <value>Прикажи канал</value>
+  </data>
+  <data name="Loc_Views_Text.Text" xml:space="preserve">
+    <value>Прегледи</value>
+  </data>
+  <data name="Loc_You_Text.Text" xml:space="preserve">
+    <value>Ви</value>
+  </data>
+  <data name="LoginLoadingQr" xml:space="preserve">
+    <value>Учитавање @@QР@@ кода...</value>
+  </data>
+  <data name="LoginQrFailed" xml:space="preserve">
+    <value>Није могуће учитати @@QР@@ кôд.</value>
+  </data>
+  <data name="LoginScanQr" xml:space="preserve">
+    <value>Отворите камеру телефона и скенирајте @@QР@@ кôд.</value>
+  </data>
+  <data name="LoginSuccess" xml:space="preserve">
+    <value>Пријава је успјешна! Преусмјеравање...</value>
+  </data>
+  <data name="MeSignIn" xml:space="preserve">
+    <value>Пријавите се да бисте видјели повијест и пописе за репродукцију</value>
+  </data>
+  <data name="Mix" xml:space="preserve">
+    <value>@@МИX@@</value>
+  </data>
+  <data name="MonthsAgo" xml:space="preserve">
+    <value>прије {0} мјесеци</value>
+  </data>
+  <data name="NetworkError" xml:space="preserve">
+    <value>Мрежна погрешка. Провјерите интернетску везу.</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Не</value>
+  </data>
+  <data name="NoCommentsFound" xml:space="preserve">
+    <value>Нема пронађених коментара.</value>
+  </data>
+  <data name="NoData" xml:space="preserve">
+    <value>Нема података</value>
+  </data>
+  <data name="NoDescription" xml:space="preserve">
+    <value>Нема описа.</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>Опис није доступан.</value>
+  </data>
+  <data name="NoName" xml:space="preserve">
+    <value>Нема назива</value>
+  </data>
+  <data name="NoNotifications" xml:space="preserve">
+    <value>Нема обавијести</value>
+  </data>
+  <data name="NoShortsFound" xml:space="preserve">
+    <value>Нема пронађених @@СХОРТС@@а.</value>
+  </data>
+  <data name="NotificationPreferenceFailed" xml:space="preserve">
+    <value>Није могуће ажурирати поставку обавијести.</value>
+  </data>
+  <data name="NotificationsFailed" xml:space="preserve">
+    <value>Обавијести нису успјеле</value>
+  </data>
+  <data name="NotificationsNewUpdates" xml:space="preserve">
+    <value>Нова ажурирања ваших претплата појавит ће се овдје.</value>
+  </data>
+  <data name="NotificationsSignIn" xml:space="preserve">
+    <value>Пријавите се да бисте видјели @@YОУТУБЕ@@ обавијести.</value>
+  </data>
+  <data name="NotificationsTryLater" xml:space="preserve">
+    <value>Поновно отворите ову страницу касније.</value>
+  </data>
+  <data name="NoTitle" xml:space="preserve">
+    <value>Без наслова</value>
+  </data>
+  <data name="NotSignedIn" xml:space="preserve">
+    <value>Нисте пријављени</value>
+  </data>
+  <data name="Off" xml:space="preserve">
+    <value>Искључено</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>У реду</value>
+  </data>
+  <data name="Older" xml:space="preserve">
+    <value>Старије</value>
+  </data>
+  <data name="PlaybackError" xml:space="preserve">
+    <value>Погрешка репродукције</value>
+  </data>
+  <data name="PlaybackFailed" xml:space="preserve">
+    <value>Репродукција није успјела</value>
+  </data>
+  <data name="PlaybackSpeed" xml:space="preserve">
+    <value>Брзина репродукције</value>
+  </data>
+  <data name="PlayerNotInitialized" xml:space="preserve">
+    <value>Није могуће репродуцирати видеозапис. Репродуктор није иницијализиран.</value>
+  </data>
+  <data name="Playlist" xml:space="preserve">
+    <value>Попис за репродукцију</value>
+  </data>
+  <data name="PlaylistIdEmpty" xml:space="preserve">
+    <value>ИД пописа за репродукцију је празан</value>
+  </data>
+  <data name="PlaylistUpdateFailed" xml:space="preserve">
+    <value>Плејлиста није могла да се ажурира</value>
+  </data>
+  <data name="QrCode" xml:space="preserve">
+    <value>@@QР@@ кôд</value>
+  </data>
+  <data name="QrDisplayErrorFormat" xml:space="preserve">
+    <value>Погрешка приказа @@QР@@-а: {0}</value>
+  </data>
+  <data name="Quality" xml:space="preserve">
+    <value>Квалитета</value>
+  </data>
+  <data name="RatingFailed" xml:space="preserve">
+    <value>Оцјењивање није успјело</value>
+  </data>
+  <data name="RatingRejectedDetailed" xml:space="preserve">
+    <value>@@YОУТУБЕ@@ је одбио захтјев за оцјењивање. Провјерите је ли @@ТВ@@ токен ваљан и има ли допуштење за оцјењивање на @@YОУТУБЕ@@у.</value>
+  </data>
+  <data name="RecommendedVideo" xml:space="preserve">
+    <value>Препоручени видеозапис</value>
+  </data>
+  <data name="RefreshTokenExchangeFailed" xml:space="preserve">
+    <value>Није могуће замијенити токен за освјежавање приступним токеном.</value>
+  </data>
+  <data name="Replies" xml:space="preserve">
+    <value>odgovora</value>
+  </data>
+  <data name="RepliesFormat" xml:space="preserve">
+    <value>{0} odgovora</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Сачувај</value>
+  </data>
+  <data name="SearchErrorFormat" xml:space="preserve">
+    <value>Погрешка претраживања: {0}</value>
+  </data>
+  <data name="SearchUnknown" xml:space="preserve">
+    <value>Непознато</value>
+  </data>
+  <data name="SelectAccount" xml:space="preserve">
+    <value>Изаберите налог</value>
+  </data>
+  <data name="SelectPlaylist" xml:space="preserve">
+    <value>Изаберите плејлисту</value>
+  </data>
+  <data name="SettingsLanguageEnglish.Content" xml:space="preserve">
+    <value>Енглески</value>
+  </data>
+  <data name="SettingsLanguageHint.Text" xml:space="preserve">
+    <value>Према заданим поставкама користи језик сустава @@WИНДОWС@@.</value>
+  </data>
+  <data name="SettingsLanguageLabel.Text" xml:space="preserve">
+    <value>Језик апликације</value>
+  </data>
+  <data name="SettingsLanguageRussian.Content" xml:space="preserve">
+    <value>Руски</value>
+  </data>
+  <data name="SettingsLanguageSection.Text" xml:space="preserve">
+    <value>Језик</value>
+  </data>
+  <data name="SettingsLanguageSheetTitle.Text" xml:space="preserve">
+    <value>Језик</value>
+  </data>
+  <data name="SettingsLanguageSystem.Content" xml:space="preserve">
+    <value>Задано у суставу</value>
+  </data>
+  <data name="ShareShortDescription" xml:space="preserve">
+    <value>Подијели овај @@YОУТУБЕ@@ @@СХОРТ@@</value>
+  </data>
+  <data name="ShareVideoDescription" xml:space="preserve">
+    <value>Подијели овај @@YОУТУБЕ@@ видеозапис</value>
+  </data>
+  <data name="Shorts" xml:space="preserve">
+    <value>@@СХОРТС@@</value>
+  </data>
+  <data name="ShortsFeature" xml:space="preserve">
+    <value>Shorts</value>
+  </data>
+  <data name="ShortsFeatureDescription" xml:space="preserve">
+    <value>Прикажи Shorts у апликацији</value>
+  </data>
+  <data name="ShowLess" xml:space="preserve">
+    <value>Прикажи мање</value>
+  </data>
+  <data name="ShowMore" xml:space="preserve">
+    <value>Још</value>
+  </data>
+  <data name="SignInAgain" xml:space="preserve">
+    <value>Није могуће замијенити @@ТВ@@ токен за освјежавање приступним токеном. Поновно се пријавите и провјерите је ли токен за освјежавање још важећи.</value>
+  </data>
+  <data name="SignInRequired" xml:space="preserve">
+    <value>Потребна је пријава</value>
+  </data>
+  <data name="SignInWatchShorts" xml:space="preserve">
+    <value>Пријавите се за гледање @@СХОРТС@@а.</value>
+  </data>
+  <data name="SponsorMarkers" xml:space="preserve">
+    <value>Рекламни сегменти на траци за премотавање</value>
+  </data>
+  <data name="SponsorMarkersDescription" xml:space="preserve">
+    <value>Прикажи обојене SponsorBlock опсеге</value>
+  </data>
+  <data name="Subscribe" xml:space="preserve">
+    <value>Претплати се</value>
+  </data>
+  <data name="SubscriberFew" xml:space="preserve">
+    <value>претплатници</value>
+  </data>
+  <data name="SubscriberMany" xml:space="preserve">
+    <value>претплатници</value>
+  </data>
+  <data name="SubscriberOne" xml:space="preserve">
+    <value>претплатник</value>
+  </data>
+  <data name="SubscribersVideosFormat" xml:space="preserve">
+    <value>{0} претплатника • {1} видеозаписа</value>
+  </data>
+  <data name="SubscriptionFailed" xml:space="preserve">
+    <value>Претплата није успјела</value>
+  </data>
+  <data name="SubscriptionRejected" xml:space="preserve">
+    <value>@@YОУТУБЕ@@ је одбио захтјев за претплату.</value>
+  </data>
+  <data name="SubscriptionRejectedDetailed" xml:space="preserve">
+    <value>@@YОУТУБЕ@@ је одбио захтјев за претплату. Провјерите је ли @@ТВ@@ токен ваљан и је ли пронађен ИД канала.</value>
+  </data>
+  <data name="SubtitleEarlier" xml:space="preserve">
+    <value>   Раније (+0.25с)</value>
+  </data>
+  <data name="SubtitleLater" xml:space="preserve">
+    <value>   Касније (-0.25с)</value>
+  </data>
+  <data name="SubtitleReset" xml:space="preserve">
+    <value>Врати уобичајени помак (0,00 с)</value>
+  </data>
+  <data name="Subtitles" xml:space="preserve">
+    <value>Титлови</value>
+  </data>
+  <data name="SyncFormat" xml:space="preserve">
+    <value>Синкронизација: {0}</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Тема</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Тамна</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Светла</value>
+  </data>
+  <data name="ThisWeek" xml:space="preserve">
+    <value>Овај тједан</value>
+  </data>
+  <data name="ThumbnailQuality" xml:space="preserve">
+    <value>Квалитет сличице</value>
+  </data>
+  <data name="Today" xml:space="preserve">
+    <value>Данас</value>
+  </data>
+  <data name="TrendingComedySketches" xml:space="preserve">
+    <value>Комедијске скице</value>
+  </data>
+  <data name="TrendingCookingRecipes" xml:space="preserve">
+    <value>Рецепти за кухање</value>
+  </data>
+  <data name="TrendingDiyTutorials" xml:space="preserve">
+    <value>Уради сам водичи</value>
+  </data>
+  <data name="TrendingGamingHighlights" xml:space="preserve">
+    <value>Истакнути тренуци играња</value>
+  </data>
+  <data name="TrendingMovieTrailers" xml:space="preserve">
+    <value>Филмски најавни видеозаписи</value>
+  </data>
+  <data name="TrendingMusicVideos" xml:space="preserve">
+    <value>Глазбени видеозаписи</value>
+  </data>
+  <data name="TrendingSportsHighlights" xml:space="preserve">
+    <value>Спортски врхунци</value>
+  </data>
+  <data name="TrendingTechReviews" xml:space="preserve">
+    <value>Рецензије технологије</value>
+  </data>
+  <data name="TvTokenExchangeFailed" xml:space="preserve">
+    <value>Није могуће замијенити @@ТВ@@ токен за освјежавање приступним токеном.</value>
+  </data>
+  <data name="TvTokenExchangeFailedDetailed" xml:space="preserve">
+    <value>Није могуће замијенити @@ТВ@@ токен за освјежавање приступним токеном. Поновно се пријавите и провјерите је ли токен за освјежавање још важећи.</value>
+  </data>
+  <data name="TvTokenMissing" xml:space="preserve">
+    <value>@@ТВ@@ токен за освјежавање није пронађен. Поновно се пријавите и покушајте поновно.</value>
+  </data>
+  <data name="TvTokenMissingDetailed" xml:space="preserve">
+    <value>@@ТВ@@ токен за освјежавање није пронађен. Поновно се пријавите како би се @@ТОКЕН@@ спремио, затим покушајте поновно.</value>
+  </data>
+  <data name="UnableLoadComments" xml:space="preserve">
+    <value>Није могуће учитати коментаре.</value>
+  </data>
+  <data name="UnableLoadShorts" xml:space="preserve">
+    <value>Није могуће учитати @@СХОРТС@@.</value>
+  </data>
+  <data name="UnablePlayShort" xml:space="preserve">
+    <value>Није могуће репродуцирати овај @@СХОРТ@@</value>
+  </data>
+  <data name="UnablePlayShortPeriod" xml:space="preserve">
+    <value>Није могуће репродуцирати овај @@СХОРТ@@.</value>
+  </data>
+  <data name="Unknown" xml:space="preserve">
+    <value>Непознато</value>
+  </data>
+  <data name="Untitled" xml:space="preserve">
+    <value>Без наслова</value>
+  </data>
+  <data name="UploadedVideo" xml:space="preserve">
+    <value>Пренесен видеозапис</value>
+  </data>
+  <data name="UploadedVideoTitleFormat" xml:space="preserve">
+    <value>Пренесен видеозапис „{0}”</value>
+  </data>
+  <data name="VideoAddedToPlaylistFormat" xml:space="preserve">
+    <value>Видео је додат на „{0}“</value>
+  </data>
+  <data name="VideoFew" xml:space="preserve">
+    <value>видеозаписи</value>
+  </data>
+  <data name="VideoLinkCopied" xml:space="preserve">
+    <value>Веза видеозаписа копирана је у међуспремник.</value>
+  </data>
+  <data name="VideoLinkExpired" xml:space="preserve">
+    <value>Није могуће учитати видеозапис. Веза је можда истекла или формат није подржан.</value>
+  </data>
+  <data name="VideoLoadingTimedOut" xml:space="preserve">
+    <value>Истекло је вријеме учитавања видеозаписа. Провјерите интернетску везу.</value>
+  </data>
+  <data name="VideoMany" xml:space="preserve">
+    <value>видеозаписи</value>
+  </data>
+  <data name="VideoOne" xml:space="preserve">
+    <value>видеозапис</value>
+  </data>
+  <data name="VideoPlaybackLowerQuality" xml:space="preserve">
+    <value>Погрешка при репродукцији видеозаписа. Покушајте одабрати нижу квалитету.</value>
+  </data>
+  <data name="VideoRemovedFromPlaylistFormat" xml:space="preserve">
+    <value>Видео је уклоњен са „{0}“</value>
+  </data>
+  <data name="VideosCountFormat" xml:space="preserve">
+    <value>{0} видеозаписа</value>
+  </data>
+  <data name="VideosSuffixFormat" xml:space="preserve">
+    <value>{0} видеозаписа</value>
+  </data>
+  <data name="WeeksAgo" xml:space="preserve">
+    <value>прије {0} тједана</value>
+  </data>
+  <data name="YearsAgo" xml:space="preserve">
+    <value>прије {0} година</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Да</value>
+  </data>
+  <data name="Yesterday" xml:space="preserve">
+    <value>Јучер</value>
+  </data>
+  <data name="YouTubeShorts" xml:space="preserve">
+    <value>@@YОУТУБЕ@@ @@СХОРТС@@</value>
+  </data>
+  <data name="YouTubeVideo" xml:space="preserve">
+    <value>@@YОУТУБЕ@@ видеозапис</value>
+  </data>
+  <data name="YouTubeVideoTitle" xml:space="preserve">
+    <value>@@YОУТУБЕ@@ видеозапис</value>
+  </data>
+  <data name="ClearDownloadedVideos" xml:space="preserve">
+    <value>Обриши преузете видео-снимке</value>
+  </data>
+  <data name="ClearDownloadedVideosDescription" xml:space="preserve">
+    <value>Избриши све преузете видео-снимке и кеширане сличице</value>
+  </data>
+  <data name="ClearDownloadedVideosConfirmation" xml:space="preserve">
+    <value>Сви преузети видео-снимци и њихове сличице биће трајно избрисани.</value>
+  </data>
+  <data name="ClearDownloadedVideosAction" xml:space="preserve">
+    <value>Обриши</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Откажи</value>
   </data>
 </root>

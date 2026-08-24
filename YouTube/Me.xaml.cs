@@ -6,6 +6,8 @@ using Windows.Storage;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
@@ -19,8 +21,14 @@ namespace YouTube
             new ObservableCollection<VideoCardItem>();
         private readonly ObservableCollection<PlaylistItem> _playlistItems =
             new ObservableCollection<PlaylistItem>();
+        private readonly ObservableCollection<YouTubeAccountItem> _accountItems =
+            new ObservableCollection<YouTubeAccountItem>();
         private Frame _frame;
         private string _channelTarget = string.Empty;
+        private bool _accountsSheetOpen;
+        private bool _accountsSheetIsDragging;
+        private double _accountsSheetInitialY;
+        private double _accountsSheetInitialTransformY;
 
         public Me()
         {
@@ -29,6 +37,10 @@ namespace YouTube
 
             HistoryList.ItemsSource = _historyItems;
             PlaylistsList.ItemsSource = _playlistItems;
+            AccountsList.ItemsSource = _accountItems;
+            AccountsButtonText.Text = Localization.GetString("Accounts");
+            AccountsSheetTitle.Text = Localization.GetString("SelectAccount");
+            DownloadsHeaderText.Text = Localization.GetString("Downloads");
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -117,7 +129,6 @@ namespace YouTube
         {
             DisplayNameText.Text = Localization.GetString("NotSignedIn");
             ChannelHandleText.Text = "";
-            ProfileMetaSeparator.Visibility = Visibility.Collapsed;
             GoToChannelButton.Visibility = Visibility.Collapsed;
             _channelTarget = string.Empty;
             _historyItems.Clear();
@@ -132,7 +143,6 @@ namespace YouTube
             {
                 DisplayNameText.Text = Localization.GetString("LoadingFailed");
                 ChannelHandleText.Text = "";
-                ProfileMetaSeparator.Visibility = Visibility.Collapsed;
                 GoToChannelButton.Visibility = Visibility.Collapsed;
                 _channelTarget = string.Empty;
                 return;
@@ -148,14 +158,12 @@ namespace YouTube
                     ? profile.ChannelHandle
                     : "@" + profile.ChannelHandle;
                 _channelTarget = ChannelHandleText.Text;
-                ProfileMetaSeparator.Visibility = Visibility.Visible;
                 GoToChannelButton.Visibility = Visibility.Visible;
             }
             else
             {
                 ChannelHandleText.Text = "";
                 _channelTarget = string.Empty;
-                ProfileMetaSeparator.Visibility = Visibility.Collapsed;
                 GoToChannelButton.Visibility = Visibility.Collapsed;
             }
 
@@ -253,6 +261,174 @@ namespace YouTube
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             _frame?.Navigate(typeof(Settings));
+        }
+
+        private void DownloadsHeader_Click(object sender, RoutedEventArgs e)
+        {
+            _frame?.Navigate(typeof(Downloads));
+        }
+
+        private async void AccountsButton_Click(object sender, RoutedEventArgs e)
+        {
+            Config.LoadUserToken();
+            if (string.IsNullOrWhiteSpace(Config.UserToken))
+            {
+                _frame?.Navigate(typeof(Login));
+                return;
+            }
+
+            SetAccountsSheetVisibility(true);
+            _accountItems.Clear();
+            AccountsEmptyText.Visibility = Visibility.Collapsed;
+            AccountsLoadingRing.Visibility = Visibility.Visible;
+            AccountsLoadingRing.IsActive = true;
+
+            try
+            {
+                var accounts = await Config.GetYouTubeAccountsAsync(Config.UserToken);
+                if (!_accountsSheetOpen)
+                {
+                    return;
+                }
+
+                foreach (var account in accounts)
+                {
+                    if (account != null)
+                    {
+                        _accountItems.Add(account);
+                    }
+                }
+
+                if (_accountItems.Count == 0)
+                {
+                    AccountsEmptyText.Text = Localization.GetString("AccountsLoadFailed");
+                    AccountsEmptyText.Visibility = Visibility.Visible;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Accounts] UI load failed: " + ex.Message);
+                AccountsEmptyText.Text = Localization.GetString("AccountsLoadFailed");
+                AccountsEmptyText.Visibility = Visibility.Visible;
+            }
+            finally
+            {
+                AccountsLoadingRing.IsActive = false;
+                AccountsLoadingRing.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void SetAccountsSheetVisibility(bool show)
+        {
+            _accountsSheetOpen = show;
+            AccountsOverlay.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            AccountsSheet.Visibility = Visibility.Visible;
+
+            var hiddenY = Math.Max(540, AccountsSheet.ActualHeight + 20);
+            var animation = new DoubleAnimation
+            {
+                From = AccountsSheetTransform.Y,
+                To = show ? 0 : hiddenY,
+                Duration = new Duration(TimeSpan.FromMilliseconds(220)),
+                EnableDependentAnimation = true,
+                EasingFunction = new CubicEase
+                {
+                    EasingMode = show ? EasingMode.EaseOut : EasingMode.EaseIn
+                }
+            };
+
+            var storyboard = new Storyboard();
+            storyboard.Children.Add(animation);
+            Storyboard.SetTarget(animation, AccountsSheetTransform);
+            Storyboard.SetTargetProperty(animation, "Y");
+            storyboard.Completed += delegate
+            {
+                if (!show)
+                {
+                    AccountsSheet.Visibility = Visibility.Collapsed;
+                    AccountsOverlay.Visibility = Visibility.Collapsed;
+                }
+            };
+            storyboard.Begin();
+        }
+
+        private void AccountsOverlay_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (_accountsSheetOpen)
+            {
+                SetAccountsSheetVisibility(false);
+            }
+            e.Handled = true;
+        }
+
+        private void AccountsDragArea_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            var element = sender as UIElement;
+            if (element != null && element.CapturePointer(e.Pointer))
+            {
+                _accountsSheetInitialY = e.GetCurrentPoint(element).Position.Y;
+                _accountsSheetInitialTransformY = AccountsSheetTransform.Y;
+                _accountsSheetIsDragging = true;
+                e.Handled = true;
+            }
+        }
+
+        private void AccountsDragArea_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_accountsSheetIsDragging)
+            {
+                return;
+            }
+
+            var element = sender as UIElement;
+            if (element == null)
+            {
+                return;
+            }
+
+            var currentY = e.GetCurrentPoint(element).Position.Y;
+            var deltaY = currentY - _accountsSheetInitialY;
+            AccountsSheetTransform.Y = Math.Max(0, _accountsSheetInitialTransformY + deltaY);
+            e.Handled = true;
+        }
+
+        private void AccountsDragArea_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_accountsSheetIsDragging)
+            {
+                return;
+            }
+
+            _accountsSheetIsDragging = false;
+            var element = sender as UIElement;
+            if (element != null)
+            {
+                element.ReleasePointerCapture(e.Pointer);
+            }
+
+            SetAccountsSheetVisibility(AccountsSheetTransform.Y <= 120);
+            e.Handled = true;
+        }
+
+        private async void AccountItem_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var account = button != null ? button.DataContext as YouTubeAccountItem : null;
+            if (account == null)
+            {
+                return;
+            }
+
+            if (account.IsSelected)
+            {
+                SetAccountsSheetVisibility(false);
+                return;
+            }
+
+            Config.SelectYouTubeAccount(account);
+            SetAccountsSheetVisibility(false);
+            ProfileImageBrush.ImageSource = null;
+            await LoadPageAsync();
         }
 
         private async void LogoutButton_Click(object sender, RoutedEventArgs e)

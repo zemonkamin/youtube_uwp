@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -76,6 +78,9 @@ namespace YouTube
         private string _lastPlayerJson = string.Empty;
         private readonly HashSet<int> _excludedH264VideoOnlyItags = new HashSet<int>();
         private int _currentH264VideoOnlyItag = -1;
+        // Actual short-side tier selected for playback. youtube-ios keeps this separately from
+        // the user's pick so Auto can be displayed as e.g. "Auto · 1080p".
+        private int _readyHeight;
         private bool _qualityChangeInProgress;
         private string _historyReportedVideoId;
         // One Auto-mode retry at max quality per video, so a dead video cannot loop.
@@ -111,11 +116,31 @@ namespace YouTube
         private const string AutoFullscreenLandscapeSettingKey = "AutoFullscreenLandscape";
         private int _orientationFullscreenGeneration;
         private bool _windowSizeChangedSubscribed;
+        private bool _updatingLandscapeActionLabels;
+        private double _actionsWidthAllLabels = double.NaN;
+        private double _actionsWidthWithoutDownloadLabel = double.NaN;
+        private double _actionsWidthWithoutSaveLabel = double.NaN;
+        private double _actionsWidthIconsOnly = double.NaN;
         private string _currentVideoDescription = string.Empty;
+        private string _currentVideoThumbnailUrl = string.Empty;
+        private string _currentChannelThumbnailUrl = string.Empty;
+        private bool _offlineMode;
+        private DownloadedVideoItem _offlineItem;
         private const double RelatedThumbnailAspectRatio = 16.0 / 9.0;
         private const double DefaultVideoPlayerAspectRatio = 16.0 / 9.0;
         private double _currentVideoPlayerAspectRatio = DefaultVideoPlayerAspectRatio;
         private const double MinVideoPlayerHeight = 211.0;
+        // youtube-ios uses deviceMaxHeight as the cap for Auto. Its normal-device cap is
+        // 1080p; unsupported H.264 itags are excluded and retried at the next lower tier.
+        private const int AutomaticVideoQualityCap = 1080;
+        // youtube-ios lets SABR stay below the device tier when the connection cannot sustain
+        // it. The UWP demuxer has fixed-format URLs, so Auto measures the selected CDN host
+        // before opening the stream and keeps a safety margin for audio and throughput jitter.
+        private const int AutoNetworkProbeBytes = 256 * 1024;
+        private const double AutoNetworkSafetyFactor = 0.72;
+        private const int AutoAudioBandwidthReserve = 192000;
+        private double _autoNetworkBitsPerSecond;
+        private DateTimeOffset _autoNetworkEstimateTime;
         private const int MaxRelatedVideosToShow = 32;
         private const int MaxRelatedJsonNodesToScan = 60000;
         private const double TitleDescriptionSkeletonDefaultAspectRatio = 1440.0 / 889.0;
@@ -155,12 +180,28 @@ namespace YouTube
         private const string InnertubeAndroidVrClientHeaderName = "28";
         private const string InnertubeAndroidVrUserAgent = "com.google.android.apps.youtube.vr.oculus/1.65.10 (Linux; U; Android 12L; eureka-user Build/SQ3A.220605.009.A1) gzip";
 
+        // Playback client chain. Keep these values and the request order in sync with
+        // youtube-ios/src/net/YTApi.m; googlevideo signs the resulting URLs for the client
+        // which requested them, so body, X-YouTube-Client-* and User-Agent must agree.
+        private const string InnertubeVisionClientName = "VISIONOS";
+        private const string InnertubeVisionClientVersion = "1.02";
+        private const string InnertubeVisionClientHeaderName = "101";
+        private const string InnertubeVisionUserAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 15_7_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Safari/605.1.15";
+        private const string InnertubeIosPlayerClientVersion = "20.49.6";
+        private const string InnertubeIosPlayerClientHeaderName = "5";
+        private const string InnertubeIosPlayerUserAgent = "com.google.ios.youtube/19.16.3 (iPhone16,2; U; CPU iOS 18_0 like Mac OS X)";
+        private const string InnertubePlaybackTvClientVersion = "7.20250209.19.00";
+        private const string InnertubePlaybackTvLegacyClientVersion = "7.20220918.10.00";
+        private const string InnertubePlaybackTvUserAgent = "Mozilla/5.0 (SMART-TV; LINUX; Tizen 5.0) AppleWebKit/537.36 (KHTML, like Gecko) Version/5.0 TV Safari/537.36";
+
         // Server-issued visitorData for the current session. MeeTube seeds this from the
         // first youtubei response's responseContext and reuses it; ANDROID_VR needs it to
         // clear the 2026-07 anti-bot wall. Captured opportunistically, fetched on demand.
         private string _sessionVisitorData = string.Empty;
         private readonly object _visitorDataGate = new object();
         private Task<string> _visitorDataFetchTask;
+        private string _playbackMediaUserAgent = InnertubeAndroidVrUserAgent;
+        private string _lastAndroidPlayerUserAgent = InnertubeAndroidVrUserAgent;
 
         private const string DescriptionUrlPattern = @"(http|https)://[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&:/~\+#]*[\w\-\@?^=%&/~\+#])?";
         private const string DescriptionTimecodePattern = @"(?<![\d:])(?:\d{1,2}:)?\d{1,2}:\d{2}(?![\d:])";
@@ -178,6 +219,9 @@ namespace YouTube
         private double _commentsInitialY;
         private double _commentsInitialTransformY;
         private bool _commentsIsDragging;
+        private List<CommentItem> _currentComments = new List<CommentItem>();
+        private bool _landscapeDescriptionExpanded;
+        private bool _landscapeDescriptionNeedsToggle;
 
         // Share bottom sheet fields
         private double _shareInitialY;
@@ -190,6 +234,16 @@ namespace YouTube
         private bool _shareWithTimestamp;
         private Storyboard _shareTimeToggleStoryboard;
         private int _shareTimeToggleAnimationGeneration;
+
+        // Save-to-playlist bottom sheet fields
+        private readonly ObservableCollection<SavePlaylistItemViewModel> _savePlaylistItems =
+            new ObservableCollection<SavePlaylistItemViewModel>();
+        private double _saveInitialY;
+        private double _saveInitialTransformY;
+        private bool _saveIsDragging;
+        private bool _saveSheetIsOpen;
+        private int _savePlaylistLoadGeneration;
+        private bool _mainSaveStateSupportedByNext;
 
         // Player settings bottom sheet fields
         private double _settingsInitialY;
@@ -236,9 +290,76 @@ namespace YouTube
             public string Path { get; set; }
         }
 
+        public sealed class SavePlaylistItemViewModel : INotifyPropertyChanged
+        {
+            private bool _isSaved;
+            private bool _isBusy;
+
+            public SavePlaylistItemViewModel(PlaylistItem playlist, bool isSaved)
+            {
+                Playlist = playlist ?? new PlaylistItem();
+                _isSaved = isSaved;
+            }
+
+            public PlaylistItem Playlist { get; private set; }
+            public string PlaylistId { get { return Playlist.PlaylistId ?? string.Empty; } }
+            public string Title { get { return Playlist.Title ?? string.Empty; } }
+            public string ThumbnailUrl { get { return Playlist.ThumbnailUrl ?? string.Empty; } }
+            public string MetadataText { get { return Playlist.MetadataText ?? string.Empty; } }
+            public string VideoCountText { get { return Playlist.VideoCountText ?? string.Empty; } }
+            public Visibility VideoCountVisibility { get { return Playlist.VideoCountVisibility; } }
+            public SolidColorBrush AccentBackColor { get { return Playlist.AccentBackColor; } }
+            public SolidColorBrush AccentFrontColor { get { return Playlist.AccentFrontColor; } }
+            public bool IsSaved { get { return _isSaved; } }
+            public bool IsEnabled { get { return !_isBusy; } }
+            public double RowOpacity { get { return _isBusy ? 0.55 : 1.0; } }
+            public string IconPath { get { return _isSaved ? "Assets/save_clicked.png" : "Assets/save.png"; } }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            public void SetBusy(bool value)
+            {
+                if (_isBusy == value)
+                {
+                    return;
+                }
+                _isBusy = value;
+                RaisePropertyChanged("IsEnabled");
+                RaisePropertyChanged("RowOpacity");
+            }
+
+            public void SetSaved(bool value)
+            {
+                if (_isSaved == value)
+                {
+                    return;
+                }
+                _isSaved = value;
+                RaisePropertyChanged("IsSaved");
+                RaisePropertyChanged("IconPath");
+            }
+
+            private void RaisePropertyChanged(string propertyName)
+            {
+                var handler = PropertyChanged;
+                if (handler != null)
+                {
+                    handler(this, new PropertyChangedEventArgs(propertyName));
+                }
+            }
+        }
+
         public Video()
         {
             this.InitializeComponent();
+            SavePlaylistsList.ItemsSource = _savePlaylistItems;
+            SaveActionText.Text = Localization.GetString("Save");
+            DownloadActionText.Text = Localization.GetString("Download");
+            DownloadQualityTitleText.Text = Localization.GetString("DownloadQualityTitle");
+            DownloadUnavailableText.Text = Localization.GetString("DownloadUnavailable");
+            SaveSheetTitleText.Text = Localization.GetString("SelectPlaylist");
+            SavePlaylistsEmptyText.Text = Localization.GetString("NoData");
+            UpdateLandscapeDescriptionExpansionState();
             this.Loaded += Video_Loaded;
             this.Unloaded += Video_Unloaded;
 
@@ -306,6 +427,12 @@ namespace YouTube
 
         private void Video_Loaded(object sender, RoutedEventArgs e)
         {
+            DownloadManager.Changed -= DownloadManager_Changed;
+            DownloadManager.Changed += DownloadManager_Changed;
+            App.ThemeChanged -= App_ThemeChanged;
+            App.ThemeChanged += App_ThemeChanged;
+            ApplyCurrentVideoTheme();
+
             // A cached Video page is loaded again after returning from the mini-player, so
             // restore the window handler every time and baseline orientation without causing an
             // artificial fullscreen transition merely because the page became visible.
@@ -624,6 +751,8 @@ namespace YouTube
 
         private void Video_Unloaded(object sender, RoutedEventArgs e)
         {
+            DownloadManager.Changed -= DownloadManager_Changed;
+            App.ThemeChanged -= App_ThemeChanged;
             _orientationFullscreenGeneration++;
             UnsubscribeWindowSizeChanged();
             RestoreSettingsBottomSheetFromFullscreenPopup();
@@ -673,6 +802,11 @@ namespace YouTube
         private async void Window_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
         {
             UpdateFullscreenSettingsPopupBounds(e.Size);
+            if (SettingsBottomSheetPanel != null
+                && SettingsBottomSheetPanel.Visibility == Visibility.Visible)
+            {
+                UpdateSettingsBottomSheetHeight();
+            }
 
             if (_minimizedToMiniPlayer)
             {
@@ -916,6 +1050,10 @@ namespace YouTube
             var targetHeight = Math.Round(width / RelatedThumbnailAspectRatio);
             if (double.IsNaN(thumbnailHost.Height) || Math.Abs(thumbnailHost.Height - targetHeight) > 0.5)
                 thumbnailHost.Height = targetHeight;
+
+            VideoCardController.ApplyResponsiveLayout(
+                thumbnailHost,
+                IsCurrentViewPortrait());
         }
 
         private void RelatedSkeletonCardHost_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -1222,6 +1360,12 @@ namespace YouTube
                 System.Diagnostics.Debug.WriteLine("[Video] Player aspect ratio set to " + aspectRatio.ToString("0.###"));
             }
 
+            if (_minimizedToMiniPlayer
+                && ReferenceEquals(MiniPlayer.ActivePlayer, CustomVideoPlayer))
+            {
+                MiniPlayer.UpdateAspectRatio(aspectRatio);
+            }
+
             UpdateVideoPlayerHeight();
         }
 
@@ -1256,12 +1400,12 @@ namespace YouTube
                     continue;
                 }
 
-                if (requestedHeight > 0 && format.Height > requestedHeight)
+                if (requestedHeight > 0 && format.QualityTier > requestedHeight)
                 {
                     continue;
                 }
 
-                if (best == null || format.Height > best.Height)
+                if (best == null || format.QualityTier > best.QualityTier)
                 {
                     best = format;
                 }
@@ -1280,7 +1424,7 @@ namespace YouTube
                     continue;
                 }
 
-                if (best == null || format.Height > best.Height)
+                if (best == null || format.QualityTier > best.QualityTier)
                 {
                     best = format;
                 }
@@ -1299,11 +1443,14 @@ namespace YouTube
                 return;
             }
 
-            var windowWidth = Window.Current.Bounds.Width;
             bool isPortrait = IsCurrentViewPortrait();
+
+            UpdateNavigationChrome(isPortrait);
 
             UpdateTitleDescriptionSkeletonLayout(isPortrait);
             MovePlaylistQueueForLayout(isPortrait);
+            MoveVideoActionsForLayout(isPortrait);
+            UpdateLandscapeDetailsVisibility(isPortrait);
 
             if (isPortrait)
             {
@@ -1331,35 +1478,20 @@ namespace YouTube
             }
             else
             {
-                // Landscape mode: keep the player as the dominant column.
-                //
-                // The old layout gave RelatedColumn a hard 400 px width. On small Windows Phone
-                // landscape widths that could make the recommendations wider than the whole video
-                // side. Use a responsive ratio instead and cap the related pane.
+                // Landscape keeps the video/details column on the left and the playlist plus
+                // recommendations rail on the right.
+                var windowWidth = Window.Current.Bounds.Width;
                 double relatedWidth;
-
                 if (windowWidth <= 700)
-                {
-                    // Small phone landscape: roughly 70/30 in favour of the player.
                     relatedWidth = Math.Max(220, Math.Min(280, windowWidth * 0.30));
-                }
                 else if (windowWidth <= 1000)
-                {
-                    // Medium landscape / Continuum.
                     relatedWidth = Math.Max(260, Math.Min(340, windowWidth * 0.32));
-                }
                 else
-                {
-                    // Desktop/tablet can afford the wider recommendation rail.
                     relatedWidth = Math.Max(320, Math.Min(400, windowWidth * 0.33));
-                }
 
-                // Never allow the right rail to consume half or more of the window.
-                var maximumRelatedWidth = Math.Max(200, (windowWidth * 0.45));
+                var maximumRelatedWidth = Math.Max(200, windowWidth * 0.45);
                 if (relatedWidth > maximumRelatedWidth)
-                {
                     relatedWidth = maximumRelatedWidth;
-                }
 
                 if (PlayerColumn != null)
                     PlayerColumn.Width = new GridLength(1, GridUnitType.Star);
@@ -1386,6 +1518,16 @@ namespace YouTube
             UpdateVideoPlayerHeight();
             var ignored = Dispatcher.RunAsync(CoreDispatcherPriority.Low, () => UpdateVideoPlayerHeight());
 
+            if (_offlineMode)
+            {
+                if (PlayerColumn != null) PlayerColumn.Width = new GridLength(1, GridUnitType.Star);
+                if (RelatedColumn != null) RelatedColumn.Width = new GridLength(0);
+                if (RelatedPanel != null) RelatedPanel.Visibility = Visibility.Collapsed;
+                if (RelatedPanelVertical != null) RelatedPanelVertical.Visibility = Visibility.Collapsed;
+                if (RelatedVideosFallback != null) RelatedVideosFallback.Visibility = Visibility.Collapsed;
+                if (RelatedVideosFallbackVertical != null) RelatedVideosFallbackVertical.Visibility = Visibility.Collapsed;
+            }
+
             // Only the normal layout path advances the orientation baseline. Mini-player restore
             // resyncs may run while the phone is physically rotating, so those must never swallow
             // a real portrait/landscape transition.
@@ -1393,6 +1535,77 @@ namespace YouTube
             {
                 _wasPortrait = isPortrait;
             }
+        }
+
+        private void UpdateNavigationChrome(bool isPortrait)
+        {
+            var show = !isPortrait;
+            if (VideoNavbarRow != null)
+                VideoNavbarRow.Height = new GridLength(show ? 56 : 0);
+            if (VideoTabbarRow != null)
+                VideoTabbarRow.Height = new GridLength(show ? 52 : 0);
+            if (navbar != null)
+            {
+                navbar.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+                if (show)
+                    navbar.SetVerticalLayout();
+            }
+            if (tabbar != null)
+                tabbar.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void App_ThemeChanged(object sender, EventArgs e)
+        {
+            ApplyCurrentVideoTheme();
+        }
+
+        private void ApplyCurrentVideoTheme()
+        {
+            RequestedTheme = App.GetCurrentElementTheme();
+
+            if (_fullscreenSettingsPopupRoot != null)
+                _fullscreenSettingsPopupRoot.RequestedTheme = RequestedTheme;
+
+            // These controls receive concrete brushes because they are built in C# rather than
+            // XAML. Refresh them when a cached Video page returns or the system theme changes.
+            UpdateSubscriptionVisualState();
+            ForceShareTimeToggleVisual(_shareWithTimestamp);
+            RefreshRuntimeOptionPanelTheme(QualityOptionsPanel);
+            RefreshRuntimeOptionPanelTheme(SpeedOptionsPanel);
+            RefreshRuntimeOptionPanelTheme(AudioTrackOptionsPanel);
+            RefreshRuntimeOptionPanelTheme(SubtitlesOptionsPanel);
+        }
+
+        private static void RefreshRuntimeOptionPanelTheme(DependencyObject root)
+        {
+            if (root == null)
+                return;
+
+            var primary = App.GetThemeBrush("AppPrimaryTextBrush");
+            var control = root as Control;
+            if (control != null && primary != null && !IsVideoAccentBrush(control.Foreground))
+                control.Foreground = primary;
+
+            var text = root as TextBlock;
+            if (text != null && primary != null && !IsVideoAccentBrush(text.Foreground))
+                text.Foreground = primary;
+
+            var icon = root as FontIcon;
+            if (icon != null && primary != null && !IsVideoAccentBrush(icon.Foreground))
+                icon.Foreground = primary;
+
+            var count = VisualTreeHelper.GetChildrenCount(root);
+            for (var i = 0; i < count; i++)
+                RefreshRuntimeOptionPanelTheme(VisualTreeHelper.GetChild(root, i));
+        }
+
+        private static bool IsVideoAccentBrush(Brush brush)
+        {
+            var solid = brush as SolidColorBrush;
+            return solid != null
+                && solid.Color.R == 255
+                && solid.Color.G == 0
+                && solid.Color.B == 51;
         }
 
         // The queue is one live control so its expansion state, ItemsSource and current marker are
@@ -1414,9 +1627,7 @@ namespace YouTube
                     {
                         var oldParent = PlaylistQueuePanel.Parent as Panel;
                         if (oldParent != null)
-                        {
                             oldParent.Children.Remove(PlaylistQueuePanel);
-                        }
                         PlayerInfoPanel.Children.Add(PlaylistQueuePanel);
                     }
 
@@ -1429,9 +1640,7 @@ namespace YouTube
                     {
                         var oldParent = PlaylistQueuePanel.Parent as Panel;
                         if (oldParent != null)
-                        {
                             oldParent.Children.Remove(PlaylistQueuePanel);
-                        }
                         LandscapePlaylistHost.Children.Add(PlaylistQueuePanel);
                     }
 
@@ -1443,6 +1652,169 @@ namespace YouTube
             {
                 System.Diagnostics.Debug.WriteLine("[PlaylistQueue] Layout reparent failed: " + ex.Message);
             }
+        }
+
+        private void MoveVideoActionsForLayout(bool isPortrait)
+        {
+            if (VideoActionsScrollViewer == null || PlayerInfoPanel == null || LandscapeActionsHost == null)
+                return;
+
+            try
+            {
+                var target = isPortrait ? (Panel)PlayerInfoPanel : LandscapeActionsHost;
+                if (!target.Children.Contains(VideoActionsScrollViewer))
+                {
+                    var oldParent = VideoActionsScrollViewer.Parent as Panel;
+                    if (oldParent != null)
+                        oldParent.Children.Remove(VideoActionsScrollViewer);
+                    target.Children.Add(VideoActionsScrollViewer);
+                }
+
+                if (isPortrait)
+                {
+                    Grid.SetRow(VideoActionsScrollViewer, 3);
+                    VideoActionsScrollViewer.Margin = new Thickness(16, 2, 16, 16);
+                    LandscapeActionsHost.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    Grid.SetRow(VideoActionsScrollViewer, 0);
+                    VideoActionsScrollViewer.Margin = new Thickness(0);
+                    LandscapeActionsHost.Visibility = Visibility.Visible;
+                }
+
+                ScheduleLandscapeActionLabelUpdate();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Video] Action-row reparent failed: " + ex.Message);
+            }
+        }
+
+        private void ChannelAndActionsRow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            ScheduleLandscapeActionLabelUpdate();
+        }
+
+        private void ScheduleLandscapeActionLabelUpdate()
+        {
+            if (Dispatcher == null) return;
+            var ignored = Dispatcher.RunAsync(
+                CoreDispatcherPriority.Low,
+                UpdateLandscapeActionLabelVisibility);
+        }
+
+        private void UpdateLandscapeActionLabelVisibility()
+        {
+            if (_updatingLandscapeActionLabels
+                || ShareActionText == null
+                || SaveActionText == null
+                || DownloadActionText == null
+                || ShareButton == null
+                || SaveButton == null
+                || DownloadButton == null)
+            {
+                return;
+            }
+
+            _updatingLandscapeActionLabels = true;
+            try
+            {
+                if (IsCurrentViewPortrait())
+                {
+                    SetActionLabelVisible(ShareActionText, ShareButton, true);
+                    SetActionLabelVisible(SaveActionText, SaveButton, true);
+                    SetActionLabelVisible(DownloadActionText, DownloadButton, true);
+                    return;
+                }
+
+                EnsureLandscapeActionWidthMeasurements();
+
+                // Keep enough room for the avatar plus an ellipsized channel name. The
+                // Subscribe button remains untouched; only Share/Save/Download lose labels.
+                var subscribeWidth = SubscribeButtonContainer != null
+                    && SubscribeButtonContainer.Visibility == Visibility.Visible
+                    ? Math.Max(SubscribeButtonContainer.ActualWidth,
+                        SubscribeButtonContainer.DesiredSize.Width)
+                    : 0.0;
+                var available = Math.Max(0.0,
+                    (ChannelAndActionsRow == null ? 0.0 : ChannelAndActionsRow.ActualWidth)
+                    - 124.0 - subscribeWidth - 12.0);
+
+                var showDownload = _actionsWidthAllLabels <= available;
+                var showSave = showDownload
+                    || _actionsWidthWithoutDownloadLabel <= available;
+                var showShare = showSave
+                    || _actionsWidthWithoutSaveLabel <= available;
+
+                if (_actionsWidthIconsOnly > available)
+                {
+                    showDownload = false;
+                    showSave = false;
+                    showShare = false;
+                }
+
+                SetActionLabelVisible(DownloadActionText, DownloadButton, showDownload);
+                SetActionLabelVisible(SaveActionText, SaveButton, showSave);
+                SetActionLabelVisible(ShareActionText, ShareButton, showShare);
+            }
+            finally
+            {
+                _updatingLandscapeActionLabels = false;
+            }
+        }
+
+        private void EnsureLandscapeActionWidthMeasurements()
+        {
+            if (!double.IsNaN(_actionsWidthAllLabels) || VideoActionsPanel == null)
+                return;
+
+            SetActionLabelVisible(ShareActionText, ShareButton, true);
+            SetActionLabelVisible(SaveActionText, SaveButton, true);
+            SetActionLabelVisible(DownloadActionText, DownloadButton, true);
+            _actionsWidthAllLabels = MeasureVideoActionsWidth();
+
+            SetActionLabelVisible(DownloadActionText, DownloadButton, false);
+            _actionsWidthWithoutDownloadLabel = MeasureVideoActionsWidth();
+
+            SetActionLabelVisible(SaveActionText, SaveButton, false);
+            _actionsWidthWithoutSaveLabel = MeasureVideoActionsWidth();
+
+            SetActionLabelVisible(ShareActionText, ShareButton, false);
+            _actionsWidthIconsOnly = MeasureVideoActionsWidth();
+        }
+
+        private double MeasureVideoActionsWidth()
+        {
+            VideoActionsPanel.Measure(new Windows.Foundation.Size(
+                double.PositiveInfinity, double.PositiveInfinity));
+            return VideoActionsPanel.DesiredSize.Width;
+        }
+
+        private static void SetActionLabelVisible(
+            TextBlock label,
+            Button button,
+            bool visible)
+        {
+            if (label != null)
+                label.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+            if (button != null)
+                button.Padding = visible ? new Thickness(16, 8, 16, 8) : new Thickness(8);
+        }
+
+        private void UpdateLandscapeDetailsVisibility(bool isPortrait)
+        {
+            var hasComments = _currentComments != null && _currentComments.Count > 0;
+            if (LandscapeDescriptionContainer != null)
+                LandscapeDescriptionContainer.Visibility = isPortrait ? Visibility.Collapsed : Visibility.Visible;
+            if (LandscapeCommentsPanel != null)
+                LandscapeCommentsPanel.Visibility = !isPortrait && hasComments
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            if (CommentsContainerButton != null)
+                CommentsContainerButton.Visibility = isPortrait && hasComments
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
         }
 
         private void VideoPage_BackRequested(object sender, BackRequestedEventArgs e)
@@ -1503,6 +1875,7 @@ namespace YouTube
                 MiniPlayer.DetachFromParent(CustomVideoPlayer);
                 MiniPlayer.Show(
                     CustomVideoPlayer,
+                    _currentVideoPlayerAspectRatio,
                     RestoreFromMiniPlayer,
                     () =>
                     {
@@ -1800,6 +2173,17 @@ namespace YouTube
                 MiniPlayer.Close();
             }
 
+            var offlineArgs = e.Parameter as OfflineVideoNavigationArgs;
+            if (offlineArgs != null && offlineArgs.Item != null)
+            {
+                await OpenOfflineVideoAsync(offlineArgs.Item);
+                return;
+            }
+
+            _offlineMode = false;
+            _offlineItem = null;
+            ApplyOfflineModeVisuals(false);
+
             // A video can be opened standalone (plain id) or as part of a playlist / mix,
             // in which case the playlist context travels with it so the queue keeps working.
             var navArgs = e.Parameter as VideoNavigationArgs;
@@ -1860,6 +2244,17 @@ namespace YouTube
 
             _historyReportedVideoId = null;
             _autoQualityFallbackAttempted = false;
+            _currentVideoDescription = string.Empty;
+            _currentVideoThumbnailUrl = string.Empty;
+            _currentChannelThumbnailUrl = string.Empty;
+            if (ChannelImage != null) ChannelImage.ImageSource = null;
+            if (DownloadActionText != null) DownloadActionText.Text = Localization.GetString("Download");
+            if (DownloadActionIcon != null) DownloadActionIcon.Visibility = Visibility.Visible;
+            if (DownloadProgressIcon != null) DownloadProgressIcon.Visibility = Visibility.Collapsed;
+            _landscapeDescriptionExpanded = false;
+            _landscapeDescriptionNeedsToggle = false;
+            UpdateLandscapeDescriptionText();
+            UpdateLandscapeDescriptionExpansionState();
 
             // Materialize the Settings default BEFORE any player/format request can choose a
             // source. Fresh installs become explicit Auto immediately.
@@ -1878,6 +2273,93 @@ namespace YouTube
             ScrollVideoPageToTop();
 
             await LoadVideoDetailsAsync(videoId);
+        }
+
+        private async Task OpenOfflineVideoAsync(DownloadedVideoItem item)
+        {
+            _offlineMode = true;
+            _offlineItem = item;
+            currentPlaylistId = string.Empty;
+            _playlistQueueTitle = string.Empty;
+            currentVideoId = item.VideoId ?? string.Empty;
+            currentChannelId = item.ChannelId ?? string.Empty;
+            currentChannelName = item.Author ?? string.Empty;
+            _currentVideoDescription = item.Description ?? string.Empty;
+            _currentVideoThumbnailUrl = !string.IsNullOrWhiteSpace(item.LocalThumbnailUri)
+                ? item.LocalThumbnailUri : (item.ThumbnailUrl ?? string.Empty);
+            _currentChannelThumbnailUrl = !string.IsNullOrWhiteSpace(item.LocalChannelThumbnailUri)
+                ? item.LocalChannelThumbnailUri : (item.ChannelThumbnailUrl ?? string.Empty);
+            UpdatePlaylistTransportControls();
+
+            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                Frame != null && Frame.CanGoBack
+                    ? AppViewBackButtonVisibility.Visible
+                    : AppViewBackButtonVisibility.Collapsed;
+
+            EnsurePlayerAttached();
+            ResetSecondaryContentForFastLoad();
+            SetSkeletonVisibility(false);
+
+            if (VideoTitleText != null) VideoTitleText.Text = item.Title ?? string.Empty;
+            if (VideoAuthorText != null) VideoAuthorText.Text = item.Author ?? string.Empty;
+            if (SubscriberCountText != null) SubscriberCountText.Text = string.Empty;
+            if (CustomVideoPlayer != null)
+            {
+                CustomVideoPlayer.ResetForReuse();
+                CustomVideoPlayer.SetVideoInfo(item.Title ?? string.Empty, item.Author ?? string.Empty);
+                CustomVideoPlayer.SetSystemMediaMetadata(item.VideoId, item.Title, item.Author);
+                CustomVideoPlayer.SetSystemMediaNavigationEnabled(false, false);
+                CustomVideoPlayer.SetSubtitleTracks(new Subtitles.TrackList());
+            }
+
+            if (item.Width > 0 && item.Height > 0)
+                SetVideoPlayerAspectRatio((double)item.Width / item.Height);
+
+            if (ChannelImage != null && !string.IsNullOrWhiteSpace(_currentChannelThumbnailUrl))
+            {
+                try { ChannelImage.ImageSource = new BitmapImage(new Uri(_currentChannelThumbnailUrl)); }
+                catch { ChannelImage.ImageSource = null; }
+            }
+
+            UpdateLandscapeDescriptionText();
+            ApplyOfflineModeVisuals(true);
+            UpdateVideoPlayerLayout();
+
+            var file = await DownloadManager.GetFileAsync(item);
+            if (file != null && CustomVideoPlayer != null)
+                await CustomVideoPlayer.SetSourceFromStorageFileAsync(file, true);
+        }
+
+        private void ApplyOfflineModeVisuals(bool offline)
+        {
+            if (VideoActionsScrollViewer != null)
+                VideoActionsScrollViewer.Visibility = offline ? Visibility.Collapsed : Visibility.Visible;
+            if (SubscribeButtonContainer != null)
+                SubscribeButtonContainer.Visibility = offline ? Visibility.Collapsed : Visibility.Visible;
+            if (SubscriberCountText != null && offline)
+                SubscriberCountText.Visibility = Visibility.Collapsed;
+            else if (SubscriberCountText != null)
+                SubscriberCountText.Visibility = Visibility.Visible;
+            if (PlaylistQueuePanel != null && offline)
+                PlaylistQueuePanel.Visibility = Visibility.Collapsed;
+            if (CommentsContainerButton != null && offline)
+                CommentsContainerButton.Visibility = Visibility.Collapsed;
+            if (LandscapeCommentsPanel != null && offline)
+                LandscapeCommentsPanel.Visibility = Visibility.Collapsed;
+            if (QualityButton != null)
+                QualityButton.Visibility = offline ? Visibility.Collapsed : Visibility.Visible;
+            if (AudioTrackButton != null && offline)
+                AudioTrackButton.Visibility = Visibility.Collapsed;
+            if (SubtitlesButton != null && offline)
+                SubtitlesButton.Visibility = Visibility.Collapsed;
+            if (StatLikes != null)
+                StatLikes.Visibility = offline ? Visibility.Collapsed : Visibility.Visible;
+            if (StatViews != null)
+                StatViews.Visibility = offline ? Visibility.Collapsed : Visibility.Visible;
+            if (StatDate != null)
+                StatDate.Visibility = offline ? Visibility.Collapsed : Visibility.Visible;
+            if (LandscapeDescriptionStats != null)
+                LandscapeDescriptionStats.Visibility = offline ? Visibility.Collapsed : Visibility.Visible;
         }
 
         // Return the page to the top so a switched-in video does not start scrolled down where the
@@ -2047,8 +2529,10 @@ namespace YouTube
                 ratingTask = LoadUserVideoRatingAsync(videoId, nextRoot);
                 subscriptionTask = LoadChannelSubscriptionStateAsync(videoId, nextRoot);
 
-                // Related parsing can be expensive, so keep it off the UI path and cap the scan.
-                relatedVideosTask = ExtractRelatedVideosFromNextRootAsync(nextRoot);
+                // Resume overlays are personalized and are absent from anonymous WEB /next.
+                // Load recommendations through the signed-in TV client; the helper falls back
+                // to the already-compatible anonymous path when the account has no token.
+                relatedVideosTask = LoadRelatedVideosSafeAsync(videoId);
             }
             catch (Exception ex)
             {
@@ -2210,6 +2694,11 @@ namespace YouTube
             {
                 CommentsList.ItemsSource = null;
             }
+            _currentComments = new List<CommentItem>();
+            if (LandscapeCommentsList != null)
+                LandscapeCommentsList.ItemsSource = null;
+            if (LandscapeCommentsPanel != null)
+                LandscapeCommentsPanel.Visibility = Visibility.Collapsed;
 
             // During fast loading, keep the related-video area visually filled with
             // placeholder cards. The real related cards replace these in ShowRelatedVideos().
@@ -2290,6 +2779,14 @@ namespace YouTube
                     System.Diagnostics.Debug.WriteLine("[Video] Author: " + currentChannelName);
                 }
 
+                if (videoDetails.ContainsKey("thumbnail"))
+                {
+                    _currentVideoThumbnailUrl = ExtractLastThumbnailUrl(
+                        videoDetails.GetNamedObject("thumbnail", null));
+                }
+                if (string.IsNullOrWhiteSpace(_currentVideoThumbnailUrl))
+                    _currentVideoThumbnailUrl = "https://i.ytimg.com/vi/" + currentVideoId + "/hqdefault.jpg";
+
                 // View count
                 if (videoDetails.ContainsKey("viewCount"))
                 {
@@ -2343,6 +2840,8 @@ namespace YouTube
                     System.Diagnostics.Debug.WriteLine("[Video] No description in player response");
                 }
                 UpdateDescriptionChaptersFromDescription();
+                UpdateLandscapeDescriptionText();
+                var ignoredDownloadState = UpdateDownloadButtonAsync();
                 LoadSponsorBlockSegments(currentVideoId);
                 LoadSubtitleTracks(playerRoot);
 
@@ -2399,6 +2898,7 @@ namespace YouTube
 
             // Extract channel avatar from /next response
             string channelAvatarUrl = ExtractChannelAvatarFromNext(nextRoot);
+            _currentChannelThumbnailUrl = channelAvatarUrl ?? string.Empty;
             if (!string.IsNullOrEmpty(channelAvatarUrl) && ChannelImage != null)
             {
                 try
@@ -2468,6 +2968,7 @@ namespace YouTube
         private void ApplyComments(List<CommentItem> comments)
         {
             comments = comments ?? new List<CommentItem>();
+            _currentComments = comments;
             System.Diagnostics.Debug.WriteLine("[Video] Loaded " + comments.Count + " comments");
 
             // Show last comment preview if comments exist
@@ -2527,6 +3028,10 @@ namespace YouTube
             {
                 System.Diagnostics.Debug.WriteLine("[Video] ERROR: CommentsList is null!");
             }
+
+            if (LandscapeCommentsList != null)
+                LandscapeCommentsList.ItemsSource = comments;
+            UpdateLandscapeDetailsVisibility(IsCurrentViewPortrait());
         }
 
         private async Task<string> PostInnertubeAsync(string endpoint, string payload)
@@ -2537,13 +3042,13 @@ namespace YouTube
                 request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
                 if (endpoint == "player")
                 {
-                    // Match get_url.py (iOS client) for best chance of getting hlsManifestUrl.
-                    request.Headers.TryAddWithoutValidation(
-                        "User-Agent",
-                        "com.google.ios.youtube/19.16.3 (iPhone16,2; U; CPU iOS 18_0 like Mac OS X)"
-                    );
-                    request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
-                    request.Headers.TryAddWithoutValidation("Content-Type", "application/json");
+                    // Exact IOS primary /player request from youtube-ios.
+                    request.Headers.TryAddWithoutValidation("User-Agent", InnertubeIosPlayerUserAgent);
+                    request.Headers.TryAddWithoutValidation("Accept", "application/json");
+                    request.Headers.TryAddWithoutValidation("Accept-Language", Config.Hl);
+                    request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
+                    request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", InnertubeIosPlayerClientHeaderName);
+                    request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", InnertubeIosPlayerClientVersion);
                 }
                 else
                 {
@@ -2566,7 +3071,7 @@ namespace YouTube
             var client = new JsonObject();
             // Match get_url.py exactly: IOS client → streamingData.hlsManifestUrl
             client["clientName"] = JsonValue.CreateStringValue("IOS");
-            client["clientVersion"] = JsonValue.CreateStringValue("20.49.6");
+            client["clientVersion"] = JsonValue.CreateStringValue(InnertubeIosPlayerClientVersion);
             client["deviceMake"] = JsonValue.CreateStringValue("Apple");
             client["deviceModel"] = JsonValue.CreateStringValue("iPhone16,2");
             client["osName"] = JsonValue.CreateStringValue("iOS");
@@ -2578,6 +3083,8 @@ namespace YouTube
             var payload = new JsonObject();
             payload["context"] = context;
             payload["videoId"] = JsonValue.CreateStringValue(videoId);
+            payload["contentCheckOk"] = JsonValue.CreateBooleanValue(true);
+            payload["racyCheckOk"] = JsonValue.CreateBooleanValue(true);
             return payload.Stringify();
         }
 
@@ -2590,6 +3097,7 @@ namespace YouTube
 
             if (string.Equals(_lastAndroidPlayerVideoId, videoId, StringComparison.Ordinal) && !string.IsNullOrWhiteSpace(_lastAndroidPlayerJson))
             {
+                _playbackMediaUserAgent = _lastAndroidPlayerUserAgent;
                 return _lastAndroidPlayerJson;
             }
 
@@ -2598,6 +3106,7 @@ namespace YouTube
             {
                 if (string.Equals(_lastAndroidPlayerVideoId, videoId, StringComparison.Ordinal) && !string.IsNullOrWhiteSpace(_lastAndroidPlayerJson))
                 {
+                    _playbackMediaUserAgent = _lastAndroidPlayerUserAgent;
                     return _lastAndroidPlayerJson;
                 }
 
@@ -2638,6 +3147,7 @@ namespace YouTube
                     {
                         _lastAndroidPlayerVideoId = videoId;
                         _lastAndroidPlayerJson = json;
+                        _lastAndroidPlayerUserAgent = _playbackMediaUserAgent;
                     }
                     else
                     {
@@ -2653,17 +3163,40 @@ namespace YouTube
 
         private async Task<string> PostAndroidPlayerCoreAsync(string videoId)
         {
+            // Same chain as YTApi.androidVrPlayerResponse:primary:. The IOS response has
+            // already been requested by LoadVideoDetailsFastAsync and is deliberately held
+            // for the last fallback while its responseContext seeds visitorData.
+            var primary = _lastPlayerJson;
+            if (string.IsNullOrWhiteSpace(primary))
+            {
+                primary = await FetchIosPlayerAsync(videoId, null).ConfigureAwait(false);
+            }
+            CaptureVisitorDataFromString(primary);
+
+            // VISIONOS is first: unlike the other anonymous app clients its media session is
+            // not cut off around the first minute.
+            var vision = await FetchVisionPlayerAsync(videoId).ConfigureAwait(false);
+            if (PlayerJsonHasStreams(vision))
+            {
+                _playbackMediaUserAgent = InnertubeVisionUserAgent;
+                System.Diagnostics.Debug.WriteLine("[Video] Playback URLs from VISIONOS");
+                return vision;
+            }
+
+            System.Diagnostics.Debug.WriteLine(
+                "[Video] VISIONOS returned no ready URLs (" + GetPlayabilityReason(vision)
+                + "); trying ANDROID_VR"
+            );
+
             var json = await FetchAndroidVrPlayerAsync(videoId).ConfigureAwait(false);
             if (PlayerJsonHasStreams(json))
             {
+                _playbackMediaUserAgent = InnertubeAndroidVrUserAgent;
                 return json;
             }
 
-            // No streams usually means the session visitorData got stale/flagged and YouTube
-            // answered the ANDROID_VR request with the "Sign in to confirm you're not a bot"
-            // gate (LOGIN_REQUIRED). Drop the visitorData, fetch a fresh one, and retry once.
             System.Diagnostics.Debug.WriteLine(
-                "[Video] ANDROID_VR returned no streams (" + GetPlayabilityReason(json)
+                "[Video] ANDROID_VR returned no ready URLs (" + GetPlayabilityReason(json)
                 + "); refreshing visitorData and retrying"
             );
             InvalidateSessionVisitorData();
@@ -2671,13 +3204,79 @@ namespace YouTube
             var retryJson = await FetchAndroidVrPlayerAsync(videoId).ConfigureAwait(false);
             if (PlayerJsonHasStreams(retryJson))
             {
+                _playbackMediaUserAgent = InnertubeAndroidVrUserAgent;
                 System.Diagnostics.Debug.WriteLine("[Video] ANDROID_VR retry with fresh visitorData succeeded");
                 return retryJson;
             }
 
-            System.Diagnostics.Debug.WriteLine(
-                "[Video] ANDROID_VR retry still returned no streams (" + GetPlayabilityReason(retryJson) + ")"
-            );
+            string progressiveFallback = string.Empty;
+            string progressiveFallbackAgent = string.Empty;
+            var accessToken = await GetTvAccessTokenAsync(false).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(accessToken))
+            {
+                var tv = await FetchTvPlaybackPlayerAsync(
+                    videoId,
+                    InnertubePlaybackTvClientVersion,
+                    accessToken
+                ).ConfigureAwait(false);
+                CaptureVisitorDataFromString(tv);
+                if (PlayerJsonHasAdaptiveStreams(tv))
+                {
+                    _playbackMediaUserAgent = InnertubePlaybackTvUserAgent;
+                    return tv;
+                }
+                if (PlayerJsonHasStreams(tv))
+                {
+                    progressiveFallback = tv;
+                    progressiveFallbackAgent = InnertubePlaybackTvUserAgent;
+                }
+
+                var legacy = await FetchTvPlaybackPlayerAsync(
+                    videoId,
+                    InnertubePlaybackTvLegacyClientVersion,
+                    accessToken
+                ).ConfigureAwait(false);
+                if (PlayerJsonHasAdaptiveStreams(legacy))
+                {
+                    _playbackMediaUserAgent = InnertubePlaybackTvUserAgent;
+                    return legacy;
+                }
+                if (string.IsNullOrWhiteSpace(progressiveFallback) && PlayerJsonHasStreams(legacy))
+                {
+                    progressiveFallback = legacy;
+                    progressiveFallbackAgent = InnertubePlaybackTvUserAgent;
+                }
+            }
+
+            if (PlayerJsonHasStreams(primary))
+            {
+                _playbackMediaUserAgent = InnertubeIosPlayerUserAgent;
+                return primary;
+            }
+
+            if (!string.IsNullOrWhiteSpace(accessToken))
+            {
+                var signedInIos = await FetchIosPlayerAsync(videoId, accessToken).ConfigureAwait(false);
+                if (PlayerJsonHasStreams(signedInIos))
+                {
+                    _playbackMediaUserAgent = InnertubeIosPlayerUserAgent;
+                    return signedInIos;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(progressiveFallback))
+            {
+                _playbackMediaUserAgent = progressiveFallbackAgent;
+                return progressiveFallback;
+            }
+
+            // youtube-ios keeps the primary IOS response when it at least contains ready HLS.
+            if (PlayerJsonHasHlsManifest(primary))
+            {
+                _playbackMediaUserAgent = InnertubeIosPlayerUserAgent;
+                return primary;
+            }
+
             return string.IsNullOrWhiteSpace(retryJson) ? json : retryJson;
         }
 
@@ -2689,28 +3288,226 @@ namespace YouTube
             // token). No InnerTube API key is sent — the X-YouTube-Client-* headers identify
             // the client, exactly as MeeTube's transport does.
             var visitorData = await GetSessionVisitorDataAsync().ConfigureAwait(false);
-            var url = "https://www.youtube.com/youtubei/v1/player?prettyPrint=false";
-            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+            return await PostDirectPlayerPayloadAsync(
+                BuildAndroidVrPlayerPayload(videoId, visitorData),
+                InnertubeAndroidVrUserAgent,
+                InnertubeAndroidVrClientHeaderName,
+                InnertubeAndroidVrClientVersion,
+                visitorData,
+                null,
+                false
+            ).ConfigureAwait(false);
+        }
+
+        private async Task<string> FetchVisionPlayerAsync(string videoId)
+        {
+            var visitorData = await GetSessionVisitorDataAsync().ConfigureAwait(false);
+            var context = new JsonObject();
+            var client = new JsonObject();
+            client["clientName"] = JsonValue.CreateStringValue(InnertubeVisionClientName);
+            client["clientVersion"] = JsonValue.CreateStringValue(InnertubeVisionClientVersion);
+            client["deviceMake"] = JsonValue.CreateStringValue("Apple");
+            client["deviceModel"] = JsonValue.CreateStringValue("RealityDevice14,1");
+            client["osName"] = JsonValue.CreateStringValue("visionOS");
+            client["osVersion"] = JsonValue.CreateStringValue("1.0.2.21O209");
+            client["userAgent"] = JsonValue.CreateStringValue(InnertubeVisionUserAgent);
+            client["hl"] = JsonValue.CreateStringValue(Config.Hl);
+            client["gl"] = JsonValue.CreateStringValue(Config.Gl);
+            if (!string.IsNullOrWhiteSpace(visitorData))
             {
-                request.Content = new StringContent(
-                    BuildAndroidVrPlayerPayload(videoId, visitorData),
-                    Encoding.UTF8,
-                    "application/json"
-                );
-                request.Headers.TryAddWithoutValidation("User-Agent", InnertubeAndroidVrUserAgent);
-                request.Headers.TryAddWithoutValidation("Accept", "application/json");
-                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
-                request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
-                request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", InnertubeAndroidVrClientHeaderName);
-                request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", InnertubeAndroidVrClientVersion);
+                client["visitorData"] = JsonValue.CreateStringValue(visitorData);
+            }
+            context["client"] = client;
+
+            var payload = new JsonObject();
+            payload["context"] = context;
+            payload["videoId"] = JsonValue.CreateStringValue(videoId);
+            payload["contentCheckOk"] = JsonValue.CreateBooleanValue(true);
+            payload["racyCheckOk"] = JsonValue.CreateBooleanValue(true);
+
+            return await PostDirectPlayerPayloadAsync(
+                payload.Stringify(),
+                InnertubeVisionUserAgent,
+                InnertubeVisionClientHeaderName,
+                InnertubeVisionClientVersion,
+                visitorData,
+                null,
+                false
+            ).ConfigureAwait(false);
+        }
+
+        private async Task<string> FetchIosPlayerAsync(string videoId, string accessToken)
+        {
+            var context = new JsonObject();
+            var client = new JsonObject();
+            client["clientName"] = JsonValue.CreateStringValue("IOS");
+            client["clientVersion"] = JsonValue.CreateStringValue(InnertubeIosPlayerClientVersion);
+            client["deviceMake"] = JsonValue.CreateStringValue("Apple");
+            client["deviceModel"] = JsonValue.CreateStringValue("iPhone16,2");
+            client["osName"] = JsonValue.CreateStringValue("iOS");
+            client["osVersion"] = JsonValue.CreateStringValue("18.0");
+            client["hl"] = JsonValue.CreateStringValue(Config.Hl);
+            client["gl"] = JsonValue.CreateStringValue(Config.Gl);
+
+            string visitorData = null;
+            if (!string.IsNullOrWhiteSpace(accessToken))
+            {
+                visitorData = await GetSessionVisitorDataAsync().ConfigureAwait(false);
                 if (!string.IsNullOrWhiteSpace(visitorData))
                 {
-                    request.Headers.TryAddWithoutValidation("X-Goog-Visitor-Id", visitorData);
+                    client["visitorData"] = JsonValue.CreateStringValue(visitorData);
                 }
+            }
+            context["client"] = client;
 
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var payload = new JsonObject();
+            payload["context"] = context;
+            payload["videoId"] = JsonValue.CreateStringValue(videoId);
+            payload["contentCheckOk"] = JsonValue.CreateBooleanValue(true);
+            payload["racyCheckOk"] = JsonValue.CreateBooleanValue(true);
+
+            return await PostDirectPlayerPayloadAsync(
+                payload.Stringify(),
+                InnertubeIosPlayerUserAgent,
+                InnertubeIosPlayerClientHeaderName,
+                InnertubeIosPlayerClientVersion,
+                visitorData,
+                accessToken,
+                false
+            ).ConfigureAwait(false);
+        }
+
+        private async Task<string> FetchTvPlaybackPlayerAsync(
+            string videoId,
+            string clientVersion,
+            string accessToken
+        )
+        {
+            var client = new JsonObject();
+            client["clientName"] = JsonValue.CreateStringValue(InnertubeTvClientName);
+            client["clientVersion"] = JsonValue.CreateStringValue(clientVersion);
+            client["hl"] = JsonValue.CreateStringValue(Config.Hl);
+            client["gl"] = JsonValue.CreateStringValue(Config.Gl);
+            client["platform"] = JsonValue.CreateStringValue("TV");
+            client["deviceMake"] = JsonValue.CreateStringValue("Samsung");
+            client["deviceModel"] = JsonValue.CreateStringValue("SmartTV");
+            client["osName"] = JsonValue.CreateStringValue("Tizen");
+            client["osVersion"] = JsonValue.CreateStringValue("5.0");
+
+            var context = new JsonObject();
+            context["client"] = client;
+
+            var contentPlaybackContext = new JsonObject();
+            contentPlaybackContext["html5Preference"] = JsonValue.CreateStringValue("HTML5_PREF_WANTS");
+            var sts = await global::Config.GetSignatureTimestampAsync(false).ConfigureAwait(false);
+            if (sts > 0)
+            {
+                contentPlaybackContext["signatureTimestamp"] = JsonValue.CreateNumberValue(sts);
+            }
+
+            var playbackContext = new JsonObject();
+            playbackContext["contentPlaybackContext"] = contentPlaybackContext;
+
+            var payload = new JsonObject();
+            payload["context"] = context;
+            payload["videoId"] = JsonValue.CreateStringValue(videoId);
+            payload["contentCheckOk"] = JsonValue.CreateBooleanValue(true);
+            payload["racyCheckOk"] = JsonValue.CreateBooleanValue(true);
+            payload["playbackContext"] = playbackContext;
+
+            return await PostDirectPlayerPayloadAsync(
+                payload.Stringify(),
+                InnertubePlaybackTvUserAgent,
+                InnertubeTvClientHeaderName,
+                clientVersion,
+                null,
+                accessToken,
+                true
+            ).ConfigureAwait(false);
+        }
+
+        private async Task<string> PostDirectPlayerPayloadAsync(
+            string payload,
+            string userAgent,
+            string clientName,
+            string clientVersion,
+            string visitorData,
+            string accessToken,
+            bool includeInnertubeKey
+        )
+        {
+            try
+            {
+                var url = "https://www.youtube.com/youtubei/v1/player?"
+                    + (includeInnertubeKey ? "key=" + InnertubeApiKey + "&" : string.Empty)
+                    + "prettyPrint=false";
+                using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+                {
+                    request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+                    request.Headers.TryAddWithoutValidation("User-Agent", userAgent);
+                    if (!includeInnertubeKey)
+                    {
+                        request.Headers.TryAddWithoutValidation("Accept", "application/json");
+                        request.Headers.TryAddWithoutValidation("Accept-Language", Config.Hl);
+                    }
+                    else
+                    {
+                        request.Headers.TryAddWithoutValidation(
+                            "Accept-Language",
+                            Config.Hl + "," + Config.Hl + ";q=0.9"
+                        );
+                    }
+                    request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", clientName);
+                    request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
+                    if (!includeInnertubeKey)
+                    {
+                        request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
+                    }
+                    if (!string.IsNullOrWhiteSpace(visitorData))
+                    {
+                        request.Headers.TryAddWithoutValidation("X-Goog-Visitor-Id", visitorData);
+                    }
+                    if (!string.IsNullOrWhiteSpace(accessToken))
+                    {
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                    }
+
+                    var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                    var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        System.Diagnostics.Debug.WriteLine(
+                            "[Video] " + clientName + " /player failed: "
+                            + (int)response.StatusCode + " " + response.ReasonPhrase
+                        );
+                        return string.Empty;
+                    }
+
+                    return json;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Video] " + clientName + " /player error: " + ex.Message
+                );
+                return string.Empty;
+            }
+        }
+
+        private void CaptureVisitorDataFromString(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return;
+            }
+
+            try
+            {
+                CaptureVisitorData(JsonValue.Parse(json).GetObject());
+            }
+            catch
+            {
             }
         }
 
@@ -2730,18 +3527,78 @@ namespace YouTube
                 }
 
                 var streamingData = root.GetNamedObject("streamingData");
-                if (streamingData.ContainsKey("formats") && streamingData.GetNamedArray("formats").Count > 0)
-                {
-                    return true;
-                }
-
-                if (streamingData.ContainsKey("adaptiveFormats") && streamingData.GetNamedArray("adaptiveFormats").Count > 0)
-                {
-                    return true;
-                }
+                return JsonFormatArrayHasReadyUrl(streamingData, "adaptiveFormats")
+                    || JsonFormatArrayHasReadyUrl(streamingData, "formats");
             }
             catch
             {
+            }
+
+            return false;
+        }
+
+        private static bool PlayerJsonHasAdaptiveStreams(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return false;
+            }
+
+            try
+            {
+                var root = JsonValue.Parse(json).GetObject();
+                if (!root.ContainsKey("streamingData"))
+                {
+                    return false;
+                }
+
+                return JsonFormatArrayHasReadyUrl(
+                    root.GetNamedObject("streamingData"),
+                    "adaptiveFormats"
+                );
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool PlayerJsonHasHlsManifest(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                return false;
+            }
+
+            try
+            {
+                var root = JsonValue.Parse(json).GetObject();
+                return root.ContainsKey("streamingData")
+                    && !string.IsNullOrWhiteSpace(
+                        GetJsonString(root.GetNamedObject("streamingData"), "hlsManifestUrl")
+                    );
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private static bool JsonFormatArrayHasReadyUrl(JsonObject streamingData, string name)
+        {
+            if (streamingData == null || !streamingData.ContainsKey(name))
+            {
+                return false;
+            }
+
+            var formats = streamingData.GetNamedArray(name);
+            for (int i = 0; i < formats.Count; i++)
+            {
+                if (formats[i].ValueType == JsonValueType.Object
+                    && !string.IsNullOrWhiteSpace(GetJsonString(formats[i].GetObject(), "url")))
+                {
+                    return true;
+                }
             }
 
             return false;
@@ -2947,7 +3804,7 @@ namespace YouTube
             payload["videoId"] = JsonValue.CreateStringValue(videoId);
             payload["racyCheckOk"] = JsonValue.CreateBooleanValue(true);
             payload["contentCheckOk"] = JsonValue.CreateBooleanValue(true);
-            return payload.Stringify();
+            return Config.ApplySelectedAccountContext(payload.Stringify(), true);
         }
 
         // The queue of a mix ("jam") is personalized: signed in, YouTube seeds it from the
@@ -2973,7 +3830,7 @@ namespace YouTube
             payload["playlistId"] = JsonValue.CreateStringValue(playlistId);
             payload["racyCheckOk"] = JsonValue.CreateBooleanValue(true);
             payload["contentCheckOk"] = JsonValue.CreateBooleanValue(true);
-            return payload.Stringify();
+            return Config.ApplySelectedAccountContext(payload.Stringify(), true);
         }
 
         private async Task<JsonObject> TryLoadAuthenticatedPlaylistNextAsync(string videoId, string playlistId)
@@ -3050,7 +3907,7 @@ namespace YouTube
             var payload = new JsonObject();
             payload["context"] = context;
             payload["target"] = target;
-            return payload.Stringify();
+            return Config.ApplySelectedAccountContext(payload.Stringify(), true);
         }
 
         private static string BuildInnertubeUrl(string endpoint)
@@ -3074,20 +3931,69 @@ namespace YouTube
             await BindPlayerSourceAsync(rootValue.GetObject(), autoPlay);
         }
 
+        private static void LogSelectedPlaybackUrls(
+            string effectiveQualityTag,
+            string requestedCapTag,
+            PlayerFormatModel video,
+            PlayerFormatModel audio)
+        {
+            var mode = string.IsNullOrWhiteSpace(effectiveQualityTag)
+                ? "Auto"
+                : effectiveQualityTag + "p";
+            var cap = ParseInt(requestedCapTag);
+
+            if (video != null)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Video][PlaybackURL] VIDEO mode=" + mode
+                    + " cap=" + cap + "p"
+                    + " actual=" + video.QualityTier + "p"
+                    + " dimensions=" + video.Width + "x" + video.Height
+                    + " fps=" + video.Fps
+                    + " itag=" + video.Itag
+                    + " mime=" + video.MimeType
+                    + " URL=" + video.Url);
+            }
+
+            if (audio != null)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Video][PlaybackURL] AUDIO mode=" + mode
+                    + " track=" + (string.IsNullOrWhiteSpace(audio.AudioTrackId) ? "default" : audio.AudioTrackId)
+                    + " bitrate=" + audio.Bitrate
+                    + " itag=" + audio.Itag
+                    + " mime=" + audio.MimeType
+                    + " URL=" + audio.Url);
+            }
+        }
+
         private async Task BindPlayerSourceAsync(JsonObject rootObject, bool autoPlay)
         {
             CaptureVisitorData(rootObject);
             availableFormats.Clear();
             CollectFormatsFromStreamingData(rootObject);
             _currentH264VideoOnlyItag = -1;
+            _readyHeight = 0;
 
             var hlsManifestUrl = ExtractHlsManifestUrl(rootObject);
             System.Diagnostics.Debug.WriteLine(
                 $"[Video] Total available formats: {availableFormats.Count}"
             );
             string effectiveQualityTag = GetEffectiveVideoQualityTag();
-            UpdateVideoPlayerAspectRatioFromFormats(effectiveQualityTag);
-            var selected = SelectPreferredProgressiveFormat(availableFormats, effectiveQualityTag, false);
+            bool isAutomaticQuality = string.IsNullOrWhiteSpace(effectiveQualityTag);
+            string sourceQualityTag = string.IsNullOrWhiteSpace(effectiveQualityTag)
+                ? GetAutomaticScreenQualityCap().ToString(System.Globalization.CultureInfo.InvariantCulture)
+                : effectiveQualityTag;
+            if (!isAutomaticQuality)
+            {
+                // A user's explicit tier is authoritative even when it exceeds the physical
+                // screen. Screen sizing and the CDN bandwidth probe belong exclusively to Auto.
+                System.Diagnostics.Debug.WriteLine(
+                    "[Video][Manual] exact requested cap=" + sourceQualityTag
+                    + "p; screen/network Auto checks bypassed");
+            }
+            UpdateVideoPlayerAspectRatioFromFormats(sourceQualityTag);
+            var selected = SelectPreferredProgressiveFormat(availableFormats, sourceQualityTag, false);
             bool isWindowsMobile = IsWindowsMobileDevice();
 
             if (CustomVideoPlayer != null)
@@ -3119,8 +4025,9 @@ namespace YouTube
                 CustomVideoPlayer.SetStoryboardSpec(storyboardSpec);
             }
 
-            // Auto and 360p are played as one progressive source. itag18 already contains
-            // H.264 video + AAC audio, so no separate audio carrier is needed here.
+            // Auto follows youtube-ios: best H.264 video-only up to deviceMaxHeight plus AAC
+            // audio-only. An ordinary 360p choice may use itag 18, but an explicitly selected
+            // audio track must stay on the demuxed path so the choice actually takes effect.
             if (!string.IsNullOrWhiteSpace(effectiveQualityTag))
             {
                 System.Diagnostics.Debug.WriteLine("[Video] Effective requested quality before source selection: " + effectiveQualityTag + "p");
@@ -3131,13 +4038,17 @@ namespace YouTube
                 if (itag18 != null && !string.IsNullOrWhiteSpace(itag18.Url))
                 {
                     System.Diagnostics.Debug.WriteLine(
-                        "[Video] Using itag18 as MAIN video source for "
+                        "[Video][PlaybackURL] MUXED mode="
                         + (string.IsNullOrWhiteSpace(effectiveQualityTag) ? "Auto" : effectiveQualityTag + "p")
-                        + ": "
-                        + itag18.Url
+                        + " actual=" + itag18.QualityTier + "p"
+                        + " dimensions=" + itag18.Width + "x" + itag18.Height
+                        + " itag=" + itag18.Itag
+                        + " mime=" + itag18.MimeType
+                        + " URL=" + itag18.Url
                     );
 
                     SetVideoPlayerAspectRatioFromFormat(itag18);
+                    _readyHeight = itag18.QualityTier;
                     if (CustomVideoPlayer != null)
                     {
                         await CustomVideoPlayer.SetSourceFromUriAsync(new Uri(itag18.Url), autoPlay);
@@ -3159,26 +4070,35 @@ namespace YouTube
             //    >360p (up to 1080p) path on Windows 10 Mobile.
             if (!ShouldUseItag18AsMainVideo(effectiveQualityTag) && CustomVideoPlayer != null)
             {
-                var demuxVideo = await GetAndroidH264VideoOnlyFormatAsync(currentVideoId, effectiveQualityTag);
+                var demuxVideo = await GetAndroidH264VideoOnlyFormatAsync(
+                    currentVideoId,
+                    sourceQualityTag,
+                    isAutomaticQuality);
                 var demuxAudio = await GetAndroidAudioOnlyFormatAsync(currentVideoId, _selectedAudioTrackId);
                 if (demuxVideo != null && demuxAudio != null
                     && !string.IsNullOrWhiteSpace(demuxVideo.Url) && !string.IsNullOrWhiteSpace(demuxAudio.Url))
                 {
-                    System.Diagnostics.Debug.WriteLine(
-                        "[Video] Building DASH demux source for " + effectiveQualityTag
-                        + "p: video itag=" + demuxVideo.Itag + " (" + demuxVideo.Height + "p"
-                        + (demuxVideo.Fps > 0 ? "@" + demuxVideo.Fps : "") + "), audio itag=" + demuxAudio.Itag
-                    );
+                    LogSelectedPlaybackUrls(effectiveQualityTag, sourceQualityTag, demuxVideo, demuxAudio);
                     try
                     {
-                        var mss = await DashDemuxer.CreateAsync(httpClient, demuxVideo, demuxAudio);
+                        var mss = await DashDemuxer.CreateAsync(
+                            httpClient,
+                            demuxVideo,
+                            demuxAudio,
+                            _playbackMediaUserAgent
+                        );
                         if (mss != null)
                         {
                             _currentH264VideoOnlyItag = demuxVideo.Itag;
+                            _readyHeight = demuxVideo.QualityTier;
                             SetVideoPlayerAspectRatioFromFormat(demuxVideo);
                             if (CustomVideoPlayer.SetDemuxedSource(mss, autoPlay))
                             {
-                                System.Diagnostics.Debug.WriteLine("[Video] DASH demux source is playing at " + demuxVideo.Height + "p");
+                                System.Diagnostics.Debug.WriteLine(
+                                    "[Video][PlaybackURL] OPENED mode="
+                                    + (string.IsNullOrWhiteSpace(effectiveQualityTag) ? "Auto" : effectiveQualityTag + "p")
+                                    + " actual=" + demuxVideo.QualityTier + "p"
+                                    + " itag=" + demuxVideo.Itag);
                                 return;
                             }
                         }
@@ -3200,10 +4120,11 @@ namespace YouTube
             //    but native on Windows Phone when present.
             if (!string.IsNullOrWhiteSpace(hlsManifestUrl) && CustomVideoPlayer != null)
             {
+                _readyHeight = 0;
                 System.Diagnostics.Debug.WriteLine(
-                    "[Video] Using HLS manifest URL for "
+                    "[Video][PlaybackURL] HLS mode="
                     + (string.IsNullOrWhiteSpace(effectiveQualityTag) ? "Auto" : effectiveQualityTag + "p")
-                    + ": " + hlsManifestUrl
+                    + " URL=" + hlsManifestUrl
                 );
                 await CustomVideoPlayer.SetSourceFromUriAsync(new Uri(hlsManifestUrl), autoPlay);
                 return;
@@ -3212,7 +4133,7 @@ namespace YouTube
             // 3) Best muxed progressive <= requested (single file, always renders, no
             //    separate audio, no crash). Tops out at whatever muxed YouTube offers
             //    (usually 720p itag22, else 360p itag18) — the reliable fallback.
-            var muxed = await GetAndroidBestMuxedFormatAsync(currentVideoId, effectiveQualityTag);
+            var muxed = await GetAndroidBestMuxedFormatAsync(currentVideoId, sourceQualityTag);
             if (muxed == null || string.IsNullOrWhiteSpace(muxed.Url))
             {
                 muxed = selected;
@@ -3221,9 +4142,10 @@ namespace YouTube
             if (muxed != null && !string.IsNullOrWhiteSpace(muxed.Url))
             {
                 System.Diagnostics.Debug.WriteLine(
-                    $"[Video] Using best muxed progressive for {(string.IsNullOrWhiteSpace(effectiveQualityTag) ? "Auto" : effectiveQualityTag + "p")}: itag={muxed.Itag}, height={muxed.Height}, mime={muxed.MimeType}, url={muxed.Url}"
+                    $"[Video][PlaybackURL] MUXED mode={(string.IsNullOrWhiteSpace(effectiveQualityTag) ? "Auto" : effectiveQualityTag + "p")} actual={muxed.QualityTier}p dimensions={muxed.Width}x{muxed.Height} itag={muxed.Itag} mime={muxed.MimeType} URL={muxed.Url}"
                 );
                 SetVideoPlayerAspectRatioFromFormat(muxed);
+                _readyHeight = muxed.QualityTier;
                 if (CustomVideoPlayer != null)
                 {
                     await CustomVideoPlayer.SetSourceFromUriAsync(new Uri(muxed.Url), autoPlay);
@@ -3332,7 +4254,7 @@ namespace YouTube
                     continue;
                 }
 
-                if (f.IsAdaptive || !f.HasAudio || !f.HasVideo || f.Height <= 0)
+                if (f.IsAdaptive || !f.HasAudio || !f.HasVideo || f.QualityTier <= 0)
                 {
                     continue;
                 }
@@ -3354,7 +4276,7 @@ namespace YouTube
             PlayerFormatModel smallest = null;
             foreach (var f in muxed)
             {
-                if (smallest == null || f.Height < smallest.Height)
+                if (smallest == null || f.QualityTier < smallest.QualityTier)
                 {
                     smallest = f;
                 }
@@ -3368,7 +4290,7 @@ namespace YouTube
             PlayerFormatModel best = null;
             foreach (var f in muxed)
             {
-                if (f.Height <= requestedHeight && (best == null || f.Height > best.Height))
+                if (f.QualityTier <= requestedHeight && (best == null || f.QualityTier > best.QualityTier))
                 {
                     best = f;
                 }
@@ -3489,7 +4411,10 @@ namespace YouTube
             }
         }
 
-        private async Task<PlayerFormatModel> GetAndroidH264VideoOnlyFormatAsync(string videoId, string requestedQualityTag)
+        private async Task<PlayerFormatModel> GetAndroidH264VideoOnlyFormatAsync(
+            string videoId,
+            string requestedQualityTag,
+            bool useAutomaticNetworkSelection = false)
         {
             if (string.IsNullOrWhiteSpace(videoId))
             {
@@ -3507,6 +4432,13 @@ namespace YouTube
                 var androidRoot = JsonValue.Parse(androidPlayerJson).GetObject();
                 var androidFormats = new List<PlayerFormatModel>();
                 CollectFormatsFromStreamingData(androidRoot, androidFormats);
+                if (useAutomaticNetworkSelection)
+                {
+                    return await SelectAutomaticH264VideoOnlyFormatAsync(
+                        androidFormats,
+                        requestedQualityTag,
+                        _excludedH264VideoOnlyItags);
+                }
                 return SelectPreferredH264VideoOnlyFormat(androidFormats, requestedQualityTag, _excludedH264VideoOnlyItags);
             }
             catch (Exception ex)
@@ -3691,7 +4623,7 @@ namespace YouTube
                         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
                     );
                     request.Headers.TryAddWithoutValidation("Accept", "application/json");
-                    request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
+                    request.Headers.TryAddWithoutValidation("Accept-Language", Config.Hl);
                     request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
                     request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "1");
                     request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "2.20260626.01.00");
@@ -3952,8 +4884,8 @@ namespace YouTube
         }
 
         // AAC (mp4a) audio-only track for the combined DASH manifest. AAC is the WP-friendly
-        // codec. On a multi-language video the default track (the one matching the account
-        // locale) is preferred; passing a specific trackId overrides that. Within the chosen
+        // codec. On a multi-language video the Windows system language is preferred, then the
+        // server default; passing a specific trackId overrides that. Within the chosen
         // track, the highest-bitrate m4a wins.
         private static PlayerFormatModel SelectAudioOnlyAacFormat(
             IList<PlayerFormatModel> formats, string preferredTrackId = null)
@@ -3984,8 +4916,7 @@ namespace YouTube
                 return null;
             }
 
-            // Narrow to a single language track when the video has several: explicit choice,
-            // then the account locale, then YouTube's default, then everything.
+            // Explicit choice, Windows system language, YouTube's default, then highest bitrate.
             List<PlayerFormatModel> pool = null;
             if (!string.IsNullOrEmpty(preferredTrackId))
             {
@@ -3993,22 +4924,25 @@ namespace YouTube
             }
             if (pool == null || pool.Count == 0)
             {
-                pool = audio.FindAll(f => Config.AudioTrackMatchesLocale(f.AudioTrackId));
-            }
-            if (pool.Count == 0)
-            {
-                var defaults = audio.FindAll(f => f.AudioIsDefault);
-                pool = defaults.Count > 0 ? defaults : audio;
+                var systemScore = 0;
+                foreach (var f in audio)
+                {
+                    systemScore = Math.Max(systemScore, Config.SystemAudioTrackMatchScore(f.AudioTrackId));
+                }
+                if (systemScore > 0)
+                {
+                    pool = audio.FindAll(f => Config.SystemAudioTrackMatchScore(f.AudioTrackId) == systemScore);
+                }
+                else
+                {
+                    var defaults = audio.FindAll(f => f.AudioIsDefault);
+                    pool = defaults.Count > 0 ? defaults : audio;
+                }
             }
 
             PlayerFormatModel best = null;
             foreach (var f in pool)
             {
-                // itag 140 (128kbps stereo) is the safe pick within a track.
-                if (f.Itag == 140)
-                {
-                    return f;
-                }
                 if (best == null || f.Bitrate > best.Bitrate)
                 {
                     best = f;
@@ -4016,6 +4950,192 @@ namespace YouTube
             }
 
             return best;
+        }
+
+        // Exact screen-tier part of youtube-ios YTSabr.tierForScreen:. UIKit passes the
+        // physical short edge (points * scale), not the current video rectangle.
+        private static int GetAutomaticScreenQualityCap()
+        {
+            var tiers = new[] { 144, 240, 360, 480, 720, 1080 };
+            double scale = 1.0;
+            double shortEdge = 0.0;
+            try
+            {
+                scale = Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+                if (scale <= 0.0)
+                {
+                    scale = 1.0;
+                }
+                var bounds = Window.Current.Bounds;
+                shortEdge = Math.Min(bounds.Width, bounds.Height) * scale;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Video][Auto] screen query failed: " + ex.Message);
+            }
+
+            var nearest = AutomaticVideoQualityCap;
+            if (shortEdge > 0.0)
+            {
+                nearest = tiers[0];
+                var nearestDistance = Math.Abs(shortEdge - nearest);
+                for (int i = 1; i < tiers.Length; i++)
+                {
+                    var distance = Math.Abs(shortEdge - tiers[i]);
+                    if (distance < nearestDistance)
+                    {
+                        nearest = tiers[i];
+                        nearestDistance = distance;
+                    }
+                }
+            }
+
+            nearest = Math.Min(nearest, AutomaticVideoQualityCap);
+            System.Diagnostics.Debug.WriteLine(
+                "[Video][Auto] screen=" + shortEdge.ToString("0", CultureInfo.InvariantCulture)
+                + "px scale=" + scale.ToString("0.##", CultureInfo.InvariantCulture)
+                + " cap=" + nearest + "p");
+            return nearest;
+        }
+
+        private async Task<PlayerFormatModel> SelectAutomaticH264VideoOnlyFormatAsync(
+            IList<PlayerFormatModel> formats,
+            string screenQualityTag,
+            ISet<int> excludedItags)
+        {
+            var screenChoice = SelectPreferredH264VideoOnlyFormat(
+                formats,
+                screenQualityTag,
+                excludedItags);
+            if (screenChoice == null)
+            {
+                return null;
+            }
+
+            var now = DateTimeOffset.UtcNow;
+            if (_autoNetworkBitsPerSecond <= 0.0
+                || (now - _autoNetworkEstimateTime).TotalSeconds > 30.0)
+            {
+                _autoNetworkBitsPerSecond = await MeasurePlaybackBandwidthAsync(screenChoice.Url);
+                _autoNetworkEstimateTime = now;
+            }
+
+            if (_autoNetworkBitsPerSecond <= 0.0)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Video][Auto] bandwidth unavailable; using screen cap "
+                    + screenChoice.QualityTier + "p");
+                return screenChoice;
+            }
+
+            var usableVideoBitsPerSecond = (_autoNetworkBitsPerSecond * AutoNetworkSafetyFactor)
+                - AutoAudioBandwidthReserve;
+            var screenCap = ParseInt(screenQualityTag);
+            var tiersDescending = new[] { 1080, 720, 480, 360, 240, 144 };
+            PlayerFormatModel lowest = null;
+            for (int i = 0; i < tiersDescending.Length; i++)
+            {
+                var tier = tiersDescending[i];
+                if (screenCap > 0 && tier > screenCap)
+                {
+                    continue;
+                }
+
+                var candidate = SelectPreferredH264VideoOnlyFormat(
+                    formats,
+                    tier.ToString(CultureInfo.InvariantCulture),
+                    excludedItags);
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                if (lowest == null || candidate.QualityTier < lowest.QualityTier)
+                {
+                    lowest = candidate;
+                }
+
+                var bitrate = candidate.AverageBitrate > 0
+                    ? candidate.AverageBitrate
+                    : candidate.Bitrate;
+                if (bitrate <= 0 || bitrate <= usableVideoBitsPerSecond)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Video][Auto] bandwidth="
+                        + (_autoNetworkBitsPerSecond / 1000000.0).ToString("0.00", CultureInfo.InvariantCulture)
+                        + "Mbps usableVideo="
+                        + (Math.Max(0.0, usableVideoBitsPerSecond) / 1000000.0).ToString("0.00", CultureInfo.InvariantCulture)
+                        + "Mbps selected=" + candidate.QualityTier + "p"
+                        + " bitrate=" + bitrate);
+                    return candidate;
+                }
+            }
+
+            System.Diagnostics.Debug.WriteLine(
+                "[Video][Auto] connection is below the lowest advertised bitrate; selected "
+                + (lowest == null ? screenChoice.QualityTier : lowest.QualityTier) + "p");
+            return lowest ?? screenChoice;
+        }
+
+        private async Task<double> MeasurePlaybackBandwidthAsync(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                return 0.0;
+            }
+
+            try
+            {
+                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+                {
+                    request.Headers.Range = new RangeHeaderValue(0, AutoNetworkProbeBytes - 1);
+                    if (!string.IsNullOrWhiteSpace(_playbackMediaUserAgent))
+                    {
+                        request.Headers.TryAddWithoutValidation("User-Agent", _playbackMediaUserAgent);
+                    }
+
+                    var timer = System.Diagnostics.Stopwatch.StartNew();
+                    using (var response = await httpClient.SendAsync(
+                        request,
+                        HttpCompletionOption.ResponseHeadersRead))
+                    {
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            System.Diagnostics.Debug.WriteLine(
+                                "[Video][Auto] bandwidth probe HTTP " + (int)response.StatusCode);
+                            return 0.0;
+                        }
+
+                        long received = 0;
+                        using (var stream = await response.Content.ReadAsStreamAsync())
+                        {
+                            var buffer = new byte[32768];
+                            while (received < AutoNetworkProbeBytes)
+                            {
+                                var wanted = (int)Math.Min(buffer.Length, AutoNetworkProbeBytes - received);
+                                var count = await stream.ReadAsync(buffer, 0, wanted);
+                                if (count <= 0)
+                                {
+                                    break;
+                                }
+                                received += count;
+                            }
+                        }
+                        timer.Stop();
+
+                        if (received < 32768 || timer.Elapsed.TotalSeconds <= 0.0)
+                        {
+                            return 0.0;
+                        }
+                        return received * 8.0 / timer.Elapsed.TotalSeconds;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Video][Auto] bandwidth probe failed: " + ex.Message);
+                return 0.0;
+            }
         }
 
         // Build a combined video+audio on-demand DASH manifest (two AdaptationSets, each an
@@ -4872,7 +5992,7 @@ namespace YouTube
 
             // The override is empty. That means one of two things, and they must behave
             // differently: if the user actively chose "Auto" in this session it is a real Auto
-            // (safe muxed pick); otherwise the video just opened and should inherit the Settings
+            // (device-capped adaptive pick); otherwise the video just opened and should inherit the Settings
             // default. Without this distinction, picking Auto would bounce straight back to the
             // preferred quality and be impossible to select.
             if (_qualityExplicitlyChosen)
@@ -5094,8 +6214,8 @@ namespace YouTube
                     continue;
                 }
 
-                var bestHeight = best.Height > 0 ? best.Height : 9999;
-                var currentHeight = current.Height > 0 ? current.Height : 9999;
+                var bestHeight = best.QualityTier > 0 ? best.QualityTier : 9999;
+                var currentHeight = current.QualityTier > 0 ? current.QualityTier : 9999;
                 if (currentHeight < bestHeight)
                 {
                     best = current;
@@ -5179,7 +6299,9 @@ namespace YouTube
                     continue;
                 }
 
-                if (requestedHeight > 0 && format.Height != requestedHeight)
+                // As in youtube-ios chooseVideo:maxHeight:, a requested height is a ceiling.
+                // This also lets Auto retry the next lower tier after a decoder failure.
+                if (requestedHeight > 0 && format.QualityTier > requestedHeight)
                 {
                     continue;
                 }
@@ -5213,7 +6335,7 @@ namespace YouTube
                     continue;
                 }
 
-                if (best == null || current.Height > best.Height)
+                if (best == null || current.QualityTier > best.QualityTier)
                 {
                     best = current;
                 }
@@ -5228,7 +6350,7 @@ namespace YouTube
             for (int i = 0; i < candidates.Count; i++)
             {
                 var current = candidates[i];
-                if (best == null || current.Height > best.Height)
+                if (best == null || current.QualityTier > best.QualityTier)
                 {
                     best = current;
                 }
@@ -5344,7 +6466,7 @@ namespace YouTube
                     continue;
                 }
 
-                if (requestedHeight > 0 && format.Height > 0 && format.Height > requestedHeight)
+                if (requestedHeight > 0 && format.QualityTier > requestedHeight)
                 {
                     continue;
                 }
@@ -5383,8 +6505,8 @@ namespace YouTube
                     continue;
                 }
 
-                var bestHeight = best.Height > 0 ? best.Height : 0;
-                var currentHeight = format.Height > 0 ? format.Height : 0;
+                var bestHeight = best.QualityTier > 0 ? best.QualityTier : 0;
+                var currentHeight = format.QualityTier > 0 ? format.QualityTier : 0;
                 if (preferSmallest)
                 {
                     if (bestHeight == 0 || (currentHeight > 0 && currentHeight < bestHeight))
@@ -5563,11 +6685,11 @@ namespace YouTube
             return quality.Trim();
         }
 
-        private static bool ShouldUseItag18AsMainVideo(string qualityTag)
+        private bool ShouldUseItag18AsMainVideo(string qualityTag)
         {
             var normalized = NormalizeQualityTag(qualityTag);
-            return string.IsNullOrWhiteSpace(normalized)
-                || string.Equals(normalized, "360", StringComparison.OrdinalIgnoreCase);
+            return string.IsNullOrWhiteSpace(_selectedAudioTrackId)
+                && string.Equals(normalized, "360", StringComparison.OrdinalIgnoreCase);
         }
 
         private static int ParseInt(string value)
@@ -6553,6 +7675,12 @@ namespace YouTube
 
         private void VideoInfoButton_Click(object sender, RoutedEventArgs e)
         {
+            // In landscape the complete inline description lives directly below the title.
+            // The portrait bottom sheet must never be opened from that layout.
+            if (!IsCurrentViewPortrait())
+            {
+                return;
+            }
             ShowDescriptionBottomSheet();
         }
 
@@ -6829,7 +7957,7 @@ namespace YouTube
                 payload["params"] = JsonValue.CreateStringValue(parameters);
             }
 
-            return payload.Stringify();
+            return Config.ApplySelectedAccountContext(payload.Stringify(), true);
         }
 
         private static string BuildNotificationPreferenceParams(string channelId, ChannelNotificationState targetState)
@@ -8229,7 +9357,7 @@ namespace YouTube
                 payload["params"] = JsonValue.CreateStringValue(parameters);
             }
 
-            return payload.Stringify();
+            return Config.ApplySelectedAccountContext(payload.Stringify(), true);
         }
 
         private async void LikeButton_Click(object sender, RoutedEventArgs e)
@@ -8542,6 +9670,7 @@ namespace YouTube
                     }
 
                     var root = JsonValue.Parse(json).GetObject();
+                    ApplyMainSaveStateFromAuthenticatedNext(root, videoId, sourceName);
                     bool found;
                     var rating = ExtractUserRatingFromNext(root, out found);
                     if (!found)
@@ -8563,6 +9692,172 @@ namespace YouTube
                 System.Diagnostics.Debug.WriteLine("[Rating] " + sourceName + " error: " + ex.Message);
                 return null;
             }
+        }
+
+        private void ApplyMainSaveStateFromAuthenticatedNext(
+            JsonObject root,
+            string videoId,
+            string sourceName)
+        {
+            bool isSaved;
+            if (!TryExtractMainSaveStateFromNext(root, out isSaved))
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[SaveButton] " + sourceName + " did not contain an explicit Save state");
+                return;
+            }
+
+            if (!string.Equals(videoId, currentVideoId, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            _mainSaveStateSupportedByNext = true;
+            SetImageSource(
+                SaveActionIcon,
+                isSaved ? "Assets/save_clicked.png" : "Assets/save.png");
+            System.Diagnostics.Debug.WriteLine(
+                "[SaveButton] State from " + sourceName + ": " + (isSaved ? "saved" : "not saved"));
+        }
+
+        private static bool TryExtractMainSaveStateFromNext(JsonObject root, out bool isSaved)
+        {
+            isSaved = false;
+            if (root == null)
+            {
+                return false;
+            }
+
+            JsonObject videoActions = null;
+            foreach (var candidate in EnumerateObjects(root))
+            {
+                if (!candidate.ContainsKey("videoPrimaryInfoRenderer"))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    var renderer = candidate.GetNamedObject("videoPrimaryInfoRenderer");
+                    if (renderer.ContainsKey("videoActions"))
+                    {
+                        videoActions = renderer.GetNamedObject("videoActions");
+                        break;
+                    }
+                }
+                catch
+                {
+                }
+            }
+
+            if (videoActions == null)
+            {
+                return false;
+            }
+
+            foreach (var candidate in EnumerateObjects(videoActions))
+            {
+                string serialized;
+                try
+                {
+                    serialized = candidate.Stringify().ToUpperInvariant();
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if (serialized.IndexOf("GET_ADD_TO_PLAYLIST", StringComparison.Ordinal) < 0
+                    && serialized.IndexOf("ADDTOPLAYLISTSERVICEENDPOINT", StringComparison.Ordinal) < 0
+                    && serialized.IndexOf("PLAYLIST_ADD", StringComparison.Ordinal) < 0
+                    && serialized.IndexOf("WATCH-SAVE", StringComparison.Ordinal) < 0
+                    && serialized.IndexOf("SAVE_TO_PLAYLIST", StringComparison.Ordinal) < 0)
+                {
+                    continue;
+                }
+
+                bool boolState;
+                if (TryGetDirectBoolean(candidate, "isToggled", out boolState)
+                    || TryGetDirectBoolean(candidate, "isSelected", out boolState)
+                    || TryGetDirectBoolean(candidate, "selected", out boolState))
+                {
+                    isSaved = boolState;
+                    return true;
+                }
+
+                string state;
+                if (TryGetDirectString(candidate, "state", out state)
+                    || TryGetDirectString(candidate, "buttonState", out state)
+                    || TryGetDirectString(candidate, "selectionState", out state))
+                {
+                    var normalized = (state ?? string.Empty).Trim().ToUpperInvariant();
+                    if (normalized == "INACTIVE"
+                        || normalized == "UNSELECTED"
+                        || normalized == "OFF"
+                        || normalized == "DEFAULT"
+                        || normalized == "BUTTON_VIEW_MODEL_STATE_INACTIVE")
+                    {
+                        isSaved = false;
+                        return true;
+                    }
+
+                    if (normalized == "ACTIVE"
+                        || normalized == "SELECTED"
+                        || normalized == "TOGGLED"
+                        || normalized == "ON"
+                        || normalized == "SAVED"
+                        || normalized == "ADDED"
+                        || normalized == "BUTTON_VIEW_MODEL_STATE_ACTIVE")
+                    {
+                        isSaved = true;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static bool TryGetDirectBoolean(JsonObject obj, string key, out bool value)
+        {
+            value = false;
+            try
+            {
+                if (obj != null && obj.ContainsKey(key))
+                {
+                    var jsonValue = obj.GetNamedValue(key);
+                    if (jsonValue != null && jsonValue.ValueType == JsonValueType.Boolean)
+                    {
+                        value = jsonValue.GetBoolean();
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return false;
+        }
+
+        private static bool TryGetDirectString(JsonObject obj, string key, out string value)
+        {
+            value = string.Empty;
+            try
+            {
+                if (obj != null && obj.ContainsKey(key))
+                {
+                    var jsonValue = obj.GetNamedValue(key);
+                    if (jsonValue != null && jsonValue.ValueType == JsonValueType.String)
+                    {
+                        value = jsonValue.GetString();
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return false;
         }
 
         private async Task<RatingLoadResult> TryLoadUserVideoRatingFromDataApiAsync(string videoId, string accessToken)
@@ -9095,6 +10390,7 @@ namespace YouTube
         )
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            Config.ApplySelectedAccountHeader(request, true);
             request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             request.Headers.TryAddWithoutValidation("User-Agent", userAgent);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", clientNameHeader);
@@ -9240,6 +10536,8 @@ namespace YouTube
             _ratingStateGeneration++;
             _currentUserRating = UserVideoRating.None;
             _ratingRequestInProgress = false;
+            _mainSaveStateSupportedByNext = false;
+            SetImageSource(SaveActionIcon, "Assets/save.png");
             UpdateRatingVisualState();
         }
 
@@ -9486,6 +10784,7 @@ namespace YouTube
 
             var anyOpen =
                 (SharePopupOverlay != null && SharePopupOverlay.Visibility == Visibility.Visible)
+                || (SaveBottomSheetPanel != null && SaveBottomSheetPanel.Visibility == Visibility.Visible)
                 || (ShareBottomSheetPanel != null && ShareBottomSheetPanel.Visibility == Visibility.Visible)
                 || (CommentsBottomSheetPanel != null && CommentsBottomSheetPanel.Visibility == Visibility.Visible)
                 || (SettingsBottomSheetPanel != null && SettingsBottomSheetPanel.Visibility == Visibility.Visible)
@@ -9729,6 +11028,198 @@ namespace YouTube
             ShowShareBottomSheet();
         }
 
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            await ShowSaveBottomSheetAsync();
+        }
+
+        private async Task ShowSaveBottomSheetAsync()
+        {
+            if (string.IsNullOrWhiteSpace(currentVideoId))
+            {
+                return;
+            }
+
+            global::Config.LoadUserToken();
+            var refreshToken = global::Config.UserToken;
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                ShowSharePopup(Localization.GetString("Save"), Localization.GetString("NotSignedIn"));
+                return;
+            }
+
+            var videoId = currentVideoId;
+            var loadGeneration = ++_savePlaylistLoadGeneration;
+            _saveSheetIsOpen = true;
+            _savePlaylistItems.Clear();
+            SaveSheetTitleText.Text = Localization.GetString("SelectPlaylist");
+            SavePlaylistsEmptyText.Text = Localization.GetString("NoData");
+            SavePlaylistsEmptyText.Visibility = Visibility.Collapsed;
+            SavePlaylistsScrollViewer.Visibility = Visibility.Collapsed;
+            SavePlaylistsLoadingPanel.Visibility = Visibility.Visible;
+            SavePlaylistsLoadingRing.IsActive = true;
+
+            if (OverlayGrid != null)
+            {
+                OverlayGrid.Visibility = Visibility.Visible;
+            }
+            SaveBottomSheetPanel.Visibility = Visibility.Visible;
+            SaveBottomSheetPanel.UpdateLayout();
+            SaveBottomSheetTransform.Y = GetSaveSheetDismissDistance();
+            AnimateSaveBottomSheet(true);
+
+            List<PlaylistSaveState> states = null;
+            try
+            {
+                states = await global::Config.GetSavePlaylistStatesAsync(refreshToken, videoId, 30);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[SavePlaylist] Load failed: " + ex.Message);
+            }
+
+            if (!_saveSheetIsOpen
+                || loadGeneration != _savePlaylistLoadGeneration
+                || !string.Equals(videoId, currentVideoId, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            SavePlaylistsLoadingRing.IsActive = false;
+            SavePlaylistsLoadingPanel.Visibility = Visibility.Collapsed;
+            if (states != null)
+            {
+                foreach (var state in states)
+                {
+                    if (state != null && state.Playlist != null)
+                    {
+                        _savePlaylistItems.Add(new SavePlaylistItemViewModel(
+                            state.Playlist,
+                            state.ContainsVideo));
+                    }
+                }
+            }
+
+            SavePlaylistsScrollViewer.Visibility = _savePlaylistItems.Count > 0
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            SavePlaylistsEmptyText.Visibility = _savePlaylistItems.Count == 0
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+            SaveBottomSheetPanel.UpdateLayout();
+        }
+
+        private double GetSaveSheetDismissDistance()
+        {
+            var height = SaveBottomSheetPanel != null ? SaveBottomSheetPanel.ActualHeight : 0;
+            return (height > 0 ? height : 540) + 20;
+        }
+
+        private void AnimateSaveBottomSheet(bool show)
+        {
+            if (SaveBottomSheetTransform == null)
+            {
+                return;
+            }
+
+            if (show)
+            {
+                _saveSheetIsOpen = true;
+                SaveBottomSheetPanel.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                _saveSheetIsOpen = false;
+                _savePlaylistLoadGeneration++;
+                if (SavePlaylistsLoadingRing != null)
+                {
+                    SavePlaylistsLoadingRing.IsActive = false;
+                }
+            }
+
+            var animation = new DoubleAnimation
+            {
+                To = show ? 0 : GetSaveSheetDismissDistance(),
+                Duration = new Duration(TimeSpan.FromMilliseconds(300)),
+                EasingFunction = new CircleEase()
+            };
+            if (!show)
+            {
+                animation.Completed += (s, e) =>
+                {
+                    if (SaveBottomSheetPanel != null)
+                    {
+                        SaveBottomSheetPanel.Visibility = Visibility.Collapsed;
+                    }
+                    CollapseVideoOverlayIfNoSheetOpen();
+                };
+            }
+
+            Storyboard.SetTarget(animation, SaveBottomSheetTransform);
+            Storyboard.SetTargetProperty(animation, "Y");
+            var storyboard = new Storyboard();
+            storyboard.Children.Add(animation);
+            storyboard.Begin();
+        }
+
+        private async void SavePlaylistRow_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var item = button != null ? button.DataContext as SavePlaylistItemViewModel : null;
+            if (item == null || string.IsNullOrWhiteSpace(item.PlaylistId) || string.IsNullOrWhiteSpace(currentVideoId))
+            {
+                return;
+            }
+
+            global::Config.LoadUserToken();
+            var refreshToken = global::Config.UserToken;
+            var videoId = currentVideoId;
+            var shouldSave = !item.IsSaved;
+            item.SetBusy(true);
+
+            var success = false;
+            try
+            {
+                success = await global::Config.SetVideoSavedToPlaylistAsync(
+                    refreshToken,
+                    item.PlaylistId,
+                    videoId,
+                    shouldSave);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[SavePlaylist] Update failed: " + ex.Message);
+            }
+
+            item.SetBusy(false);
+            if (!string.Equals(videoId, currentVideoId, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            AnimateSaveBottomSheet(false);
+            if (success)
+            {
+                item.SetSaved(shouldSave);
+                if (_mainSaveStateSupportedByNext)
+                {
+                    SetImageSource(
+                        SaveActionIcon,
+                        _savePlaylistItems.Any(playlist => playlist != null && playlist.IsSaved)
+                            ? "Assets/save_clicked.png"
+                            : "Assets/save.png");
+                }
+                var message = Localization.Format(
+                    shouldSave ? "VideoAddedToPlaylistFormat" : "VideoRemovedFromPlaylistFormat",
+                    item.Title);
+                ShowSharePopup(Localization.GetString("Save"), message);
+            }
+            else
+            {
+                ShowSharePopup(Localization.GetString("Save"), Localization.GetString("PlaylistUpdateFailed"));
+            }
+        }
+
         private void ShowShareBottomSheet()
         {
             if (!string.IsNullOrEmpty(currentVideoId))
@@ -9831,12 +11322,21 @@ namespace YouTube
                 );
 
                 // Call /next endpoint to get related videos
-                var nextPayload = BuildNextPayload(videoId);
-                var nextJson = await PostInnertubeAsync("next", nextPayload);
+                var nextJson = await PostPersonalizedTvNextAsync(videoId);
                 var nextRoot = Windows.Data.Json.JsonValue.Parse(nextJson).GetObject();
 
                 // Extract related videos by walking the JSON
                 ExtractRelatedVideosFromJson(nextRoot, relatedVideos);
+
+                // A successful TV response can still omit the recommendation shelf for a
+                // particular account/video. Keep playback-page recommendations working by
+                // falling back to the ordinary WEB shape only when TV yielded no cards at all.
+                if (relatedVideos.Count == 0)
+                {
+                    var webJson = await PostInnertubeAsync("next", BuildNextPayload(videoId)).ConfigureAwait(false);
+                    var webRoot = Windows.Data.Json.JsonValue.Parse(webJson).GetObject();
+                    ExtractRelatedVideosFromJson(webRoot, relatedVideos);
+                }
 
                 System.Diagnostics.Debug.WriteLine(
                     $"[RelatedVideos] Extracted {relatedVideos.Count} videos"
@@ -9848,6 +11348,45 @@ namespace YouTube
             }
 
             return relatedVideos;
+        }
+
+        private async Task<string> PostPersonalizedTvNextAsync(string videoId)
+        {
+            Config.LoadUserToken();
+            var refreshToken = Config.UserToken;
+            if (!string.IsNullOrWhiteSpace(refreshToken))
+            {
+                var accessToken = await Config.RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
+                if (!string.IsNullOrWhiteSpace(accessToken))
+                {
+                    var url = BuildInnertubeUrl("next");
+                    using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+                    {
+                        request.Content = new StringContent(
+                            BuildAuthenticatedNextPayload(videoId, false),
+                            Encoding.UTF8,
+                            "application/json");
+                        AddInnertubeAuthHeadersForClient(
+                            request,
+                            accessToken,
+                            InnertubeTvClientHeaderName,
+                            InnertubeTvClientVersion,
+                            InnertubeTvUserAgent);
+
+                        var response = await httpClient.SendAsync(request).ConfigureAwait(false);
+                        var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        if (response.IsSuccessStatusCode && !string.IsNullOrWhiteSpace(json))
+                        {
+                            return json;
+                        }
+
+                        System.Diagnostics.Debug.WriteLine(
+                            "[RelatedVideos] Authenticated TV /next failed: " + response.StatusCode);
+                    }
+                }
+            }
+
+            return await PostInnertubeAsync("next", BuildNextPayload(videoId)).ConfigureAwait(false);
         }
 
         private void ExtractRelatedVideosFromJson(
@@ -10613,6 +12152,7 @@ namespace YouTube
             item.playlist_id = GetJsonString(endpoint, "playlistId");
             item.thumbnail = "https://i.ytimg.com/vi/" + videoId + "/hqdefault.jpg";
             item.channel_thumbnail = ExtractChannelThumbnailFromRenderer(tile);
+            item.WatchedPercent = Config.ExtractWatchedPercent(tile);
 
             if (tile.ContainsKey("metadata"))
             {
@@ -10787,6 +12327,7 @@ namespace YouTube
                 var videoItem = new RelatedVideoCardItem();
                 videoItem.video_id = videoId;
                 videoItem.playlist_id = ExtractPlaylistIdFromWatchEndpoint(renderer);
+                videoItem.WatchedPercent = Config.ExtractWatchedPercent(renderer);
                 videoItem.thumbnail = ExtractThumbnailFromRenderer(renderer);
                 if (string.IsNullOrWhiteSpace(videoItem.thumbnail))
                 {
@@ -11430,6 +12971,7 @@ namespace YouTube
                 var videoItem = new RelatedVideoCardItem();
                 videoItem.video_id = videoId;
                 videoItem.playlist_id = cardPlaylistId;
+                videoItem.WatchedPercent = Config.ExtractWatchedPercent(lockupVM);
 
                 // Set thumbnail URL from YouTube
                 videoItem.thumbnail = "https://i.ytimg.com/vi/" + videoId + "/mqdefault.jpg";
@@ -11714,6 +13256,7 @@ namespace YouTube
         private void OverlayGrid_Tapped(object sender, TappedRoutedEventArgs e)
         {
             HideSharePopup();
+            AnimateSaveBottomSheet(false);
             AnimateCommentsBottomSheet(false);
             AnimateShareBottomSheet(false);
             AnimateSettingsBottomSheet(false);
@@ -11727,6 +13270,68 @@ namespace YouTube
             AnimateShareBottomSheet(false);
             if (OverlayGrid != null)
                 OverlayGrid.Visibility = Visibility.Collapsed;
+        }
+
+        private void SaveDragArea_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            AnimateSaveBottomSheet(false);
+            e.Handled = true;
+        }
+
+        private void SaveDragArea_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            var element = sender as UIElement;
+            if (element != null && element.CapturePointer(e.Pointer))
+            {
+                _saveInitialY = e.GetCurrentPoint(element).Position.Y;
+                _saveInitialTransformY = SaveBottomSheetTransform != null ? SaveBottomSheetTransform.Y : 0;
+                _saveIsDragging = true;
+                e.Handled = true;
+            }
+        }
+
+        private void SaveDragArea_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            var element = sender as UIElement;
+            if (!_saveIsDragging || element == null || SaveBottomSheetTransform == null)
+            {
+                return;
+            }
+
+            var dragOffset = e.GetCurrentPoint(element).Position.Y - _saveInitialY;
+            var newY = _saveInitialTransformY + dragOffset;
+            var dismissDistance = GetSaveSheetDismissDistance();
+            if (newY >= 0 && newY <= dismissDistance)
+            {
+                SaveBottomSheetTransform.Y = newY;
+            }
+            e.Handled = true;
+        }
+
+        private void SaveDragArea_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_saveIsDragging)
+            {
+                return;
+            }
+
+            _saveIsDragging = false;
+            var element = sender as UIElement;
+            if (element != null)
+            {
+                element.ReleasePointerCapture(e.Pointer);
+            }
+
+            if (SaveBottomSheetTransform != null
+                && SaveBottomSheetTransform.Y > GetSaveSheetDismissDistance() * 0.5)
+            {
+                AnimateSaveBottomSheet(false);
+            }
+            else
+            {
+                AnimateSaveBottomSheet(true);
+            }
+            e.Handled = true;
         }
 
         private void ShareDragArea_PointerPressed(object sender, PointerRoutedEventArgs e)
@@ -11900,6 +13505,294 @@ namespace YouTube
             e.Handled = true;
         }
 
+        private async void DownloadButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_offlineMode || string.IsNullOrWhiteSpace(currentVideoId)) return;
+
+            if (MainSettingsPanel != null) MainSettingsPanel.Visibility = Visibility.Collapsed;
+            if (QualitySettingsPanel != null) QualitySettingsPanel.Visibility = Visibility.Collapsed;
+            if (SpeedSettingsPanel != null) SpeedSettingsPanel.Visibility = Visibility.Collapsed;
+            if (SubtitlesSettingsPanel != null) SubtitlesSettingsPanel.Visibility = Visibility.Collapsed;
+            if (AudioTrackSettingsPanel != null) AudioTrackSettingsPanel.Visibility = Visibility.Collapsed;
+            if (DownloadSettingsPanel != null) DownloadSettingsPanel.Visibility = Visibility.Visible;
+
+            var populateTask = PopulateDownloadQualityOptionsAsync();
+            UpdateSettingsBottomSheetHeight();
+
+            if (CustomVideoPlayer != null && CustomVideoPlayer.IsFullscreen)
+            {
+                ShowSettingsBottomSheetInFullscreenPopup();
+            }
+            else
+            {
+                RestoreSettingsBottomSheetFromFullscreenPopup();
+                if (OverlayGrid != null) OverlayGrid.Visibility = Visibility.Visible;
+                if (SettingsBottomSheetPanel != null)
+                {
+                    SettingsBottomSheetPanel.Visibility = Visibility.Visible;
+                    AnimateSettingsBottomSheet(true);
+                }
+            }
+
+            await populateTask;
+            UpdateSettingsBottomSheetHeight();
+        }
+
+        private async Task PopulateDownloadQualityOptionsAsync()
+        {
+            if (DownloadQualityOptionsPanel == null) return;
+            DownloadQualityOptionsPanel.Children.Clear();
+            DownloadUnavailableText.Visibility = Visibility.Collapsed;
+            if (DownloadQualityLoadingRing != null)
+            {
+                DownloadQualityLoadingRing.Visibility = Visibility.Visible;
+                DownloadQualityLoadingRing.IsActive = true;
+            }
+
+            var formats = await GetDownloadFormatChoicesAsync(currentVideoId);
+            if (DownloadQualityLoadingRing != null)
+            {
+                DownloadQualityLoadingRing.IsActive = false;
+                DownloadQualityLoadingRing.Visibility = Visibility.Collapsed;
+            }
+            if (formats.Count == 0)
+            {
+                DownloadUnavailableText.Visibility = Visibility.Visible;
+                return;
+            }
+
+            foreach (var format in formats)
+            {
+                var selected = format;
+                var quality = selected.Video.QualityTier + "p";
+                var existing = await DownloadManager.FindAsync(currentVideoId, quality);
+                var label = quality;
+                if (existing != null && existing.IsDownloading)
+                    label += "  ·  " + existing.ProgressPercent + "%";
+                else if (existing != null && existing.IsComplete)
+                    label += "  ·  " + Localization.GetString("Downloaded");
+
+                var button = MakeCheckableOptionButton(
+                    label,
+                    existing != null && existing.IsComplete,
+                    async () => await StartDownloadAsync(selected));
+                DownloadQualityOptionsPanel.Children.Add(button);
+            }
+        }
+
+        private sealed class DownloadFormatChoice
+        {
+            public PlayerFormatModel Video { get; set; }
+            public PlayerFormatModel Audio { get; set; }
+            public string MediaUserAgent { get; set; }
+        }
+
+        private async Task<List<DownloadFormatChoice>> GetDownloadFormatChoicesAsync(string videoId)
+        {
+            var all = new List<PlayerFormatModel>();
+            var mediaUserAgent = _playbackMediaUserAgent;
+            try
+            {
+                // This is deliberately the same cached /player response used by the quality
+                // settings and by playback. Its adaptive H.264 and AAC URLs are already proven
+                // by DashDemuxer; downloads pair those exact links and mux them into one MP4.
+                var json = await PostAndroidPlayerAsync(videoId).ConfigureAwait(false);
+                mediaUserAgent = _playbackMediaUserAgent;
+                AddDownloadFormatsFromPlayerJson(json, mediaUserAgent, all);
+
+                // If the cached playback response has expired or carried only HLS, refresh the
+                // normal player chain once. Do not fall back to a URL merely because it appears
+                // in streamingData: both tracks must be usable by the existing demuxer.
+                if (!ContainsDownloadableAdaptivePair(all))
+                {
+                    _lastAndroidPlayerVideoId = string.Empty;
+                    _lastAndroidPlayerJson = string.Empty;
+                    json = await PostAndroidPlayerAsync(videoId).ConfigureAwait(false);
+                    mediaUserAgent = _playbackMediaUserAgent;
+                    all.Clear();
+                    AddDownloadFormatsFromPlayerJson(json, mediaUserAgent, all);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Downloads] Format request failed: " + ex.Message);
+            }
+
+            if (!ContainsDownloadableAdaptivePair(all))
+            {
+                foreach (var format in availableFormats)
+                {
+                    if (format == null) continue;
+                    format.MediaUserAgent = mediaUserAgent ?? string.Empty;
+                    all.Add(format);
+                }
+            }
+
+            var usableFormats = all.Where(f => f != null && IsDownloadMediaUrlFresh(f.Url)).ToList();
+            var audio = SelectAudioOnlyAacFormat(usableFormats, _selectedAudioTrackId);
+            if (audio == null) return new List<DownloadFormatChoice>();
+
+            return usableFormats
+                .Where(f => f != null && f.IsAdaptive && f.HasVideo && !f.HasAudio
+                    && f.QualityTier > 0 && IsDownloadMediaUrlFresh(f.Url)
+                    && !string.IsNullOrWhiteSpace(f.MimeType)
+                    && f.MimeType.IndexOf("video/mp4", StringComparison.OrdinalIgnoreCase) >= 0
+                    && f.MimeType.IndexOf("avc1", StringComparison.OrdinalIgnoreCase) >= 0)
+                .GroupBy(f => f.QualityTier)
+                .Select(g => new DownloadFormatChoice
+                {
+                    Video = g.OrderByDescending(f => Math.Max(f.AverageBitrate, f.Bitrate)).First(),
+                    Audio = audio,
+                    MediaUserAgent = mediaUserAgent ?? string.Empty
+                })
+                .OrderByDescending(f => f.Video.QualityTier)
+                .ToList();
+        }
+
+        private static void AddDownloadFormatsFromPlayerJson(
+            string json,
+            string mediaUserAgent,
+            IList<PlayerFormatModel> target)
+        {
+            if (string.IsNullOrWhiteSpace(json) || target == null) return;
+
+            try
+            {
+                var parsed = new List<PlayerFormatModel>();
+                CollectFormatsFromStreamingData(JsonValue.Parse(json).GetObject(), parsed);
+                foreach (var format in parsed)
+                {
+                    if (format == null) continue;
+                    format.MediaUserAgent = mediaUserAgent ?? string.Empty;
+                    target.Add(format);
+                }
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] " + parsed.Count + " format(s) from "
+                    + (string.IsNullOrWhiteSpace(mediaUserAgent) ? "player" : mediaUserAgent));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Downloads] Player response parse failed: " + ex.Message);
+            }
+        }
+
+        private static bool ContainsDownloadableAdaptivePair(
+            IEnumerable<PlayerFormatModel> formats)
+        {
+            if (formats == null) return false;
+            var hasVideo = formats.Any(f => f != null && f.IsAdaptive
+                && f.HasVideo && !f.HasAudio && IsDownloadMediaUrlFresh(f.Url)
+                && !string.IsNullOrWhiteSpace(f.MimeType)
+                && f.MimeType.IndexOf("video/mp4", StringComparison.OrdinalIgnoreCase) >= 0
+                && f.MimeType.IndexOf("avc1", StringComparison.OrdinalIgnoreCase) >= 0);
+            var hasAudio = formats.Any(f => f != null && f.IsAdaptive
+                && f.HasAudio && !f.HasVideo && IsDownloadMediaUrlFresh(f.Url)
+                && !string.IsNullOrWhiteSpace(f.MimeType)
+                && (f.MimeType.IndexOf("audio/mp4", StringComparison.OrdinalIgnoreCase) >= 0
+                    || f.MimeType.IndexOf("mp4a", StringComparison.OrdinalIgnoreCase) >= 0));
+            return hasVideo && hasAudio;
+        }
+
+        private static bool IsDownloadMediaUrlFresh(string url)
+        {
+            if (string.IsNullOrWhiteSpace(url)) return false;
+            try
+            {
+                var match = Regex.Match(url, @"(?:[?&])expire=(\d+)", RegexOptions.IgnoreCase);
+                if (!match.Success) return true;
+                long expires;
+                if (!long.TryParse(match.Groups[1].Value, out expires)) return true;
+                var now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                return expires > now + 90;
+            }
+            catch
+            {
+                return true;
+            }
+        }
+
+        private async Task StartDownloadAsync(DownloadFormatChoice format)
+        {
+            if (format == null || format.Video == null || format.Audio == null) return;
+            AnimateSettingsBottomSheet(false);
+            if (OverlayGrid != null) OverlayGrid.Visibility = Visibility.Collapsed;
+
+            var item = await DownloadManager.StartAsync(
+                currentVideoId,
+                VideoTitleText == null ? string.Empty : VideoTitleText.Text,
+                currentChannelName,
+                currentChannelId,
+                _currentVideoDescription,
+                _currentVideoThumbnailUrl,
+                _currentChannelThumbnailUrl,
+                format.Video,
+                format.Audio,
+                format.MediaUserAgent);
+
+            if (item == null)
+                System.Diagnostics.Debug.WriteLine("[Downloads] Could not start transfer");
+            await UpdateDownloadButtonAsync();
+        }
+
+        private async void DownloadManager_Changed(object sender, EventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Low, async () =>
+            {
+                await UpdateDownloadButtonAsync();
+            });
+        }
+
+        private async Task UpdateDownloadButtonAsync()
+        {
+            if (DownloadActionText == null || DownloadActionIcon == null || DownloadProgressIcon == null)
+                return;
+
+            var item = await DownloadManager.FindAsync(currentVideoId);
+            var active = item != null && item.IsDownloading;
+            DownloadActionIcon.Visibility = active ? Visibility.Collapsed : Visibility.Visible;
+            DownloadProgressIcon.Visibility = active ? Visibility.Visible : Visibility.Collapsed;
+            DownloadActionText.Text = active
+                ? item.ProgressPercent + "%"
+                : Localization.GetString("Download");
+            if (active) SetDownloadProgressArc(item.ProgressPercent);
+        }
+
+        private void SetDownloadProgressArc(int percent)
+        {
+            if (DownloadProgressArc == null) return;
+            var value = Math.Max(0, Math.Min(100, percent));
+            if (value >= 100)
+            {
+                DownloadProgressArc.Data = new EllipseGeometry
+                {
+                    Center = new Windows.Foundation.Point(10, 10),
+                    RadiusX = 8,
+                    RadiusY = 8
+                };
+                return;
+            }
+
+            var angle = value * Math.PI * 2.0 / 100.0;
+            var end = new Windows.Foundation.Point(
+                10 + 8 * Math.Sin(angle),
+                10 - 8 * Math.Cos(angle));
+            var figure = new PathFigure
+            {
+                StartPoint = new Windows.Foundation.Point(10, 2),
+                IsClosed = false
+            };
+            figure.Segments.Add(new ArcSegment
+            {
+                Point = end,
+                Size = new Windows.Foundation.Size(8, 8),
+                SweepDirection = SweepDirection.Clockwise,
+                IsLargeArc = value > 50
+            });
+            var geometry = new PathGeometry();
+            geometry.Figures.Add(figure);
+            DownloadProgressArc.Data = geometry;
+        }
+
         private void SettingsDragArea_Tapped(object sender, TappedRoutedEventArgs e)
         {
             // Close settings bottom sheet when tapping drag area
@@ -11923,6 +13816,8 @@ namespace YouTube
                 SubtitlesSettingsPanel.Visibility = Visibility.Collapsed;
             if (AudioTrackSettingsPanel != null)
                 AudioTrackSettingsPanel.Visibility = Visibility.Collapsed;
+            if (DownloadSettingsPanel != null)
+                DownloadSettingsPanel.Visibility = Visibility.Collapsed;
 
             UpdateSettingsRowValues();
 
@@ -11931,11 +13826,21 @@ namespace YouTube
                     ? Visibility.Visible
                     : Visibility.Collapsed;
 
+            if (_offlineMode)
+            {
+                if (QualityButton != null) QualityButton.Visibility = Visibility.Collapsed;
+                if (AudioTrackButton != null) AudioTrackButton.Visibility = Visibility.Collapsed;
+                if (SubtitlesButton != null) SubtitlesButton.Visibility = Visibility.Collapsed;
+            }
+
             if (AudioTrackButton != null)
-                AudioTrackButton.Visibility = (_availableAudioTracks != null && _availableAudioTracks.Count > 1)
+                AudioTrackButton.Visibility = (!_offlineMode
+                    && _availableAudioTracks != null && _availableAudioTracks.Count > 1)
                     ? Visibility.Visible
                     : Visibility.Collapsed;
-            UpdateAudioTrackButtonVisibilityAsync();
+            UpdateSettingsBottomSheetHeight();
+            if (!_offlineMode)
+                UpdateAudioTrackButtonVisibilityAsync();
 
             if (CustomVideoPlayer != null && CustomVideoPlayer.IsFullscreen)
             {
@@ -11986,7 +13891,8 @@ namespace YouTube
             {
                 Width = bounds.Width,
                 Height = bounds.Height,
-                Background = new SolidColorBrush(Windows.UI.Colors.Transparent)
+                Background = new SolidColorBrush(Windows.UI.Colors.Transparent),
+                RequestedTheme = App.GetCurrentElementTheme()
             };
 
             var dimOverlay = new Grid
@@ -11999,9 +13905,10 @@ namespace YouTube
             SettingsBottomSheetPanel.Visibility = Visibility.Visible;
             SettingsBottomSheetPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
             SettingsBottomSheetPanel.VerticalAlignment = VerticalAlignment.Bottom;
+            UpdateSettingsBottomSheetHeight();
             if (SettingsBottomSheetTransform != null)
             {
-                SettingsBottomSheetTransform.Y = 205;
+                SettingsBottomSheetTransform.Y = GetSettingsBottomSheetHiddenOffset();
             }
             _fullscreenSettingsPopupRoot.Children.Add(SettingsBottomSheetPanel);
 
@@ -12069,7 +13976,7 @@ namespace YouTube
                     SettingsBottomSheetPanel.Visibility = Visibility.Collapsed;
                     if (SettingsBottomSheetTransform != null)
                     {
-                        SettingsBottomSheetTransform.Y = 205;
+                        SettingsBottomSheetTransform.Y = GetSettingsBottomSheetHiddenOffset();
                     }
                 }
             }
@@ -12084,6 +13991,80 @@ namespace YouTube
                 _fullscreenSettingsPopupRoot = null;
                 _settingsBottomSheetOriginalParent = null;
                 _settingsBottomSheetOriginalIndex = -1;
+            }
+        }
+
+        private double GetSettingsBottomSheetHiddenOffset()
+        {
+            if (SettingsBottomSheetPanel == null)
+            {
+                return 214;
+            }
+
+            var height = SettingsBottomSheetPanel.Height;
+            if (double.IsNaN(height) || height <= 0)
+            {
+                height = SettingsBottomSheetPanel.ActualHeight;
+            }
+
+            return (height > 0 ? height : 204) + 10;
+        }
+
+        // Same sizing rule as youtube-ios/YTSettingsSheet: grip + visible page content +
+        // bottom padding, capped at 70% of the current window. The page ScrollViewers handle
+        // lists that exceed the cap; the main page grows and shrinks with its visible rows.
+        private void UpdateSettingsBottomSheetHeight()
+        {
+            if (SettingsBottomSheetPanel == null || Window.Current == null)
+            {
+                return;
+            }
+
+            FrameworkElement content = null;
+            if (MainSettingsPanel != null && MainSettingsPanel.Visibility == Visibility.Visible)
+            {
+                content = MainSettingsPanel;
+            }
+            else if (QualitySettingsPanel != null && QualitySettingsPanel.Visibility == Visibility.Visible)
+            {
+                content = QualitySettingsPanel.Content as FrameworkElement;
+            }
+            else if (SpeedSettingsPanel != null && SpeedSettingsPanel.Visibility == Visibility.Visible)
+            {
+                content = SpeedSettingsPanel.Content as FrameworkElement;
+            }
+            else if (AudioTrackSettingsPanel != null && AudioTrackSettingsPanel.Visibility == Visibility.Visible)
+            {
+                content = AudioTrackSettingsPanel.Content as FrameworkElement;
+            }
+            else if (SubtitlesSettingsPanel != null && SubtitlesSettingsPanel.Visibility == Visibility.Visible)
+            {
+                content = SubtitlesSettingsPanel.Content as FrameworkElement;
+            }
+            else if (DownloadSettingsPanel != null && DownloadSettingsPanel.Visibility == Visibility.Visible)
+            {
+                content = DownloadSettingsPanel.Content as FrameworkElement;
+            }
+
+            if (content == null)
+            {
+                return;
+            }
+
+            var bounds = Window.Current.Bounds;
+            var innerWidth = Math.Max(0, bounds.Width - 60);
+            content.Measure(new Windows.Foundation.Size(innerWidth, double.PositiveInfinity));
+
+            // XAML uses a 40px grip and 20px bottom content margin, exactly like youtube-ios.
+            var contentHeight = 40 + content.DesiredSize.Height + 20;
+            var maxHeight = Math.Max(100, bounds.Height * 0.70);
+            var newHeight = Math.Min(contentHeight, maxHeight);
+            var wasHidden = SettingsBottomSheetPanel.Visibility != Visibility.Visible;
+
+            SettingsBottomSheetPanel.Height = Math.Max(60, Math.Ceiling(newHeight));
+            if (wasHidden && SettingsBottomSheetTransform != null)
+            {
+                SettingsBottomSheetTransform.Y = GetSettingsBottomSheetHiddenOffset();
             }
         }
 
@@ -12103,7 +14084,7 @@ namespace YouTube
             }
             else
             {
-                animation.To = 205;
+                animation.To = GetSettingsBottomSheetHiddenOffset();
 
                 // Hide panel after animation completes
                 animation.Completed += (s, args) =>
@@ -12155,7 +14136,8 @@ namespace YouTube
             double dragOffset = currentPoint.Position.Y - _settingsInitialY;
             double newY = _settingsInitialTransformY + dragOffset;
 
-            if (newY >= 0 && newY <= 205)
+            var hiddenOffset = GetSettingsBottomSheetHiddenOffset();
+            if (newY >= 0 && newY <= hiddenOffset)
             {
                 SettingsBottomSheetTransform.Y = newY;
             }
@@ -12177,7 +14159,8 @@ namespace YouTube
                 element.ReleasePointerCapture(e.Pointer);
             }
 
-            if (SettingsBottomSheetTransform != null && SettingsBottomSheetTransform.Y > 100)
+            if (SettingsBottomSheetTransform != null
+                && SettingsBottomSheetTransform.Y > GetSettingsBottomSheetHiddenOffset() / 2)
             {
                 AnimateSettingsBottomSheet(false);
                 if (OverlayGrid != null)
@@ -12228,6 +14211,7 @@ namespace YouTube
                 {
                     AddQualityOptionButton(height + "p", string.Equals(effective, height, StringComparison.Ordinal));
                 }
+                UpdateSettingsBottomSheetHeight();
             }
             catch (Exception ex)
             {
@@ -12377,7 +14361,7 @@ namespace YouTube
                 var heights = new SortedSet<int>();
                 foreach (var f in formats)
                 {
-                    if (f == null || string.IsNullOrWhiteSpace(f.Url) || f.Height <= 0)
+                    if (f == null || string.IsNullOrWhiteSpace(f.Url) || f.QualityTier <= 0)
                     {
                         continue;
                     }
@@ -12395,7 +14379,7 @@ namespace YouTube
 
                     if (isMuxed || isAvcVideoOnly)
                     {
-                        heights.Add(f.Height);
+                        heights.Add(f.QualityTier);
                     }
                 }
 
@@ -12421,7 +14405,13 @@ namespace YouTube
 
                 // Add speed options with a leading checkmark on the current one, matching the
                 // quality picker.
-                var speeds = new[] { 0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0 };
+                var speeds = new[]
+                {
+                    0.25, 0.5, 0.75, 1.0
+                    // Windows 10 Mobile ignores PlaybackRate > 1 for a MediaStreamSource.
+                    // youtube-ios can offer these because AVPlayer changes its media clock:
+                    // , 1.25, 1.5, 1.75, 2.0
+                };
                 foreach (var speed in speeds)
                 {
                     var label = speed.ToString("0.##",
@@ -12447,6 +14437,7 @@ namespace YouTube
                     QualitySettingsPanel.Visibility = Visibility.Collapsed;
                 if (SpeedSettingsPanel != null)
                     SpeedSettingsPanel.Visibility = Visibility.Visible;
+                UpdateSettingsBottomSheetHeight();
             }
         }
 
@@ -12490,7 +14481,9 @@ namespace YouTube
                 AudioTrackButton.Visibility = (_availableAudioTracks != null && _availableAudioTracks.Count > 1)
                     ? Visibility.Visible
                     : Visibility.Collapsed;
+                UpdateSettingsBottomSheetHeight();
             }
+            UpdateSettingsRowValues();
         }
 
         private void AudioTrackButton_Click(object sender, RoutedEventArgs e)
@@ -12507,6 +14500,7 @@ namespace YouTube
                 SubtitlesSettingsPanel.Visibility = Visibility.Collapsed;
             if (AudioTrackSettingsPanel != null)
                 AudioTrackSettingsPanel.Visibility = Visibility.Visible;
+            UpdateSettingsBottomSheetHeight();
         }
 
         private void PopulateAudioTrackOptions()
@@ -12517,13 +14511,14 @@ namespace YouTube
             }
 
             AudioTrackOptionsPanel.Children.Clear();
+            var currentTrack = GetCurrentAudioTrackInfo();
+            var currentTrackId = currentTrack == null ? null : currentTrack.Id;
 
             foreach (var track in _availableAudioTracks)
             {
                 var chosen = track;
-                // No explicit choice yet → the locale/default track is the effective one.
                 var isCurrent = string.IsNullOrEmpty(_selectedAudioTrackId)
-                    ? chosen.IsDefault || Config.AudioTrackMatchesLocale(chosen.Id)
+                    ? string.Equals(currentTrackId, chosen.Id, StringComparison.Ordinal)
                     : string.Equals(_selectedAudioTrackId, chosen.Id, StringComparison.Ordinal);
 
                 var button = MakeCheckableOptionButton(chosen.Name, isCurrent, () => ApplyAudioTrack(chosen.Id));
@@ -12531,40 +14526,60 @@ namespace YouTube
             }
         }
 
+        private Config.AudioTrackInfo GetCurrentAudioTrackInfo()
+        {
+            if (_availableAudioTracks == null || _availableAudioTracks.Count == 0)
+            {
+                return null;
+            }
+
+            if (!string.IsNullOrEmpty(_selectedAudioTrackId))
+            {
+                var explicitTrack = _availableAudioTracks.FirstOrDefault(t =>
+                    string.Equals(t.Id, _selectedAudioTrackId, StringComparison.Ordinal));
+                if (explicitTrack != null)
+                {
+                    return explicitTrack;
+                }
+            }
+
+            Config.AudioTrackInfo systemTrack = null;
+            var bestSystemScore = 0;
+            foreach (var track in _availableAudioTracks)
+            {
+                var score = Config.SystemAudioTrackMatchScore(track.Id);
+                if (score > bestSystemScore)
+                {
+                    bestSystemScore = score;
+                    systemTrack = track;
+                }
+            }
+
+            if (systemTrack != null)
+            {
+                return systemTrack;
+            }
+
+            return _availableAudioTracks.FirstOrDefault(t => t.IsDefault)
+                ?? _availableAudioTracks[0];
+        }
+
         private async void ApplyAudioTrack(string trackId)
         {
-            _selectedAudioTrackId = trackId;
-
             AnimateSettingsBottomSheet(false);
             if (OverlayGrid != null)
                 OverlayGrid.Visibility = Visibility.Collapsed;
 
-            // Switching the audio language only takes effect on the demuxer (the muxed/Auto path
-            // has audio baked in). Force a demux-capable quality if the video is currently on the
-            // progressive path, then reload so the new audio is fetched.
-            var effective = GetEffectiveVideoQualityTag();
-            if (string.IsNullOrWhiteSpace(effective) || ParseInt(effective) <= 360)
+            if (string.Equals(_selectedAudioTrackId, trackId, StringComparison.Ordinal))
             {
-                var heights = await GetAvailableQualityTagsAsync(currentVideoId);
-                var target = 0;
-                if (heights != null)
-                {
-                    foreach (var h in heights)
-                    {
-                        var v = ParseInt(h);
-                        if (v > 360 && v > target)
-                        {
-                            target = v;
-                        }
-                    }
-                }
-                if (target > 0)
-                {
-                    await ChangeQualityAsync(target + "p");
-                    return;
-                }
+                return;
             }
 
+            _selectedAudioTrackId = trackId;
+
+            // youtube-ios rebuilds the same selected height (including Auto) with the new
+            // preferred audio track and keeps the current playback position.
+            var effective = GetEffectiveVideoQualityTag();
             await ChangeQualityAsync(string.IsNullOrWhiteSpace(effective) ? "Auto" : effective + "p");
         }
 
@@ -12581,6 +14596,7 @@ namespace YouTube
                 SpeedSettingsPanel.Visibility = Visibility.Collapsed;
             if (SubtitlesSettingsPanel != null)
                 SubtitlesSettingsPanel.Visibility = Visibility.Visible;
+            UpdateSettingsBottomSheetHeight();
         }
 
         // Two levels in the same panel: the author's tracks, and — behind one entry — the full
@@ -12615,6 +14631,7 @@ namespace YouTube
                         () => ApplySubtitleTrack(CustomVideoPlayer.MakeTranslatedTrack(source, target)));
                 }
 
+                UpdateSettingsBottomSheetHeight();
                 return;
             }
 
@@ -12630,6 +14647,16 @@ namespace YouTube
                 AddSubtitleOption(Localization.GetString("SubtitleLater"), false, () =>
                 {
                     CustomVideoPlayer.AdjustSubtitleOffset(-250);
+                    PopulateSubtitleOptions();
+                });
+                var resetTitle = Localization.GetString("SubtitleReset");
+                if (string.Equals(resetTitle, "SubtitleReset", StringComparison.Ordinal))
+                {
+                    resetTitle = "Reset sync (0.00s)";
+                }
+                AddSubtitleOption(resetTitle, false, () =>
+                {
+                    CustomVideoPlayer.SetSubtitleOffset(0);
                     PopulateSubtitleOptions();
                 });
             }
@@ -12654,6 +14681,7 @@ namespace YouTube
                     PopulateSubtitleOptions();
                 });
             }
+            UpdateSettingsBottomSheetHeight();
         }
 
         private void AddSubtitleOption(string label, bool isActive, Action onClick)
@@ -12664,7 +14692,7 @@ namespace YouTube
                 Background = new SolidColorBrush(Windows.UI.Colors.Transparent),
                 Foreground = new SolidColorBrush(isActive
                     ? Windows.UI.Color.FromArgb(255, 255, 0, 51)
-                    : Windows.UI.Colors.White),
+                    : App.GetThemeColor("AppPrimaryTextBrush", Windows.UI.Colors.White)),
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 HorizontalContentAlignment = HorizontalAlignment.Left,
                 Padding = new Thickness(16, 12, 16, 12),
@@ -12697,16 +14725,6 @@ namespace YouTube
             {
                 CustomVideoPlayer.SelectSubtitleTrack(track);
             }
-        }
-
-        private async void ReloadButton_Click(object sender, RoutedEventArgs e)
-        {
-            // Close settings
-            AnimateSettingsBottomSheet(false);
-            if (OverlayGrid != null)
-                OverlayGrid.Visibility = Visibility.Collapsed;
-
-            await ReloadPlayerOnlyAsync(true);
         }
 
         private async void ChangeQuality(string quality)
@@ -12782,7 +14800,7 @@ namespace YouTube
 
                 System.Diagnostics.Debug.WriteLine(
                     "[Video] Changing quality to: "
-                    + (string.IsNullOrWhiteSpace(currentQualityTag) ? "Auto/itag18" : currentQualityTag + "p")
+                    + (string.IsNullOrWhiteSpace(currentQualityTag) ? "Auto" : currentQualityTag + "p")
                     + " @ " + resumePosition
                 );
 
@@ -12856,13 +14874,27 @@ namespace YouTube
             if (QualityValueText != null)
             {
                 var effective = GetEffectiveVideoQualityTag();
-                QualityValueText.Text = string.IsNullOrWhiteSpace(effective) ? Localization.GetString("Auto") : effective + "p";
+                var picked = string.IsNullOrWhiteSpace(effective)
+                    ? Localization.GetString("Auto")
+                    : effective + "p";
+                var pickedHeight = ParseInt(effective);
+                QualityValueText.Text = _readyHeight > 0 && _readyHeight != pickedHeight
+                    ? picked + " · " + _readyHeight + "p"
+                    : picked;
             }
 
             if (SpeedValueText != null)
             {
                 SpeedValueText.Text = currentSpeed.ToString("0.##",
                     System.Globalization.CultureInfo.InvariantCulture) + "x";
+            }
+
+            if (AudioTrackValueText != null)
+            {
+                var audioTrack = GetCurrentAudioTrackInfo();
+                AudioTrackValueText.Text = audioTrack == null
+                    ? string.Empty
+                    : (string.IsNullOrWhiteSpace(audioTrack.Name) ? audioTrack.Id : audioTrack.Name);
             }
         }
 
@@ -12874,6 +14906,34 @@ namespace YouTube
         private void CommentsContainerButton_Click(object sender, RoutedEventArgs e)
         {
             ShowCommentsBottomSheet();
+        }
+
+        private async void CommentRepliesButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var comment = button != null ? button.DataContext as CommentItem : null;
+            if (comment == null || string.IsNullOrWhiteSpace(currentVideoId)
+                || !comment.TryBeginLoadingReplies())
+            {
+                return;
+            }
+
+            try
+            {
+                var replies = await Config.GetCommentsAsync(
+                    currentVideoId,
+                    comment.ReplyContinuationToken);
+
+                // As in youtube-ios, the replies row is replaced by the returned branch.
+                comment.FinishLoadingReplies(replies, true);
+                System.Diagnostics.Debug.WriteLine(
+                    "[Comments] Replies opened: " + (replies != null ? replies.Count : 0));
+            }
+            catch (Exception ex)
+            {
+                comment.FinishLoadingReplies(null, false);
+                System.Diagnostics.Debug.WriteLine("[Comments] Replies load failed: " + ex.Message);
+            }
         }
 
         private void ShowDescriptionBottomSheet()
@@ -12910,10 +14970,79 @@ namespace YouTube
 
         private void SetDescriptionWithLinks(string description)
         {
-            if (DescriptionTextBlock == null)
+            SetDescriptionWithLinks(DescriptionTextBlock, description);
+        }
+
+        private void UpdateLandscapeDescriptionText()
+        {
+            if (LandscapeDescriptionTextBlock == null)
                 return;
 
-            DescriptionTextBlock.Blocks.Clear();
+            _landscapeDescriptionExpanded = false;
+            _landscapeDescriptionNeedsToggle = false;
+            UpdateLandscapeDescriptionExpansionState();
+
+            var text = string.IsNullOrWhiteSpace(_currentVideoDescription)
+                ? Localization.GetString("DescriptionNotAvailable")
+                : _currentVideoDescription;
+            SetDescriptionWithLinks(LandscapeDescriptionTextBlock, text);
+
+            var ignored = Dispatcher.RunAsync(
+                CoreDispatcherPriority.Low,
+                RefreshLandscapeDescriptionToggleVisibility);
+        }
+
+        private void LandscapeDescriptionTextBlock_LayoutUpdated(object sender, object e)
+        {
+            if (!_landscapeDescriptionExpanded)
+                RefreshLandscapeDescriptionToggleVisibility();
+        }
+
+        private void RefreshLandscapeDescriptionToggleVisibility()
+        {
+            if (LandscapeDescriptionTextBlock == null || LandscapeDescriptionToggleButton == null)
+                return;
+
+            if (!_landscapeDescriptionExpanded)
+                _landscapeDescriptionNeedsToggle = LandscapeDescriptionTextBlock.HasOverflowContent;
+
+            LandscapeDescriptionToggleButton.Visibility = _landscapeDescriptionNeedsToggle
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+        }
+
+        private void LandscapeDescriptionToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            _landscapeDescriptionExpanded = !_landscapeDescriptionExpanded;
+            UpdateLandscapeDescriptionExpansionState();
+        }
+
+        private void UpdateLandscapeDescriptionExpansionState()
+        {
+            if (LandscapeDescriptionTextBlock != null)
+                LandscapeDescriptionTextBlock.MaxHeight = _landscapeDescriptionExpanded
+                    ? double.MaxValue
+                    : 58.0;
+
+            if (LandscapeDescriptionToggleText != null)
+            {
+                LandscapeDescriptionToggleText.Text = _landscapeDescriptionExpanded
+                    ? Localization.GetString("ShowLess")
+                    : "…" + Localization.GetString("ShowMore");
+            }
+
+            if (LandscapeDescriptionToggleButton != null)
+                LandscapeDescriptionToggleButton.Visibility = _landscapeDescriptionNeedsToggle
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+        }
+
+        private void SetDescriptionWithLinks(RichTextBlock target, string description)
+        {
+            if (target == null)
+                return;
+
+            target.Blocks.Clear();
             var paragraph = new Paragraph();
             var regex = new Regex(
                 "(?<url>" + DescriptionUrlPattern + ")|(?<time>" + DescriptionTimecodePattern + ")",
@@ -12973,7 +15102,7 @@ namespace YouTube
                 AddDescriptionTextRun(paragraph, description);
             }
 
-            DescriptionTextBlock.Blocks.Add(paragraph);
+            target.Blocks.Add(paragraph);
         }
 
         private void AddDescriptionTextRun(Paragraph paragraph, string text)
@@ -13587,6 +15716,17 @@ namespace YouTube
         public string views { get; set; }
         public string published { get; set; }
         public string duration { get; set; }
+        public double WatchedPercent { get; set; }
+
+        public Windows.UI.Xaml.Visibility WatchedProgressVisibility
+        {
+            get
+            {
+                return WatchedPercent > 0
+                    ? Windows.UI.Xaml.Visibility.Visible
+                    : Windows.UI.Xaml.Visibility.Collapsed;
+            }
+        }
 
         public string MetadataLine
         {
@@ -13628,6 +15768,20 @@ namespace YouTube
         public string Url { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        // Exact port of youtube-ios YTFormat.qualityTier: portrait 1080x1920 is 1080p,
+        // not 1920p. Quality selection and menu labels must always use the short side.
+        public int QualityTier
+        {
+            get
+            {
+                if (Width > 0 && Height > 0)
+                {
+                    return Math.Min(Width, Height);
+                }
+
+                return Height > 0 ? Height : Width;
+            }
+        }
         public string MimeType { get; set; }
         public int Itag { get; set; }
         public int Fps { get; set; }
@@ -13640,6 +15794,9 @@ namespace YouTube
         public bool HasAudio { get; set; }
         public bool HasVideo { get; set; }
         public bool IsAdaptive { get; set; }
+        // The signed googlevideo URL must be fetched as the same client that requested it.
+        // Downloads use this value when creating the BackgroundDownloader operation.
+        public string MediaUserAgent { get; set; }
 
         // Multi-language audio (from the format's "audioTrack"). Empty on single-track videos.
         public string AudioTrackId { get; set; }

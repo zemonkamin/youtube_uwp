@@ -19,12 +19,19 @@ namespace YouTube
         private const double VideoThumbnailAspectRatio = 16.0 / 9.0;
         private const string ResponsiveCardTag = "ResponsiveCard";
         private const int GeneralSubscriptionsFeedCount = 50;
+        private const int SubscriptionsPageSize = 30;
+        private const int LoadMoreAttemptThrottleMs = 600;
         private static readonly Thickness PortraitCardMargin = new Thickness(0, 0, 0, 16);
         private static readonly Thickness LandscapeCardMargin = new Thickness(8, 0, 8, 16);
 
         private ObservableCollection<VideoCardItem> subscriptionVideos;
         private List<SubscriptionChannel> subscribedChannels;
         private double _placeholderCardAspectRatio = 0.82;
+        private bool _isLoadingMore;
+        private bool _isGeneralFeedActive = true;
+        private bool _subscriptionsReachedEnd;
+        private string _subscriptionsContinuationToken = string.Empty;
+        private DateTime _lastLoadMoreAttemptUtc = DateTime.MinValue;
 
         public Subscriptions()
         {
@@ -141,7 +148,20 @@ namespace YouTube
 
                 ShowVideoPlaceholders();
 
-                var videos = await Config.GetSubscriptionsFeedVideosAsync(Config.UserToken, GeneralSubscriptionsFeedCount);
+                _isGeneralFeedActive = true;
+                _subscriptionsReachedEnd = false;
+                _subscriptionsContinuationToken = string.Empty;
+                HideBottomLoadingIndicator();
+
+                var page = await Config.GetSubscriptionsFeedPageAsync(
+                    Config.UserToken,
+                    null,
+                    GeneralSubscriptionsFeedCount);
+                var videos = page != null ? page.Videos : null;
+                _subscriptionsContinuationToken = page != null
+                    ? (page.ContinuationToken ?? string.Empty)
+                    : string.Empty;
+                _subscriptionsReachedEnd = string.IsNullOrWhiteSpace(_subscriptionsContinuationToken);
                 System.Diagnostics.Debug.WriteLine($"[Subscriptions] Got {videos?.Count ?? 0} videos from general subscriptions feed");
 
                 ApplySubscribedChannelAvatars(videos);
@@ -178,6 +198,13 @@ namespace YouTube
 
                 ShowVideoPlaceholders();
 
+                // A channel card switches the page from the combined subscriptions feed to a
+                // channel-specific list. Do not append the combined feed when it reaches bottom.
+                _isGeneralFeedActive = false;
+                _subscriptionsReachedEnd = true;
+                _subscriptionsContinuationToken = string.Empty;
+                HideBottomLoadingIndicator();
+
                 var videos = await Config.GetChannelVideosAsync(channel.ChannelId);
                 System.Diagnostics.Debug.WriteLine($"[Subscriptions] Got {videos?.Count ?? 0} videos for {channel.ChannelName}");
 
@@ -193,6 +220,149 @@ namespace YouTube
             finally
             {
                 HideVideoPlaceholders();
+            }
+        }
+
+        private async void MainScrollViewer_ViewChanged(
+            object sender,
+            ScrollViewerViewChangedEventArgs e)
+        {
+            if (_isLoadingMore || !_isGeneralFeedActive || _subscriptionsReachedEnd)
+            {
+                return;
+            }
+
+            var scrollViewer = sender as ScrollViewer;
+            if (scrollViewer == null || scrollViewer.ScrollableHeight <= 0)
+            {
+                return;
+            }
+
+            if (scrollViewer.VerticalOffset >= scrollViewer.ScrollableHeight - 100)
+            {
+                await LoadMoreSubscriptionsAsync();
+            }
+        }
+
+        private async Task LoadMoreSubscriptionsAsync()
+        {
+            if (_isLoadingMore
+                || !_isGeneralFeedActive
+                || _subscriptionsReachedEnd
+                || string.IsNullOrWhiteSpace(_subscriptionsContinuationToken))
+            {
+                return;
+            }
+
+            Config.LoadUserToken();
+            if (string.IsNullOrWhiteSpace(Config.UserToken))
+            {
+                return;
+            }
+
+            var nowUtc = DateTime.UtcNow;
+            if ((nowUtc - _lastLoadMoreAttemptUtc).TotalMilliseconds < LoadMoreAttemptThrottleMs)
+            {
+                return;
+            }
+            _lastLoadMoreAttemptUtc = nowUtc;
+
+            _isLoadingMore = true;
+            ShowBottomLoadingIndicator();
+
+            try
+            {
+                var tokenUsed = _subscriptionsContinuationToken;
+                var page = await Config.GetSubscriptionsFeedPageAsync(
+                    Config.UserToken,
+                    tokenUsed,
+                    SubscriptionsPageSize);
+
+                var nextToken = page != null
+                    ? (page.ContinuationToken ?? string.Empty)
+                    : string.Empty;
+                _subscriptionsContinuationToken = nextToken;
+                _subscriptionsReachedEnd = string.IsNullOrWhiteSpace(nextToken)
+                    || string.Equals(nextToken, tokenUsed, StringComparison.Ordinal);
+
+                var moreVideos = page != null ? page.Videos : null;
+                ApplySubscribedChannelAvatars(moreVideos);
+                var added = AppendUniqueSubscriptionVideos(moreVideos);
+
+                System.Diagnostics.Debug.WriteLine(
+                    "[Subscriptions] Continuation page added " + added
+                    + ", total=" + subscriptionVideos.Count
+                    + ", hasNext=" + (!_subscriptionsReachedEnd));
+
+                ScheduleResponsiveCardLayoutUpdate();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Subscriptions] Load more error: " + ex.Message);
+            }
+            finally
+            {
+                _isLoadingMore = false;
+                HideBottomLoadingIndicator();
+            }
+        }
+
+        private int AppendUniqueSubscriptionVideos(IEnumerable<VideoCardItem> videos)
+        {
+            if (videos == null)
+            {
+                return 0;
+            }
+
+            var existingIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var existing in subscriptionVideos)
+            {
+                if (existing != null && !string.IsNullOrWhiteSpace(existing.VideoId))
+                {
+                    existingIds.Add(existing.VideoId);
+                }
+            }
+
+            var added = 0;
+            foreach (var video in videos)
+            {
+                if (video == null || string.IsNullOrWhiteSpace(video.VideoId))
+                {
+                    continue;
+                }
+
+                if (existingIds.Add(video.VideoId))
+                {
+                    subscriptionVideos.Add(video);
+                    added++;
+                }
+            }
+
+            return added;
+        }
+
+        private void ShowBottomLoadingIndicator()
+        {
+            if (BottomLoadingPanel != null)
+            {
+                BottomLoadingPanel.Visibility = Visibility.Visible;
+            }
+            if (BottomLoadingRing != null)
+            {
+                BottomLoadingRing.IsActive = true;
+            }
+        }
+
+        private void HideBottomLoadingIndicator()
+        {
+            if (BottomLoadingPanel != null)
+            {
+                BottomLoadingPanel.Visibility = Visibility.Collapsed;
+            }
+            if (BottomLoadingRing != null)
+            {
+                BottomLoadingRing.IsActive = false;
             }
         }
 
