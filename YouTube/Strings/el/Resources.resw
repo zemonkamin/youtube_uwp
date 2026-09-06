@@ -981,7 +981,73 @@
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Εκκαθάριση</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Εκκαθάριση</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Ακύρωση</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Αρχική</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Συνδρομές</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Αναζήτηση...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Λήψεις</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Ιστορικό</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Ειδοποιήσεις</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Ρυθμίσεις</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Λογαριασμός</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Συνδεθείτε για να δείτε το ιστορικό και τις λίστες αναπαραγωγής σας</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Αναζήτηση: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Κανάλι: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Λίστα αναπαραγωγής: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>Σε παύση</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Αναζήτηση στην οριζόντια πλοήγηση</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Εμφάνιση της γραμμής αναζήτησης στο κέντρο</value>
   </data>
 </root>

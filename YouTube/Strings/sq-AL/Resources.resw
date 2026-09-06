@@ -981,7 +981,73 @@ Versioni {0}</value>
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>për vendosmëri politike</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>për vendosmëri politike</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Anulo</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Kreu</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Abonimet</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Po kërkohet...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Shkarkimet</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Historiku</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Njoftimet</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Cilësimet</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Llogaria</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Identifikohu për të parë historikun dhe listat e luajtjes</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Po kërkohet: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Kanali: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Lista e luajtjes: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>Në pauzë</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Kërkimi në navigimin horizontal</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Shfaq shiritin e kërkimit në qendër</value>
   </data>
 </root>

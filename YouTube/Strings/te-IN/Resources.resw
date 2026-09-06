@@ -981,7 +981,73 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>క్లియర్ చేయి</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>క్లియర్ చేయి</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>రద్దు</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>హోమ్</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>సబ్‌స్క్రిప్షన్‌లు</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>శోధిస్తోంది...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>డౌన్‌లోడ్‌లు</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>హిస్టరీ</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>నోటిఫికేషన్లు</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>సెట్టింగ్‌లు</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>ఖాతా</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>మీ హిస్టరీ మరియు ప్లేలిస్టులను చూడటానికి సైన్ ఇన్ చేయండి</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>శోధిస్తోంది: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>ఛానెల్: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>ప్లేలిస్ట్: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>పాజ్ చేయబడింది</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>అడ్డ నావిగేషన్‌లో శోధన</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>శోధన పట్టీని మధ్యలో చూపించు</value>
   </data>
 </root>

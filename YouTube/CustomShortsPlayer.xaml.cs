@@ -51,7 +51,8 @@ namespace YouTube
         }
 
         // Shared with the demuxer only; the plain-URL path uses MediaSource.CreateFromUri.
-        private static readonly System.Net.Http.HttpClient _demuxHttp = new System.Net.Http.HttpClient();
+        private static readonly System.Net.Http.HttpClient _demuxHttp =
+            YouTube.Innertube.YouTubeHttpClient.Shared.RawClient;
 
         // Plays a short through the on-the-fly DASH demuxer (adaptive H.264 video-only + AAC),
         // which is the only way past the muxed-progressive ceiling to 1080p on this platform.

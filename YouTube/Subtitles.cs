@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using Windows.Data.Json;
+using YouTube.Innertube;
 
 namespace YouTube
 {
@@ -94,7 +95,7 @@ namespace YouTube
             }
         }
 
-        private static readonly HttpClient _http = new HttpClient();
+        private static readonly YouTubeHttpClient _http = YouTubeHttpClient.Shared;
 
         // Reads captions.playerCaptionsTracklistRenderer out of a /player response. Returns an
         // empty list rather than throwing when the video has no captions.

@@ -981,7 +981,73 @@
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>ច្បាស់លាស់</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>ច្បាស់លាស់</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>បោះបង់</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>ទំព័រដើម</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>ការជាវ</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>កំពុងស្វែងរក...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>ការទាញយក</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>ប្រវត្តិ</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>ការជូនដំណឹង</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>ការកំណត់</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>គណនី</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>ចូលគណនីដើម្បីមើលប្រវត្តិ និងបញ្ជីចាក់របស់អ្នក</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>កំពុងស្វែងរក: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>ឆានែល: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>បញ្ជីចាក់: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>បានផ្អាក</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>ស្វែងរកក្នុងរបាររុករកផ្ដេក</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>បង្ហាញរបារស្វែងរកនៅកណ្ដាល</value>
   </data>
 </root>

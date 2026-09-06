@@ -28,7 +28,8 @@
                                    TextAlignment="Center"
                                    FontSize="17" FontWeight="SemiBold"
                                    Foreground="{ThemeResource AppPrimaryTextBrush}" />
-                        <Image local:ThemeAsset.Path="Assets/none_downloads.png"
+                        <Image x:Name="EmptyIllustration"
+                               local:ThemeAsset.Path="Assets/none_downloads.png"
                                Width="150" Height="100" Stretch="Uniform" />
                         <TextBlock x:Name="EmptyDescriptionText"
                                    Margin="0,8,0,0"
@@ -64,13 +65,17 @@
                                     Loaded="ResponsiveCard_Loaded"
                                     SizeChanged="ResponsiveCard_SizeChanged"
                                     Margin="0,0,0,16"
+                                    IsHoldingEnabled="True"
+                                    IsRightTapEnabled="True"
+                                    Holding="DownloadCard_Holding"
+                                    RightTapped="DownloadCard_RightTapped"
                                     Click="DownloadCard_Click">
                                 <StackPanel Orientation="Vertical"
                                             Background="{ThemeResource AppBackgroundBrush}"
                                             HorizontalAlignment="Stretch">
                                     <Grid SizeChanged="ThumbnailHost_SizeChanged"
                                           Tag="VideoCardThumbnailChrome">
-                                        <Border Background="{ThemeResource AppSurfaceAltBrush}"
+                                        <Border Background="{ThemeResource VideoPlaceholderBrush}"
                                                 Tag="VideoCardThumbnailChrome" />
                                         <Border Tag="VideoCardThumbnailChrome">
                                             <Image Stretch="UniformToFill"
@@ -162,5 +167,55 @@
 
         <local:Navbar x:Name="navbar" Grid.Row="0" Canvas.ZIndex="20" />
         <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20" />
+
+        <Grid x:Name="DownloadActionsOverlay"
+              Grid.Row="0"
+              Grid.RowSpan="3"
+              Canvas.ZIndex="100"
+              Background="#80000000"
+              Visibility="Collapsed"
+              Tapped="DownloadActionsOverlay_Tapped" />
+
+        <local:BottomSheet x:Name="DownloadActionsSheet"
+                           Grid.Row="0"
+                           Grid.RowSpan="3"
+                           Canvas.ZIndex="101"
+                           MaxHeight="126"
+                           Margin="10,0,10,10"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Bottom"
+                           HandleHeight="36"
+                           HiddenOffset="146"
+                           OverlayElementName="DownloadActionsOverlay">
+            <Button x:Name="DeleteDownloadButton"
+                    Height="64"
+                    Margin="8,0,8,12"
+                    Padding="16,0"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Click="DeleteDownloadButton_Click">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="32" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <FontIcon Grid.Column="0"
+                              Glyph="&#xE74D;"
+                              FontFamily="Segoe MDL2 Assets"
+                              FontSize="18"
+                              Foreground="#FFFF3B30"
+                              VerticalAlignment="Center" />
+                    <TextBlock x:Name="DeleteDownloadText"
+                               Grid.Column="1"
+                               Margin="10,0,0,0"
+                               VerticalAlignment="Center"
+                               FontSize="15"
+                               FontWeight="SemiBold"
+                               Foreground="#FFFF3B30" />
+                </Grid>
+            </Button>
+        </local:BottomSheet>
     </Grid>
 </Page>

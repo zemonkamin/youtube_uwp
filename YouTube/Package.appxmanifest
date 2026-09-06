@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" IgnorableNamespaces="uap mp uap3">
-  <Identity Name="d46c0ca2-0d75-4dff-af84-fa62cfdf49c0" Publisher="CN=zemonkamin" Version="3.2.0.0" />
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap mp uap3 desktop rescap">
+  <Identity Name="d46c0ca2-0d75-4dff-af84-fa62cfdf49c0" Publisher="CN=zemonkamin" Version="3.2.1.0" />
   <mp:PhoneIdentity PhoneProductId="d46c0ca2-0d75-4dff-af84-fa62cfdf49c0" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>YouTube</DisplayName>
@@ -31,16 +31,16 @@
         </uap:InitialRotationPreference>
       </uap:VisualElements>
       <Extensions>
-        <uap:Extension Category="windows.protocol">
-          <uap:Protocol Name="youtubehandler">
-            <uap:DisplayName>YouTube Link Handler</uap:DisplayName>
-          </uap:Protocol>
-        </uap:Extension>
         <Extension Category="windows.backgroundTasks" EntryPoint="YouTube.NotificationBackgroundTask">
           <BackgroundTasks>
             <Task Type="timer" />
           </BackgroundTasks>
         </Extension>
+        <uap:Extension Category="windows.protocol">
+          <uap:Protocol Name="youtubehandler">
+            <uap:DisplayName>YouTube Link Handler</uap:DisplayName>
+          </uap:Protocol>
+        </uap:Extension>
         <uap3:Extension Category="windows.appUriHandler">
           <uap3:AppUriHandler>
             <uap3:Host Name="www.youtube.com" />
@@ -49,12 +49,14 @@
             <uap3:Host Name="youtu.be" />
           </uap3:AppUriHandler>
         </uap3:Extension>
+        <desktop:Extension Category="windows.fullTrustProcess" Executable="Discord\DiscordBridge.exe" />
       </Extensions>
     </Application>
   </Applications>
   <Capabilities>
     <Capability Name="internetClient" />
     <uap3:Capability Name="backgroundMediaPlayback" />
+    <rescap:Capability Name="runFullTrust" />
     <DeviceCapability Name="microphone" />
   </Capabilities>
 </Package>

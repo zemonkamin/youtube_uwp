@@ -24,9 +24,9 @@ namespace YouTube
     internal static class VideoThumbnailController
     {
         public const string SettingKey = "VideoThumbnailQuality";
-        // hqdefault.jpg is available for every YouTube video and is a better default for old
-        // phones than optional maxres/sd images. Users can still choose any other tier.
+        public const string MobileDefaultQuality = "medium";
         public const string DefaultQuality = "high";
+        private static string _cachedSelectedQuality;
 
         private static readonly VideoThumbnailQualityOption[] _options =
         {
@@ -44,6 +44,9 @@ namespace YouTube
 
         public static string GetSelectedQuality()
         {
+            if (!string.IsNullOrWhiteSpace(_cachedSelectedQuality))
+                return _cachedSelectedQuality;
+
             try
             {
                 object raw;
@@ -51,19 +54,27 @@ namespace YouTube
                 {
                     var value = raw.ToString();
                     if (FindOption(value) != null)
-                        return value;
+                    {
+                        _cachedSelectedQuality = value;
+                        return _cachedSelectedQuality;
+                    }
                 }
             }
             catch
             {
             }
 
-            return DefaultQuality;
+            _cachedSelectedQuality = ResponsiveLayout.IsPhoneDevice
+                ? MobileDefaultQuality
+                : DefaultQuality;
+            return _cachedSelectedQuality;
         }
 
         public static void SetSelectedQuality(string quality)
         {
-            var option = FindOption(quality) ?? FindOption(DefaultQuality);
+            var option = FindOption(quality) ?? FindOption(
+                ResponsiveLayout.IsPhoneDevice ? MobileDefaultQuality : DefaultQuality);
+            _cachedSelectedQuality = option.Key;
             try
             {
                 ApplicationData.Current.LocalSettings.Values[SettingKey] = option.Key;
@@ -75,7 +86,54 @@ namespace YouTube
 
         public static VideoThumbnailQualityOption GetSelectedOption()
         {
-            return FindOption(GetSelectedQuality()) ?? FindOption(DefaultQuality);
+            return FindOption(GetSelectedQuality()) ?? FindOption(
+                ResponsiveLayout.IsPhoneDevice ? MobileDefaultQuality : DefaultQuality);
+        }
+
+        internal static string NormalizeBoundVideoThumbnailUrl(string url)
+        {
+            if (!ResponsiveLayout.IsPhoneDevice
+                || !string.Equals(GetSelectedQuality(), MobileDefaultQuality, StringComparison.OrdinalIgnoreCase)
+                || string.IsNullOrWhiteSpace(url))
+                return url ?? string.Empty;
+
+            Uri uri;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
+                return url;
+
+            var host = uri.Host ?? string.Empty;
+            var path = uri.AbsolutePath ?? string.Empty;
+            if ((host.IndexOf("img.youtube.com", StringComparison.OrdinalIgnoreCase) < 0
+                    && host.IndexOf("ytimg.com", StringComparison.OrdinalIgnoreCase) < 0)
+                || (path.IndexOf("/vi/", StringComparison.OrdinalIgnoreCase) < 0
+                    && path.IndexOf("/vi_webp/", StringComparison.OrdinalIgnoreCase) < 0))
+                return url;
+
+            var slash = path.LastIndexOf('/');
+            if (slash < 0 || slash >= path.Length - 1)
+                return url;
+
+            var fileName = path.Substring(slash + 1);
+            if (string.Equals(fileName, "mqdefault.jpg", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(fileName, "mqdefault.webp", StringComparison.OrdinalIgnoreCase))
+                return url;
+            if (!string.Equals(fileName, "default.jpg", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(fileName, "hqdefault.jpg", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(fileName, "sddefault.jpg", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(fileName, "maxresdefault.jpg", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(fileName, "hq720.jpg", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(fileName, "default.webp", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(fileName, "hqdefault.webp", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(fileName, "sddefault.webp", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(fileName, "maxresdefault.webp", StringComparison.OrdinalIgnoreCase))
+                return url;
+
+            var mediumFileName = fileName.EndsWith(".webp", StringComparison.OrdinalIgnoreCase)
+                ? "mqdefault.webp"
+                : "mqdefault.jpg";
+            return uri.Scheme + "://" + uri.Host
+                + path.Substring(0, slash + 1)
+                + mediumFileName;
         }
 
         public static string GetThumbnailUrl(string videoId)

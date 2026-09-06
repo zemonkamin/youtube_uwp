@@ -981,7 +981,73 @@
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>ล้าง</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>ล้าง</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>ยกเลิก</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>หน้าแรก</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>การติดตาม</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>กำลังค้นหา...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>ดาวน์โหลด</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>ประวัติ</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>การแจ้งเตือน</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>การตั้งค่า</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>บัญชี</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>ลงชื่อเข้าใช้เพื่อดูประวัติและเพลย์ลิสต์ของคุณ</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>กำลังค้นหา: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>ช่อง: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>เพลย์ลิสต์: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>หยุดชั่วคราว</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>การค้นหาในการนำทางแนวนอน</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>แสดงแถบค้นหาตรงกลาง</value>
   </data>
 </root>

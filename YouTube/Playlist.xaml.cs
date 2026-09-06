@@ -22,7 +22,7 @@ namespace YouTube
         private static readonly Thickness PortraitCardMargin = new Thickness(0, 0, 0, 16);
         private static readonly Thickness LandscapeCardMargin = new Thickness(8, 0, 8, 16);
 
-        private readonly ObservableCollection<VideoCardItem> _videos = new ObservableCollection<VideoCardItem>();
+        private readonly FastObservableCollection<VideoCardItem> _videos = new FastObservableCollection<VideoCardItem>();
         private Frame _frame;
         private bool _systemBackRegistered;
         private string _playlistId = string.Empty;
@@ -68,6 +68,10 @@ namespace YouTube
                 return;
             }
 
+            YouTube.Discord.DiscordPresenceService.SetPlaylist(
+                _playlistId,
+                _seedItem != null ? _seedItem.Title : _playlistId,
+                _seedItem != null ? _seedItem.ThumbnailUrl : null);
             await LoadPlaylistAsync();
         }
 
@@ -136,6 +140,7 @@ namespace YouTube
 
                 ApplyDetails(details);
                 ShowContent();
+                BeginPlaylistEnrichment(details, _playlistId);
             }
             catch (Exception ex)
             {
@@ -155,6 +160,8 @@ namespace YouTube
                 PlaylistTitleText.Text = details.Title;
                 PlaylistBarTitleText.Text = details.Title;
             }
+
+            YouTube.Discord.DiscordPresenceService.SetPlaylist(_playlistId, PlaylistTitleText.Text, details.ThumbnailUrl);
 
             SetPlaylistCover(details.ThumbnailUrl);
 
@@ -186,6 +193,48 @@ namespace YouTube
             ScheduleResponsiveCardLayoutUpdate();
         }
 
+        private async void BeginPlaylistEnrichment(PlaylistDetails details, string playlistId)
+        {
+            if (details == null || details.DeferredEnrichment == null)
+                return;
+
+            try
+            {
+                await details.DeferredEnrichment;
+                if (!string.Equals(_playlistId, playlistId, StringComparison.Ordinal))
+                    return;
+
+                if (!string.IsNullOrWhiteSpace(details.Title)
+                    && !string.Equals(details.Title, "Playlist", StringComparison.OrdinalIgnoreCase))
+                {
+                    PlaylistTitleText.Text = details.Title;
+                    PlaylistBarTitleText.Text = details.Title;
+                }
+                if (!string.IsNullOrWhiteSpace(details.ThumbnailUrl))
+                    SetPlaylistCover(details.ThumbnailUrl);
+                if (!string.IsNullOrWhiteSpace(details.OwnerName))
+                {
+                    OwnerText.Text = details.OwnerName;
+                    OwnerText.Visibility = Visibility.Visible;
+                }
+                if (!string.IsNullOrWhiteSpace(details.MetadataText))
+                {
+                    PlaylistMetaText.Text = details.MetadataText;
+                    PlaylistMetaText.Visibility = Visibility.Visible;
+                }
+
+                YouTube.Discord.DiscordPresenceService.SetPlaylist(
+                    _playlistId,
+                    PlaylistTitleText.Text,
+                    details.ThumbnailUrl);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Playlist] Deferred enrichment failed: " + ex.Message);
+            }
+        }
+
         private void AppendVideos(IEnumerable<VideoCardItem> videos)
         {
             if (videos == null)
@@ -193,6 +242,7 @@ namespace YouTube
                 return;
             }
 
+            var pending = new List<VideoCardItem>();
             foreach (var video in videos)
             {
                 if (video == null || string.IsNullOrWhiteSpace(video.VideoId))
@@ -202,9 +252,11 @@ namespace YouTube
 
                 if (_loadedVideoIds.Add(video.VideoId))
                 {
-                    _videos.Add(video);
+                    pending.Add(video);
                 }
             }
+
+            _videos.AddRange(pending);
         }
 
         private async Task LoadMoreVideosAsync()
@@ -222,7 +274,10 @@ namespace YouTube
                 Config.LoadUserToken();
                 var refreshToken = Config.UserToken;
                 var oldToken = _playlistContinuationToken;
-                var details = await Config.GetPlaylistContinuationAsync(refreshToken, oldToken, 50);
+                var details = await Config.GetPlaylistContinuationAsync(
+                    refreshToken,
+                    oldToken,
+                    ResponsiveLayout.IsPhoneDevice ? 16 : 50);
 
                 if (details == null)
                 {
@@ -233,6 +288,7 @@ namespace YouTube
 
                 var beforeCount = _videos.Count;
                 AppendVideos(details.Videos);
+                BeginPlaylistContinuationEnrichment(details, oldToken);
                 _playlistContinuationToken = details.ContinuationToken ?? string.Empty;
                 _hasMoreVideos = !string.IsNullOrWhiteSpace(_playlistContinuationToken);
 
@@ -253,6 +309,26 @@ namespace YouTube
             {
                 _isLoadingMoreVideos = false;
                 SetLoadingMoreVisible(false);
+            }
+        }
+
+        private async void BeginPlaylistContinuationEnrichment(
+            PlaylistDetails details,
+            string continuationToken)
+        {
+            if (details == null || details.DeferredEnrichment == null)
+                return;
+
+            try
+            {
+                await details.DeferredEnrichment;
+                if (string.IsNullOrWhiteSpace(continuationToken))
+                    return;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Playlist] Deferred continuation enrichment failed: " + ex.Message);
             }
         }
 
@@ -277,6 +353,7 @@ namespace YouTube
             if (string.IsNullOrWhiteSpace(url))
             {
                 PlaylistHeaderImageBorder.Visibility = Visibility.Collapsed;
+                ResponsiveLayout.ClearVisibilityOverride(PlaylistHeaderImageBorder);
                 return;
             }
 
@@ -288,10 +365,14 @@ namespace YouTube
                     Stretch = Stretch.UniformToFill
                 };
                 PlaylistHeaderImageBorder.Visibility = Visibility.Visible;
+                ResponsiveLayout.ShowInRegularLayout(
+                    PlaylistHeaderImageBorder,
+                    !ResponsiveLayout.IsCompactLandscape);
             }
             catch
             {
                 PlaylistHeaderImageBorder.Visibility = Visibility.Collapsed;
+                ResponsiveLayout.ClearVisibilityOverride(PlaylistHeaderImageBorder);
             }
         }
 
@@ -508,6 +589,14 @@ namespace YouTube
         private void UpdateResponsiveCardLayouts()
         {
             bool isPortrait = IsPortraitOrientation();
+            var compact = ResponsiveLayout.IsCompactLandscape;
+            ResponsiveLayout.ShowInRegularLayout(PlaylistHeaderImageBorder, !compact);
+            if (PlaylistTitleText != null)
+                PlaylistTitleText.FontSize = compact ? 22.0 : 30.0;
+            if (PlaylistInfoPanel != null)
+                PlaylistInfoPanel.Margin = compact
+                    ? new Thickness(16, 6, 16, 8)
+                    : new Thickness(16, 14, 16, 14);
 
             if (VideosItemsControl != null)
             {

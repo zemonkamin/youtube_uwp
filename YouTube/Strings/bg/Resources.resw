@@ -981,7 +981,73 @@
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Изчистване</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Изчистване</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Отказ</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Начало</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Абонаменти</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Търсене...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Изтегляния</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>История</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Известия</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Акаунт</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Влезте, за да видите историята и плейлистите си</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Търсене: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Канал: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Плейлист: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>На пауза</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Търсене в хоризонталната навигация</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Показване на лентата за търсене в центъра</value>
   </data>
 </root>

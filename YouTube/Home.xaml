@@ -234,7 +234,7 @@
                                     <!-- Video Thumbnail -->
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged"
                                           Tag="VideoCardThumbnailChrome">
-                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" />
+                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource VideoPlaceholderBrush}" />
                                         <Border Tag="VideoCardThumbnailChrome">
                                             <Grid>
                                                 <Image DataContextChanged="CardThumbnail_DataContextChanged"

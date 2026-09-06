@@ -19,7 +19,7 @@
     <PackageCertificateKeyFile>YouTube_TemporaryKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <AppxBundleAutoResourcePackageQualifiers>Scale|DXFeatureLevel</AppxBundleAutoResourcePackageQualifiers>
     <AppxDefaultResourceQualifiers>Language=af-ZA;az-Latn-AZ;id-ID;ms-MY;bs-Latn-BA;ca-ES;cs-CZ;da-DK;de-DE;et-EE;en-IN;en-GB;en-US;es-ES;es-MX;es-US;eu-ES;fil-PH;fr-FR;fr-CA;gl-ES;hr-HR;zu-ZA;is-IS;it-IT;sw-KE;lv-LV;lt-LT;hu-HU;nl-NL;nb-NO;uz-Latn-UZ;pl-PL;pt-PT;pt-BR;ro-RO;sq-AL;sk-SK;sl-SI;sr-Latn-RS;fi-FI;sv-SE;vi-VN;tr-TR;be-BY;bg-BG;ky-KG;kk-KZ;mk-MK;mn-MN;ru-RU;sr-Cyrl-RS;uk-UA;el-GR;hy-AM;ne-NP;mr-IN;hi-IN;as-IN;bn-BD;pa-IN;gu-IN;or-IN;ta-IN;te-IN;kn-IN;ml-IN;si-LK;th-TH;lo-LA;my-MM;ka-GE;am-ET;km-KH;zh-CN;zh-TW;zh-HK;ja-JP;ko-KR|Contrast=standard|Scale=200|HomeRegion=001|TargetSize=256|LayoutDirection=LTR|DXFeatureLevel=DX9|Configuration=|AlternateForm=</AppxDefaultResourceQualifiers>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
@@ -100,6 +100,10 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Content Include="Assets\**\*.*" />
+    <Content Include="Discord\Bridge\bin\x86\$(Configuration)\DiscordBridge.exe">
+      <Link>Discord\DiscordBridge.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="project.json" />
     <None Include="YouTube_TemporaryKey.pfx" />
   </ItemGroup>
@@ -113,10 +117,16 @@
     <Compile Include="Channel.xaml.cs">
       <DependentUpon>Channel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Config.cs" />
+    <Compile Include="FastObservableCollection.cs" />
     <Compile Include="FluentGlassEffectHelper.cs" />
+    <Compile Include="ResponsiveLayout.cs" />
     <Compile Include="Localization.cs" />
+    <Compile Include="LandscapeNavbarSearchModeController.cs" />
+    <Compile Include="SearchQueryStateController.cs" />
     <Compile Include="DashDemuxer.cs" />
+    <Compile Include="Discord\Config.cs" />
+    <Compile Include="Discord\DiscordPresenceService.cs" />
+    <Compile Include="Discord\DiscordRpcClient.cs" />
     <Compile Include="Converters\VideoInfoConverters.cs" />
     <Compile Include="CustomMediaTransportControls.cs" />
     <Compile Include="CustomShortsPlayer.xaml.cs">
@@ -125,6 +135,7 @@
     <Compile Include="CustomVideoPlayer.xaml.cs">
       <DependentUpon>CustomVideoPlayer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="BottomSheet.cs" />
     <Compile Include="DownloadManager.cs" />
     <Compile Include="Downloads.xaml.cs">
       <DependentUpon>Downloads.xaml</DependentUpon>
@@ -132,6 +143,20 @@
     <Compile Include="History.xaml.cs">
       <DependentUpon>History.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Innertube\FastJson.cs" />
+    <Compile Include="Innertube\InnertubeRequestCoordinator.cs" />
+    <Compile Include="Innertube\Config.cs" />
+    <Compile Include="Innertube\Config.GuestHome.cs" />
+    <Compile Include="Innertube\Config.Performance.cs" />
+    <Compile Include="Innertube\Config.Playlists.cs" />
+    <Compile Include="Innertube\InnertubeEndpoints.cs" />
+    <Compile Include="Innertube\OAuthClient.cs" />
+    <Compile Include="Innertube\SearchSuggestionsClient.cs" />
+    <Compile Include="Innertube\TvSignInClient.cs" />
+    <Compile Include="Innertube\YouTubeApiConfig.cs" />
+    <Compile Include="Innertube\YouTubeHttpClient.cs" />
+    <Compile Include="Innertube\YouTubeImageClient.cs" />
+    <Compile Include="Innertube\YouTubeThumbnailClient.cs" />
     <Compile Include="Home.xaml.cs">
       <DependentUpon>Home.xaml</DependentUpon>
     </Compile>
@@ -140,6 +165,7 @@
     <Compile Include="ShortsFeatureController.cs" />
     <Compile Include="VideoThumbnailController.cs" />
     <Compile Include="VideoCardController.cs" />
+    <Compile Include="VideoAmbientEffect.cs" />
     <Compile Include="StoryboardThumbnails.cs" />
     <Compile Include="MiniPlayer.cs" />
     <Compile Include="Mp4DownloadMuxer.cs" />
@@ -185,6 +211,34 @@
     <Compile Include="Video.xaml.cs">
       <DependentUpon>Video.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Video.AdaptivePlayback.Part1.cs" />
+    <Compile Include="Video.AdaptivePlayback.Part2.cs" />
+    <Compile Include="Video.CardsAndSkeletons.cs" />
+    <Compile Include="Video.DescriptionAndComments.cs" />
+    <Compile Include="Video.Downloads.cs" />
+    <Compile Include="Video.FormatSelection.Part1.cs" />
+    <Compile Include="Video.FormatSelection.Part2.cs" />
+    <Compile Include="Video.InnertubeAuthAndParsing.cs" />
+    <Compile Include="Video.InnertubeRequests.cs" />
+    <Compile Include="Video.LayoutAndTheme.cs" />
+    <Compile Include="Video.LifecycleAndErrors.cs" />
+    <Compile Include="Video.MetadataExtraction.Part1.cs" />
+    <Compile Include="Video.MetadataExtraction.Part2.cs" />
+    <Compile Include="Video.MiniPlayerAndNavigation.cs" />
+    <Compile Include="Video.OverlaySheets.cs" />
+    <Compile Include="Video.PlaybackSources.Part1.cs" />
+    <Compile Include="Video.PlaybackSources.Part2.cs" />
+    <Compile Include="Video.RatingsActions.cs" />
+    <Compile Include="Video.RatingsState.cs" />
+    <Compile Include="Video.RelatedAndPlaylist.cs" />
+    <Compile Include="Video.RelatedExtraction.Part1.cs" />
+    <Compile Include="Video.RelatedExtraction.Part2.cs" />
+    <Compile Include="Video.SettingsAndQuality.cs" />
+    <Compile Include="Video.SharingAndSaving.cs" />
+    <Compile Include="Video.SubscriptionParsing.cs" />
+    <Compile Include="Video.Subscriptions.cs" />
+    <Compile Include="Video.TracksAndPlaybackOptions.cs" />
+    <Compile Include="Video.VideoLoading.cs" />
     <Compile Include="RelatedVideoItem.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -369,11 +423,23 @@
     <SDKReference Include="WindowsMobile, Version=10.0.14393.0">
       <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
+    <!-- FullTrustProcessLauncher is desktop-only and is guarded by DeviceFamily/ApiInformation. -->
+    <SDKReference Include="WindowsDesktop, Version=10.0.14393.0">
+      <Name>Windows Desktop Extensions for the UWP</Name>
+    </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <Target Name="StopStaleDiscordBridge" BeforeTargets="BuildDiscordBridge;Deploy" Condition="'$(Configuration)' == 'Debug' and '$(Platform)' == 'x86'">
+    <!-- FullTrustProcessLauncher processes can outlive the debug UWP instance. Stop only bridge
+         copies launched from this project tree, otherwise Deploy cannot replace AppX\Discord. -->
+    <Exec ContinueOnError="true" Command="powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -Command &quot;$root=[IO.Path]::GetFullPath('$(MSBuildProjectDirectory)'); foreach($item in (Get-Process -Name DiscordBridge -ErrorAction SilentlyContinue)){ try { if($item.Path -and $item.Path.StartsWith($root,[StringComparison]::OrdinalIgnoreCase)){ Stop-Process -Id $item.Id -Force -ErrorAction SilentlyContinue } } catch {} }; exit 0&quot;" />
+  </Target>
+  <Target Name="BuildDiscordBridge" BeforeTargets="PrepareForBuild">
+    <MSBuild Projects="Discord\Bridge\DiscordBridge.csproj" Targets="Build" RemoveProperties="OutputPath;BaseIntermediateOutputPath;IntermediateOutputPath;AppxPackageDir;AppxBundle" Properties="Configuration=$(Configuration);Platform=x86" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

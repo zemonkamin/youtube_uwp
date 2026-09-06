@@ -1,0 +1,9 @@
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\bin\x86\Debug\DiscordBridge.exe
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\bin\x86\Debug\DiscordBridge.pdb
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\obj\x86\Debug\DiscordBridge.csprojResolveAssemblyReference.cache
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\obj\x86\Debug\DiscordBridge.exe
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\obj\x86\Debug\DiscordBridge.pdb
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\bin\codex_perf_check\x86\Debug\arm\DiscordBridge.exe
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\bin\codex_perf_check\x86\Debug\arm\DiscordBridge.pdb
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\bin\ARM\Debug\x86\DiscordBridge.exe
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\bin\ARM\Debug\x86\DiscordBridge.pdb

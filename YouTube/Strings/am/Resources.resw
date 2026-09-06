@@ -981,7 +981,73 @@
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>አጥፋ</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>አጥፋ</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>ሰርዝ</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>መነሻ</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>ምዝገባዎች</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>በመፈለግ ላይ...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>ውርዶች</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>ታሪክ</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>ማሳወቂያዎች</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>ቅንብሮች</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>መለያ</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>ታሪክዎንና የማጫወቻ ዝርዝሮችዎን ለማየት ይግቡ</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>በመፈለግ ላይ: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>ቻናል: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>የማጫወቻ ዝርዝር: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>ለአፍታ ቆሟል</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>ፍለጋ በአግድም አሰሳ</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>የፍለጋ አሞሌውን መሃል ላይ አሳይ</value>
   </data>
 </root>

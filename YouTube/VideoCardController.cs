@@ -15,6 +15,14 @@ namespace YouTube
 
         public static void ApplyResponsiveLayout(DependencyObject root, bool isPortrait)
         {
+            ApplyResponsiveLayout(root, isPortrait, true);
+        }
+
+        public static void ApplyResponsiveLayout(
+            DependencyObject root,
+            bool isPortrait,
+            bool useRoundingTexture)
+        {
             if (root == null)
                 return;
 
@@ -36,7 +44,7 @@ namespace YouTube
                     if (thumbnailGrid != null)
                     {
                         var texture = EnsureRoundingTexture(thumbnailGrid);
-                        texture.Visibility = isPortrait
+                        texture.Visibility = isPortrait || !useRoundingTexture
                             ? Visibility.Collapsed
                             : Visibility.Visible;
                     }
@@ -52,7 +60,10 @@ namespace YouTube
 
             var childCount = VisualTreeHelper.GetChildrenCount(root);
             for (var i = 0; i < childCount; i++)
-                ApplyResponsiveLayout(VisualTreeHelper.GetChild(root, i), isPortrait);
+                ApplyResponsiveLayout(
+                    VisualTreeHelper.GetChild(root, i),
+                    isPortrait,
+                    useRoundingTexture);
         }
 
         private static Image EnsureRoundingTexture(Grid thumbnailGrid)

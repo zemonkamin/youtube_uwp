@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic; // Added for List<T>
+using System.Collections.ObjectModel;
 using System.Net.Http;
 using Windows.Media;
 using Windows.Media.Core;
@@ -22,6 +23,7 @@ using System.Threading;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.System;
+using YouTube.Innertube;
 
 namespace YouTube
 {
@@ -31,6 +33,22 @@ namespace YouTube
         {
             public TimeSpan Position { get; set; }
             public string Title { get; set; }
+        }
+
+        public sealed class FullscreenRelatedVideoRequestedEventArgs : EventArgs
+        {
+            public string VideoId { get; set; }
+            public string PlaylistId { get; set; }
+        }
+
+        public sealed class FullscreenRelatedVideoItem
+        {
+            public string VideoId { get; set; }
+            public string PlaylistId { get; set; }
+            public string Title { get; set; }
+            public string Author { get; set; }
+            public string Duration { get; set; }
+            public BitmapImage ThumbnailSource { get; set; }
         }
 
 
@@ -60,7 +78,7 @@ namespace YouTube
             "com.google.ios.youtube/19.16.3 (iPhone16,2; U; CPU iOS 18_0 like Mac OS X)";
         private const string YouTubeReferer = "https://www.youtube.com/";
         private const string RequiredHlsAvcCodec = "avc1.4D401F,mp4a.40.2";
-        private static readonly HttpClient _hlsHttpClient = new HttpClient();
+        private static readonly YouTubeHttpClient _hlsHttpClient = YouTubeHttpClient.Shared;
         private bool _usingSeparateAudio = false;
         private CancellationTokenSource _audioInitCts;
         private CancellationTokenSource _audioResumeCts;
@@ -133,6 +151,10 @@ namespace YouTube
         private bool _suppressAutoPlayUntilSeparateAudioReady = false;
         private bool _pendingAutoPlayAfterSeparateAudioReady = false;
         private bool _playImmediatelyAfterSeparateAudioOpened = false;
+        // A MediaOpened callback may arrive long after the user pressed Pause. Keep that
+        // explicit intent separate from transient MediaPlayer states so late audio/video
+        // setup is never allowed to restart playback behind the user's back.
+        private bool _userPauseRequested = false;
         private DateTime _separateAudioAutoplayPauseBlockUntilUtc = DateTime.MinValue;
         // After seek/resume a stream can report ready, start, and then immediately enter Buffering.
         // These fields implement an event-driven recovery barrier: pause both sides immediately,
@@ -164,7 +186,25 @@ namespace YouTube
         private TimeSpan? _pendingSeekTarget;
         private DispatcherTimer _seekDebounceTimer;
         private DispatcherTimer _updateTimer;
+        private readonly VideoAmbientRenderer _ambientRenderer = new VideoAmbientRenderer();
+        private FrameworkElement _ambientGlowHost;
+        private FrameworkElement _ambientPageBackdropHost;
+        private FrameworkElement _ambientNavbarGlassSourceHost;
+        private FrameworkElement _ambientTabbarGlassSourceHost;
+        private int _ambientResizeGeneration;
         private bool _isFullscreen = false;
+        private readonly ObservableCollection<FullscreenRelatedVideoItem> _fullscreenRelatedVideos =
+            new ObservableCollection<FullscreenRelatedVideoItem>();
+        private bool _fullscreenRelatedPanelOpen;
+        private bool _fullscreenRelatedGestureTracking;
+        private bool _fullscreenRelatedGestureActive;
+        private bool _fullscreenRelatedGestureStartedOpen;
+        private Point _fullscreenRelatedGestureStart;
+        private Storyboard _fullscreenRelatedStoryboard;
+        private const double FullscreenRelatedGestureStartDistance = 10.0;
+        private const double FullscreenRelatedGestureCommitDistance = 68.0;
+        private bool _isReparentingForFullscreen;
+        private int _ambientReparentGeneration;
         private Panel _originalParent;
         private ApplicationView _applicationView;
         private bool _isWindowFullscreen = false;
@@ -189,7 +229,10 @@ namespace YouTube
         private DispatcherTimer _autoHideTimer; // Timer to auto-hide controls after inactivity
         private bool _isMiniMode; // True while docked in the floating mini-player
         private bool _controlsVisible = true; // Track controls visibility state
+        private int _controlsVisibilityGeneration;
         private int _fadeCounter = 0; // Counter for fade operations
+        private CoreCursor _fullscreenCursorBeforeHide;
+        private bool _fullscreenCursorHidden;
         private bool _videoLoaded = false; // Track if video is loaded and playing
         private TimeSpan _parsedDuration = TimeSpan.Zero; // Store parsed duration from API
         
@@ -233,6 +276,8 @@ namespace YouTube
         // Raised when playback cannot keep up with real time for several seconds, so the page
         // can drop to a lighter quality instead of grinding to a halt and crashing.
         public event EventHandler<object> PlaybackStalling;
+        public event EventHandler<object> PlaybackRecoveryRequested;
+        public event EventHandler<FullscreenRelatedVideoRequestedEventArgs> RelatedVideoRequested;
         private int _slowPlaybackCounter;
 
         // Property to set the parsed duration from API
@@ -271,6 +316,33 @@ namespace YouTube
         private DispatcherTimer _sourceLoadingTimeoutTimer;
 
         public bool IsSourceLoading { get { return _sourceLoading; } }
+
+        public void SetAmbientHosts(
+            FrameworkElement glowHost,
+            FrameworkElement pageBackdropHost,
+            FrameworkElement navbarGlassSourceHost,
+            FrameworkElement tabbarGlassSourceHost)
+        {
+            _ambientGlowHost = glowHost;
+            _ambientPageBackdropHost = pageBackdropHost;
+            _ambientNavbarGlassSourceHost = navbarGlassSourceHost;
+            _ambientTabbarGlassSourceHost = tabbarGlassSourceHost;
+            ConfigureAmbientRendererHosts();
+        }
+
+        private void ConfigureAmbientRendererHosts()
+        {
+            _ambientRenderer.SetHosts(
+                AmbientVideoHost,
+                AmbientTopBarHost,
+                AmbientBottomBarHost,
+                AmbientLeftBarHost,
+                AmbientRightBarHost,
+                _ambientGlowHost,
+                _ambientPageBackdropHost,
+                _ambientNavbarGlassSourceHost,
+                _ambientTabbarGlassSourceHost);
+        }
 
         // A new quality stream started loading: show the spinner and block play/seek until the
         // source is actually ready (MediaOpened) or fails.
@@ -369,6 +441,7 @@ namespace YouTube
         public CustomVideoPlayer()
         {
             this.InitializeComponent();
+            FullscreenRelatedItems.ItemsSource = _fullscreenRelatedVideos;
             InitializePlayer();
             SponsorBlock.TimelineMarkerVisibilityChanged += SponsorBlock_TimelineMarkerVisibilityChanged;
             
@@ -450,6 +523,11 @@ namespace YouTube
         private void CustomVideoPlayer_Loaded(object sender, RoutedEventArgs e)
         {
             AttachKeyboardShortcuts();
+            VideoAmbientEffectController.EnabledChanged -= VideoAmbientEffect_EnabledChanged;
+            VideoAmbientEffectController.EnabledChanged += VideoAmbientEffect_EnabledChanged;
+            FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
+            FluentGlassEffectHelper.EnabledChanged += GlassEffect_EnabledChanged;
+            RefreshAmbientVideoEffect();
 
             // Get references to the Image controls directly
             // Since the Image controls have x:Name attributes, they should be accessible directly
@@ -488,7 +566,116 @@ namespace YouTube
         
         private void CustomVideoPlayer_Unloaded(object sender, RoutedEventArgs e)
         {
+            // Entering/exiting fullscreen reparents this same control through a Popup. Clearing
+            // composition surfaces here races the new visual tree and leaves both ambient bars
+            // and the page backdrop detached after returning from fullscreen.
+            if (_isReparentingForFullscreen)
+                return;
+
             DetachKeyboardShortcuts();
+            VideoAmbientEffectController.EnabledChanged -= VideoAmbientEffect_EnabledChanged;
+            FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
+            // Video pages use NavigationCacheMode.Required and this control is also reparented by
+            // the mini-player/fullscreen flows. Unloaded therefore does not mean final teardown.
+            // Keep the media surface and child visuals alive; Dispose remains the sole owner of
+            // permanent composition cleanup.
+        }
+
+        private void VideoAmbientEffect_EnabledChanged(object sender, EventArgs e)
+        {
+            RefreshAmbientVideoEffect();
+        }
+
+        private void GlassEffect_EnabledChanged(object sender, EventArgs e)
+        {
+            RefreshAmbientVideoEffect();
+        }
+
+        private void RefreshAmbientVideoEffect()
+        {
+            ConfigureAmbientRendererHosts();
+            UpdateAmbientBarLayout();
+            _ambientRenderer.Refresh(
+                MediaPlayer == null ? null : MediaPlayer.MediaPlayer,
+                _isFullscreen);
+        }
+
+        private async void PlayerGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateAmbientBarLayout();
+            if (!VideoAmbientEffectController.IsEnabled())
+            {
+                _ambientResizeGeneration++;
+                return;
+            }
+
+            // Recreating composition brushes for every intermediate rotation size is one of the
+            // most expensive operations on Lumia-class hardware. Refresh once after the newest
+            // size arrives; expression-driven hosts continue following the geometry meanwhile.
+            var generation = ++_ambientResizeGeneration;
+            await Task.Delay(ResponsiveLayout.IsPhoneDevice ? 60 : 30);
+            if (generation == _ambientResizeGeneration && !_isDisposed)
+                RefreshAmbientVideoEffect();
+            else if (!VideoAmbientEffectController.IsEnabled())
+                UpdateAmbientBarLayout();
+        }
+
+        public void SuspendNonPlaybackVisuals()
+        {
+            if (_isReparentingForFullscreen)
+                return;
+
+            _ambientRenderer.ClearVisuals();
+            if (_autoHideTimer != null) _autoHideTimer.Stop();
+            if (_skipOverlayTimer != null) _skipOverlayTimer.Stop();
+            if (_controlsTimer != null) _controlsTimer.Stop();
+        }
+
+        public void ResumeNonPlaybackVisuals()
+        {
+            if (!_isDisposed)
+                RefreshAmbientVideoEffect();
+        }
+
+        private void UpdateAmbientBarLayout()
+        {
+            if (PlayerGrid == null || AmbientTopBarHost == null || AmbientBottomBarHost == null
+                || AmbientLeftBarHost == null || AmbientRightBarHost == null)
+                return;
+
+            var containerWidth = PlayerGrid.ActualWidth;
+            var containerHeight = PlayerGrid.ActualHeight;
+            if (containerWidth <= 0 || containerHeight <= 0)
+                return;
+
+            double videoWidth = 16;
+            double videoHeight = 9;
+            try
+            {
+                var session = MediaPlayer == null || MediaPlayer.MediaPlayer == null
+                    ? null
+                    : MediaPlayer.MediaPlayer.PlaybackSession;
+                if (session != null && session.NaturalVideoWidth > 0 && session.NaturalVideoHeight > 0)
+                {
+                    videoWidth = session.NaturalVideoWidth;
+                    videoHeight = session.NaturalVideoHeight;
+                }
+            }
+            catch { }
+
+            var videoAspect = videoWidth / videoHeight;
+            var containerAspect = containerWidth / containerHeight;
+            double horizontalBar = 0;
+            double verticalBar = 0;
+            if (containerAspect > videoAspect)
+                horizontalBar = Math.Max(0, (containerWidth - containerHeight * videoAspect) / 2.0);
+            else
+                verticalBar = Math.Max(0, (containerHeight - containerWidth / videoAspect) / 2.0);
+
+            AmbientLeftBarHost.Width = horizontalBar;
+            AmbientRightBarHost.Width = horizontalBar;
+            AmbientTopBarHost.Height = verticalBar;
+            AmbientBottomBarHost.Height = verticalBar;
         }
 
         private void AttachKeyboardShortcuts()
@@ -749,7 +936,19 @@ namespace YouTube
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
+            ResetAutoHideTimer();
+            FadeInControls();
             RaiseMinimizeRequested();
+        }
+
+        private void ControlButton_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            // Auto-hide used to be able to finish between PointerPressed and Click, disabling
+            // hit testing and randomly swallowing Settings/Minimize/Fullscreen. Make this press
+            // a new visibility generation and keep the timer stopped until Click handles it.
+            FadeInControls();
+            if (_autoHideTimer != null)
+                _autoHideTimer.Stop();
         }
 
         private void RaiseMinimizeRequested()
@@ -779,6 +978,20 @@ namespace YouTube
                 return;
             }
 
+            if (_isFullscreen && PlayerGrid != null)
+            {
+                if (!CanBeginFullscreenRelatedGesture(e.OriginalSource as DependencyObject))
+                {
+                    return;
+                }
+
+                _fullscreenRelatedGestureTracking = true;
+                _fullscreenRelatedGestureActive = false;
+                _fullscreenRelatedGestureStartedOpen = _fullscreenRelatedPanelOpen;
+                _fullscreenRelatedGestureStart = e.GetCurrentPoint(PlayerGrid).Position;
+                return;
+            }
+
             if (_isMiniMode || _isFullscreen || PlayerGrid == null)
             {
                 return;
@@ -804,6 +1017,38 @@ namespace YouTube
                     subtitlePoint.X / Math.Max(1.0, PlayerGrid.ActualWidth),
                     subtitlePoint.Y / Math.Max(1.0, PlayerGrid.ActualHeight));
                 UpdateSubtitleOverlayMetrics();
+                e.Handled = true;
+                return;
+            }
+
+            if (_fullscreenRelatedGestureTracking && _isFullscreen && PlayerGrid != null)
+            {
+                var relatedPoint = e.GetCurrentPoint(PlayerGrid).Position;
+                var relatedDx = relatedPoint.X - _fullscreenRelatedGestureStart.X;
+                var relatedDy = relatedPoint.Y - _fullscreenRelatedGestureStart.Y;
+
+                if (!_fullscreenRelatedGestureActive)
+                {
+                    if (Math.Abs(relatedDy) < FullscreenRelatedGestureStartDistance
+                        || Math.Abs(relatedDy) <= Math.Abs(relatedDx))
+                    {
+                        return;
+                    }
+
+                    var validDirection = _fullscreenRelatedGestureStartedOpen
+                        ? relatedDy > 0 : relatedDy < 0;
+                    if (!validDirection)
+                    {
+                        _fullscreenRelatedGestureTracking = false;
+                        return;
+                    }
+
+                    _fullscreenRelatedGestureActive = true;
+                    try { PlayerGrid.CapturePointer(e.Pointer); } catch { }
+                    PrepareFullscreenRelatedOverlayForDrag();
+                }
+
+                UpdateFullscreenRelatedDrag(relatedDy);
                 e.Handled = true;
                 return;
             }
@@ -837,13 +1082,245 @@ namespace YouTube
                 }
                 e.Handled = true;
             }
+
+            if (_fullscreenRelatedGestureTracking)
+            {
+                var dy = PlayerGrid != null && e != null
+                    ? e.GetCurrentPoint(PlayerGrid).Position.Y - _fullscreenRelatedGestureStart.Y
+                    : 0;
+                var completedGesture = _fullscreenRelatedGestureActive;
+                var show = _fullscreenRelatedGestureStartedOpen
+                    ? dy < FullscreenRelatedGestureCommitDistance
+                    : -dy >= FullscreenRelatedGestureCommitDistance;
+
+                _fullscreenRelatedGestureTracking = false;
+                _fullscreenRelatedGestureActive = false;
+                try
+                {
+                    if (PlayerGrid != null && e != null && e.Pointer != null)
+                        PlayerGrid.ReleasePointerCapture(e.Pointer);
+                }
+                catch { }
+
+                if (completedGesture)
+                {
+                    AnimateFullscreenRelatedPanel(show);
+                    e.Handled = true;
+                }
+            }
             _minimizeSwipeTracking = false;
+        }
+
+        private bool CanBeginFullscreenRelatedGesture(DependencyObject originalSource)
+        {
+            if (!_isFullscreen || _fullscreenRelatedVideos.Count == 0)
+                return false;
+
+            var current = originalSource;
+            while (current != null && current != PlayerGrid)
+            {
+                if (current is ButtonBase || current is Slider || current is ScrollViewer
+                    || ReferenceEquals(current, ProgressSliderHitArea)
+                    || ReferenceEquals(current, BottomControlsPanel))
+                {
+                    return false;
+                }
+                current = VisualTreeHelper.GetParent(current);
+            }
+            return true;
+        }
+
+        private double GetFullscreenRelatedPanelHeight()
+        {
+            if (FullscreenRelatedPanel != null && FullscreenRelatedPanel.ActualHeight > 0)
+                return FullscreenRelatedPanel.ActualHeight;
+            return 196;
+        }
+
+        private void StopFullscreenRelatedAnimation()
+        {
+            if (_fullscreenRelatedStoryboard == null)
+                return;
+            try { _fullscreenRelatedStoryboard.Stop(); } catch { }
+            _fullscreenRelatedStoryboard = null;
+        }
+
+        private void PrepareFullscreenRelatedOverlayForDrag()
+        {
+            StopFullscreenRelatedAnimation();
+            FullscreenRelatedOverlay.Visibility = Visibility.Visible;
+            FullscreenRelatedOverlay.UpdateLayout();
+            if (!_fullscreenRelatedGestureStartedOpen)
+            {
+                FullscreenRelatedPanelTransform.Y = GetFullscreenRelatedPanelHeight();
+                FullscreenRelatedBackdrop.Opacity = 0;
+            }
+        }
+
+        private void UpdateFullscreenRelatedDrag(double dy)
+        {
+            var height = Math.Max(1, GetFullscreenRelatedPanelHeight());
+            double offset;
+            if (_fullscreenRelatedGestureStartedOpen)
+                offset = Math.Max(0, Math.Min(height, dy));
+            else
+                offset = Math.Max(0, Math.Min(height, height + dy));
+
+            FullscreenRelatedPanelTransform.Y = offset;
+            FullscreenRelatedBackdrop.Opacity = Math.Max(0, Math.Min(1, 1 - (offset / height)));
+        }
+
+        private void AnimateFullscreenRelatedPanel(bool show)
+        {
+            if (!_isFullscreen || _fullscreenRelatedVideos.Count == 0)
+            {
+                CloseFullscreenRelatedPanelImmediately();
+                return;
+            }
+
+            StopFullscreenRelatedAnimation();
+            FullscreenRelatedOverlay.Visibility = Visibility.Visible;
+            FullscreenRelatedOverlay.UpdateLayout();
+            var height = GetFullscreenRelatedPanelHeight();
+            if (!show && FullscreenRelatedPanelTransform.Y <= 0.1)
+                FullscreenRelatedPanelTransform.Y = 0;
+
+            var panelAnimation = new DoubleAnimation
+            {
+                To = show ? 0 : height,
+                Duration = TimeSpan.FromMilliseconds(260),
+                EnableDependentAnimation = true,
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+            var backdropAnimation = new DoubleAnimation
+            {
+                To = show ? 1 : 0,
+                Duration = TimeSpan.FromMilliseconds(220),
+                EnableDependentAnimation = true,
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+            Storyboard.SetTarget(panelAnimation, FullscreenRelatedPanelTransform);
+            Storyboard.SetTargetProperty(panelAnimation, "Y");
+            Storyboard.SetTarget(backdropAnimation, FullscreenRelatedBackdrop);
+            Storyboard.SetTargetProperty(backdropAnimation, "Opacity");
+
+            var storyboard = new Storyboard();
+            _fullscreenRelatedStoryboard = storyboard;
+            storyboard.Children.Add(panelAnimation);
+            storyboard.Children.Add(backdropAnimation);
+            storyboard.Completed += (s, args) =>
+            {
+                if (!ReferenceEquals(_fullscreenRelatedStoryboard, storyboard))
+                    return;
+                _fullscreenRelatedStoryboard = null;
+                _fullscreenRelatedPanelOpen = show;
+                if (!show)
+                    FullscreenRelatedOverlay.Visibility = Visibility.Collapsed;
+            };
+
+            _fullscreenRelatedPanelOpen = show;
+            if (show)
+            {
+                if (_autoHideTimer != null) _autoHideTimer.Stop();
+                FadeOutControls();
+            }
+            else
+            {
+                FadeInControls();
+            }
+            storyboard.Begin();
+        }
+
+        private void CloseFullscreenRelatedPanelImmediately()
+        {
+            StopFullscreenRelatedAnimation();
+            _fullscreenRelatedGestureTracking = false;
+            _fullscreenRelatedGestureActive = false;
+            _fullscreenRelatedPanelOpen = false;
+            if (FullscreenRelatedPanelTransform != null)
+                FullscreenRelatedPanelTransform.Y = GetFullscreenRelatedPanelHeight();
+            if (FullscreenRelatedBackdrop != null)
+                FullscreenRelatedBackdrop.Opacity = 0;
+            if (FullscreenRelatedOverlay != null)
+                FullscreenRelatedOverlay.Visibility = Visibility.Collapsed;
+        }
+
+        private void FullscreenRelatedBackdrop_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (_fullscreenRelatedPanelOpen)
+                AnimateFullscreenRelatedPanel(false);
+            e.Handled = true;
+        }
+
+        private void FullscreenRelatedCard_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            var item = button != null ? button.DataContext as FullscreenRelatedVideoItem : null;
+            if (item == null || string.IsNullOrWhiteSpace(item.VideoId))
+                return;
+
+            AnimateFullscreenRelatedPanel(false);
+            var handler = RelatedVideoRequested;
+            if (handler != null)
+            {
+                handler(this, new FullscreenRelatedVideoRequestedEventArgs
+                {
+                    VideoId = item.VideoId,
+                    PlaylistId = item.PlaylistId
+                });
+            }
+        }
+
+        internal void SetRelatedVideos(IList<RelatedVideoCardItem> items)
+        {
+            _fullscreenRelatedVideos.Clear();
+            if (items != null)
+            {
+                for (var index = 0; index < items.Count; index++)
+                {
+                    var source = items[index];
+                    if (source == null || string.IsNullOrWhiteSpace(source.video_id))
+                        continue;
+
+                    BitmapImage thumbnail = null;
+                    var url = !string.IsNullOrWhiteSpace(source.large_thumbnail)
+                        ? source.large_thumbnail : source.thumbnail;
+                    try
+                    {
+                        Uri uri;
+                        if (!string.IsNullOrWhiteSpace(url)
+                            && Uri.TryCreate(url, UriKind.Absolute, out uri))
+                        {
+                            thumbnail = new BitmapImage();
+                            thumbnail.DecodePixelWidth = 320;
+                            thumbnail.UriSource = uri;
+                        }
+                    }
+                    catch { }
+
+                    _fullscreenRelatedVideos.Add(new FullscreenRelatedVideoItem
+                    {
+                        VideoId = source.video_id,
+                        PlaylistId = source.playlist_id,
+                        Title = source.title ?? string.Empty,
+                        Author = source.author ?? string.Empty,
+                        Duration = source.duration ?? string.Empty,
+                        ThumbnailSource = thumbnail
+                    });
+                }
+            }
+
+            if (_fullscreenRelatedVideos.Count == 0)
+                CloseFullscreenRelatedPanelImmediately();
         }
 
         private void FadeInControls()
         {
             // Always fade in controls when requested
             _fadeCounter++;
+            _controlsVisibilityGeneration++;
+            _controlsVisible = true;
+            SetFullscreenCursorVisible(true);
             System.Diagnostics.Debug.WriteLine($"[Fade Counter: {_fadeCounter}] Fading IN controls");
             // Make sure controls overlay and individual controls are hit-testable before fading in
             ControlsOverlay.IsHitTestVisible = true;
@@ -869,7 +1346,6 @@ namespace YouTube
                 MinimizeButton.IsHitTestVisible = true;
                 AnimateOpacity(MinimizeButton, MinimizeButton.Opacity, 0.8, 0.5);
             }
-            _controlsVisible = true;
             UpdateFullscreenTitleVisibility();
             if (_isFullscreen && FullscreenTitlePanel != null && FullscreenTitlePanel.Visibility == Visibility.Visible)
             {
@@ -877,7 +1353,9 @@ namespace YouTube
             }
 
             // Restart the auto-hide timer when showing controls (unless video ended)
-            if (_videoLoaded && ReplayButton.Visibility != Visibility.Visible)
+            if (_videoLoaded
+                && ReplayButton.Visibility != Visibility.Visible
+                && !IsSeekInteractionActive())
             {
                 StartAutoHideTimer();
             }
@@ -885,8 +1363,20 @@ namespace YouTube
 
         private void FadeOutControls()
         {
+            if (IsSeekInteractionActive())
+            {
+                if (_autoHideTimer != null)
+                    _autoHideTimer.Stop();
+                if (!_controlsVisible)
+                    FadeInControls();
+                return;
+            }
+
             // Always fade out controls when requested
             _fadeCounter++;
+            var visibilityGeneration = ++_controlsVisibilityGeneration;
+            _controlsVisible = false;
+            SetFullscreenCursorVisible(false);
             System.Diagnostics.Debug.WriteLine($"[Fade Counter: {_fadeCounter}] Fading OUT controls");
             // Fade out all controls with smooth animation
             AnimateOpacity(BottomControlsPanel, BottomControlsPanel.Opacity, 0.0, 0.5); // Slower fade out
@@ -912,7 +1402,8 @@ namespace YouTube
             hideTimer.Tick += (s, e) => 
             {
                 hideTimer.Stop();
-                if (!_controlsVisible) // Only disable hit testing if controls are still meant to be hidden
+                if (!_controlsVisible
+                    && visibilityGeneration == _controlsVisibilityGeneration)
                 {
                     ControlsOverlay.IsHitTestVisible = false;
                     BottomControlsPanel.IsHitTestVisible = false;
@@ -924,8 +1415,45 @@ namespace YouTube
             };
             hideTimer.Start();
 
-            _controlsVisible = false;
             UpdateFullscreenTitleVisibility();
+        }
+
+        private bool IsSeekInteractionActive()
+        {
+            return _isUserDragging || _isProgressPointerCaptured;
+        }
+
+        private void SetFullscreenCursorVisible(bool visible)
+        {
+            try
+            {
+                var coreWindow = Window.Current == null ? null : Window.Current.CoreWindow;
+                if (coreWindow == null)
+                    return;
+
+                if (visible)
+                {
+                    if (!_fullscreenCursorHidden)
+                        return;
+
+                    coreWindow.PointerCursor = _fullscreenCursorBeforeHide
+                        ?? new CoreCursor(CoreCursorType.Arrow, 0);
+                    _fullscreenCursorBeforeHide = null;
+                    _fullscreenCursorHidden = false;
+                    return;
+                }
+
+                if (!_isFullscreen || _fullscreenCursorHidden)
+                    return;
+
+                _fullscreenCursorBeforeHide = coreWindow.PointerCursor;
+                coreWindow.PointerCursor = null;
+                _fullscreenCursorHidden = true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Player] Cursor visibility update failed: " + ex.Message);
+            }
         }
 
         // Helper method to find visual child elements
@@ -949,6 +1477,8 @@ namespace YouTube
             if (_autoHideTimer != null)
             {
                 _autoHideTimer.Stop();
+                if (IsSeekInteractionActive())
+                    return;
                 _autoHideTimer.Start();
             }
         }
@@ -958,6 +1488,8 @@ namespace YouTube
             if (_autoHideTimer != null)
             {
                 _autoHideTimer.Stop();
+                if (IsSeekInteractionActive())
+                    return;
                 _autoHideTimer.Start();
             }
         }
@@ -1315,6 +1847,7 @@ namespace YouTube
             if (_updateTimer != null)
             {
                 _updateTimer.Start();
+                UpdateDiscordPlaybackProgress(true);
             }
         }
 
@@ -1434,6 +1967,7 @@ namespace YouTube
 
         private void ReplayButton_Click(object sender, RoutedEventArgs e)
         {
+            _userPauseRequested = false;
             System.Diagnostics.Debug.WriteLine("[ReplayButton] Click event fired");
             
             // Reset the auto-hide timer
@@ -1481,6 +2015,14 @@ namespace YouTube
 
         public void ToggleFullscreen()
         {
+            ToggleFullscreen(null);
+        }
+
+        // The rotation handler already knows the final window size from SizeChanged. Passing it
+        // here avoids opening a portrait-sized popup for one frame while Window.Current.Bounds is
+        // still catching up on older Windows 10 Mobile builds.
+        public void ToggleFullscreen(Size? fullscreenSize)
+        {
             if (_isFullscreen)
             {
                 ExitFullscreen();
@@ -1493,11 +2035,11 @@ namespace YouTube
                     // Store original stretch property
                     _originalMediaPlayerStretch = MediaPlayer.Stretch;
                 }
-                EnterFullscreen();
+                EnterFullscreen(fullscreenSize);
             }
         }
 
-        private void EnterFullscreen()
+        private void EnterFullscreen(Size? fullscreenSize)
         {
             try
             {
@@ -1542,6 +2084,7 @@ namespace YouTube
                 // Remove from original parent
                 if (_originalParent != null)
                 {
+                    _isReparentingForFullscreen = true;
                     _originalParent.Children.Remove(this);
                 }
 
@@ -1583,17 +2126,23 @@ namespace YouTube
                 
                 // Get the actual window bounds
                 var bounds = Window.Current.Bounds;
+                var fullscreenWidth = fullscreenSize.HasValue && fullscreenSize.Value.Width > 0
+                    ? fullscreenSize.Value.Width
+                    : bounds.Width;
+                var fullscreenHeight = fullscreenSize.HasValue && fullscreenSize.Value.Height > 0
+                    ? fullscreenSize.Value.Height
+                    : bounds.Height;
                 
                 // Set popup properties to cover entire window
                 _fullscreenPopup.Child = _fullscreenGrid;
                 _fullscreenPopup.HorizontalOffset = 0;
                 _fullscreenPopup.VerticalOffset = 0;
-                _fullscreenPopup.Width = bounds.Width;
-                _fullscreenPopup.Height = bounds.Height;
+                _fullscreenPopup.Width = fullscreenWidth;
+                _fullscreenPopup.Height = fullscreenHeight;
                 
                 // Make sure the grid covers the entire popup
-                _fullscreenGrid.Width = bounds.Width;
-                _fullscreenGrid.Height = bounds.Height;
+                _fullscreenGrid.Width = fullscreenWidth;
+                _fullscreenGrid.Height = fullscreenHeight;
                 _fullscreenGrid.HorizontalAlignment = HorizontalAlignment.Stretch;
                 _fullscreenGrid.VerticalAlignment = VerticalAlignment.Stretch;
                 
@@ -1627,10 +2176,12 @@ namespace YouTube
                 // Add handlers to show/hide controls in fullscreen
                 _fullscreenGrid.PointerMoved += FullscreenGrid_PointerMoved;
                 _fullscreenGrid.Tapped += FullscreenGrid_Tapped;
+                QueueAmbientRefreshAfterFullscreenReparent();
                 
             }
             catch (Exception ex)
             {
+                _isReparentingForFullscreen = false;
                 System.Diagnostics.Debug.WriteLine("Error entering fullscreen: " + ex.Message);
                 // Clean up any partially created objects to prevent memory leaks
                 if (_fullscreenPopup != null)
@@ -1650,6 +2201,8 @@ namespace YouTube
 
         private void FullscreenGrid_PointerMoved(object sender, PointerRoutedEventArgs e)
         {
+            if (_fullscreenRelatedPanelOpen || _fullscreenRelatedGestureTracking)
+                return;
             // Show controls when mouse moves over player in fullscreen
             if (_isFullscreen && !_controlsVisible)
             {
@@ -1690,6 +2243,15 @@ namespace YouTube
 
         private void AutoHideTimer_Tick(object sender, object e)
         {
+            if (IsSeekInteractionActive())
+            {
+                if (!_controlsVisible)
+                    FadeInControls();
+                if (_autoHideTimer != null)
+                    _autoHideTimer.Stop();
+                return;
+            }
+
             // Only fade out controls if video is playing
             if (_isPlaying)
             {
@@ -1730,6 +2292,8 @@ namespace YouTube
         {
             try
             {
+                SetFullscreenCursorVisible(true);
+                CloseFullscreenRelatedPanelImmediately();
                 // Store the current play state before exiting fullscreen
                 bool wasPlaying = _isPlaying;
                 
@@ -1755,6 +2319,7 @@ namespace YouTube
 
                 if (_fullscreenPopup != null)
                 {
+                    _isReparentingForFullscreen = true;
                     // Remove from fullscreen popup
                     Grid parentGrid = this.Parent as Grid;
                     if (parentGrid != null)
@@ -1845,6 +2410,8 @@ namespace YouTube
                         string iconPath = wasPlaying ? "Assets/Dark/player/pause.png" : "Assets/Dark/player/play.png";
                         App.SetThemeImageSource(_playPauseIcon, iconPath);
                     }
+
+                    QueueAmbientRefreshAfterFullscreenReparent();
                     
                 }
                 else
@@ -1858,6 +2425,7 @@ namespace YouTube
             }
             catch (Exception ex)
             {
+                _isReparentingForFullscreen = false;
                 System.Diagnostics.Debug.WriteLine("Error exiting fullscreen: " + ex.Message);
                 // Clean up any remaining objects to prevent memory leaks
                 if (_fullscreenPopup != null)
@@ -1878,6 +2446,33 @@ namespace YouTube
                 {
                     FullscreenRequested(this, null);
                 }
+            }
+        }
+
+        private async void QueueAmbientRefreshAfterFullscreenReparent()
+        {
+            var generation = ++_ambientReparentGeneration;
+            try
+            {
+                // Popup reparenting and the new PlayerGrid size are committed asynchronously.
+                // Wait through two low-priority layout turns before obtaining a new media surface.
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Low, () => { });
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+                {
+                    if (generation != _ambientReparentGeneration || _isDisposed)
+                        return;
+
+                    _isReparentingForFullscreen = false;
+                    if (PlayerGrid != null)
+                        PlayerGrid.UpdateLayout();
+                    RefreshAmbientVideoEffect();
+                });
+            }
+            catch (Exception ex)
+            {
+                _isReparentingForFullscreen = false;
+                System.Diagnostics.Debug.WriteLine(
+                    "[VideoAmbient] Fullscreen reattach failed: " + ex.Message);
             }
         }
 
@@ -2352,27 +2947,20 @@ namespace YouTube
             }
 
             System.Diagnostics.Debug.WriteLine("ProgressSlider_ManipulationStarted: Disabling sync timer.");
-            ResetAutoHideTimer();
-            if (!_controlsVisible)
-            {
-                FadeInControls();
-            }
             _isUserDragging = true;
+            FadeInControls();
+            if (_autoHideTimer != null)
+                _autoHideTimer.Stop();
             _audioSyncTimer?.Stop(); // Completely disable the timer while seeking
         }
 
         private void ProgressSlider_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
         {
             System.Diagnostics.Debug.WriteLine("ProgressSlider_ManipulationCompleted");
-            ResetAutoHideTimer();
-            if (!_controlsVisible)
-            {
-                FadeInControls();
-            }
-
             HideScrubPreview();
             SeekToSliderValue();
             _isUserDragging = false;
+            FadeInControls();
         }
 
         private void ProgressSliderTrack_Tapped(object sender, TappedRoutedEventArgs e)
@@ -2410,14 +2998,11 @@ namespace YouTube
                 return;
             }
 
-            ResetAutoHideTimer();
-            if (!_controlsVisible)
-            {
-                FadeInControls();
-            }
-
             _isUserDragging = true;
             _isProgressPointerCaptured = true;
+            FadeInControls();
+            if (_autoHideTimer != null)
+                _autoHideTimer.Stop();
             _audioSyncTimer?.Stop();
 
             var element = sender as UIElement;
@@ -2591,11 +3176,14 @@ namespace YouTube
                     System.Diagnostics.Debug.WriteLine("[Player] Scrub preview showing, first sheet: " + frame.SheetUrl);
                 }
 
-                // The chosen level may use small tiles (an 80x45 level is preferred for fast
-                // loading). Scale it up to a consistent on-screen size so the preview looks the
-                // same regardless of which level a video provides.
-                const double DisplayWidth = 128.0;
-                var scale = frame.ThumbWidth > 0 ? DisplayWidth / frame.ThumbWidth : 1.0;
+                // Compact YouTube-style preview; still scales down on unusually narrow players.
+                // The frame itself keeps its native storyboard aspect ratio.
+                const double MaximumDisplayWidth = 120.0;
+                var playerWidth = PlayerGrid != null ? PlayerGrid.ActualWidth : ActualWidth;
+                var displayWidth = MaximumDisplayWidth;
+                if (playerWidth > 0)
+                    displayWidth = Math.Min(MaximumDisplayWidth, Math.Max(72.0, playerWidth - 24.0));
+                var scale = frame.ThumbWidth > 0 ? displayWidth / frame.ThumbWidth : 1.0;
 
                 ScrubPreviewClip.Width = frame.ThumbWidth * scale;
                 ScrubPreviewClip.Height = frame.ThumbHeight * scale;
@@ -2631,7 +3219,7 @@ namespace YouTube
 
                 // Centre the preview over the actual seek point. Do not assume a fixed 16 px
                 // timeline offset, because fullscreen/phone layouts use different margins.
-                var panelWidth = DisplayWidth + 6.0;
+                var panelWidth = displayWidth;
                 var absoluteX = pointerX;
 
                 if (ProgressSliderHitArea != null && PlayerGrid != null)
@@ -2646,7 +3234,6 @@ namespace YouTube
                     }
                 }
 
-                var playerWidth = PlayerGrid != null ? PlayerGrid.ActualWidth : ActualWidth;
                 var left = absoluteX - panelWidth / 2.0;
 
                 if (left < 4) left = 4;
@@ -2683,6 +3270,7 @@ namespace YouTube
             HideScrubPreview();
             SeekToSliderValue();
             _isUserDragging = false;
+            FadeInControls();
 
             if (element != null && pointer != null)
             {
@@ -2795,6 +3383,7 @@ namespace YouTube
                     
                     // Update slider value to current position
                     ProgressSlider.Value = position.TotalSeconds;
+                    YouTube.Discord.DiscordPresenceService.UpdateVideoProgress(position, duration, _isPlaying);
                     
                     // Check if video has ended using multiple methods
                     bool isNearEnd = position >= duration - TimeSpan.FromMilliseconds(100);
@@ -2807,7 +3396,8 @@ namespace YouTube
                     var playbackState = MediaPlayer.MediaPlayer.PlaybackSession.PlaybackState;
                     bool isBuffering = playbackState == Windows.Media.Playback.MediaPlaybackState.Buffering
                         || playbackState == Windows.Media.Playback.MediaPlaybackState.Opening;
-                    bool isPositionStuck = (position == _lastPosition) && _isPlaying && !isBuffering;
+                    var positionAdvance = (position - _lastPosition).TotalMilliseconds;
+                    bool isPositionStuck = positionAdvance < 50 && _isPlaying;
 
                     // Playback running far slower than real time (the timer ticks once a second,
                     // so a healthy stream advances ~1s per tick). A few tenths per tick means the
@@ -2851,7 +3441,9 @@ namespace YouTube
                     // Only check for video end if:
                     // 1. Video is actually loaded (_videoLoaded is true)
                     // 2. We've played some portion of the video (position > 1 second)
-                    // 3. We're near the end OR position is stuck for 3 consecutive checks
+                    // A stopped clock before the real end is not MediaEnded. It normally means
+                    // that a signed googlevideo URL expired or the demux pipeline wedged. Ask the
+                    // page to obtain fresh URLs instead of showing Replay / advancing a playlist.
                     if (_videoLoaded && position.TotalSeconds > 1.0)
                     {
                         // If position is stuck, increment counter
@@ -2865,14 +3457,37 @@ namespace YouTube
                             _positionStuckCounter = 0;
                         }
                         
-                        // Near the real end, or wedged (never while buffering — see above).
-                        if (isNearEnd || (!isBuffering && _positionStuckCounter >= 10 && position.TotalSeconds > 5))
+                        if (isNearEnd)
                         {
                             System.Diagnostics.Debug.WriteLine("[UpdateTimer] Video end detected, calling HandleVideoEnd()");
                             // Reset counter
                             _positionStuckCounter = 0;
                             // Video has ended, show replay button
                             HandleVideoEnd();
+                        }
+                        else
+                        {
+                            // Buffering is allowed longer than a session which still claims to be
+                            // Playing. Both states eventually recover through fresh URLs, but a
+                            // normal short rebuffer must not cause a source swap.
+                            var recoveryThreshold = isBuffering ? 18 : 10;
+                            if (_positionStuckCounter >= recoveryThreshold && position.TotalSeconds > 5)
+                            {
+                                _positionStuckCounter = 0;
+                                System.Diagnostics.Debug.WriteLine(
+                                    "[UpdateTimer] Playback clock stalled; requesting fresh stream URLs");
+                                try
+                                {
+                                    var recoveryHandler = PlaybackRecoveryRequested;
+                                    if (recoveryHandler != null)
+                                        recoveryHandler(this, null);
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.Diagnostics.Debug.WriteLine(
+                                        "[UpdateTimer] Playback recovery subscriber threw - " + ex.Message);
+                                }
+                            }
                         }
                     }
                     
@@ -2923,6 +3538,7 @@ namespace YouTube
                     App.SetThemeImageSource(_playPauseIcon, "Assets/Dark/player/play.png");
                 }
                 _updateTimer.Stop();
+                UpdateDiscordPlaybackProgress(true);
                 
                 // Show replay button instead of play/pause button
                 System.Diagnostics.Debug.WriteLine("[HandleVideoEnd] Showing replay button");
@@ -4296,7 +4912,7 @@ namespace YouTube
                             shouldStartAfterAudio = shouldStartAfterAudio || _pendingAutoPlayAfterSeparateAudioReady;
                             _pendingAutoPlayAfterSeparateAudioReady = false;
 
-                            if (shouldStartAfterAudio)
+                            if (shouldStartAfterAudio && !_userPauseRequested)
                             {
                                 var startPosition = _resumePlaybackAfterQualityChange
                                     ? _resumePositionAfterQualityChange
@@ -4312,7 +4928,7 @@ namespace YouTube
                             {
                                 _playImmediatelyAfterSeparateAudioOpened = false;
                                 ClearPendingQualityResume();
-                                Pause();
+                                PauseForSourceSetup();
                             }
                         }
                         else
@@ -4352,7 +4968,7 @@ namespace YouTube
                 shouldStartAfterAudio = shouldStartAfterAudio || _pendingAutoPlayAfterSeparateAudioReady;
                 _pendingAutoPlayAfterSeparateAudioReady = false;
 
-                if (shouldStartAfterAudio)
+                if (shouldStartAfterAudio && !_userPauseRequested)
                 {
                     var startPosition = _resumePlaybackAfterQualityChange
                         ? _resumePositionAfterQualityChange
@@ -4367,7 +4983,7 @@ namespace YouTube
                 {
                     _playImmediatelyAfterSeparateAudioOpened = false;
                     ClearPendingQualityResume();
-                    Pause();
+                    PauseForSourceSetup();
                 }
             }
             else
@@ -4525,8 +5141,8 @@ namespace YouTube
                 // Do not rely on flags that SetSource()/ResetSeparateAudio may clear while
                 // the two MediaPlayer instances open asynchronously on Windows 10 Mobile.
                 ArmSeparateAudioAutoplayPauseBlock();
-                _playImmediatelyAfterSeparateAudioOpened = true;
-                _pendingAutoPlayAfterSeparateAudioReady = true;
+                _playImmediatelyAfterSeparateAudioOpened = !_userPauseRequested;
+                _pendingAutoPlayAfterSeparateAudioReady = !_userPauseRequested;
                 StartSeparateAudioSyncTimer();
 
                 if (MediaPlayer != null && MediaPlayer.MediaPlayer != null)
@@ -4669,7 +5285,34 @@ namespace YouTube
         private async void VisibleVideoPlaybackStateChanged(Windows.Media.Playback.MediaPlaybackSession sender, object args)
         {
             TrackBufferingForQualityStepDown(sender);
+            await DispatchDiscordPauseStateAsync(sender);
             await DispatchSeparateAudioStateChangeAsync("video");
+        }
+
+        private async Task DispatchDiscordPauseStateAsync(Windows.Media.Playback.MediaPlaybackSession session)
+        {
+            try
+            {
+                if (session == null
+                    || !_videoLoaded
+                    || session.PlaybackState != Windows.Media.Playback.MediaPlaybackState.Paused)
+                    return;
+
+                var dispatcher = this.Dispatcher;
+                if (dispatcher != null && !dispatcher.HasThreadAccess)
+                {
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        if (!_isPlaying)
+                            UpdateDiscordPlaybackProgress(true);
+                    });
+                }
+                else if (!_isPlaying)
+                {
+                    UpdateDiscordPlaybackProgress(true);
+                }
+            }
+            catch { }
         }
 
         // --- Rebuffering detector -------------------------------------------------------------
@@ -5418,6 +6061,12 @@ namespace YouTube
                     return;
                 }
 
+                if (_userPauseRequested || _playbackReleased)
+                {
+                    _isPlaying = false;
+                    return;
+                }
+
                 _isPlaying = true;
                 SetPlayPauseIcon(true);
                 UpdateSystemMediaDisplay();
@@ -5426,7 +6075,7 @@ namespace YouTube
                 // Barrier: wait until BOTH players have opened and are not buffering/opening.
                 // This is the important part: neither video nor separate audio may start alone.
                 var ready = await WaitForSeparateAvReadyForStartAsync(videoPlayer, audioPlayer, token);
-                if (token.IsCancellationRequested || !_isPlaying) return;
+                if (token.IsCancellationRequested || !_isPlaying || _userPauseRequested || _playbackReleased) return;
 
                 if (!ready)
                 {
@@ -5530,6 +6179,34 @@ namespace YouTube
         {
             try
             {
+                if (_userPauseRequested || _playbackReleased)
+                {
+                    _suppressAutoPlayUntilSeparateAudioReady = false;
+                    _pendingAutoPlayAfterSeparateAudioReady = false;
+                    _playImmediatelyAfterSeparateAudioOpened = false;
+                    CancelPendingAudioResume();
+                    StopSeparateAudioSyncTimer();
+                    try
+                    {
+                        if (MediaPlayer != null && MediaPlayer.MediaPlayer != null)
+                            MediaPlayer.MediaPlayer.Pause();
+                    }
+                    catch { }
+                    try
+                    {
+                        var pausedAudio = GetSeparateAudioPlayer();
+                        if (pausedAudio != null)
+                            pausedAudio.Pause();
+                    }
+                    catch { }
+                    _isPlaying = false;
+                    SetPlaybackUiPaused();
+                    UpdateDiscordPlaybackProgress(true);
+                    System.Diagnostics.Debug.WriteLine(
+                        "CustomVideoPlayer: Separate audio opened after user Pause; autoplay suppressed.");
+                    return;
+                }
+
                 // MediaOpened can arrive before SetSeparateAudioSourceFromUriAsync() finishes its setup.
                 // Force the mode on here instead of returning silently.
                 _usingSeparateAudio = true;
@@ -5578,8 +6255,11 @@ namespace YouTube
                 System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: StartPlaybackAfterSeparateAudioOpened failed - " + ex.Message);
 
                 // Last-resort: do not let UI/position code prevent actual playback.
-                try { if (MediaPlayer != null && MediaPlayer.MediaPlayer != null) MediaPlayer.MediaPlayer.Play(); } catch { }
-                try { var p = GetSeparateAudioPlayer(); if (p != null) p.Play(); } catch { }
+                if (!_userPauseRequested && !_playbackReleased)
+                {
+                    try { if (MediaPlayer != null && MediaPlayer.MediaPlayer != null) MediaPlayer.MediaPlayer.Play(); } catch { }
+                    try { var p = GetSeparateAudioPlayer(); if (p != null) p.Play(); } catch { }
+                }
             }
         }
 
@@ -6424,6 +7104,11 @@ namespace YouTube
                 return;
             }
 
+            // This is a new source request. Establish its initial intent synchronously;
+            // a later user Pause will set the latch again while the source is opening.
+            if (autoPlay)
+                _userPauseRequested = false;
+
             // Cleared here, at the synchronous start, so the muxed path always drops the flag;
             // SetDemuxedSource re-assigns it right after calling this.
             _demuxedSource = null;
@@ -6433,11 +7118,14 @@ namespace YouTube
                 System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Setting source");
                 ResetSeparateAudio();
 
-                if (MediaPlayer.MediaPlayer == null)
+                var recreatedVisiblePlayer = MediaPlayer.MediaPlayer == null;
+                if (recreatedVisiblePlayer)
                 {
                     MediaPlayer.SetMediaPlayer(new Windows.Media.Playback.MediaPlayer());
                 }
                 ConfigureMediaPlayerForBackground(MediaPlayer.MediaPlayer);
+                if (recreatedVisiblePlayer)
+                    RefreshAmbientVideoEffect();
                 UpdateSystemMediaDisplay();
 
                 if (ErrorMessageText != null)
@@ -6502,12 +7190,14 @@ namespace YouTube
 
                     if (_suppressAutoPlayUntilSeparateAudioReady || _playImmediatelyAfterSeparateAudioOpened)
                     {
-                        _pendingAutoPlayAfterSeparateAudioReady = autoPlay || _resumePlaybackAfterQualityChange || _playImmediatelyAfterSeparateAudioOpened;
+                        _pendingAutoPlayAfterSeparateAudioReady = !_userPauseRequested
+                            && (autoPlay || _resumePlaybackAfterQualityChange || _playImmediatelyAfterSeparateAudioOpened);
                         System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Visible video ready; waiting for separate audio before autoplay=" + _pendingAutoPlayAfterSeparateAudioReady);
                         return;
                     }
 
-                    var shouldAutoPlayNow = autoPlay || _resumePlaybackAfterQualityChange || _playImmediatelyAfterSeparateAudioOpened;
+                    var shouldAutoPlayNow = !_userPauseRequested
+                        && (autoPlay || _resumePlaybackAfterQualityChange || _playImmediatelyAfterSeparateAudioOpened);
 
                     if (_resumePlaybackAfterQualityChange)
                     {
@@ -6531,7 +7221,7 @@ namespace YouTube
                     }
                     else
                     {
-                        Pause();
+                        PauseForSourceSetup();
                     }
 
                     ClearPendingQualityResume();
@@ -6642,6 +7332,7 @@ namespace YouTube
         {
             try
             {
+                _userPauseRequested = false;
                 if (MediaPlayer?.MediaPlayer == null)
                 {
                     if (ErrorMessageText != null)
@@ -6666,6 +7357,7 @@ namespace YouTube
                 }
 
                 if (!_videoLoaded) _videoLoaded = true;
+                UpdateDiscordPlaybackProgress(true);
             }
             catch (Exception ex)
             {
@@ -6715,11 +7407,27 @@ namespace YouTube
 
         public void Pause()
         {
+            _userPauseRequested = true;
+            _pendingAutoPlayAfterSeparateAudioReady = false;
+            _playImmediatelyAfterSeparateAudioOpened = false;
+            _suppressAutoPlayUntilSeparateAudioReady = false;
+            _separateAudioAutoplayPauseBlockUntilUtc = DateTime.MinValue;
+            ClearPendingQualityResume();
+            PauseCore(false);
+        }
+
+        private void PauseForSourceSetup()
+        {
+            PauseCore(true);
+        }
+
+        private void PauseCore(bool honorSeparateAudioAutoplayBlock)
+        {
             try
             {
-                if (IsSeparateAudioAutoplayPauseBlocked())
+                if (honorSeparateAudioAutoplayBlock && IsSeparateAudioAutoplayPauseBlocked())
                 {
-                    System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Pause() skipped because separate audio autoplay is pending.");
+                    System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Technical Pause() skipped because separate audio autoplay is pending.");
                     return;
                 }
 
@@ -6758,6 +7466,7 @@ namespace YouTube
                 {
                     _updateTimer.Stop();
                 }
+                UpdateDiscordPlaybackProgress(true);
             }
             catch (Exception ex)
             {
@@ -6767,6 +7476,7 @@ namespace YouTube
 
         public void Stop()
         {
+            _userPauseRequested = true;
             _isPlaying = false;
             SetPlayPauseIcon(false);
             UpdateSystemMediaPlaybackStatus(MediaPlaybackStatus.Stopped);
@@ -6798,6 +7508,22 @@ namespace YouTube
             _updateTimer?.Stop();
         }
 
+        private void UpdateDiscordPlaybackProgress(bool force)
+        {
+            try
+            {
+                if (MediaPlayer == null || MediaPlayer.MediaPlayer == null)
+                    return;
+                var session = MediaPlayer.MediaPlayer.PlaybackSession;
+                var position = session != null ? session.Position : TimeSpan.Zero;
+                var duration = _parsedDuration > TimeSpan.Zero
+                    ? _parsedDuration
+                    : (session != null ? session.NaturalDuration : TimeSpan.Zero);
+                YouTube.Discord.DiscordPresenceService.UpdateVideoProgress(position, duration, _isPlaying, force);
+            }
+            catch { }
+        }
+
         private async void MediaPlayer_MediaOpened(MediaPlayer sender, object args)
         {
             _visibleVideoMediaOpened = true;
@@ -6827,6 +7553,12 @@ namespace YouTube
 
         private void ApplyVisibleMediaOpened()
         {
+            // NaturalVideoWidth/Height are reliable only after MediaOpened. Recalculate the four
+            // overlay rectangles now so opaque MediaPlayerElement letterboxing is fully covered.
+            if (VideoAmbientEffectController.IsEnabled())
+                RefreshAmbientVideoEffect();
+            else
+                UpdateAmbientBarLayout();
             // The new source is ready — unlock play/seek and hide the spinner.
             EndSourceLoading();
 
@@ -7091,9 +7823,13 @@ namespace YouTube
                 return;
             }
 
+            SetFullscreenCursorVisible(true);
+
             // Unsubscribe from window size changes and keyboard hooks.
             Window.Current.SizeChanged -= Current_SizeChanged;
             SponsorBlock.TimelineMarkerVisibilityChanged -= SponsorBlock_TimelineMarkerVisibilityChanged;
+            VideoAmbientEffectController.EnabledChanged -= VideoAmbientEffect_EnabledChanged;
+            FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
             DetachKeyboardShortcuts();
             this.Loaded -= CustomVideoPlayer_Loaded;
             this.Unloaded -= CustomVideoPlayer_Unloaded;
@@ -7159,6 +7895,7 @@ namespace YouTube
             }
 
             ResetSeparateAudio();
+            _ambientRenderer.Dispose();
             ReleaseMediaPlayers();
 
             _isDisposed = true;
@@ -7185,6 +7922,7 @@ namespace YouTube
         // until the process died with no managed exception.
         private void ReleaseMediaPlayers()
         {
+            _ambientRenderer.ClearVisuals();
             try
             {
                 var player = MediaPlayer == null ? null : MediaPlayer.MediaPlayer;

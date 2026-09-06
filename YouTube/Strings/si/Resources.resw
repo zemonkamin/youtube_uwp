@@ -981,7 +981,73 @@ YouTube API Legacy මඟින් සහාය දක්වයි.
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>undo-type</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>undo-type</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>අවලංගු කරන්න</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>මුල් පිටුව</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>දායකත්ව</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>සොයමින්...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>බාගැනීම්</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>ඉතිහාසය</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>දැනුම්දීම්</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>සැකසුම්</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>ගිණුම</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>ඔබගේ ඉතිහාසය සහ ධාවන ලැයිස්තු බැලීමට පුරනය වන්න</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>සොයමින්: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>නාලිකාව: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>ධාවන ලැයිස්තුව: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>විරාම කර ඇත</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>තිරස් සංචාලනයේ සෙවීම</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>සෙවුම් තීරුව මැද පෙන්වන්න</value>
   </data>
 </root>

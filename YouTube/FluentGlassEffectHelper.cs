@@ -100,7 +100,10 @@ namespace YouTube
         {
             if (target == null) return;
 
-            if (!IsEnabled())
+            // Backdrop blur is one of the most expensive always-on effects on Lumia-era
+            // GPUs. A solid themed surface is visually cleaner and much cheaper when the
+            // phone is landscape and vertical space is already constrained.
+            if (!IsEnabled() || ResponsiveLayout.IsCompactLandscape)
             {
                 Detach(target);
                 SetBackground(target, baseBrush ?? new SolidColorBrush(tintColor));

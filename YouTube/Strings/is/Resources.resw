@@ -981,7 +981,73 @@ Stutt af YouTube API Legacy.
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Hreinsa</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Hreinsa</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Hætta við</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Heim</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Áskriftir</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Leita...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Niðurhöl</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Ferill</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Tilkynningar</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Stillingar</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Reikningur</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Skráðu þig inn til að sjá ferilinn og spilunarlistana þína</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Leita: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Rás: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Spilunarlisti: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>Í bið</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Leit í láréttri yfirlitsstiku</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Sýna leitarstikuna í miðjunni</value>
   </data>
 </root>

@@ -981,7 +981,73 @@ YouTube API Legacy를 지원합니다.
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>지우기</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>지우기</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>취소</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>홈</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>구독</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>검색 중...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>다운로드</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>기록</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>알림</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>설정</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>계정</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>기록과 재생목록을 보려면 로그인하세요</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>검색 중: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>채널: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>재생목록: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>일시중지</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>가로 탐색의 검색</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>검색창을 가운데에 표시</value>
   </data>
 </root>

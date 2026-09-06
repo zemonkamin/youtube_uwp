@@ -981,7 +981,73 @@
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>清除</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>清除</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>取消</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>首页</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>订阅内容</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>正在搜索...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>下载内容</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>历史记录</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>通知</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>设置</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>账号</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>登录即可查看历史记录和播放列表</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>正在搜索: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>频道: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>播放列表: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>已暂停</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>横向导航中的搜索</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>在中间显示搜索栏</value>
   </data>
 </root>

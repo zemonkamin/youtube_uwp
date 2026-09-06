@@ -1,4 +1,4 @@
-﻿<Page
+<Page
     x:Class="YouTube.Settings"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -257,6 +257,118 @@
                         </Grid>
                     </Button>
 
+                    <Button x:Name="LandscapeNavbarSearchModeToggleButton"
+                            Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="62"
+                            HorizontalAlignment="Stretch"
+                            Click="LandscapeNavbarSearchModeToggleButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   local:ThemeAsset.Path="Assets/search.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Margin="18,0,12,0">
+                                <TextBlock x:Name="LandscapeNavbarSearchModeLabelText"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                           FontSize="16"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                                <TextBlock x:Name="LandscapeNavbarSearchModeDescriptionText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="12"
+                                           Margin="0,2,0,0"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                            </StackPanel>
+                            <Grid Grid.Column="2"
+                                  Width="46"
+                                  Height="26"
+                                  VerticalAlignment="Center">
+                                <Border x:Name="LandscapeNavbarSearchModeToggleTrack"
+                                        Width="46"
+                                        Height="26"
+                                        Background="Transparent"
+                                        CornerRadius="13" />
+                                <Ellipse Width="20"
+                                         Height="20"
+                                         Fill="{ThemeResource ToggleKnobBrush}"
+                                         HorizontalAlignment="Left"
+                                         Margin="3,3,0,3">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="LandscapeNavbarSearchModeToggleThumbTransform" X="20" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Grid>
+                        </Grid>
+                    </Button>
+
+                    <Button x:Name="VideoAmbientEffectToggleButton"
+                            Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="62"
+                            HorizontalAlignment="Stretch"
+                            Click="VideoAmbientEffectToggleButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   local:ThemeAsset.Path="Assets/player/settings.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Margin="18,0,12,0">
+                                <TextBlock x:Name="VideoAmbientEffectLabelText"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                           FontSize="16"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                                <TextBlock x:Name="VideoAmbientEffectDescriptionText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="12"
+                                           Margin="0,2,0,0"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                            </StackPanel>
+                            <Grid Grid.Column="2"
+                                  Width="46"
+                                  Height="26"
+                                  VerticalAlignment="Center">
+                                <Border x:Name="VideoAmbientEffectToggleTrack"
+                                        Width="46"
+                                        Height="26"
+                                        Background="Transparent"
+                                        CornerRadius="13" />
+                                <Ellipse Width="20"
+                                         Height="20"
+                                         Fill="{ThemeResource ToggleKnobBrush}"
+                                         HorizontalAlignment="Left"
+                                         Margin="3,3,0,3">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="VideoAmbientEffectToggleThumbTransform" X="0" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Grid>
+                        </Grid>
+                    </Button>
+
                     <Button x:Name="ShortsFeatureToggleButton"
                             Style="{StaticResource SettingsIconButtonStyle}"
                             Height="62"
@@ -307,6 +419,62 @@
                                          Margin="3,3,0,3">
                                     <Ellipse.RenderTransform>
                                         <TranslateTransform x:Name="ShortsFeatureToggleThumbTransform" X="0" />
+                                    </Ellipse.RenderTransform>
+                                </Ellipse>
+                            </Grid>
+                        </Grid>
+                    </Button>
+
+                    <Button x:Name="DiscordPresenceToggleButton"
+                            Style="{StaticResource SettingsIconButtonStyle}"
+                            Height="62"
+                            HorizontalAlignment="Stretch"
+                            Click="DiscordPresenceToggleButton_Click">
+                        <Grid Margin="18,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0"
+                                   local:ThemeAsset.Path="Assets/discord.png"
+                                   Width="23"
+                                   Height="23"
+                                   Stretch="Uniform"
+                                   VerticalAlignment="Center" />
+                            <StackPanel Grid.Column="1"
+                                        VerticalAlignment="Center"
+                                        Margin="18,0,12,0">
+                                <TextBlock x:Name="DiscordPresenceLabelText"
+                                           Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                           FontSize="16"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                                <TextBlock x:Name="DiscordPresenceDescriptionText"
+                                           Foreground="{ThemeResource AppSecondaryTextBrush}"
+                                           FontSize="12"
+                                           Margin="0,2,0,0"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis"
+                                           MaxLines="1" />
+                            </StackPanel>
+                            <Grid Grid.Column="2"
+                                  Width="46"
+                                  Height="26"
+                                  VerticalAlignment="Center">
+                                <Border x:Name="DiscordPresenceToggleTrack"
+                                        Width="46"
+                                        Height="26"
+                                        Background="Transparent"
+                                        CornerRadius="13" />
+                                <Ellipse Width="20"
+                                         Height="20"
+                                         Fill="{ThemeResource ToggleKnobBrush}"
+                                         HorizontalAlignment="Left"
+                                         Margin="3,3,0,3">
+                                    <Ellipse.RenderTransform>
+                                        <TranslateTransform x:Name="DiscordPresenceToggleThumbTransform" X="0" />
                                     </Ellipse.RenderTransform>
                                 </Ellipse>
                             </Grid>
@@ -926,42 +1094,24 @@
                   Visibility="Collapsed"
                   Tapped="OverlayGrid_Tapped" />
 
-            <Border x:Name="QualityBottomSheetPanel"
+            <local:BottomSheet x:Name="QualityBottomSheetPanel"
                     Grid.Row="0"
                     Grid.RowSpan="3"
                     Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
-                    Background="{ThemeResource AppDividerBrush}"
-                    CornerRadius="15"
-                    Height="330"
+                    MaxHeight="330"
                     Margin="10,0,10,10"
-                    Visibility="Collapsed">
-                <Border.RenderTransform>
+                    Visibility="Collapsed" HandleHeight="36" HandleTapped="QualityDragArea_Tapped" HandlePointerPressed="QualityDragArea_PointerPressed" HandlePointerMoved="QualityDragArea_PointerMoved" HandlePointerReleased="QualityDragArea_PointerReleased">
+                <local:BottomSheet.RenderTransform>
                     <TranslateTransform x:Name="QualityBottomSheetTransform" Y="340" />
-                </Border.RenderTransform>
+                </local:BottomSheet.RenderTransform>
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0"
-                          Height="34"
-                          Background="Transparent"
-                          Tapped="QualityDragArea_Tapped"
-                          PointerPressed="QualityDragArea_PointerPressed"
-                          PointerMoved="QualityDragArea_PointerMoved"
-                          PointerReleased="QualityDragArea_PointerReleased"
-                          PointerCaptureLost="QualityDragArea_PointerReleased">
-                        <Rectangle Width="38"
-                                   Height="4"
-                                   Fill="Gray"
-                                   RadiusX="2"
-                                   RadiusY="2"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" />
-                    </Grid>
-                    <Grid Grid.Row="1" Margin="16,0,16,16">
+                    <Grid Margin="16,0,16,16">
+                        <ScrollViewer VerticalScrollMode="Auto"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollMode="Disabled"
+                                      HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>
                             <TextBlock x:Name="QualitySheetTitleText"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
@@ -970,46 +1120,25 @@
                                        Margin="0,0,0,12" />
                             <StackPanel x:Name="QualityOptionsPanel" />
                         </StackPanel>
+                        </ScrollViewer>
                     </Grid>
                 </Grid>
-            </Border>
+            </local:BottomSheet>
 
-            <Border x:Name="LanguageBottomSheetPanel"
+            <local:BottomSheet x:Name="LanguageBottomSheetPanel"
                     Grid.Row="0"
                     Grid.RowSpan="3"
                     Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
-                    Background="{ThemeResource AppDividerBrush}"
-                    CornerRadius="15"
-                    Height="420"
+                    MaxHeight="420"
                     Margin="10,0,10,10"
-                    Visibility="Collapsed">
-                <Border.RenderTransform>
+                    Visibility="Collapsed" HandleHeight="36" HandleTapped="LanguageDragArea_Tapped" HandlePointerPressed="LanguageDragArea_PointerPressed" HandlePointerMoved="LanguageDragArea_PointerMoved" HandlePointerReleased="LanguageDragArea_PointerReleased">
+                <local:BottomSheet.RenderTransform>
                     <TranslateTransform x:Name="LanguageBottomSheetTransform" Y="430" />
-                </Border.RenderTransform>
+                </local:BottomSheet.RenderTransform>
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0"
-                          Height="34"
-                          Background="Transparent"
-                          Tapped="LanguageDragArea_Tapped"
-                          PointerPressed="LanguageDragArea_PointerPressed"
-                          PointerMoved="LanguageDragArea_PointerMoved"
-                          PointerReleased="LanguageDragArea_PointerReleased"
-                          PointerCaptureLost="LanguageDragArea_PointerReleased">
-                        <Rectangle Width="38"
-                                   Height="4"
-                                   Fill="Gray"
-                                   RadiusX="2"
-                                   RadiusY="2"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" />
-                    </Grid>
-                    <Grid Grid.Row="1" Margin="16,0,16,16">
+                    <Grid Margin="16,0,16,16">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
@@ -1028,44 +1157,26 @@
                         </ScrollViewer>
                     </Grid>
                 </Grid>
-            </Border>
+            </local:BottomSheet>
 
-            <Border x:Name="ThemeBottomSheetPanel"
+            <local:BottomSheet x:Name="ThemeBottomSheetPanel"
                     Grid.Row="0"
                     Grid.RowSpan="3"
                     Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
-                    Background="{ThemeResource AppDividerBrush}"
-                    CornerRadius="15"
-                    Height="230"
+                    MaxHeight="230"
                     Margin="10,0,10,10"
-                    Visibility="Collapsed">
-                <Border.RenderTransform>
+                    Visibility="Collapsed" HandleHeight="36" HandleTapped="ThemeDragArea_Tapped" HandlePointerPressed="ThemeDragArea_PointerPressed" HandlePointerMoved="ThemeDragArea_PointerMoved" HandlePointerReleased="ThemeDragArea_PointerReleased">
+                <local:BottomSheet.RenderTransform>
                     <TranslateTransform x:Name="ThemeBottomSheetTransform" Y="240" />
-                </Border.RenderTransform>
+                </local:BottomSheet.RenderTransform>
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0"
-                          Height="34"
-                          Background="Transparent"
-                          Tapped="ThemeDragArea_Tapped"
-                          PointerPressed="ThemeDragArea_PointerPressed"
-                          PointerMoved="ThemeDragArea_PointerMoved"
-                          PointerReleased="ThemeDragArea_PointerReleased"
-                          PointerCaptureLost="ThemeDragArea_PointerReleased">
-                        <Rectangle Width="38"
-                                   Height="4"
-                                   Fill="Gray"
-                                   RadiusX="2"
-                                   RadiusY="2"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" />
-                    </Grid>
-                    <Grid Grid.Row="1" Margin="16,0,16,16">
+                    <Grid Margin="16,0,16,16">
+                        <ScrollViewer VerticalScrollMode="Auto"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollMode="Disabled"
+                                      HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>
                             <TextBlock x:Name="ThemeSheetTitleText"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
@@ -1074,46 +1185,29 @@
                                        Margin="0,0,0,12" />
                             <StackPanel x:Name="ThemeOptionsPanel" />
                         </StackPanel>
+                        </ScrollViewer>
                     </Grid>
                 </Grid>
-            </Border>
+            </local:BottomSheet>
 
-            <Border x:Name="NotificationsBottomSheetPanel"
+            <local:BottomSheet x:Name="NotificationsBottomSheetPanel"
                     Grid.Row="0"
                     Grid.RowSpan="3"
                     Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
-                    Background="{ThemeResource AppDividerBrush}"
-                    CornerRadius="15"
-                    Height="370"
+                    MaxHeight="370"
                     Margin="10,0,10,10"
-                    Visibility="Collapsed">
-                <Border.RenderTransform>
+                    Visibility="Collapsed" HandleHeight="36" HandleTapped="NotificationsDragArea_Tapped" HandlePointerPressed="NotificationsDragArea_PointerPressed" HandlePointerMoved="NotificationsDragArea_PointerMoved" HandlePointerReleased="NotificationsDragArea_PointerReleased">
+                <local:BottomSheet.RenderTransform>
                     <TranslateTransform x:Name="NotificationsBottomSheetTransform" Y="380" />
-                </Border.RenderTransform>
+                </local:BottomSheet.RenderTransform>
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0"
-                          Height="34"
-                          Background="Transparent"
-                          Tapped="NotificationsDragArea_Tapped"
-                          PointerPressed="NotificationsDragArea_PointerPressed"
-                          PointerMoved="NotificationsDragArea_PointerMoved"
-                          PointerReleased="NotificationsDragArea_PointerReleased"
-                          PointerCaptureLost="NotificationsDragArea_PointerReleased">
-                        <Rectangle Width="38"
-                                   Height="4"
-                                   Fill="Gray"
-                                   RadiusX="2"
-                                   RadiusY="2"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" />
-                    </Grid>
-                    <Grid Grid.Row="1" Margin="16,0,16,16">
+                    <Grid Margin="16,0,16,16">
+                        <ScrollViewer VerticalScrollMode="Auto"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollMode="Disabled"
+                                      HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>
                             <TextBlock x:Uid="Loc_Notifications_Text"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
@@ -1170,46 +1264,29 @@
                                        Margin="0,0,0,8" />
                             <StackPanel x:Name="NotificationFrequencyOptionsPanel" />
                         </StackPanel>
+                        </ScrollViewer>
                     </Grid>
                 </Grid>
-            </Border>
+            </local:BottomSheet>
 
-            <Border x:Name="AboutBottomSheetPanel"
+            <local:BottomSheet x:Name="AboutBottomSheetPanel"
                     Grid.Row="0"
                     Grid.RowSpan="3"
                     Canvas.ZIndex="101"
                     VerticalAlignment="Bottom"
                     HorizontalAlignment="Stretch"
-                    Background="{ThemeResource AppSurfaceAltBrush}"
-                    CornerRadius="15"
-                    Height="250"
+                    MaxHeight="200"
                     Margin="10,0,10,10"
-                    Visibility="Collapsed">
-                <Border.RenderTransform>
+                    Visibility="Collapsed" HandleHeight="36" HandleTapped="AboutDragArea_Tapped" HandlePointerPressed="AboutDragArea_PointerPressed" HandlePointerMoved="AboutDragArea_PointerMoved" HandlePointerReleased="AboutDragArea_PointerReleased">
+                <local:BottomSheet.RenderTransform>
                     <TranslateTransform x:Name="AboutBottomSheetTransform" Y="260" />
-                </Border.RenderTransform>
+                </local:BottomSheet.RenderTransform>
                 <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0"
-                          Height="34"
-                          Background="Transparent"
-                          Tapped="AboutDragArea_Tapped"
-                          PointerPressed="AboutDragArea_PointerPressed"
-                          PointerMoved="AboutDragArea_PointerMoved"
-                          PointerReleased="AboutDragArea_PointerReleased"
-                          PointerCaptureLost="AboutDragArea_PointerReleased">
-                        <Rectangle Width="38"
-                                   Height="4"
-                                   Fill="Gray"
-                                   RadiusX="2"
-                                   RadiusY="2"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center" />
-                    </Grid>
-                    <Grid Grid.Row="1" Margin="16,0,16,16">
+                    <Grid Margin="16,0,16,16">
+                        <ScrollViewer VerticalScrollMode="Auto"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollMode="Disabled"
+                                      HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>
                             <TextBlock x:Uid="Loc_Information_Text"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
@@ -1224,9 +1301,10 @@
                                        FontSize="13"
                                        TextWrapping="Wrap" />
                         </StackPanel>
+                        </ScrollViewer>
                     </Grid>
                 </Grid>
-            </Border>
+            </local:BottomSheet>
 
         <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20" />
     </Grid>

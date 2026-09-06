@@ -48,6 +48,101 @@ namespace YouTube
             public string Type;
         }
 
+        // Used by download recovery when another background instance has already finished the
+        // mux and removed the temporary tracks but a stale 90% index row won the save race.
+        public static async Task<bool> IsCompleteMp4Async(StorageFile file)
+        {
+            if (file == null) return false;
+            try
+            {
+                var random = await file.OpenAsync(FileAccessMode.Read);
+                try
+                {
+                    using (var stream = random.AsStreamForRead())
+                    {
+                        var length = (ulong)stream.Length;
+                        if (length < 32UL) return false;
+                        ulong position = 0;
+                        var hasFtyp = false;
+                        var hasMoov = false;
+                        var hasMdat = false;
+                        while (position + 8UL <= length)
+                        {
+                            var header = await ReadHeaderAsync(
+                                stream, position, CancellationToken.None).ConfigureAwait(false);
+                            if (header == null || header.Size < (ulong)header.HeaderSize
+                                || position + header.Size > length)
+                                return false;
+
+                            if (header.Type == "ftyp") hasFtyp = true;
+                            else if (header.Type == "moov") hasMoov = true;
+                            else if (header.Type == "mdat") hasMdat = true;
+                            position += header.Size;
+                        }
+
+                        return position == length && hasFtyp && hasMoov && hasMdat;
+                    }
+                }
+                finally
+                {
+                    random.Dispose();
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        // BackgroundTransfer may remove a completed operation before the foreground process can
+        // attach to it again. In that case the temporary file is the durable source of truth.
+        // Validate the complete top-level fragmented-MP4 box chain before allowing recovery to
+        // mux it; accepting just the parseable prefix could turn a terminated transfer into a
+        // playable-looking but truncated download.
+        public static async Task<bool> IsCompleteFragmentedMp4Async(StorageFile file)
+        {
+            if (file == null) return false;
+            try
+            {
+                var random = await file.OpenAsync(FileAccessMode.Read);
+                try
+                {
+                    using (var stream = random.AsStreamForRead())
+                    {
+                        var length = (ulong)stream.Length;
+                        if (length < 32UL) return false;
+                        ulong position = 0;
+                        var hasMoov = false;
+                        var hasMoof = false;
+                        var hasMdat = false;
+                        while (position + 8UL <= length)
+                        {
+                            var header = await ReadHeaderAsync(
+                                stream, position, CancellationToken.None).ConfigureAwait(false);
+                            if (header == null || header.Size < (ulong)header.HeaderSize
+                                || position + header.Size > length)
+                                return false;
+
+                            if (header.Type == "moov") hasMoov = true;
+                            else if (header.Type == "moof") hasMoof = true;
+                            else if (header.Type == "mdat") hasMdat = true;
+                            position += header.Size;
+                        }
+
+                        return position == length && hasMoov && hasMoof && hasMdat;
+                    }
+                }
+                finally
+                {
+                    random.Dispose();
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public static async Task<bool> WriteAsync(
             StorageFile outputFile,
             StorageFile videoFile,

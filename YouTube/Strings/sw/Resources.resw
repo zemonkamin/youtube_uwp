@@ -981,7 +981,73 @@ Toleo {0}</value>
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Futa</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Futa</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Sitisha</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Nyumbani</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Usajili</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Inatafuta...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Vipakuliwa</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Historia</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Arifa</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Mipangilio</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Akaunti</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Ingia ili uone historia na orodha zako za kucheza</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Inatafuta: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Kituo: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Orodha ya kucheza: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>Imesitishwa</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Utafutaji katika urambazaji wa mlalo</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Onyesha upau wa utafutaji katikati</value>
   </data>
 </root>

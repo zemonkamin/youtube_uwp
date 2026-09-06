@@ -981,7 +981,73 @@ Versija {0}</value>
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Išvalyti</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Išvalyti</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Atšaukti</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Pagrindinis</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Prenumeratos</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Ieškoma...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Atsisiuntimai</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Istorija</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Pranešimai</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Nustatymai</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Paskyra</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Prisijunkite, kad matytumėte istoriją ir grojaraščius</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Ieškoma: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Kanalas: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Grojaraštis: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>Pristabdyta</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Paieška horizontalioje naršymo juostoje</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Rodyti paieškos juostą centre</value>
   </data>
 </root>

@@ -9,12 +9,14 @@ using Windows.Data.Json;
 using Windows.Data.Xml.Dom;
 using Windows.Networking.Connectivity;
 using Windows.Storage;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using YouTube.Innertube;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -27,13 +29,14 @@ namespace YouTube
     /// </summary>
     public sealed partial class Home : Page
     {
-        private ObservableCollection<VideoCardItem> recommendationVideos;
+        private FastObservableCollection<VideoCardItem> recommendationVideos;
         private ObservableCollection<string> trendingSuggestions;
         private ObservableCollection<object> placeholderCards;
         private List<HomeCategoryItem> homeCategories;
         private HomeCategoryItem selectedCategory;
 
         private const int RecommendationPageSize = 12;
+        private const int InitialCategoryChipCount = 10;
         private const double DefaultCardWidth = 360.0;
         private const double VideoThumbnailAspectRatio = 16.0 / 9.0;
         private const string ResponsiveCardTag = "ResponsiveCard";
@@ -50,15 +53,15 @@ namespace YouTube
         private const int LiveTileRecommendationCount = 5;
         private const string LiveTileFolderName = "LiveTile";
         private const string LiveTileFallbackImage = "ms-appx:///Assets/Square150x150Logo.png";
-        private static readonly HttpClient liveTileHttpClient = new HttpClient();
         private int _liveTileUpdateVersion;
         private bool _postHomeStartupWorkScheduled;
         private bool _homeNotificationRefreshStarted;
+        private int _renderedCategoryChipCount;
 
         public Home()
         {
             this.InitializeComponent();
-            recommendationVideos = new ObservableCollection<VideoCardItem>();
+            recommendationVideos = new FastObservableCollection<VideoCardItem>();
             placeholderCards = new ObservableCollection<object>();
             homeCategories = new List<HomeCategoryItem>();
             InitializePlaceholderCards();
@@ -103,6 +106,11 @@ namespace YouTube
         /// This parameter is typically used to configure the page.</param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            // The page can be the initial frame content before its Tabbar subscribes to
+            // Frame.Navigated, so publish Home from the page itself as well.
+            YouTube.Discord.DiscordPresenceService.SetPage(
+                Localization.GetString("DiscordStatusHome"));
+
             // Set Home tab as active
             tabbar?.SetActiveTab(Tabbar.ActiveTab.Home);
             
@@ -149,29 +157,24 @@ namespace YouTube
                 recommendationsReachedEnd = false;
                 recommendationVideos.Clear();
 
-                if (string.IsNullOrEmpty(Config.UserToken))
-                {
-                    System.Diagnostics.Debug.WriteLine("[Home] No token, setting empty list");
-                    homeCategories.Clear();
-                    selectedCategory = null;
-                    RenderCategoryChips();
-                    return;
-                }
+                var isGuest = string.IsNullOrWhiteSpace(Config.UserToken);
+                System.Diagnostics.Debug.WriteLine(isGuest
+                    ? "[Home][Guest] Loading Trending playlist page..."
+                    : "[Home] Loading recommendations page...");
 
-                System.Diagnostics.Debug.WriteLine("[Home] Loading recommendations page...");
+                // Put the only critical network request on the wire before creating dozens of
+                // category Button controls. XAML construction is costly on Windows 10 Mobile.
+                var pageTask = GetAllHomePageAsync(null);
 
-                // Categories are fixed locally (Task.FromResult in Config), so render them
-                // immediately and do not put them in the network critical path.
+                // Categories are fixed locally. Render only the initially visible strip now;
+                // append the off-screen chips at low dispatcher priority after cards appear.
                 var categories = await Config.GetHomeCategoriesAsync(Config.UserToken);
                 homeCategories = categories != null ? categories : new List<HomeCategoryItem>();
                 selectedCategory = FindAllCategory(homeCategories);
-                RenderCategoryChips();
+                RenderCategoryChips(InitialCategoryChipCount);
 
                 // One request returns both cards and the token for the real next page.
-                var page = await Config.GetRecommendationsPageAsync(
-                    Config.UserToken,
-                    null,
-                    RecommendationPageSize);
+                var page = await pageTask;
 
                 var recommendations = page != null ? page.Videos : null;
                 recommendationsContinuationToken =
@@ -184,8 +187,8 @@ namespace YouTube
                     + ", hasNext=" + (!recommendationsReachedEnd));
 
                 var added = AppendUniqueRecommendations(recommendations);
+                BeginHomePageEnrichment(page);
                 UpdateResponsiveCardLayouts();
-                UpdateLiveTileFromLoadedRecommendations();
 
                 // The feed is the only critical startup work. Hide its loader immediately after
                 // the cards are in the ObservableCollection, before starting notifications or
@@ -195,10 +198,12 @@ namespace YouTube
                     SkeletonLoader.Visibility = Visibility.Collapsed;
                 }
                 ShowCategoryPlaceholders(false);
+                ScheduleRemainingCategoryChips();
 
                 // Notifications are intentionally fetched from Home, but only AFTER recommendations
                 // are already visible.
-                SchedulePostHomeStartupWork();
+                if (!isGuest)
+                    SchedulePostHomeStartupWork();
 
                 System.Diagnostics.Debug.WriteLine(
                     "[Home] Added " + added + " videos, total: " + recommendationVideos.Count);
@@ -269,10 +274,6 @@ namespace YouTube
             }
 
             Config.LoadUserToken();
-            if (string.IsNullOrEmpty(Config.UserToken))
-            {
-                return;
-            }
 
             var nowUtc = DateTime.UtcNow;
             if ((nowUtc - lastLoadMoreAttemptUtc).TotalMilliseconds < LoadMoreAttemptThrottleMs)
@@ -300,10 +301,7 @@ namespace YouTube
                 if (isAllRecommendations)
                 {
                     var tokenUsed = recommendationsContinuationToken;
-                    var page = await Config.GetRecommendationsPageAsync(
-                        Config.UserToken,
-                        tokenUsed,
-                        RecommendationPageSize);
+                    var page = await GetAllHomePageAsync(tokenUsed);
 
                     var moreRecommendations = page != null ? page.Videos : null;
                     recommendationsContinuationToken =
@@ -312,6 +310,7 @@ namespace YouTube
                         string.IsNullOrWhiteSpace(recommendationsContinuationToken);
 
                     added = AppendUniqueRecommendations(moreRecommendations);
+                    BeginHomePageEnrichment(page);
 
                     System.Diagnostics.Debug.WriteLine(
                         "[Home] Continuation page added " + added
@@ -370,7 +369,7 @@ namespace YouTube
                 }
             }
 
-            var added = 0;
+            var pending = new List<VideoCardItem>();
             foreach (var video in videos)
             {
                 if (video == null || string.IsNullOrWhiteSpace(video.VideoId))
@@ -380,12 +379,12 @@ namespace YouTube
 
                 if (existingIds.Add(video.VideoId))
                 {
-                    recommendationVideos.Add(video);
-                    added++;
+                    pending.Add(video);
                 }
             }
 
-            return added;
+            recommendationVideos.AddRange(pending);
+            return pending.Count;
         }
 
         private async void CategoryChip_Click(object sender, RoutedEventArgs e)
@@ -425,10 +424,6 @@ namespace YouTube
             ShowOfflineState(false);
 
             Config.LoadUserToken();
-            if ((selectedCategory == null || selectedCategory.IsAll) && string.IsNullOrEmpty(Config.UserToken))
-            {
-                return;
-            }
 
             if (isLoadingMore)
             {
@@ -445,13 +440,29 @@ namespace YouTube
 
             try
             {
-                var videos = await GetSelectedCategoryVideosAsync(recommendationRequestCount);
+                List<VideoCardItem> videos;
+                if (selectedCategory.IsAll)
+                {
+                    var page = await GetAllHomePageAsync(null);
+                    videos = page != null ? page.Videos : null;
+                    recommendationsContinuationToken = page != null
+                        ? (page.ContinuationToken ?? string.Empty)
+                        : string.Empty;
+                    recommendationsReachedEnd = string.IsNullOrWhiteSpace(
+                        recommendationsContinuationToken);
+                    BeginHomePageEnrichment(page);
+                }
+                else
+                {
+                    videos = await GetSelectedCategoryVideosAsync(recommendationRequestCount);
+                }
                 AppendUniqueRecommendations(videos);
                 UpdateResponsiveCardLayouts();
                 UpdateLiveTileFromLoadedRecommendations();
 
                 // Category cards should become interactive immediately; Live Tile is non-critical.
-                SchedulePostHomeStartupWork();
+                if (!string.IsNullOrWhiteSpace(Config.UserToken))
+                    SchedulePostHomeStartupWork();
             }
             catch (Exception ex)
             {
@@ -471,17 +482,50 @@ namespace YouTube
             }
         }
 
-        private Task<List<VideoCardItem>> GetSelectedCategoryVideosAsync(int count)
+        private Task<Config.HomeRecommendationsPage> GetAllHomePageAsync(string continuationToken)
+        {
+            if (string.IsNullOrWhiteSpace(Config.UserToken))
+            {
+                return Config.GetGuestHomePageAsync(continuationToken, RecommendationPageSize);
+            }
+
+            return Config.GetRecommendationsPageAsync(
+                Config.UserToken,
+                continuationToken,
+                RecommendationPageSize);
+        }
+
+        private async void BeginHomePageEnrichment(Config.HomeRecommendationsPage page)
+        {
+            if (page == null || page.DeferredEnrichment == null)
+                return;
+
+            try
+            {
+                await page.DeferredEnrichment;
+                // VideoCardItem now notifies the realized avatar Image directly. Replacing every
+                // collection item made ItemsWrapGrid rebuild and jump the outer ScrollViewer up.
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Home] Deferred enrichment failed: " + ex.Message);
+            }
+        }
+
+        private async Task<List<VideoCardItem>> GetSelectedCategoryVideosAsync(int count)
         {
             if (selectedCategory == null || selectedCategory.IsAll)
             {
-                return Config.GetRecommendationsAsync(Config.UserToken, count);
+                var page = await GetAllHomePageAsync(null);
+                return page != null && page.Videos != null
+                    ? page.Videos
+                    : new List<VideoCardItem>();
             }
 
-            return Config.GetHomeCategoryVideosAsync(Config.UserToken, selectedCategory, count);
+            return await Config.GetHomeCategoryVideosAsync(Config.UserToken, selectedCategory, count);
         }
 
-        private void RenderCategoryChips()
+        private void RenderCategoryChips(int maxCount = int.MaxValue)
         {
             if (CategoryChipsPanel == null)
             {
@@ -489,6 +533,7 @@ namespace YouTube
             }
 
             CategoryChipsPanel.Children.Clear();
+            _renderedCategoryChipCount = 0;
 
             if (homeCategories == null || homeCategories.Count == 0)
             {
@@ -501,7 +546,8 @@ namespace YouTube
                 selectedCategory = FindAllCategory(homeCategories);
             }
 
-            for (int i = 0; i < homeCategories.Count; i++)
+            var limit = Math.Min(homeCategories.Count, Math.Max(0, maxCount));
+            for (int i = 0; i < limit; i++)
             {
                 var category = homeCategories[i];
                 if (category == null || string.IsNullOrWhiteSpace(category.Title))
@@ -513,7 +559,48 @@ namespace YouTube
                 CategoryChipsPanel.Children.Add(button);
             }
 
+            _renderedCategoryChipCount = limit;
+
             ShowCategoryPlaceholders(false);
+        }
+
+        private async void ScheduleRemainingCategoryChips()
+        {
+            if (CategoryChipsPanel == null
+                || homeCategories == null
+                || _renderedCategoryChipCount >= homeCategories.Count)
+            {
+                return;
+            }
+
+            try
+            {
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Low, delegate
+                {
+                    if (CategoryChipsPanel == null || homeCategories == null)
+                    {
+                        return;
+                    }
+
+                    for (var i = _renderedCategoryChipCount; i < homeCategories.Count; i++)
+                    {
+                        var category = homeCategories[i];
+                        if (category == null || string.IsNullOrWhiteSpace(category.Title))
+                        {
+                            continue;
+                        }
+
+                        CategoryChipsPanel.Children.Add(CreateCategoryButton(category));
+                    }
+
+                    _renderedCategoryChipCount = homeCategories.Count;
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Home] Deferred category chips failed: " + ex.Message);
+            }
         }
 
         private Button CreateCategoryButton(HomeCategoryItem category)
@@ -714,6 +801,9 @@ namespace YouTube
                     }
                 }
 
+                // Tile artwork downloads are useful but never part of the Home first-paint path.
+                UpdateLiveTileFromLoadedRecommendations();
+
             }
             finally
             {
@@ -815,7 +905,7 @@ namespace YouTube
             }
 
             var videoId = video.VideoId.Trim();
-            var maxResolutionUrl = "https://img.youtube.com/vi/" + Uri.EscapeDataString(videoId) + "/maxresdefault.jpg";
+            var maxResolutionUrl = YouTubeImageClient.GetMaxResolutionThumbnailUrl(videoId);
             var fallbackThumbnailUrl = NormalizeLiveTileImageUrl(video.ThumbnailUrl);
 
             try
@@ -834,7 +924,7 @@ namespace YouTube
                 byte[] bytes = null;
                 try
                 {
-                    bytes = await liveTileHttpClient.GetByteArrayAsync(maxResolutionUrl);
+                    bytes = await YouTubeImageClient.DownloadAsync(maxResolutionUrl);
                 }
                 catch (Exception maxResException)
                 {
@@ -847,7 +937,7 @@ namespace YouTube
                 {
                     try
                     {
-                        bytes = await liveTileHttpClient.GetByteArrayAsync(fallbackThumbnailUrl);
+                        bytes = await YouTubeImageClient.DownloadAsync(fallbackThumbnailUrl);
                     }
                     catch (Exception fallbackException)
                     {
@@ -1283,6 +1373,9 @@ namespace YouTube
         private void UpdateResponsiveCardLayouts()
         {
             bool isPortrait = IsPortraitOrientation();
+            ResponsiveLayout.ShowInRegularLayout(
+                CategoriesHost,
+                !ResponsiveLayout.IsCompactLandscape);
 
             SetItemsControlPadding(RecommendationsList, isPortrait, new Thickness(8, 8, 8, 16));
             SetItemsControlPadding(SkeletonCardsList, isPortrait, new Thickness(8, 8, 8, 16));

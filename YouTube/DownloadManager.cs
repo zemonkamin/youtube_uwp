@@ -15,6 +15,7 @@ using Windows.Storage.Streams;
 using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 using Windows.UI.Xaml;
+using YouTube.Innertube;
 
 namespace YouTube
 {
@@ -38,11 +39,18 @@ namespace YouTube
         public string AudioPartName { get; set; }
         public string CompletionTaskName { get; set; }
         public string TransferGroupName { get; set; }
+        public string VideoSourceUrl { get; set; }
+        public string AudioSourceUrl { get; set; }
+        public string VideoUserAgent { get; set; }
+        public string AudioUserAgent { get; set; }
         public string Quality { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public ulong BytesReceived { get; set; }
         public ulong TotalBytes { get; set; }
+        public long ExpectedVideoBytes { get; set; }
+        public long ExpectedAudioBytes { get; set; }
+        public int RetryCount { get; set; }
         public bool IsComplete { get; set; }
         public bool IsDownloading { get; set; }
         public bool IsAdaptive { get; set; }
@@ -77,15 +85,19 @@ namespace YouTube
         private const string ThumbnailFolderName = "DownloadThumbnails";
         private const string PartsFolderName = "DownloadParts";
         private const string CompletionTaskPrefix = "YouTubeDownloadCompletion_";
+        private const int ProgressSaveIntervalMs = 5000;
+        private const int ProgressUiIntervalMs = 500;
         private static readonly SemaphoreSlim Gate = new SemaphoreSlim(1, 1);
         private static readonly SemaphoreSlim ThumbnailGate = new SemaphoreSlim(1, 1);
         private static readonly SemaphoreSlim LegacyImageGate = new SemaphoreSlim(1, 1);
         private static readonly SemaphoreSlim FinalizeGate = new SemaphoreSlim(1, 1);
-        private static readonly HttpClient Http = new HttpClient();
+        private static readonly SemaphoreSlim ReattachGate = new SemaphoreSlim(1, 1);
+        private static readonly YouTubeHttpClient Http = YouTubeHttpClient.Shared;
         private static readonly List<DownloadedVideoItem> Items = new List<DownloadedVideoItem>();
         private static readonly Dictionary<string, CancellationTokenSource> Active =
             new Dictionary<string, CancellationTokenSource>(StringComparer.OrdinalIgnoreCase);
         private static bool _loaded;
+        private static bool _reattached;
         private static volatile bool _clearing;
         private static int _clearGeneration;
         private static DateTime _lastExternalMergeUtc = DateTime.MinValue;
@@ -133,10 +145,17 @@ namespace YouTube
             private ulong _audioTotal;
             private double _lastPercent;
             private DateTime _lastSaved = DateTime.UtcNow;
+            private DateTime _lastNotified = DateTime.MinValue;
 
-            public AdaptiveDownloadProgress(DownloadedVideoItem item)
+            public AdaptiveDownloadProgress(
+                DownloadedVideoItem item,
+                long expectedVideoBytes,
+                long expectedAudioBytes)
             {
                 _item = item;
+                _videoTotal = expectedVideoBytes > 0 ? (ulong)expectedVideoBytes : 0;
+                _audioTotal = expectedAudioBytes > 0 ? (ulong)expectedAudioBytes : 0;
+                _lastPercent = item == null ? 0.0 : item.ProgressPercent;
             }
 
             public void Report(bool video, DownloadOperation operation)
@@ -148,20 +167,52 @@ namespace YouTube
                     if (video)
                     {
                         _videoReceived = state.BytesReceived;
-                        _videoTotal = state.TotalBytesToReceive;
+                        if (state.TotalBytesToReceive > 0)
+                            _videoTotal = state.TotalBytesToReceive;
                     }
                     else
                     {
                         _audioReceived = state.BytesReceived;
-                        _audioTotal = state.TotalBytesToReceive;
+                        if (state.TotalBytesToReceive > 0)
+                            _audioTotal = state.TotalBytesToReceive;
                     }
 
+                    // Do not treat the one successful track as the whole download. On a 403 the
+                    // failed operation reports TotalBytesToReceive=0; the old formula then made
+                    // the small audio file look like 100% of transfer work and jumped to 90%.
                     var total = _videoTotal + _audioTotal;
                     var received = _videoReceived + _audioReceived;
-                    var percent = total == 0 ? _lastPercent
-                        : Math.Max(_lastPercent, Math.Min(90.0, (double)received * 90.0 / total));
+                    double measuredPercent;
+                    if (_videoTotal > 0 && _audioTotal > 0)
+                    {
+                        measuredPercent = total == 0 ? 0.0
+                            : (double)received * 90.0 / total;
+                    }
+                    else if (_videoTotal > 0)
+                    {
+                        // W10M runs this per-download group serially. The pending audio job does
+                        // not expose TotalBytesToReceive until the video finishes, so let the main
+                        // video track drive 0..80% instead of freezing the UI at zero.
+                        measuredPercent = (double)_videoReceived * 80.0 / _videoTotal;
+                    }
+                    else
+                    {
+                        // Audio without a known video total is also the signature of the 403 case
+                        // from the previous bug. Do not present that tiny successful file as 90%.
+                        measuredPercent = 0.0;
+                    }
+                    var percent = Math.Max(
+                        _lastPercent,
+                        Math.Min(90.0, measuredPercent));
+                    var shouldNotify = percent >= 90.0
+                        || percent - _lastPercent >= 0.5
+                        || (DateTime.UtcNow - _lastNotified).TotalMilliseconds >= ProgressUiIntervalMs;
                     _lastPercent = percent;
-                    ReportAdaptiveProgress(_item, percent, ref _lastSaved);
+                    if (shouldNotify)
+                    {
+                        _lastNotified = DateTime.UtcNow;
+                        ReportAdaptiveProgress(_item, percent, ref _lastSaved);
+                    }
                 }
             }
 
@@ -238,12 +289,19 @@ namespace YouTube
 
             var quality = Math.Max(1, format.QualityTier).ToString() + "p";
             var key = MakeKey(videoId, quality);
+            DownloadedVideoItem staleItem = null;
             lock (Items)
             {
                 var existing = Items.FirstOrDefault(i => MakeKey(i.VideoId, i.Quality) == key);
                 if (existing != null && (existing.IsComplete || existing.IsDownloading))
                     return existing;
+                staleItem = existing;
             }
+
+            // A failed transfer is deliberately left visible as inactive. Remove its old
+            // operations and part files before retrying so W10M does not accumulate dead jobs.
+            if (staleItem != null)
+                await CancelAsync(staleItem);
 
             var file = await CreateDestinationFileAsync(
                 SanitizeFileName(videoId + "_" + quality + ".mp4"));
@@ -281,8 +339,14 @@ namespace YouTube
                     partPrefix + "_audio.m4a", CreationCollisionOption.FailIfExists);
 
                 var completionGroup = await TryCreateCompletionGroupAsync(item, partPrefix);
-                var transferGroup = BackgroundTransferGroup.CreateGroup("YouTubeAdaptiveDownloads");
-                transferGroup.TransferBehavior = BackgroundTransferBehavior.Parallel;
+                // A serialized group serializes every operation in that group, including other
+                // videos. Give each download its own group so W10M reliability mode only orders
+                // this video's small audio part behind its video, not the whole download queue.
+                // BackgroundTransferGroup rejects names longer than 40 characters. Keep the
+                // per-download group unique but deliberately short (11 + 24 = 35 chars).
+                var transferGroup = BackgroundTransferGroup.CreateGroup(
+                    "YTAdaptive_" + Guid.NewGuid().ToString("N").Substring(0, 24));
+                ConfigureAdaptiveTransferGroup(transferGroup);
 
                 var videoDownloader = completionGroup == null
                     ? new BackgroundDownloader()
@@ -301,12 +365,39 @@ namespace YouTube
                     new Uri(audioFormat.Url), audioPart);
                 videoOperation.Priority = BackgroundTransferPriority.High;
                 audioOperation.Priority = BackgroundTransferPriority.High;
+                if (completionGroup != null)
+                {
+                    // Enable only after both operations are registered, but before either one is
+                    // started. On slower phones the audio transfer can otherwise win this race.
+                    try
+                    {
+                        completionGroup.Enable();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Transfers themselves can still continue. Foreground reattachment will
+                        // finalize them if the OS refuses the completion trigger.
+                        System.Diagnostics.Debug.WriteLine(
+                            "[Downloads] Could not enable completion group: " + ex.Message);
+                    }
+                }
 
                 item.IsAdaptive = true;
+                // Do not leave the UI at a misleading 0% while BackgroundTransfer is resolving
+                // the CDN connection. One percent means the two operations are registered; all
+                // following values come from their real byte counters.
+                item.BytesReceived = 1000;
+                item.TotalBytes = 100000;
                 item.VideoOperationId = videoOperation.Guid.ToString();
                 item.AudioOperationId = audioOperation.Guid.ToString();
                 item.VideoPartName = videoPart.Name;
                 item.AudioPartName = audioPart.Name;
+                item.ExpectedVideoBytes = format.ContentLength;
+                item.ExpectedAudioBytes = audioFormat.ContentLength;
+                item.VideoSourceUrl = format.Url;
+                item.AudioSourceUrl = audioFormat.Url;
+                item.VideoUserAgent = FirstNonEmpty(mediaUserAgent, format.MediaUserAgent);
+                item.AudioUserAgent = FirstNonEmpty(mediaUserAgent, audioFormat.MediaUserAgent);
                 item.TransferGroupName = transferGroup.Name;
                 lock (Items)
                 {
@@ -316,13 +407,17 @@ namespace YouTube
                 await SaveAsync();
                 RaiseChanged();
 
-                var ignoredAdaptiveThumb = KeepImagesAsync(item, file);
                 var ignoredAdaptiveRun = MonitorAdaptiveOperationsAsync(
-                    item, videoOperation, audioOperation, completionGroup, false);
+                    item, videoOperation, audioOperation, completionGroup, false,
+                    format.ContentLength, audioFormat.ContentLength);
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] Adaptive background operations started: "
+                    + videoOperation.Guid + " + " + audioOperation.Guid);
                 return item;
             }
 
             var downloader = new BackgroundDownloader();
+            downloader.CostPolicy = BackgroundTransferCostPolicy.Always;
             var effectiveUserAgent = FirstNonEmpty(mediaUserAgent, format.MediaUserAgent);
             if (!string.IsNullOrWhiteSpace(effectiveUserAgent))
             {
@@ -332,8 +427,11 @@ namespace YouTube
                     System.Diagnostics.Debug.WriteLine("[Downloads] Could not set media User-Agent: " + ex.Message);
                 }
             }
+            try { downloader.SetRequestHeader("Accept", "*/*"); }
+            catch { }
             downloader.SuccessToastNotification = CreateCompletedToast(item);
             var operation = downloader.CreateDownload(new Uri(format.Url), file);
+            operation.Priority = BackgroundTransferPriority.High;
             item.OperationId = operation.Guid.ToString();
 
             lock (Items)
@@ -344,8 +442,9 @@ namespace YouTube
             await SaveAsync();
             RaiseChanged();
 
-            var ignoredThumb = KeepImagesAsync(item, file);
             var ignoredRun = RunAsync(item, operation, false);
+            System.Diagnostics.Debug.WriteLine(
+                "[Downloads] Progressive background operation started: " + operation.Guid);
             return item;
         }
 
@@ -356,6 +455,8 @@ namespace YouTube
         {
             downloader.TransferGroup = transferGroup;
             downloader.CostPolicy = BackgroundTransferCostPolicy.Always;
+            try { downloader.SetRequestHeader("Accept", "*/*"); }
+            catch { }
             if (!string.IsNullOrWhiteSpace(userAgent))
             {
                 try { downloader.SetRequestHeader("User-Agent", userAgent); }
@@ -367,22 +468,31 @@ namespace YouTube
             }
         }
 
-        private static async Task<BackgroundTransferCompletionGroup> TryCreateCompletionGroupAsync(
+        private static void ConfigureAdaptiveTransferGroup(BackgroundTransferGroup transferGroup)
+        {
+            if (transferGroup == null) return;
+            try
+            {
+                // Old WinHTTP/BackgroundTransfer builds occasionally keep one of two simultaneous
+                // googlevideo responses open until they fail with 0x80072F78. The audio track is
+                // small, so serializing the pair costs little and is reliable on desktop and W10M.
+                transferGroup.TransferBehavior = BackgroundTransferBehavior.Serialized;
+            }
+            catch
+            {
+                transferGroup.TransferBehavior = BackgroundTransferBehavior.Parallel;
+            }
+        }
+
+        private static Task<BackgroundTransferCompletionGroup> TryCreateCompletionGroupAsync(
             DownloadedVideoItem item,
             string partPrefix)
         {
             try
             {
-                var access = await BackgroundExecutionManager.RequestAccessAsync();
-                var accessText = access.ToString();
-                if (accessText.IndexOf("Denied", StringComparison.OrdinalIgnoreCase) >= 0
-                    || accessText.IndexOf("Unspecified", StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    System.Diagnostics.Debug.WriteLine(
-                        "[Downloads] Background completion access unavailable: " + accessText);
-                    return null;
-                }
-
+                // Completion groups do not require lock-screen/background-access approval. Asking
+                // for the generic permission here made Windows Mobile return DeniedBySystem under
+                // Battery Saver and silently disabled the only path that can mux after app exit.
                 var completionGroup = new BackgroundTransferCompletionGroup();
                 var taskName = CompletionTaskPrefix + partPrefix;
                 var builder = new BackgroundTaskBuilder
@@ -395,13 +505,13 @@ namespace YouTube
                 builder.SetTrigger(completionGroup.Trigger);
                 builder.Register();
                 item.CompletionTaskName = taskName;
-                return completionGroup;
+                return Task.FromResult(completionGroup);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(
                     "[Downloads] Completion group registration failed: " + ex.Message);
-                return null;
+                return Task.FromResult<BackgroundTransferCompletionGroup>(null);
             }
         }
 
@@ -410,16 +520,21 @@ namespace YouTube
             DownloadOperation videoOperation,
             DownloadOperation audioOperation,
             BackgroundTransferCompletionGroup completionGroup,
-            bool attach)
+            bool attach,
+            long expectedVideoBytes = 0,
+            long expectedAudioBytes = 0)
         {
             if (item == null || videoOperation == null || audioOperation == null) return;
             var key = MakeKey(item.VideoId, item.Quality);
             var cts = new CancellationTokenSource();
+            CancellationTokenSource progressPollCts = null;
+            Task progressPollTask = null;
             lock (Active) Active[key] = cts;
 
             try
             {
-                var downloadProgress = new AdaptiveDownloadProgress(item);
+                var downloadProgress = new AdaptiveDownloadProgress(
+                    item, expectedVideoBytes, expectedAudioBytes);
                 var videoProgress = new TransferProgress(value => downloadProgress.Report(true, value));
                 var audioProgress = new TransferProgress(value => downloadProgress.Report(false, value));
                 Task<DownloadOperation> videoTask;
@@ -433,28 +548,62 @@ namespace YouTube
                 {
                     videoTask = videoOperation.StartAsync().AsTask(cts.Token, videoProgress);
                     audioTask = audioOperation.StartAsync().AsTask(cts.Token, audioProgress);
-                    if (completionGroup != null) completionGroup.Enable();
                 }
 
+                // BackgroundTransfer can batch IProgress callbacks into very large jumps
+                // (0 -> 20% was observed on x86, and it is more pronounced on W10M). Its public
+                // Progress snapshots are updated independently, so sample those between callbacks.
+                // ReportAdaptiveProgress still throttles UI and index writes separately.
+                progressPollCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token);
+                progressPollTask = PollAdaptiveProgressAsync(
+                    downloadProgress, videoOperation, audioOperation, progressPollCts.Token);
+
                 await Task.WhenAll(videoTask, audioTask);
+                progressPollCts.Cancel();
+                try { await progressPollTask; }
+                catch { }
+                progressPollTask = null;
                 if (videoOperation.Progress.Status != BackgroundTransferStatus.Completed
                     || audioOperation.Progress.Status != BackgroundTransferStatus.Completed)
                     throw new InvalidOperationException("Adaptive media transfer did not complete");
 
+                // The completion trigger can finish and persist the MP4 before the foreground
+                // await resumes. Merge that result before writing 90%, otherwise the stale
+                // foreground copy can overwrite a completed 100% row.
+                await MergeExternalCompletionAsync(true);
                 var lastSaved = downloadProgress.LastSaved;
-                ReportAdaptiveProgress(item, 90.0, ref lastSaved);
+                if (!item.IsComplete)
+                    ReportAdaptiveProgress(item, 90.0, ref lastSaved);
                 // If the foreground is still alive, finish immediately. The completion trigger
                 // remains the fallback for suspension/termination; finalization is idempotent.
-                await FinalizeAdaptiveItemAsync(item, true);
+                if (!item.IsComplete)
+                    await FinalizeAdaptiveItemAsync(item, true);
             }
             catch (Exception ex)
             {
                 if (!(ex is OperationCanceledException))
+                {
+                    item.IsDownloading = false;
+                    item.IsFinalizing = false;
+                    await SaveAsync();
+                    RaiseChanged();
                     System.Diagnostics.Debug.WriteLine(
                         "[Downloads] Adaptive transfer monitor failed: " + ex.Message);
+                }
             }
             finally
             {
+                if (progressPollCts != null)
+                {
+                    try { progressPollCts.Cancel(); }
+                    catch { }
+                }
+                if (progressPollTask != null)
+                {
+                    try { await progressPollTask; }
+                    catch { }
+                }
+                if (progressPollCts != null) progressPollCts.Dispose();
                 lock (Active)
                 {
                     CancellationTokenSource current;
@@ -465,17 +614,48 @@ namespace YouTube
             }
         }
 
+        private static async Task PollAdaptiveProgressAsync(
+            AdaptiveDownloadProgress progress,
+            DownloadOperation videoOperation,
+            DownloadOperation audioOperation,
+            CancellationToken cancellationToken)
+        {
+            if (progress == null) return;
+            try
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    progress.Report(true, videoOperation);
+                    progress.Report(false, audioOperation);
+                    await Task.Delay(250, cancellationToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+                // Native BackgroundTransfer may briefly reject a snapshot while an operation
+                // changes state. Its normal IProgress callback remains active in that case.
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] Progress polling stopped: " + ex.Message);
+            }
+        }
+
         private static void ReportAdaptiveProgress(
             DownloadedVideoItem item,
             double percent,
             ref DateTime lastSaved)
         {
+            // A late BackgroundDownloader/mux callback must never roll a completed item back
+            // from 100% to the transfer/finalization range.
+            if (item == null || item.IsComplete) return;
             percent = Math.Max(0.0, Math.Min(100.0, percent));
             item.BytesReceived = (ulong)Math.Round(percent * 1000.0);
             item.TotalBytes = 100000;
             item.IsDownloading = true;
             RaiseChanged();
-            if ((DateTime.UtcNow - lastSaved).TotalMilliseconds >= 750)
+            if ((DateTime.UtcNow - lastSaved).TotalMilliseconds >= ProgressSaveIntervalMs)
             {
                 lastSaved = DateTime.UtcNow;
                 var ignoredSave = SaveAsync();
@@ -489,13 +669,10 @@ namespace YouTube
             await EnsureLoadedAsync(false);
 
             var operationIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            var completed = true;
             foreach (var operation in details.Downloads)
             {
                 if (operation == null) continue;
                 operationIds.Add(operation.Guid.ToString());
-                if (operation.Progress.Status != BackgroundTransferStatus.Completed)
-                    completed = false;
             }
 
             DownloadedVideoItem item;
@@ -507,15 +684,195 @@ namespace YouTube
             }
             if (item == null) return;
 
-            if (!completed)
+            var reportedOperations = details.Downloads.Where(o => o != null).ToList();
+            if (!operationIds.Contains(item.VideoOperationId)
+                || !operationIds.Contains(item.AudioOperationId))
             {
-                System.Diagnostics.Debug.WriteLine(
-                    "[Downloads] Completion group reported a failed transfer for " + item.VideoId);
-                await CancelAsync(item);
+                // Some Windows builds surface only one member of a failed pair. Enumerate without
+                // attaching so the completion task can still identify and retry the missing part.
+                var persisted = await GetAllDownloadOperationsAsync();
+                foreach (var operation in persisted)
+                {
+                    if (operation != null && OperationBelongsTo(item, operation.Guid.ToString())
+                        && !reportedOperations.Any(o => o.Guid == operation.Guid))
+                        reportedOperations.Add(operation);
+                }
+            }
+
+            if (reportedOperations.Any(o =>
+                o.Progress.Status != BackgroundTransferStatus.Completed))
+            {
+                LogAdaptiveOperationResults(item, reportedOperations);
+                if (await RetryFailedAdaptiveOperationsAsync(item, reportedOperations)) return;
+                item.IsDownloading = false;
+                item.IsFinalizing = false;
+                await SaveAsync();
+                RaiseChanged();
                 return;
             }
 
+            // Persist the fact that both OS operations completed before validation/muxing. This
+            // also makes downloads created by older builds (without expected byte counts) safe to
+            // recover after the background task is interrupted.
+            item.BytesReceived = 90000;
+            item.TotalBytes = 100000;
+            item.IsDownloading = true;
+            await SaveAsync();
             await FinalizeAdaptiveItemAsync(item, true);
+        }
+
+        private static void LogAdaptiveOperationResults(
+            DownloadedVideoItem item,
+            IEnumerable<DownloadOperation> operations)
+        {
+            foreach (var operation in operations)
+            {
+                if (operation == null) continue;
+                var id = operation.Guid.ToString();
+                var track = string.Equals(id, item.VideoOperationId,
+                    StringComparison.OrdinalIgnoreCase) ? "video" : "audio";
+                var responseText = "no HTTP response";
+                try
+                {
+                    var response = operation.GetResponseInformation();
+                    if (response != null) responseText = "HTTP " + response.StatusCode;
+                }
+                catch { }
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] " + track + " operation " + id
+                    + " ended as " + operation.Progress.Status
+                    + "; bytes=" + operation.Progress.BytesReceived
+                    + "/" + operation.Progress.TotalBytesToReceive
+                    + "; " + responseText);
+            }
+        }
+
+        private static async Task<bool> RetryFailedAdaptiveOperationsAsync(
+            DownloadedVideoItem item,
+            IList<DownloadOperation> reportedOperations)
+        {
+            const int MaxAutomaticRetries = 2;
+            if (item == null || item.RetryCount >= MaxAutomaticRetries) return false;
+
+            try
+            {
+                var videoReady = await IsAdaptivePartReadyAsync(
+                    item.VideoPartName, item.ExpectedVideoBytes);
+                var audioReady = await IsAdaptivePartReadyAsync(
+                    item.AudioPartName, item.ExpectedAudioBytes);
+                if (videoReady && audioReady)
+                {
+                    await FinalizeAdaptiveItemAsync(item, true);
+                    return item.IsComplete;
+                }
+
+                var videoSource = item.VideoSourceUrl;
+                var audioSource = item.AudioSourceUrl;
+                if (reportedOperations != null)
+                {
+                    foreach (var operation in reportedOperations)
+                    {
+                        if (operation == null || operation.RequestedUri == null) continue;
+                        var id = operation.Guid.ToString();
+                        if (string.Equals(id, item.VideoOperationId,
+                            StringComparison.OrdinalIgnoreCase))
+                            videoSource = operation.RequestedUri.AbsoluteUri;
+                        else if (string.Equals(id, item.AudioOperationId,
+                            StringComparison.OrdinalIgnoreCase))
+                            audioSource = operation.RequestedUri.AbsoluteUri;
+                    }
+                }
+
+                if ((!videoReady && string.IsNullOrWhiteSpace(videoSource))
+                    || (!audioReady && string.IsNullOrWhiteSpace(audioSource)))
+                    return false;
+
+                var retryTag = SanitizeFileName(
+                    item.VideoId + "_" + item.Quality + "_retry_"
+                    + Guid.NewGuid().ToString("N"));
+                var completionGroup = await TryCreateCompletionGroupAsync(item, retryTag);
+                var transferGroup = BackgroundTransferGroup.CreateGroup(
+                    "YTAdaptive_" + Guid.NewGuid().ToString("N").Substring(0, 24));
+                ConfigureAdaptiveTransferGroup(transferGroup);
+                item.TransferGroupName = transferGroup.Name;
+
+                var parts = await ApplicationData.Current.LocalFolder.CreateFolderAsync(
+                    PartsFolderName, CreationCollisionOption.OpenIfExists);
+                DownloadOperation videoOperation = null;
+                DownloadOperation audioOperation = null;
+
+                if (!videoReady)
+                {
+                    var file = await parts.CreateFileAsync(
+                        item.VideoPartName, CreationCollisionOption.ReplaceExisting);
+                    var downloader = completionGroup == null
+                        ? new BackgroundDownloader()
+                        : new BackgroundDownloader(completionGroup);
+                    ConfigureAdaptiveDownloader(
+                        downloader, transferGroup, item.VideoUserAgent);
+                    videoOperation = downloader.CreateDownload(new Uri(videoSource), file);
+                    videoOperation.Priority = BackgroundTransferPriority.High;
+                    item.VideoOperationId = videoOperation.Guid.ToString();
+                }
+                else
+                {
+                    item.VideoOperationId = string.Empty;
+                }
+
+                if (!audioReady)
+                {
+                    var file = await parts.CreateFileAsync(
+                        item.AudioPartName, CreationCollisionOption.ReplaceExisting);
+                    var downloader = completionGroup == null
+                        ? new BackgroundDownloader()
+                        : new BackgroundDownloader(completionGroup);
+                    ConfigureAdaptiveDownloader(
+                        downloader, transferGroup, item.AudioUserAgent);
+                    audioOperation = downloader.CreateDownload(new Uri(audioSource), file);
+                    audioOperation.Priority = BackgroundTransferPriority.High;
+                    item.AudioOperationId = audioOperation.Guid.ToString();
+                }
+                else
+                {
+                    item.AudioOperationId = string.Empty;
+                }
+
+                item.RetryCount++;
+                item.IsDownloading = true;
+                item.IsFinalizing = false;
+                item.BytesReceived = 1000;
+                item.TotalBytes = 100000;
+                await SaveAsync();
+                RaiseChanged();
+
+                if (completionGroup != null)
+                {
+                    try { completionGroup.Enable(); }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(
+                            "[Downloads] Retry completion group could not be enabled: " + ex.Message);
+                    }
+                }
+                if (videoOperation != null)
+                {
+                    var ignoredVideo = videoOperation.StartAsync();
+                }
+                if (audioOperation != null)
+                {
+                    var ignoredAudio = audioOperation.StartAsync();
+                }
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] Retrying failed adaptive track(s), attempt "
+                    + item.RetryCount + "/" + MaxAutomaticRetries + ": " + item.VideoId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] Could not schedule adaptive retry: " + ex.Message);
+                return false;
+            }
         }
 
         public static bool IsCompletionTaskName(string taskName)
@@ -553,6 +910,21 @@ namespace YouTube
                 }
 
                 var output = await GetFileAsync(item);
+                if (await Mp4DownloadMuxer.IsCompleteMp4Async(output))
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Downloads] Recovering completed MP4 from stale 90% state");
+                    await CommitAdaptiveCompletionAsync(item, output, showToast);
+                    return;
+                }
+
+                if (!await AreAdaptivePartsReadyAsync(item))
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Downloads] Adaptive parts are not complete yet: " + item.VideoId);
+                    return;
+                }
+
                 var parts = await ApplicationData.Current.LocalFolder.GetFolderAsync(PartsFolderName);
                 var videoPart = await parts.GetFileAsync(item.VideoPartName);
                 var audioPart = await parts.GetFileAsync(item.AudioPartName);
@@ -583,20 +955,7 @@ namespace YouTube
                     output, videoPart, audioPart, cts.Token, progress);
                 if (!muxed) throw new InvalidOperationException("Direct MP4 mux failed");
 
-                item.BytesReceived = 100000;
-                item.TotalBytes = 100000;
-                item.IsDownloading = false;
-                item.IsFinalizing = false;
-                item.IsComplete = true;
-                item.VideoOperationId = string.Empty;
-                item.AudioOperationId = string.Empty;
-                await DeletePartFilesAsync(item);
-                UnregisterCompletionTask(item.CompletionTaskName);
-                item.CompletionTaskName = string.Empty;
-                ClearCancellationMarker(item);
-                await SaveAsync();
-                RaiseChanged();
-                if (showToast) ShowCompletedToast(item);
+                await CommitAdaptiveCompletionAsync(item, output, showToast);
                 System.Diagnostics.Debug.WriteLine(
                     "[Downloads] Adaptive MP4 completed in background: " + output.Path);
             }
@@ -606,14 +965,24 @@ namespace YouTube
             }
             catch (Exception ex)
             {
+                // Another app/background instance may have completed the same item and removed
+                // its parts while this instance was waiting for the mux lock. Preserve that
+                // committed 100% state instead of overwriting the index with a stale 90% row.
+                await MergeExternalCompletionAsync(true);
+                if (item.IsComplete)
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Downloads] Completion was committed by another instance");
+                    return;
+                }
+                // Invalid/403 part files cannot become valid by retrying the same mux forever.
+                // Leave the row inactive so the next tap performs a clean URL refresh and retry.
                 item.IsFinalizing = false;
-                item.IsDownloading = true;
-                item.BytesReceived = 90000;
-                item.TotalBytes = 100000;
+                item.IsDownloading = false;
                 await SaveAsync();
                 RaiseChanged();
                 System.Diagnostics.Debug.WriteLine(
-                    "[Downloads] Background MP4 mux failed and will be retried: " + ex.Message);
+                    "[Downloads] Background MP4 mux failed; transfer must be retried: " + ex.Message);
             }
             finally
             {
@@ -630,6 +999,32 @@ namespace YouTube
                 }
                 FinalizeGate.Release();
             }
+        }
+
+        private static async Task CommitAdaptiveCompletionAsync(
+            DownloadedVideoItem item,
+            StorageFile output,
+            bool showToast)
+        {
+            item.BytesReceived = 100000;
+            item.TotalBytes = 100000;
+            item.IsDownloading = false;
+            item.IsFinalizing = false;
+            item.IsComplete = true;
+            item.VideoOperationId = string.Empty;
+            item.AudioOperationId = string.Empty;
+            item.VideoSourceUrl = string.Empty;
+            item.AudioSourceUrl = string.Empty;
+            item.VideoUserAgent = string.Empty;
+            item.AudioUserAgent = string.Empty;
+            await DeletePartFilesAsync(item);
+            UnregisterCompletionTask(item.CompletionTaskName);
+            item.CompletionTaskName = string.Empty;
+            ClearCancellationMarker(item);
+            await SaveAsync();
+            RaiseChanged();
+            if (showToast) ShowCompletedToast(item);
+            await EnsureThumbnailBesideVideoAsync(item);
         }
 
         public static async Task CancelAsync(DownloadedVideoItem item)
@@ -693,15 +1088,30 @@ namespace YouTube
                 if (ungrouped != null) result.AddRange(ungrouped);
             }
             catch { }
-            try
+            var groupNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            // Backward compatibility for operations created by older builds.
+            groupNames.Add("YouTubeAdaptiveDownloads");
+            lock (Items)
             {
-                var group = BackgroundTransferGroup.CreateGroup("YouTubeAdaptiveDownloads");
-                group.TransferBehavior = BackgroundTransferBehavior.Parallel;
-                var grouped = await BackgroundDownloader
-                    .GetCurrentDownloadsForTransferGroupAsync(group);
-                if (grouped != null) result.AddRange(grouped);
+                foreach (var item in Items)
+                {
+                    if (item != null && !string.IsNullOrWhiteSpace(item.TransferGroupName))
+                        groupNames.Add(item.TransferGroupName);
+                }
             }
-            catch { }
+
+            foreach (var groupName in groupNames)
+            {
+                try
+                {
+                    var group = BackgroundTransferGroup.CreateGroup(groupName);
+                    ConfigureAdaptiveTransferGroup(group);
+                    var grouped = await BackgroundDownloader
+                        .GetCurrentDownloadsForTransferGroupAsync(group);
+                    if (grouped != null) result.AddRange(grouped);
+                }
+                catch { }
+            }
             return result;
         }
 
@@ -740,6 +1150,41 @@ namespace YouTube
                 }
             }
             catch { }
+        }
+
+        private static async Task<bool> AreAdaptivePartsReadyAsync(DownloadedVideoItem item)
+        {
+            if (item == null || string.IsNullOrWhiteSpace(item.VideoPartName)
+                || string.IsNullOrWhiteSpace(item.AudioPartName))
+                return false;
+            if ((item.ExpectedVideoBytes <= 0 || item.ExpectedAudioBytes <= 0)
+                && item.ProgressPercent < 90 && !item.IsFinalizing)
+                return false;
+
+            return await IsAdaptivePartReadyAsync(
+                    item.VideoPartName, item.ExpectedVideoBytes)
+                && await IsAdaptivePartReadyAsync(
+                    item.AudioPartName, item.ExpectedAudioBytes);
+        }
+
+        private static async Task<bool> IsAdaptivePartReadyAsync(
+            string partName,
+            long expectedBytes)
+        {
+            if (string.IsNullOrWhiteSpace(partName)) return false;
+            try
+            {
+                var folder = await ApplicationData.Current.LocalFolder.GetFolderAsync(PartsFolderName);
+                var part = await folder.GetFileAsync(partName);
+                var properties = await part.GetBasicPropertiesAsync();
+                if (properties.Size == 0) return false;
+                if (expectedBytes > 0 && properties.Size < (ulong)expectedBytes) return false;
+                return await Mp4DownloadMuxer.IsCompleteFragmentedMp4Async(part);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private static async Task DeleteLegacyImageAsync(string uri)
@@ -978,6 +1423,27 @@ namespace YouTube
             await EnsureLoadedAsync();
         }
 
+        public static async Task ReconcileAsync()
+        {
+            await EnsureLoadedAsync(false);
+            await ReattachGate.WaitAsync();
+            try
+            {
+                await ReattachAsync();
+                _reattached = true;
+            }
+            finally
+            {
+                ReattachGate.Release();
+            }
+        }
+
+        public static async Task SaveStateAsync()
+        {
+            await EnsureLoadedAsync(false);
+            await SaveAsync();
+        }
+
         private static async Task MergeExternalCompletionAsync(bool force = false)
         {
             if (!force && (DateTime.UtcNow - _lastExternalMergeUtc).TotalMilliseconds < 900)
@@ -1018,6 +1484,14 @@ namespace YouTube
                         local.VideoOperationId = disk.VideoOperationId;
                         local.AudioOperationId = disk.AudioOperationId;
                         local.CompletionTaskName = disk.CompletionTaskName;
+                        local.TransferGroupName = disk.TransferGroupName;
+                        local.ExpectedVideoBytes = disk.ExpectedVideoBytes;
+                        local.ExpectedAudioBytes = disk.ExpectedAudioBytes;
+                        local.VideoSourceUrl = disk.VideoSourceUrl;
+                        local.AudioSourceUrl = disk.AudioSourceUrl;
+                        local.VideoUserAgent = disk.VideoUserAgent;
+                        local.AudioUserAgent = disk.AudioUserAgent;
+                        local.RetryCount = disk.RetryCount;
                     }
                 }
             }
@@ -1026,47 +1500,63 @@ namespace YouTube
 
         private static async Task EnsureLoadedAsync(bool reattach = true)
         {
-            if (_loaded) return;
-            await Gate.WaitAsync();
-            try
+            if (!_loaded)
             {
-                if (_loaded) return;
+                await Gate.WaitAsync();
                 try
                 {
-                    var file = await ApplicationData.Current.LocalFolder.GetFileAsync(IndexFileName);
-                    var text = await FileIO.ReadTextAsync(file);
-                    JsonArray rows;
-                    if (JsonArray.TryParse(text, out rows))
+                    if (!_loaded)
                     {
-                        foreach (var row in rows)
+                        try
                         {
-                            var item = FromJson(row.GetObject());
-                            if (item != null) Items.Add(item);
+                            var file = await ApplicationData.Current.LocalFolder.GetFileAsync(IndexFileName);
+                            var text = await FileIO.ReadTextAsync(file);
+                            JsonArray rows;
+                            if (JsonArray.TryParse(text, out rows))
+                            {
+                                foreach (var row in rows)
+                                {
+                                    var item = FromJson(row.GetObject());
+                                    if (item != null) Items.Add(item);
+                                }
+                            }
                         }
+                        catch { }
+                        lock (Items)
+                        {
+                            // Remove only rows created by the old in-process implementation. New
+                            // adaptive rows persist both operation ids and part names and are recoverable.
+                            Items.RemoveAll(i => i != null && !i.IsComplete
+                                && string.IsNullOrWhiteSpace(i.OperationId)
+                                && string.IsNullOrWhiteSpace(i.VideoOperationId)
+                                && string.IsNullOrWhiteSpace(i.AudioOperationId)
+                                && string.IsNullOrWhiteSpace(i.VideoPartName)
+                                && string.IsNullOrWhiteSpace(i.AudioPartName));
+                        }
+                        _loaded = true;
                     }
                 }
-                catch { }
-                lock (Items)
+                finally
                 {
-                    // Remove only rows created by the old in-process implementation. New
-                    // adaptive rows persist both operation ids and part names and are recoverable.
-                    Items.RemoveAll(i => i != null && !i.IsComplete
-                        && string.IsNullOrWhiteSpace(i.OperationId)
-                        && string.IsNullOrWhiteSpace(i.VideoOperationId)
-                        && string.IsNullOrWhiteSpace(i.AudioOperationId)
-                        && string.IsNullOrWhiteSpace(i.VideoPartName)
-                        && string.IsNullOrWhiteSpace(i.AudioPartName));
+                    Gate.Release();
                 }
-                _loaded = true;
-            }
-            finally
-            {
-                Gate.Release();
             }
 
-            if (reattach)
+            if (reattach && !_reattached)
             {
-                var ignored = ReattachAsync();
+                await ReattachGate.WaitAsync();
+                try
+                {
+                    if (!_reattached)
+                    {
+                        await ReattachAsync();
+                        _reattached = true;
+                    }
+                }
+                finally
+                {
+                    ReattachGate.Release();
+                }
             }
         }
 
@@ -1079,6 +1569,12 @@ namespace YouTube
                 lock (Items) snapshot = Items.Where(i => i != null && !i.IsComplete).ToList();
                 foreach (var item in snapshot)
                 {
+                    var key = MakeKey(item.VideoId, item.Quality);
+                    lock (Active)
+                    {
+                        if (Active.ContainsKey(key)) continue;
+                    }
+
                     if (item.IsAdaptive)
                     {
                         var videoOperation = operations.FirstOrDefault(o => o != null
@@ -1091,12 +1587,14 @@ namespace YouTube
                         {
                             item.IsDownloading = true;
                             var ignoredAdaptive = MonitorAdaptiveOperationsAsync(
-                                item, videoOperation, audioOperation, null, true);
+                                item, videoOperation, audioOperation, null, true,
+                                item.ExpectedVideoBytes, item.ExpectedAudioBytes);
                         }
                         else
                         {
-                            // If no operations remain, the completion task may already be muxing.
-                            // The lock makes this safe if foreground recovery races it.
+                            // Windows can remove one completed operation before the other has
+                            // finished. Recovery re-enumerates and attaches whichever operation is
+                            // still present; muxing starts only after both part files validate.
                             var ignoredFinalize = RecoverAdaptiveFinalizationAsync(item);
                         }
                     }
@@ -1109,6 +1607,10 @@ namespace YouTube
                         {
                             item.IsDownloading = true;
                             var ignored = RunAsync(item, operation, true);
+                        }
+                        else
+                        {
+                            var ignoredProgressive = RecoverProgressiveCompletionAsync(item);
                         }
                     }
                 }
@@ -1125,18 +1627,165 @@ namespace YouTube
             {
                 for (var attempt = 0; attempt < 16; attempt++)
                 {
-                    await Task.Delay(attempt == 0 ? 1200 : 2000);
+                    if (attempt > 0) await Task.Delay(2000);
                     await MergeExternalCompletionAsync(true);
                     if (item == null || item.IsComplete || IsCancellationRequested(item))
                         return;
+
+                    var operations = await GetAllDownloadOperationsAsync();
+                    var videoOperation = operations.FirstOrDefault(o => o != null
+                        && string.Equals(o.Guid.ToString(), item.VideoOperationId,
+                            StringComparison.OrdinalIgnoreCase));
+                    var audioOperation = operations.FirstOrDefault(o => o != null
+                        && string.Equals(o.Guid.ToString(), item.AudioOperationId,
+                            StringComparison.OrdinalIgnoreCase));
+                    if (videoOperation != null && audioOperation != null)
+                    {
+                        await MonitorAdaptiveOperationsAsync(
+                            item, videoOperation, audioOperation, null, true,
+                            item.ExpectedVideoBytes, item.ExpectedAudioBytes);
+                        return;
+                    }
+                    if (videoOperation != null || audioOperation != null)
+                    {
+                        await MonitorRemainingAdaptiveOperationAsync(
+                            item, videoOperation, audioOperation);
+                        return;
+                    }
+
+                    var output = await GetFileAsync(item);
+                    var outputComplete = await Mp4DownloadMuxer.IsCompleteMp4Async(output);
+                    var partsComplete = await AreAdaptivePartsReadyAsync(item);
+                    if (!outputComplete && !partsComplete) continue;
+
                     await FinalizeAdaptiveItemAsync(item, true);
                     if (item.IsComplete) return;
+                    if (!item.IsDownloading && !item.IsFinalizing) return;
                 }
+
+                item.IsDownloading = false;
+                item.IsFinalizing = false;
+                await SaveAsync();
+                RaiseChanged();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(
                     "[Downloads] Adaptive recovery failed: " + ex.Message);
+            }
+        }
+
+        private static async Task MonitorRemainingAdaptiveOperationAsync(
+            DownloadedVideoItem item,
+            DownloadOperation videoOperation,
+            DownloadOperation audioOperation)
+        {
+            if (item == null || (videoOperation == null && audioOperation == null)) return;
+            var key = MakeKey(item.VideoId, item.Quality);
+            var cts = new CancellationTokenSource();
+            lock (Active)
+            {
+                if (Active.ContainsKey(key)) return;
+                Active[key] = cts;
+            }
+
+            try
+            {
+                item.IsDownloading = true;
+                item.IsFinalizing = false;
+                RaiseChanged();
+                var downloadProgress = new AdaptiveDownloadProgress(
+                    item, item.ExpectedVideoBytes, item.ExpectedAudioBytes);
+                var tasks = new List<Task<DownloadOperation>>();
+                if (videoOperation != null)
+                {
+                    tasks.Add(videoOperation.AttachAsync().AsTask(
+                        cts.Token,
+                        new TransferProgress(value => downloadProgress.Report(true, value))));
+                }
+                if (audioOperation != null)
+                {
+                    tasks.Add(audioOperation.AttachAsync().AsTask(
+                        cts.Token,
+                        new TransferProgress(value => downloadProgress.Report(false, value))));
+                }
+
+                await Task.WhenAll(tasks);
+                if ((videoOperation != null
+                        && videoOperation.Progress.Status != BackgroundTransferStatus.Completed)
+                    || (audioOperation != null
+                        && audioOperation.Progress.Status != BackgroundTransferStatus.Completed))
+                    throw new InvalidOperationException("Recovered adaptive transfer did not complete");
+
+                if (await AreAdaptivePartsReadyAsync(item))
+                {
+                    await FinalizeAdaptiveItemAsync(item, true);
+                    return;
+                }
+
+                item.IsDownloading = false;
+                item.IsFinalizing = false;
+                await SaveAsync();
+                RaiseChanged();
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] A recovered adaptive part is incomplete: " + item.VideoId);
+            }
+            catch (OperationCanceledException)
+            {
+            }
+            catch (Exception ex)
+            {
+                item.IsDownloading = false;
+                item.IsFinalizing = false;
+                await SaveAsync();
+                RaiseChanged();
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] Remaining adaptive transfer failed: " + ex.Message);
+            }
+            finally
+            {
+                lock (Active)
+                {
+                    CancellationTokenSource current;
+                    if (Active.TryGetValue(key, out current) && ReferenceEquals(current, cts))
+                        Active.Remove(key);
+                }
+            }
+        }
+
+        private static async Task RecoverProgressiveCompletionAsync(DownloadedVideoItem item)
+        {
+            if (item == null || item.IsComplete) return;
+            try
+            {
+                var output = await GetFileAsync(item);
+                if (await Mp4DownloadMuxer.IsCompleteMp4Async(output))
+                {
+                    var properties = await output.GetBasicPropertiesAsync();
+                    item.BytesReceived = properties.Size;
+                    item.TotalBytes = properties.Size;
+                    item.IsDownloading = false;
+                    item.IsFinalizing = false;
+                    item.IsComplete = true;
+                    item.OperationId = string.Empty;
+                    await SaveAsync();
+                    RaiseChanged();
+                    ShowCompletedToast(item);
+                    await EnsureThumbnailBesideVideoAsync(item);
+                    return;
+                }
+
+                // No persisted operation and no complete MP4 means Windows abandoned the job.
+                // Keep the row as an inactive retry target instead of showing a permanent spinner.
+                item.IsDownloading = false;
+                item.IsFinalizing = false;
+                await SaveAsync();
+                RaiseChanged();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] Progressive recovery failed: " + ex.Message);
             }
         }
 
@@ -1149,6 +1798,7 @@ namespace YouTube
             var cts = new CancellationTokenSource();
             lock (Active) Active[key] = cts;
             var lastSaved = DateTime.UtcNow;
+            var lastNotified = DateTime.MinValue;
             try
             {
                 var progress = new TransferProgress(value =>
@@ -1157,8 +1807,12 @@ namespace YouTube
                     item.BytesReceived = state.BytesReceived;
                     item.TotalBytes = state.TotalBytesToReceive;
                     item.IsDownloading = true;
-                    RaiseChanged();
-                    if ((DateTime.UtcNow - lastSaved).TotalMilliseconds >= 750)
+                    if ((DateTime.UtcNow - lastNotified).TotalMilliseconds >= ProgressUiIntervalMs)
+                    {
+                        lastNotified = DateTime.UtcNow;
+                        RaiseChanged();
+                    }
+                    if ((DateTime.UtcNow - lastSaved).TotalMilliseconds >= ProgressSaveIntervalMs)
                     {
                         lastSaved = DateTime.UtcNow;
                         var ignoredSave = SaveAsync();
@@ -1185,6 +1839,8 @@ namespace YouTube
                 lock (Active) Active.Remove(key);
                 await SaveAsync();
                 RaiseChanged();
+                if (item.IsComplete)
+                    await EnsureThumbnailBesideVideoAsync(item);
             }
         }
 
@@ -1652,9 +2308,14 @@ namespace YouTube
             Put(o, "videoOperationId", i.VideoOperationId); Put(o, "audioOperationId", i.AudioOperationId);
             Put(o, "videoPartName", i.VideoPartName); Put(o, "audioPartName", i.AudioPartName);
             Put(o, "completionTaskName", i.CompletionTaskName); Put(o, "transferGroupName", i.TransferGroupName);
+            Put(o, "videoSourceUrl", i.VideoSourceUrl); Put(o, "audioSourceUrl", i.AudioSourceUrl);
+            Put(o, "videoUserAgent", i.VideoUserAgent); Put(o, "audioUserAgent", i.AudioUserAgent);
             o["width"] = JsonValue.CreateNumberValue(i.Width); o["height"] = JsonValue.CreateNumberValue(i.Height);
             o["bytesReceived"] = JsonValue.CreateStringValue(i.BytesReceived.ToString());
             o["totalBytes"] = JsonValue.CreateStringValue(i.TotalBytes.ToString());
+            o["expectedVideoBytes"] = JsonValue.CreateStringValue(i.ExpectedVideoBytes.ToString());
+            o["expectedAudioBytes"] = JsonValue.CreateStringValue(i.ExpectedAudioBytes.ToString());
+            o["retryCount"] = JsonValue.CreateNumberValue(i.RetryCount);
             o["complete"] = JsonValue.CreateBooleanValue(i.IsComplete);
             o["downloading"] = JsonValue.CreateBooleanValue(i.IsDownloading);
             o["adaptive"] = JsonValue.CreateBooleanValue(i.IsAdaptive);
@@ -1666,10 +2327,12 @@ namespace YouTube
         private static DownloadedVideoItem FromJson(JsonObject o)
         {
             if (o == null) return null;
-            ulong received, total; long ticks;
+            ulong received, total; long ticks, expectedVideoBytes, expectedAudioBytes;
             ulong.TryParse(Get(o, "bytesReceived"), out received);
             ulong.TryParse(Get(o, "totalBytes"), out total);
             long.TryParse(Get(o, "addedTicks"), out ticks);
+            long.TryParse(Get(o, "expectedVideoBytes"), out expectedVideoBytes);
+            long.TryParse(Get(o, "expectedAudioBytes"), out expectedAudioBytes);
             return new DownloadedVideoItem
             {
                 VideoId = Get(o, "videoId"), Title = Get(o, "title"), Author = Get(o, "author"),
@@ -1681,8 +2344,12 @@ namespace YouTube
                 VideoOperationId = Get(o, "videoOperationId"), AudioOperationId = Get(o, "audioOperationId"),
                 VideoPartName = Get(o, "videoPartName"), AudioPartName = Get(o, "audioPartName"),
                 CompletionTaskName = Get(o, "completionTaskName"), TransferGroupName = Get(o, "transferGroupName"),
+                VideoSourceUrl = Get(o, "videoSourceUrl"), AudioSourceUrl = Get(o, "audioSourceUrl"),
+                VideoUserAgent = Get(o, "videoUserAgent"), AudioUserAgent = Get(o, "audioUserAgent"),
                 Width = (int)o.GetNamedNumber("width", 0), Height = (int)o.GetNamedNumber("height", 0),
                 BytesReceived = received, TotalBytes = total,
+                ExpectedVideoBytes = expectedVideoBytes, ExpectedAudioBytes = expectedAudioBytes,
+                RetryCount = (int)o.GetNamedNumber("retryCount", 0),
                 IsComplete = o.GetNamedBoolean("complete", false),
                 IsDownloading = o.GetNamedBoolean("downloading", false),
                 IsAdaptive = o.GetNamedBoolean("adaptive", false),

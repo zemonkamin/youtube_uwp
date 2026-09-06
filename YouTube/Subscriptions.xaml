@@ -44,17 +44,68 @@
                       HorizontalScrollBarVisibility="Disabled"
                       ViewChanged="MainScrollViewer_ViewChanged">
             <StackPanel Padding="0,56,0,52">
-                <!-- Horizontal scrolling area for subscriptions -->
-                <ScrollViewer x:Name="SubscriptionsScrollViewer" 
-                              HorizontalScrollMode="Enabled" 
-                              HorizontalScrollBarVisibility="Hidden" 
-                              VerticalScrollMode="Disabled"
-                              Margin="0,10,0,20"
-                              Height="120">
-                    <StackPanel x:Name="SubscriptionsPanel" 
-                                Orientation="Horizontal" 
-                                Padding="16,0,16,0"/>
-                </ScrollViewer>
+                <!-- A horizontal virtualized list: channel avatars are requested only when
+                     their containers are realized while the user scrolls the strip. -->
+                <ListView x:Name="SubscriptionsList"
+                          Height="120"
+                          Margin="0,10,0,20"
+                          Padding="16,0,16,0"
+                          SelectionMode="None"
+                          IsItemClickEnabled="False"
+                          ScrollViewer.HorizontalScrollMode="Enabled"
+                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                          ScrollViewer.VerticalScrollMode="Disabled"
+                          ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <ItemsStackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Button Style="{StaticResource ChannelButtonStyle}"
+                                    Width="100"
+                                    Margin="0,0,12,0"
+                                    Tag="{Binding}"
+                                    Click="SubscriptionButton_Click">
+                                <StackPanel Width="100"
+                                            HorizontalAlignment="Center">
+                                    <Grid Width="80"
+                                          Height="80"
+                                          HorizontalAlignment="Center">
+                                        <Border Background="{ThemeResource AvatarPlaceholderBrush}" />
+                                        <Image Width="80"
+                                               Height="80"
+                                               Stretch="UniformToFill"
+                                               Loaded="SubscriptionChannelIcon_Loaded"
+                                               DataContextChanged="SubscriptionChannelIcon_DataContextChanged" />
+                                        <Image Width="80"
+                                               Height="80"
+                                               Stretch="Fill"
+                                               IsHitTestVisible="False"
+                                               local:ThemeAsset.Path="Assets/rounding.png" />
+                                    </Grid>
+                                    <TextBlock Text="{Binding ChannelName}"
+                                               Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                               FontSize="12"
+                                               TextWrapping="NoWrap"
+                                               TextTrimming="CharacterEllipsis"
+                                               TextAlignment="Center"
+                                               MaxLines="1"
+                                               Margin="0,8,0,0" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
 
                 <!-- Videos area -->
                 <ItemsControl x:Name="VideosItemsControl"
@@ -89,7 +140,7 @@
                                     <!-- Video Thumbnail -->
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged"
                                           Tag="VideoCardThumbnailChrome">
-                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" />
+                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource VideoPlaceholderBrush}" />
                                         <Border Tag="VideoCardThumbnailChrome">
                                             <Grid>
                                                 <Image DataContextChanged="CardThumbnail_DataContextChanged"

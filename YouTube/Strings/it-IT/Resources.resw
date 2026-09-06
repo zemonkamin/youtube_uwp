@@ -981,7 +981,73 @@ Versione {0}</value>
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Cancella</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Cancella</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Annulla</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Iscrizioni</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Ricerca...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Download</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Cronologia</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Notifiche</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Impostazioni</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Accedi per vedere cronologia e playlist</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Ricerca: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Canale: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Playlist: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>In pausa</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Ricerca nella navigazione orizzontale</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Mostra la barra di ricerca al centro</value>
   </data>
 </root>

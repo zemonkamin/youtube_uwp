@@ -52,7 +52,10 @@ namespace YouTube
         private Storyboard _liveTileToggleStoryboard;
         private Storyboard _channelIconsToggleStoryboard;
         private Storyboard _glassEffectToggleStoryboard;
+        private Storyboard _landscapeNavbarSearchModeToggleStoryboard;
+        private Storyboard _videoAmbientEffectToggleStoryboard;
         private Storyboard _shortsFeatureToggleStoryboard;
+        private Storyboard _discordPresenceToggleStoryboard;
 
         public Settings()
         {
@@ -94,11 +97,25 @@ namespace YouTube
             UpdateAboutText();
             UpdateLanguageText();
             BuildLanguageOptions();
+            YouTube.Discord.DiscordPresenceService.EnsureDefault();
             UpdateAppearanceTexts();
             UpdateThemeText();
             BuildThemeOptions();
             UpdateGlassEffectToggleVisual(FluentGlassEffectHelper.IsEnabled(), false);
+            LandscapeNavbarSearchModeController.EnsureDefault();
+            UpdateLandscapeNavbarSearchModeToggleVisual(
+                LandscapeNavbarSearchModeController.IsEnabled(),
+                false);
+            VideoAmbientEffectController.EnsureDefault();
+            UpdateVideoAmbientEffectToggleVisual(VideoAmbientEffectController.IsEnabled(), false);
             UpdateShortsFeatureToggleVisual(ShortsFeatureController.IsEnabled(), false);
+            var discordAvailable = YouTube.Discord.DiscordPresenceService.IsAvailable();
+            if (DiscordPresenceToggleButton != null)
+            {
+                DiscordPresenceToggleButton.IsEnabled = discordAvailable;
+                DiscordPresenceToggleButton.Opacity = discordAvailable ? 1.0 : 0.45;
+            }
+            UpdateDiscordPresenceToggleVisual(YouTube.Discord.DiscordPresenceService.IsEnabled(), false);
             UpdateLiveTileToggleVisual(App.IsLiveTileEnabled(), false);
         }
 
@@ -230,10 +247,26 @@ namespace YouTube
                 GlassEffectLabelText.Text = Localization.GetString("GlassEffect");
             if (GlassEffectDescriptionText != null)
                 GlassEffectDescriptionText.Text = Localization.GetString("GlassEffectDescription");
+            if (LandscapeNavbarSearchModeLabelText != null)
+                LandscapeNavbarSearchModeLabelText.Text = Localization.GetString("LandscapeNavbarSearchMode");
+            if (LandscapeNavbarSearchModeDescriptionText != null)
+                LandscapeNavbarSearchModeDescriptionText.Text = Localization.GetString(
+                    "LandscapeNavbarSearchModeDescription");
+            if (VideoAmbientEffectLabelText != null)
+                VideoAmbientEffectLabelText.Text = Localization.GetString("VideoAmbientEffect");
+            if (VideoAmbientEffectDescriptionText != null)
+                VideoAmbientEffectDescriptionText.Text = Localization.GetString("VideoAmbientEffectDescription");
             if (ShortsFeatureLabelText != null)
                 ShortsFeatureLabelText.Text = Localization.GetString("ShortsFeature");
             if (ShortsFeatureDescriptionText != null)
                 ShortsFeatureDescriptionText.Text = Localization.GetString("ShortsFeatureDescription");
+            if (DiscordPresenceLabelText != null)
+                DiscordPresenceLabelText.Text = Localization.GetString("DiscordPresence");
+            if (DiscordPresenceDescriptionText != null)
+                DiscordPresenceDescriptionText.Text = Localization.GetString(
+                    YouTube.Discord.DiscordPresenceService.IsAvailable()
+                        ? "DiscordPresenceDescription"
+                        : "DiscordPresenceUnavailableMobile");
             if (ChannelIconsLabelText != null)
                 ChannelIconsLabelText.Text = Localization.GetString("ChannelIcons");
             if (ChannelIconsDescriptionText != null)
@@ -504,11 +537,141 @@ namespace YouTube
             UpdateGlassEffectToggleVisual(enabled, true);
         }
 
+        private void LandscapeNavbarSearchModeToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var enabled = !LandscapeNavbarSearchModeController.IsEnabled();
+            LandscapeNavbarSearchModeController.SetEnabled(enabled);
+            UpdateLandscapeNavbarSearchModeToggleVisual(enabled, true);
+        }
+
+        private void UpdateLandscapeNavbarSearchModeToggleVisual(bool isOn, bool animate)
+        {
+            if (LandscapeNavbarSearchModeToggleTrack == null
+                || LandscapeNavbarSearchModeToggleThumbTransform == null)
+                return;
+
+            if (_landscapeNavbarSearchModeToggleStoryboard != null)
+            {
+                _landscapeNavbarSearchModeToggleStoryboard.Stop();
+                _landscapeNavbarSearchModeToggleStoryboard = null;
+            }
+
+            var onColor = App.GetThemeColor("AppPrimaryTextBrush", Colors.White);
+            var offColor = App.GetThemeColor(
+                "AppMutedTextBrush",
+                Color.FromArgb(255, 155, 155, 155));
+            var brush = LandscapeNavbarSearchModeToggleTrack.Background as SolidColorBrush;
+            if (brush == null)
+            {
+                brush = new SolidColorBrush(isOn ? onColor : offColor);
+                LandscapeNavbarSearchModeToggleTrack.Background = brush;
+            }
+
+            const double OnOffset = 20.0;
+            if (!animate)
+            {
+                brush.Color = isOn ? onColor : offColor;
+                LandscapeNavbarSearchModeToggleThumbTransform.X = isOn ? OnOffset : 0;
+                return;
+            }
+
+            var thumbAnimation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? OnOffset : 0,
+                EnableDependentAnimation = true
+            };
+            var colorAnimation = new ColorAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? onColor : offColor
+            };
+
+            Storyboard.SetTarget(thumbAnimation, LandscapeNavbarSearchModeToggleThumbTransform);
+            Storyboard.SetTargetProperty(thumbAnimation, "X");
+            Storyboard.SetTarget(colorAnimation, brush);
+            Storyboard.SetTargetProperty(colorAnimation, "Color");
+
+            _landscapeNavbarSearchModeToggleStoryboard = new Storyboard();
+            _landscapeNavbarSearchModeToggleStoryboard.Children.Add(thumbAnimation);
+            _landscapeNavbarSearchModeToggleStoryboard.Children.Add(colorAnimation);
+            _landscapeNavbarSearchModeToggleStoryboard.Begin();
+        }
+
+        private void VideoAmbientEffectToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            var enabled = !VideoAmbientEffectController.IsEnabled();
+            VideoAmbientEffectController.SetEnabled(enabled);
+            UpdateVideoAmbientEffectToggleVisual(enabled, true);
+        }
+
         private void ShortsFeatureToggleButton_Click(object sender, RoutedEventArgs e)
         {
             var enabled = !ShortsFeatureController.IsEnabled();
             ShortsFeatureController.SetEnabled(enabled);
             UpdateShortsFeatureToggleVisual(enabled, true);
+        }
+
+        private void DiscordPresenceToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!YouTube.Discord.DiscordPresenceService.IsAvailable())
+                return;
+            var enabled = !YouTube.Discord.DiscordPresenceService.IsEnabled();
+            YouTube.Discord.DiscordPresenceService.SetEnabled(enabled);
+            UpdateDiscordPresenceToggleVisual(enabled, true);
+        }
+
+        private void UpdateDiscordPresenceToggleVisual(bool isOn, bool animate)
+        {
+            if (DiscordPresenceToggleTrack == null || DiscordPresenceToggleThumbTransform == null)
+                return;
+
+            if (_discordPresenceToggleStoryboard != null)
+            {
+                _discordPresenceToggleStoryboard.Stop();
+                _discordPresenceToggleStoryboard = null;
+            }
+
+            var brush = DiscordPresenceToggleTrack.Background as SolidColorBrush;
+            if (brush == null)
+            {
+                brush = new SolidColorBrush(
+                    isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White)
+                        : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155)));
+                DiscordPresenceToggleTrack.Background = brush;
+            }
+
+            const double OnOffset = 20.0;
+            if (!animate)
+            {
+                brush.Color = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White)
+                    : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155));
+                DiscordPresenceToggleThumbTransform.X = isOn ? OnOffset : 0;
+                return;
+            }
+
+            var thumbAnimation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? OnOffset : 0,
+                EnableDependentAnimation = true
+            };
+            var colorAnimation = new ColorAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White)
+                    : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155))
+            };
+
+            Storyboard.SetTarget(thumbAnimation, DiscordPresenceToggleThumbTransform);
+            Storyboard.SetTargetProperty(thumbAnimation, "X");
+            Storyboard.SetTarget(colorAnimation, brush);
+            Storyboard.SetTargetProperty(colorAnimation, "Color");
+
+            _discordPresenceToggleStoryboard = new Storyboard();
+            _discordPresenceToggleStoryboard.Children.Add(thumbAnimation);
+            _discordPresenceToggleStoryboard.Children.Add(colorAnimation);
+            _discordPresenceToggleStoryboard.Begin();
         }
 
         private void UpdateShortsFeatureToggleVisual(bool isOn, bool animate)
@@ -609,6 +772,56 @@ namespace YouTube
             _glassEffectToggleStoryboard.Children.Add(thumbAnimation);
             _glassEffectToggleStoryboard.Children.Add(colorAnimation);
             _glassEffectToggleStoryboard.Begin();
+        }
+
+        private void UpdateVideoAmbientEffectToggleVisual(bool isOn, bool animate)
+        {
+            if (VideoAmbientEffectToggleTrack == null || VideoAmbientEffectToggleThumbTransform == null)
+                return;
+
+            if (_videoAmbientEffectToggleStoryboard != null)
+            {
+                _videoAmbientEffectToggleStoryboard.Stop();
+                _videoAmbientEffectToggleStoryboard = null;
+            }
+
+            var brush = VideoAmbientEffectToggleTrack.Background as SolidColorBrush;
+            if (brush == null)
+            {
+                brush = new SolidColorBrush(
+                    isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155)));
+                VideoAmbientEffectToggleTrack.Background = brush;
+            }
+
+            const double OnOffset = 20.0;
+            if (!animate)
+            {
+                brush.Color = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155));
+                VideoAmbientEffectToggleThumbTransform.X = isOn ? OnOffset : 0;
+                return;
+            }
+
+            var thumbAnimation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? OnOffset : 0,
+                EnableDependentAnimation = true
+            };
+            var colorAnimation = new ColorAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? App.GetThemeColor("AppPrimaryTextBrush", Colors.White) : App.GetThemeColor("AppMutedTextBrush", Color.FromArgb(255, 155, 155, 155))
+            };
+
+            Storyboard.SetTarget(thumbAnimation, VideoAmbientEffectToggleThumbTransform);
+            Storyboard.SetTargetProperty(thumbAnimation, "X");
+            Storyboard.SetTarget(colorAnimation, brush);
+            Storyboard.SetTargetProperty(colorAnimation, "Color");
+
+            _videoAmbientEffectToggleStoryboard = new Storyboard();
+            _videoAmbientEffectToggleStoryboard.Children.Add(thumbAnimation);
+            _videoAmbientEffectToggleStoryboard.Children.Add(colorAnimation);
+            _videoAmbientEffectToggleStoryboard.Begin();
         }
 
         private void UpdateLiveTileToggleVisual(bool isOn, bool animate)
@@ -1563,7 +1776,7 @@ namespace YouTube
             {
                 Duration = TimeSpan.FromMilliseconds(250),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
-                To = show ? 0 : 340
+                To = show ? 0 : QualityBottomSheetPanel.DismissDistance
             };
 
             Storyboard.SetTarget(animation, QualityBottomSheetTransform);
@@ -1611,7 +1824,7 @@ namespace YouTube
             {
                 Duration = TimeSpan.FromMilliseconds(250),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
-                To = show ? 0 : 430
+                To = show ? 0 : LanguageBottomSheetPanel.DismissDistance
             };
 
             Storyboard.SetTarget(animation, LanguageBottomSheetTransform);
@@ -1652,7 +1865,7 @@ namespace YouTube
             {
                 Duration = TimeSpan.FromMilliseconds(250),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
-                To = show ? 0 : 240
+                To = show ? 0 : ThemeBottomSheetPanel.DismissDistance
             };
             Storyboard.SetTarget(animation, ThemeBottomSheetTransform);
             Storyboard.SetTargetProperty(animation, "Y");
@@ -1697,7 +1910,7 @@ namespace YouTube
             {
                 Duration = TimeSpan.FromMilliseconds(250),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
-                To = show ? 0 : 260
+                To = show ? 0 : AboutBottomSheetPanel.DismissDistance
             };
 
             Storyboard.SetTarget(animation, AboutBottomSheetTransform);
@@ -1745,7 +1958,7 @@ namespace YouTube
             {
                 Duration = TimeSpan.FromMilliseconds(250),
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut },
-                To = show ? 0 : 380
+                To = show ? 0 : NotificationsBottomSheetPanel.DismissDistance
             };
 
             Storyboard.SetTarget(animation, NotificationsBottomSheetTransform);
@@ -1823,7 +2036,7 @@ namespace YouTube
                 var element = sender as UIElement;
                 var currentPoint = e.GetCurrentPoint(element);
                 double newY = _qualityInitialTransformY + currentPoint.Position.Y - _qualityInitialY;
-                if (newY >= 0 && newY <= 340)
+                if (newY >= 0 && newY <= QualityBottomSheetPanel.DismissDistance)
                 {
                     QualityBottomSheetTransform.Y = newY;
                 }
@@ -1842,7 +2055,7 @@ namespace YouTube
                     element.ReleasePointerCapture(e.Pointer);
                 }
 
-                if (QualityBottomSheetTransform != null && QualityBottomSheetTransform.Y > 155)
+                if (QualityBottomSheetTransform != null && QualityBottomSheetTransform.Y > QualityBottomSheetPanel.DragDismissThreshold)
                 {
                     AnimateQualityBottomSheet(false);
                 }
@@ -1878,7 +2091,7 @@ namespace YouTube
                 var element = sender as UIElement;
                 var currentPoint = e.GetCurrentPoint(element);
                 double newY = _languageInitialTransformY + currentPoint.Position.Y - _languageInitialY;
-                if (newY >= 0 && newY <= 430)
+                if (newY >= 0 && newY <= LanguageBottomSheetPanel.DismissDistance)
                 {
                     LanguageBottomSheetTransform.Y = newY;
                 }
@@ -1897,7 +2110,7 @@ namespace YouTube
                     element.ReleasePointerCapture(e.Pointer);
                 }
 
-                if (LanguageBottomSheetTransform != null && LanguageBottomSheetTransform.Y > 190)
+                if (LanguageBottomSheetTransform != null && LanguageBottomSheetTransform.Y > LanguageBottomSheetPanel.DragDismissThreshold)
                 {
                     AnimateLanguageBottomSheet(false);
                 }
@@ -1933,7 +2146,7 @@ namespace YouTube
                 var element = sender as UIElement;
                 var currentPoint = e.GetCurrentPoint(element);
                 double newY = _themeInitialTransformY + currentPoint.Position.Y - _themeInitialY;
-                if (newY >= 0 && newY <= 240)
+                if (newY >= 0 && newY <= ThemeBottomSheetPanel.DismissDistance)
                     ThemeBottomSheetTransform.Y = newY;
                 e.Handled = true;
             }
@@ -1948,7 +2161,7 @@ namespace YouTube
                 if (element != null)
                     element.ReleasePointerCapture(e.Pointer);
 
-                if (ThemeBottomSheetTransform != null && ThemeBottomSheetTransform.Y > 105)
+                if (ThemeBottomSheetTransform != null && ThemeBottomSheetTransform.Y > ThemeBottomSheetPanel.DragDismissThreshold)
                     AnimateThemeBottomSheet(false);
                 else
                     AnimateThemeBottomSheet(true);
@@ -1980,7 +2193,7 @@ namespace YouTube
                 var element = sender as UIElement;
                 var currentPoint = e.GetCurrentPoint(element);
                 double newY = _notificationsInitialTransformY + currentPoint.Position.Y - _notificationsInitialY;
-                if (newY >= 0 && newY <= 380)
+                if (newY >= 0 && newY <= NotificationsBottomSheetPanel.DismissDistance)
                 {
                     NotificationsBottomSheetTransform.Y = newY;
                 }
@@ -1999,7 +2212,7 @@ namespace YouTube
                     element.ReleasePointerCapture(e.Pointer);
                 }
 
-                if (NotificationsBottomSheetTransform != null && NotificationsBottomSheetTransform.Y > 170)
+                if (NotificationsBottomSheetTransform != null && NotificationsBottomSheetTransform.Y > NotificationsBottomSheetPanel.DragDismissThreshold)
                 {
                     AnimateNotificationsBottomSheet(false);
                 }
@@ -2035,7 +2248,7 @@ namespace YouTube
                 var element = sender as UIElement;
                 var currentPoint = e.GetCurrentPoint(element);
                 double newY = _aboutInitialTransformY + currentPoint.Position.Y - _aboutInitialY;
-                if (newY >= 0 && newY <= 260)
+                if (newY >= 0 && newY <= AboutBottomSheetPanel.DismissDistance)
                 {
                     AboutBottomSheetTransform.Y = newY;
                 }
@@ -2054,7 +2267,7 @@ namespace YouTube
                     element.ReleasePointerCapture(e.Pointer);
                 }
 
-                if (AboutBottomSheetTransform != null && AboutBottomSheetTransform.Y > 120)
+                if (AboutBottomSheetTransform != null && AboutBottomSheetTransform.Y > AboutBottomSheetPanel.DragDismissThreshold)
                 {
                     AnimateAboutBottomSheet(false);
                 }

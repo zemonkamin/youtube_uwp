@@ -981,7 +981,73 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>മായ്ക്കുക</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>മായ്ക്കുക</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>റദ്ദാക്കുക</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>ഹോം</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>സബ്‌സ്‌ക്രിപ്ഷനുകൾ</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>തിരയുന്നു...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>ഡൗൺലോഡുകൾ</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>ചരിത്രം</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>അറിയിപ്പുകൾ</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>ക്രമീകരണങ്ങൾ</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>അക്കൗണ്ട്</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>നിങ്ങളുടെ ചരിത്രവും പ്ലേലിസ്റ്റുകളും കാണാൻ സൈൻ ഇൻ ചെയ്യുക</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>തിരയുന്നു: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>ചാനൽ: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>പ്ലേലിസ്റ്റ്: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>താൽക്കാലികമായി നിർത്തി</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>തിരശ്ചീന നാവിഗേഷനിലെ തിരയൽ</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>തിരയൽ ബാർ മധ്യത്തിൽ കാണിക്കുക</value>
   </data>
 </root>

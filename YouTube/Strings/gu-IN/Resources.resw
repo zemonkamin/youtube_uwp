@@ -981,7 +981,73 @@ YouTube API Legacy દ્વારા સમર્થિત.
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>ક્લિયર </value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>ક્લિયર </value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>રદ કરો</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>હોમ</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>સબ્સ્ક્રિપ્શન</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>શોધી રહ્યું છે...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>ડાઉનલોડ</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>ઇતિહાસ</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>સૂચનાઓ</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>સેટિંગ્સ</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>એકાઉન્ટ</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>તમારો ઇતિહાસ અને પ્લેલિસ્ટ જોવા સાઇન ઇન કરો</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>શોધી રહ્યું છે: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>ચૅનલ: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>પ્લેલિસ્ટ: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>થોભાવ્યું</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>આડી નેવિગેશનમાં શોધ</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>શોધ પટ્ટીને મધ્યમાં બતાવો</value>
   </data>
 </root>

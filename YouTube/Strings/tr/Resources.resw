@@ -981,7 +981,73 @@ Sürüm {0}</value>
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Temizle</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Temizle</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>İptal</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Ana Sayfa</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Abonelikler</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Aranıyor...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>İndirilenler</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Geçmiş</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Bildirimler</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Hesap</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Geçmişinizi ve oynatma listelerinizi görmek için oturum açın</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Aranıyor: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Kanal: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Oynatma listesi: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>Duraklatıldı</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Yatay gezinmede arama</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Arama çubuğunu ortada göster</value>
   </data>
 </root>

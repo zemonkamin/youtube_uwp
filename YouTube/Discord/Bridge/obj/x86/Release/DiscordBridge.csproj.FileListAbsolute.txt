@@ -1,0 +1,5 @@
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\bin\x86\Release\DiscordBridge.exe
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\bin\x86\Release\DiscordBridge.pdb
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\obj\x86\Release\DiscordBridge.exe
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\obj\x86\Release\DiscordBridge.pdb
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\obj\x86\Release\DiscordBridge.csprojResolveAssemblyReference.cache

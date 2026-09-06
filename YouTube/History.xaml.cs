@@ -13,7 +13,10 @@ namespace YouTube
 {
     public sealed partial class History : Page
     {
-        private const int PageSize = 32;
+        private static int PageSize
+        {
+            get { return ResponsiveLayout.IsPhoneDevice ? 14 : 32; }
+        }
         private const double LoadMoreDistance = 420.0;
 
         private readonly ObservableCollection<HistoryDateSectionViewModel> _sections = new ObservableCollection<HistoryDateSectionViewModel>();
@@ -147,6 +150,7 @@ namespace YouTube
 
                 if (group.Shorts != null)
                 {
+                    var pendingShorts = new List<VideoCardItem>();
                     foreach (var shortVideo in group.Shorts)
                     {
                         if (shortVideo == null || string.IsNullOrWhiteSpace(shortVideo.VideoId))
@@ -156,12 +160,14 @@ namespace YouTube
                             continue;
 
                         _seenVideoIds.Add(shortVideo.VideoId);
-                        target.Shorts.Add(shortVideo);
+                        pendingShorts.Add(shortVideo);
                     }
+                    target.Shorts.AddRange(pendingShorts);
                 }
 
                 if (group.Videos != null)
                 {
+                    var pendingVideos = new List<VideoCardItem>();
                     foreach (var video in group.Videos)
                     {
                         if (video == null || string.IsNullOrWhiteSpace(video.VideoId))
@@ -171,8 +177,9 @@ namespace YouTube
                             continue;
 
                         _seenVideoIds.Add(video.VideoId);
-                        target.Videos.Add(video);
+                        pendingVideos.Add(video);
                     }
+                    target.Videos.AddRange(pendingVideos);
                 }
             }
 
@@ -269,14 +276,14 @@ namespace YouTube
     {
         public string DateTitle { get; set; }
         public Visibility DateTitleVisibility { get; set; }
-        public ObservableCollection<VideoCardItem> Videos { get; private set; }
-        public ObservableCollection<VideoCardItem> Shorts { get; private set; }
+        public FastObservableCollection<VideoCardItem> Videos { get; private set; }
+        public FastObservableCollection<VideoCardItem> Shorts { get; private set; }
 
         public HistoryDateSectionViewModel()
         {
             DateTitleVisibility = Visibility.Visible;
-            Videos = new ObservableCollection<VideoCardItem>();
-            Shorts = new ObservableCollection<VideoCardItem>();
+            Videos = new FastObservableCollection<VideoCardItem>();
+            Shorts = new FastObservableCollection<VideoCardItem>();
         }
     }
 }

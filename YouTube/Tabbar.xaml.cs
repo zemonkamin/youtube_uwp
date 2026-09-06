@@ -7,6 +7,7 @@ using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -89,6 +90,8 @@ namespace YouTube
             ShortsFeatureController.EnabledChanged -= ShortsFeature_EnabledChanged;
             ShortsFeatureController.EnabledChanged += ShortsFeature_EnabledChanged;
             UpdateShortsButtonState();
+            UpdateButtonHostWidth(TabbarRoot == null ? 0 : TabbarRoot.ActualWidth);
+            UpdateCompactOrientationLayout();
             if (TabbarGlassHost != null)
             {
                 TabbarGlassHost.SizeChanged -= TabbarGlassHost_SizeChanged;
@@ -102,6 +105,7 @@ namespace YouTube
                 frame.Navigated -= RootFrame_Navigated;
                 frame.Navigated += RootFrame_Navigated;
                 SynchronizeWithPage(frame.Content);
+                UpdateDiscordPagePresence(frame.Content);
             }
         }
 
@@ -126,6 +130,77 @@ namespace YouTube
             ApplyGlassEffect();
         }
 
+        private void TabbarRoot_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateButtonHostWidth(e.NewSize.Width);
+            UpdateCompactOrientationLayout();
+            ApplyGlassEffect();
+        }
+
+        private void UpdateCompactOrientationLayout()
+        {
+            var compact = ResponsiveLayout.IsCompactLandscape;
+            var labelVisibility = compact ? Visibility.Collapsed : Visibility.Visible;
+
+            if (HomeLabel != null) HomeLabel.Visibility = labelVisibility;
+            if (ShortsLabel != null) ShortsLabel.Visibility = labelVisibility;
+            if (SubscriptionsLabel != null) SubscriptionsLabel.Visibility = labelVisibility;
+            if (AccountLabel != null) AccountLabel.Visibility = labelVisibility;
+            if (TabbarContentRow != null)
+                TabbarContentRow.Height = new GridLength(compact ? 40.0 : 50.0);
+
+            // The containing page keeps its safe-area row. Only the rendered chrome is
+            // shortened, so pages with custom player rows are never overwritten.
+            if (TabbarRoot != null)
+            {
+                TabbarRoot.Height = compact ? 42.0 : double.NaN;
+                TabbarRoot.VerticalAlignment = compact
+                    ? VerticalAlignment.Bottom
+                    : VerticalAlignment.Stretch;
+            }
+        }
+
+        private void UpdateButtonHostWidth(double availableWidth)
+        {
+            if (TabbarButtonsHost == null || availableWidth <= 0
+                || double.IsNaN(availableWidth) || double.IsInfinity(availableWidth))
+                return;
+
+            if (IsLandscapeLayout())
+            {
+                TabbarButtonsHost.HorizontalAlignment = HorizontalAlignment.Center;
+                TabbarButtonsHost.Width = availableWidth * 0.35;
+            }
+            else
+            {
+                TabbarButtonsHost.Width = double.NaN;
+                TabbarButtonsHost.HorizontalAlignment = HorizontalAlignment.Stretch;
+            }
+        }
+
+        private static bool IsLandscapeLayout()
+        {
+            try
+            {
+                var view = ApplicationView.GetForCurrentView();
+                if (view != null)
+                    return view.Orientation == ApplicationViewOrientation.Landscape;
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                var bounds = Window.Current.Bounds;
+                return bounds.Width >= bounds.Height;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private void GlassEffect_EnabledChanged(object sender, EventArgs e)
         {
             ApplyGlassEffect();
@@ -145,14 +220,43 @@ namespace YouTube
                 TabbarGlassHost.ActualHeight <= 1.0)
                 return;
 
-            FluentGlassEffectHelper.AttachBottomBar(
-                TabbarGlassHost,
-                App.GetThemeBrush("AppBackgroundBrush"));
+            FluentGlassEffectHelper.AttachBottomBar(TabbarGlassHost, App.GetThemeBrush("AppBackgroundBrush"));
         }
 
         private void RootFrame_Navigated(object sender, NavigationEventArgs e)
         {
-            SynchronizeWithPage(e != null ? e.Content : null);
+            var page = e != null ? e.Content : null;
+            SynchronizeWithPage(page);
+            UpdateDiscordPagePresence(page);
+        }
+
+        private static void UpdateDiscordPagePresence(object page)
+        {
+            // These pages publish richer information themselves as soon as their navigation
+            // parameter/metadata is available.
+            if (page is Video || page is Shorts || page is Search || page is Channel || page is Playlist)
+                return;
+
+            if (page is Home)
+                YouTube.Discord.DiscordPresenceService.SetPage(Localization.GetString("DiscordStatusHome"));
+            else if (page is Subscriptions)
+                YouTube.Discord.DiscordPresenceService.SetPage(Localization.GetString("DiscordStatusSubscriptions"));
+            else if (page is Searching)
+                YouTube.Discord.DiscordPresenceService.SetPage(Localization.GetString("DiscordStatusSearch"));
+            else if (page is Downloads)
+                YouTube.Discord.DiscordPresenceService.SetPage(Localization.GetString("DiscordStatusDownloads"));
+            else if (page is History)
+                YouTube.Discord.DiscordPresenceService.SetPage(Localization.GetString("DiscordStatusHistory"));
+            else if (page is Notifications)
+                YouTube.Discord.DiscordPresenceService.SetPage(Localization.GetString("DiscordStatusNotifications"));
+            else if (page is Settings)
+                YouTube.Discord.DiscordPresenceService.SetPage(Localization.GetString("DiscordStatusSettings"));
+            else if (page is Me)
+                YouTube.Discord.DiscordPresenceService.SetPage(Localization.GetString("DiscordStatusProfile"));
+            else if (page is Login)
+                YouTube.Discord.DiscordPresenceService.SetPage(Localization.GetString("DiscordStatusLogin"));
+            else if (page != null)
+                YouTube.Discord.DiscordPresenceService.SetPage(page.GetType().Name);
         }
 
         private void SynchronizeWithPage(object page)
@@ -567,6 +671,8 @@ namespace YouTube
             else
             {
                 SetActiveTab(ActiveTab.Home);
+                if (frame != null)
+                    UpdateDiscordPagePresence(frame.Content);
             }
 
             HomeTabClicked?.Invoke(this, EventArgs.Empty);

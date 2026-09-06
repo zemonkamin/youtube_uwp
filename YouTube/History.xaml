@@ -59,7 +59,7 @@
                                                             Padding="0"
                                                             Click="ShortCard_Click">
                                                         <Grid Width="142" Height="238">
-                                                            <Border Background="{ThemeResource AppSurfaceAltBrush}"
+                                                            <Border Background="{ThemeResource VideoPlaceholderBrush}"
                                                                     CornerRadius="8"/>
                                                             <Image DataContextChanged="HistoryThumbnail_DataContextChanged"
                                                                    Stretch="UniformToFill"
@@ -119,7 +119,7 @@
                                                         <Grid Grid.Column="0"
                                                               Width="160"
                                                               Height="90">
-                                                            <Border Background="{ThemeResource AppSurfaceAltBrush}"/>
+                                                            <Border Background="{ThemeResource VideoPlaceholderBrush}"/>
                                                             <Image DataContextChanged="HistoryThumbnail_DataContextChanged"
                                                                    Stretch="UniformToFill"
                                                                    HorizontalAlignment="Stretch"

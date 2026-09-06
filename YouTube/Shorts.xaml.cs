@@ -23,6 +23,7 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Navigation;
+using YouTube.Innertube;
 
 namespace YouTube
 {
@@ -49,7 +50,7 @@ namespace YouTube
         private TaskCompletionSource<bool> _swipeAnimationTcs;
         private bool _ratingInProgress;
         private int _ratingStateGeneration;
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly YouTubeHttpClient _httpClient = YouTubeHttpClient.Shared;
         private Point _pointerStart;
         private int _swipeDirection;
         private bool _isAnimatingShort;
@@ -61,9 +62,12 @@ namespace YouTube
         }
 
         private readonly Dictionary<string, List<CommentItem>> _commentsCache = new Dictionary<string, List<CommentItem>>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, bool> _commentsAuthenticatedMwebContext = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, string> _descriptionCache = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private string _commentsLoadedVideoId = string.Empty;
         private bool _commentsIsLoading;
+        private string _commentsLoadingVideoId = string.Empty;
+        private int _commentsLoadGeneration;
         private double _commentsInitialY;
         private double _commentsInitialTransformY;
         private bool _commentsIsDragging;
@@ -88,7 +92,7 @@ namespace YouTube
 
         private const double SwipeThreshold = 80.0;
         private const double SwipeStartThreshold = 8.0;
-        private const string InnertubeApiKey = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+        private const string InnertubeApiKey = YouTubeApiConfig.ApiKey;
         private const string InnertubeTvClientName = "TVHTML5";
         private const string InnertubeTvClientVersion = "7.20260429.11.00";
         private const string InnertubeTvClientHeaderName = "85";
@@ -287,10 +291,9 @@ namespace YouTube
                     return false;
                 }
 
-                if (!string.IsNullOrWhiteSpace(feed.SequenceToken))
-                {
-                    _sequenceToken = feed.SequenceToken;
-                }
+                // Empty means that this continuation chain is exhausted. Do not retain the old
+                // token: doing so repeatedly requested the same final page and stopped the feed.
+                _sequenceToken = feed.SequenceToken ?? string.Empty;
 
                 var added = 0;
                 if (feed.Items != null)
@@ -305,6 +308,24 @@ namespace YouTube
                         _seenVideoIds.Add(item.VideoId);
                         _shorts.Add(item);
                         added++;
+                    }
+
+                    // A fresh seed can legitimately contain videos seen in the previous chain.
+                    // At the physical end of the feed it is better to start a new recommendation
+                    // cycle than to leave the swipe gesture dead. Avoid only the currently shown
+                    // video so the transition is never visually a no-op.
+                    if (added == 0 && feed.Items.Count > 0 && _shorts.Count > 0)
+                    {
+                        var currentId = CurrentShort == null ? string.Empty : CurrentShort.VideoId;
+                        foreach (var item in feed.Items)
+                        {
+                            if (item == null || string.IsNullOrWhiteSpace(item.VideoId)
+                                || string.Equals(item.VideoId, currentId, StringComparison.OrdinalIgnoreCase))
+                                continue;
+
+                            _shorts.Add(item);
+                            added++;
+                        }
                     }
                 }
 
@@ -436,7 +457,7 @@ namespace YouTube
                 // tearing down every intermediate one is wasted work, and that churn is the most
                 // likely source of the native crash — it kills the process without raising a
                 // managed exception, which is why the crash handlers stay silent.
-                await Task.Delay(150);
+                await Task.Delay(ResponsiveLayout.IsPhoneDevice ? 60 : 150);
                 if (generation != _showGeneration)
                 {
                     System.Diagnostics.Debug.WriteLine(
@@ -536,7 +557,7 @@ namespace YouTube
 
                 var ignoredPrefetch = PrefetchNeighbourStreamAsync(generation);
 
-                if (_currentIndex >= _shorts.Count - 2 && !string.IsNullOrWhiteSpace(_sequenceToken))
+                if (_currentIndex >= _shorts.Count - 2)
                 {
                     var ignored = LoadMoreShortsAsync();
                 }
@@ -902,6 +923,7 @@ namespace YouTube
 
             ShortTitleText.Text = string.IsNullOrWhiteSpace(item.Title) ? Localization.GetString("Shorts") : item.Title;
             ChannelNameText.Text = string.IsNullOrWhiteSpace(item.ChannelName) ? "YouTube" : item.ChannelName;
+            YouTube.Discord.DiscordPresenceService.SetShort(item.VideoId, ShortTitleText.Text, ChannelNameText.Text, item.ThumbnailUrl);
             LikeCountText.Text = string.IsNullOrWhiteSpace(item.LikeCount) ? Localization.GetString("Like") : item.LikeCount;
             if (CommentCountText != null)
             {
@@ -1146,16 +1168,15 @@ namespace YouTube
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(_sequenceToken))
+            // An empty continuation means "start a fresh Shorts recommendation chain", not end
+            // of the user-visible feed. LoadMore handles both continuation and seedless requests.
+            SetLoading(true);
+            var loaded = await LoadMoreShortsAsync();
+            SetLoading(false);
+            if (loaded && _currentIndex < _shorts.Count - 1)
             {
-                SetLoading(true);
-                var loaded = await LoadMoreShortsAsync();
-                SetLoading(false);
-                if (loaded && _currentIndex < _shorts.Count - 1)
-                {
-                    await ShowShortAsync(_currentIndex + 1, 1);
-                    return;
-                }
+                await ShowShortAsync(_currentIndex + 1, 1);
+                return;
             }
 
             await AnimateSwipeContentToAsync(0, 160);
@@ -1798,7 +1819,7 @@ namespace YouTube
             var storyboard = new Windows.UI.Xaml.Media.Animation.Storyboard();
             var slide = new Windows.UI.Xaml.Media.Animation.DoubleAnimation
             {
-                To = show ? 0 : 270,
+                To = show ? 0 : ShortsSettingsSheet.DismissDistance,
                 Duration = TimeSpan.FromMilliseconds(220),
                 EasingFunction = new Windows.UI.Xaml.Media.Animation.CubicEase
                 {
@@ -1876,9 +1897,9 @@ namespace YouTube
             {
                 newY = 0;
             }
-            else if (newY > 270)
+            else if (newY > ShortsSettingsSheet.DismissDistance)
             {
-                newY = 270;
+                newY = ShortsSettingsSheet.DismissDistance;
             }
 
             ShortsSettingsSheetTransform.Y = newY;
@@ -1906,7 +1927,7 @@ namespace YouTube
                 }
             }
 
-            if (ShortsSettingsSheetTransform != null && ShortsSettingsSheetTransform.Y > 90)
+            if (ShortsSettingsSheetTransform != null && ShortsSettingsSheetTransform.Y > ShortsSettingsSheet.DragDismissThreshold)
             {
                 AnimateShortsSettingsSheet(false);
             }
@@ -2703,7 +2724,7 @@ namespace YouTube
 
         private static string BuildInnertubeUrl(string endpoint)
         {
-            return "https://www.youtube.com/youtubei/v1/" + endpoint + "?key=" + InnertubeApiKey;
+            return InnertubeEndpoints.Build(endpoint);
         }
 
         private static JsonObject BuildShortInnertubeContext(bool mobileWebClient, string clickTrackingParams)
@@ -3659,28 +3680,71 @@ namespace YouTube
             List<CommentItem> comments;
             if (_commentsCache.TryGetValue(item.VideoId, out comments))
             {
+                _commentsLoadGeneration++;
+                _commentsIsLoading = false;
+                _commentsLoadingVideoId = string.Empty;
                 BindComments(item.VideoId, comments);
                 return;
             }
 
-            if (_commentsIsLoading)
+            if (_commentsIsLoading
+                && string.Equals(_commentsLoadingVideoId, item.VideoId, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
 
+            var requestedVideoId = item.VideoId;
+            var generation = ++_commentsLoadGeneration;
             _commentsIsLoading = true;
+            _commentsLoadingVideoId = requestedVideoId;
             try
             {
-                System.Diagnostics.Debug.WriteLine("[Shorts] Loading comments for: " + item.VideoId);
-                comments = await Config.GetCommentsAsync(item.VideoId);
+                System.Diagnostics.Debug.WriteLine("[Shorts] Loading WEB comments for: " + requestedVideoId);
+                var authenticatedMwebContext = false;
+                comments = await Config.GetCommentsForClientContextAsync(
+                    requestedVideoId,
+                    null,
+                    false);
+
+                // OAuth tokens used by some installations expose comments only through MWEB.
+                // Retry there only when the normal WEB continuation produced no parsed threads.
+                if ((comments == null || comments.Count == 0)
+                    && !string.IsNullOrWhiteSpace(Config.UserToken))
+                {
+                    System.Diagnostics.Debug.WriteLine(
+                        "[Shorts] WEB comments empty; trying authenticated MWEB");
+                    var authenticatedComments = await Config.GetCommentsForClientContextAsync(
+                        requestedVideoId,
+                        null,
+                        true);
+                    if (authenticatedComments != null && authenticatedComments.Count > 0)
+                    {
+                        comments = authenticatedComments;
+                        authenticatedMwebContext = true;
+                    }
+                }
+
                 if (comments == null)
                 {
                     comments = new List<CommentItem>();
                 }
 
-                _commentsCache[item.VideoId] = comments;
-                BindComments(item.VideoId, comments);
-                System.Diagnostics.Debug.WriteLine("[Shorts] Loaded " + comments.Count + " comments for: " + item.VideoId);
+                // Do not persist an empty result: it can mean a temporary token/endpoint failure.
+                // A later tap should be able to retry instead of showing a permanent empty sheet.
+                if (comments.Count > 0)
+                {
+                    _commentsCache[requestedVideoId] = comments;
+                    _commentsAuthenticatedMwebContext[requestedVideoId] = authenticatedMwebContext;
+                }
+
+                if (generation == _commentsLoadGeneration
+                    && CurrentShort != null
+                    && string.Equals(CurrentShort.VideoId, requestedVideoId, StringComparison.OrdinalIgnoreCase))
+                {
+                    BindComments(requestedVideoId, comments);
+                }
+                System.Diagnostics.Debug.WriteLine("[Shorts] Loaded " + comments.Count + " comments for: " + requestedVideoId
+                    + ", context=" + (authenticatedMwebContext ? "MWEB" : "WEB"));
             }
             catch (Exception ex)
             {
@@ -3690,7 +3754,11 @@ namespace YouTube
             }
             finally
             {
-                _commentsIsLoading = false;
+                if (generation == _commentsLoadGeneration)
+                {
+                    _commentsIsLoading = false;
+                    _commentsLoadingVideoId = string.Empty;
+                }
             }
         }
 
@@ -3727,9 +3795,14 @@ namespace YouTube
 
             try
             {
-                var replies = await Config.GetCommentsAsync(
+                bool authenticatedMwebContext;
+                if (!_commentsAuthenticatedMwebContext.TryGetValue(videoId, out authenticatedMwebContext))
+                    authenticatedMwebContext = false;
+
+                var replies = await Config.GetCommentsForClientContextAsync(
                     videoId,
-                    comment.ReplyContinuationToken);
+                    comment.ReplyContinuationToken,
+                    authenticatedMwebContext);
 
                 // Keep the branch attached to the video whose sheet is still open.
                 if (!string.Equals(videoId, _commentsLoadedVideoId, StringComparison.OrdinalIgnoreCase))
@@ -3787,7 +3860,7 @@ namespace YouTube
             var animation = new DoubleAnimation();
             animation.Duration = new Duration(TimeSpan.FromMilliseconds(300));
             animation.EasingFunction = new CircleEase();
-            animation.To = show ? 0 : 400;
+            animation.To = show ? 0 : CommentsBottomSheetPanel.DismissDistance;
 
             Storyboard.SetTarget(animation, CommentsBottomSheetTransform);
             Storyboard.SetTargetProperty(animation, "Y");
@@ -3838,7 +3911,7 @@ namespace YouTube
                 double dragOffset = currentPoint.Position.Y - _commentsInitialY;
                 double newY = _commentsInitialTransformY + dragOffset;
 
-                if (newY >= 0 && newY <= 410)
+                if (newY >= 0 && newY <= CommentsBottomSheetPanel.DismissDistance)
                 {
                     CommentsBottomSheetTransform.Y = newY;
                 }
@@ -3858,7 +3931,7 @@ namespace YouTube
                     element.ReleasePointerCapture(e.Pointer);
                 }
 
-                if (CommentsBottomSheetTransform != null && CommentsBottomSheetTransform.Y > 190)
+                if (CommentsBottomSheetTransform != null && CommentsBottomSheetTransform.Y > CommentsBottomSheetPanel.DragDismissThreshold)
                 {
                     AnimateCommentsBottomSheet(false);
                 }
@@ -4101,13 +4174,7 @@ namespace YouTube
 
         private double GetShareSheetDismissDistance()
         {
-            double height = ShareBottomSheetPanel != null ? ShareBottomSheetPanel.ActualHeight : 0;
-            if (height <= 0)
-            {
-                height = 330;
-            }
-
-            return height + 20;
+            return ShareBottomSheetPanel != null ? ShareBottomSheetPanel.DismissDistance : 400;
         }
 
         private void AnimateShareBottomSheet(bool show)
@@ -4616,7 +4683,7 @@ namespace YouTube
             var animation = new DoubleAnimation();
             animation.Duration = new Duration(TimeSpan.FromMilliseconds(280));
             animation.EasingFunction = new CircleEase();
-            animation.To = show ? 0 : 330;
+            animation.To = show ? 0 : DescriptionBottomSheetPanel.DismissDistance;
 
             Storyboard.SetTarget(animation, DescriptionBottomSheetTransform);
             Storyboard.SetTargetProperty(animation, "Y");
@@ -4666,7 +4733,7 @@ namespace YouTube
                 var currentPoint = e.GetCurrentPoint(element);
                 var dragOffset = currentPoint.Position.Y - _descriptionInitialY;
                 var newY = _descriptionInitialTransformY + dragOffset;
-                if (newY >= 0 && newY <= 330)
+                if (newY >= 0 && newY <= DescriptionBottomSheetPanel.DismissDistance)
                 {
                     DescriptionBottomSheetTransform.Y = newY;
                 }
@@ -4686,7 +4753,7 @@ namespace YouTube
                     element.ReleasePointerCapture(e.Pointer);
                 }
 
-                if (DescriptionBottomSheetTransform != null && DescriptionBottomSheetTransform.Y > 150)
+                if (DescriptionBottomSheetTransform != null && DescriptionBottomSheetTransform.Y > DescriptionBottomSheetPanel.DragDismissThreshold)
                 {
                     AnimateDescriptionBottomSheet(false);
                 }
@@ -4755,12 +4822,7 @@ namespace YouTube
 
         private double GetShareResultDismissDistance()
         {
-            var height = ShareResultPopupPanel != null ? ShareResultPopupPanel.ActualHeight : 0;
-            if (height <= 1)
-            {
-                height = 390;
-            }
-            return height + 20;
+            return ShareResultPopupPanel != null ? ShareResultPopupPanel.DismissDistance : 400;
         }
 
         private void AnimateShareResultPopup(bool show)

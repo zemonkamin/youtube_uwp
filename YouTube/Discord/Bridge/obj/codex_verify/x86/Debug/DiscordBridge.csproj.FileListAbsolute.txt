@@ -1,0 +1,5 @@
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\bin\x86\DebugCodex\DiscordBridge.exe
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\bin\x86\DebugCodex\DiscordBridge.pdb
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\obj\codex_verify\x86\Debug\DiscordBridge.csprojResolveAssemblyReference.cache
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\obj\codex_verify\x86\Debug\DiscordBridge.exe
+C:\Projects\youtube_uwp\YouTube\Discord\Bridge\obj\codex_verify\x86\Debug\DiscordBridge.pdb

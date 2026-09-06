@@ -73,6 +73,7 @@ namespace YouTube
             "copy.png",
             "down_arrow.png",
             "download.png",
+            "discord.png",
             "info.png",
             "link.png",
             "log_out.png",
@@ -689,6 +690,7 @@ namespace YouTube
             _uiSettings.ColorValuesChanged += UiSettings_ColorValuesChanged;
 
             this.Suspending += OnSuspending;
+            this.Resuming += OnResuming;
 
             // The process was dying with only "exited with code -1" in the log, which says nothing
             // about the cause. These two handlers name the actual exception before it takes the
@@ -835,8 +837,20 @@ namespace YouTube
             {
                 Config.LoadUserToken();
 #pragma warning disable 4014
-                YouTubeNotificationService.InitializeAsync();
-                DownloadManager.InitializeAsync();
+                if (ResponsiveLayout.IsPhoneDevice)
+                {
+                    // Do not make the first page fight OAuth, notifications and a local download
+                    // scan at cold start. Those services are useful, but none is required for the
+                    // first frame or the first feed response on Windows 10 Mobile.
+                    InitializeMobileBackgroundServicesDeferred();
+                }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(Config.UserToken))
+                        Config.RefreshAccessTokenAsync(Config.UserToken);
+                    YouTubeNotificationService.InitializeAsync();
+                    DownloadManager.InitializeAsync();
+                }
 #pragma warning restore 4014
 
                 if (target != null)
@@ -864,6 +878,28 @@ namespace YouTube
                 }
 
                 Window.Current.Activate();
+            }
+        }
+
+        private async void InitializeMobileBackgroundServicesDeferred()
+        {
+            try
+            {
+                // Reattach persisted BackgroundDownloader operations immediately. Windows only
+                // resumes transfers after a reboot once the new app instance calls AttachAsync,
+                // and completed adaptive tracks may also be waiting for the final MP4 mux.
+                await DownloadManager.InitializeAsync();
+
+                // Warm the small OAuth token request before the user reaches Search. The token
+                // is cached across launches, so this normally completes without network I/O.
+                await Task.Delay(2500);
+                if (!string.IsNullOrWhiteSpace(Config.UserToken))
+                    await Config.RefreshAccessTokenAsync(Config.UserToken);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[App][Mobile] Deferred background initialization failed: " + ex.Message);
             }
         }
 
@@ -1307,11 +1343,38 @@ namespace YouTube
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-            //TODO: Save application state and stop any background activity
-            deferral.Complete();
+            try
+            {
+                // Do not cancel BackgroundDownloader here: it belongs to the OS and must keep
+                // running after suspension/termination. Persist the latest index snapshot so the
+                // next process can reattach and finish post-processing.
+                await DownloadManager.SaveStateAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] Suspend-state save failed: " + ex.Message);
+            }
+            finally
+            {
+                deferral.Complete();
+            }
+        }
+
+        private async void OnResuming(object sender, object e)
+        {
+            try
+            {
+                await DownloadManager.ReconcileAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Downloads] Resume reconciliation failed: " + ex.Message);
+            }
         }
     }
 

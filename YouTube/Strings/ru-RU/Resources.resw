@@ -294,6 +294,12 @@
   <data name="GlassEffectDescription" xml:space="preserve">
     <value>Размывать панели навигации</value>
   </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Фоновая подсветка видео</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Размывать цвета текущего кадра вокруг плеера</value>
+  </data>
   <data name="HistoryLoadFailed" xml:space="preserve">
     <value>Не удалось загрузить историю</value>
   </data>
@@ -981,7 +987,67 @@
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Очистить</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Отмена</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Подписки</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Поиск...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Загрузки</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>История</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Уведомления</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Аккаунт</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Войдите, чтобы увидеть историю и плейлисты</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Поиск: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Канал: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Плейлист: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>Пауза</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Поиск в горизонтальной навигации</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Показывать строку поиска по центру</value>
   </data>
 </root>

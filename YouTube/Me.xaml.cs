@@ -324,7 +324,7 @@ namespace YouTube
             AccountsOverlay.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
             AccountsSheet.Visibility = Visibility.Visible;
 
-            var hiddenY = Math.Max(540, AccountsSheet.ActualHeight + 20);
+            var hiddenY = AccountsSheet.DismissDistance;
             var animation = new DoubleAnimation
             {
                 From = AccountsSheetTransform.Y,
@@ -388,7 +388,7 @@ namespace YouTube
 
             var currentY = e.GetCurrentPoint(element).Position.Y;
             var deltaY = currentY - _accountsSheetInitialY;
-            AccountsSheetTransform.Y = Math.Max(0, _accountsSheetInitialTransformY + deltaY);
+            AccountsSheetTransform.Y = AccountsSheet.ClampDragOffset(_accountsSheetInitialTransformY + deltaY);
             e.Handled = true;
         }
 
@@ -406,7 +406,7 @@ namespace YouTube
                 element.ReleasePointerCapture(e.Pointer);
             }
 
-            SetAccountsSheetVisibility(AccountsSheetTransform.Y <= 120);
+            SetAccountsSheetVisibility(AccountsSheetTransform.Y <= AccountsSheet.DragDismissThreshold);
             e.Handled = true;
         }
 

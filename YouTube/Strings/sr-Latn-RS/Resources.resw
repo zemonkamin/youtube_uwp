@@ -981,7 +981,73 @@ Verzija {0}</value>
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Obriši</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Obriši</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Otkaži</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Početna</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Pretplate</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Pretraživanje...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Preuzimanja</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Povijest</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Obavijesti</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Postavke</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Račun</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Prijavite se da biste vidjeli povijest i popise za reprodukciju</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Pretraživanje: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Kanal: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Popis za reprodukciju: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>Pauzirano</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Pretraga u horizontalnoj navigaciji</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Prikaži traku za pretragu u sredini</value>
   </data>
 </root>

@@ -981,7 +981,73 @@ Versioon {0}</value>
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Eemalda</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Eemalda</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Saab sisse lülitada</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Avaleht</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Tellimused</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Otsimine...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Allalaadimised</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Ajalugu</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Teavitused</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Seaded</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Konto</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Ajaloo ja esitusloendite nägemiseks logige sisse</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Otsimine: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Kanal: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Esitusloend: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>Pausil</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Otsing horisontaalses navigeerimises</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Kuva otsinguriba keskel</value>
   </data>
 </root>

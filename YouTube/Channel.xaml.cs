@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using YouTube.Innertube;
 
 using Windows.UI.Xaml.Shapes;
 
@@ -47,7 +48,7 @@ namespace YouTube
             None
         }
 
-        private const string InnertubeApiKey = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+        private const string InnertubeApiKey = YouTubeApiConfig.ApiKey;
         private const string WebClientVersion = "2.20260220.00.00";
         // Protobuf selector for a channel's "Videos" tab.
         private const string ChannelVideosTabParams = "EgZ2aWRlb3PyBgQKAjoA";
@@ -64,7 +65,10 @@ namespace YouTube
         private const string MwebUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1";
         private const string DefaultSubscribeParams = "CgIIAxgA";
         private const string DefaultUnsubscribeParams = "EgIIAxgA";
-        private const int InitialVideoCount = 50;
+        private static int InitialVideoCount
+        {
+            get { return ResponsiveLayout.IsPhoneDevice ? 14 : 50; }
+        }
         private const int MaxParserNodes = 7000;
         private const double DefaultCardWidth = 360.0;
         private const double VideoThumbnailAspectRatio = 16.0 / 9.0;
@@ -72,11 +76,11 @@ namespace YouTube
         private static readonly Thickness PortraitCardMargin = new Thickness(0, 0, 0, 16);
         private static readonly Thickness LandscapeCardMargin = new Thickness(8, 0, 8, 16);
 
-        private readonly HttpClient _httpClient = new HttpClient();
-        private readonly ObservableCollection<VideoCardItem> _videos = new ObservableCollection<VideoCardItem>();
-        private readonly ObservableCollection<ShortsVideoItem> _shorts = new ObservableCollection<ShortsVideoItem>();
-        private readonly ObservableCollection<PlaylistItem> _playlists = new ObservableCollection<PlaylistItem>();
-        private readonly ObservableCollection<ChannelPostItem> _posts = new ObservableCollection<ChannelPostItem>();
+        private readonly YouTubeHttpClient _httpClient = YouTubeHttpClient.Shared;
+        private readonly FastObservableCollection<VideoCardItem> _videos = new FastObservableCollection<VideoCardItem>();
+        private readonly FastObservableCollection<ShortsVideoItem> _shorts = new FastObservableCollection<ShortsVideoItem>();
+        private readonly FastObservableCollection<PlaylistItem> _playlists = new FastObservableCollection<PlaylistItem>();
+        private readonly FastObservableCollection<ChannelPostItem> _posts = new FastObservableCollection<ChannelPostItem>();
         private readonly Dictionary<string, double> _watchedProgressByVideoId =
             new Dictionary<string, double>(StringComparer.OrdinalIgnoreCase);
         private ChannelContentTab _activeTab = ChannelContentTab.Videos;
@@ -110,6 +114,8 @@ namespace YouTube
         private ChannelSubscriptionState _currentSubscriptionState = ChannelSubscriptionState.Unknown;
         private ChannelNotificationState _currentNotificationState = ChannelNotificationState.Default;
         private bool _subscriptionRequestInProgress;
+        private bool _hasSignedInAccount;
+        private int _responsiveLayoutGeneration;
         private int _subscriptionStateGeneration;
         private string _subscribeParams = string.Empty;
         private string _unsubscribeParams = string.Empty;
@@ -146,6 +152,7 @@ namespace YouTube
             base.OnNavigatedTo(e);
 
             _channelParameter = e.Parameter == null ? string.Empty : e.Parameter.ToString();
+            YouTube.Discord.DiscordPresenceService.SetChannel(_channelParameter, _channelParameter);
             await LoadChannelDataAsync();
         }
 
@@ -164,7 +171,15 @@ namespace YouTube
             VideosItemsControl.SizeChanged -= VideosItemsControl_SizeChanged;
             VideosItemsControl.SizeChanged += VideosItemsControl_SizeChanged;
             ApplyAvailableChannelTabs();
+            RefreshAuthenticatedChannelActions();
             UpdateResponsiveCardLayouts();
+        }
+
+        private void RefreshAuthenticatedChannelActions()
+        {
+            global::Config.LoadUserToken();
+            _hasSignedInAccount = !string.IsNullOrWhiteSpace(global::Config.UserToken);
+            UpdateSubscriptionVisualState();
         }
 
         private void Channel_Unloaded(object sender, RoutedEventArgs e)
@@ -234,10 +249,7 @@ namespace YouTube
                 if (_tabEndpoints.ContainsKey(ChannelContentTab.Videos))
                 {
                     _activeTab = ChannelContentTab.Videos;
-                    foreach (var video in data.Videos)
-                    {
-                        _videos.Add(video);
-                    }
+                    _videos.AddRange(data.Videos);
 
                     _loadedTabs.Add(ChannelContentTab.Videos);
                     _tabContinuations[ChannelContentTab.Videos] = data.Continuation ?? string.Empty;
@@ -260,6 +272,8 @@ namespace YouTube
                 }
                 MainContent.Visibility = Visibility.Visible;
                 UpdateResponsiveCardLayouts();
+
+                BeginEnrichChannelData(data);
 
                 // Authentication and subscription-state discovery can require an additional
                 // TV/MWEB request. It must not hold the whole channel page behind the spinner.
@@ -287,6 +301,41 @@ namespace YouTube
             }
         }
 
+        private async void BeginEnrichChannelData(ChannelPageData data)
+        {
+            if (data == null || data.Info == null)
+                return;
+
+            var channelId = data.Info.ChannelId;
+            try
+            {
+                if (data.CanonicalBrowseTask != null)
+                {
+                    var canonicalJson = await data.CanonicalBrowseTask;
+                    if (string.Equals(_currentChannelId, channelId, StringComparison.OrdinalIgnoreCase)
+                        && !string.IsNullOrWhiteSpace(canonicalJson))
+                    {
+                        ApplyCanonicalChannelTabEndpoints(
+                            JsonValue.Parse(canonicalJson).GetObject(), channelId);
+                        ApplyAvailableChannelTabs();
+                    }
+                }
+
+                if (data.ProgressTask != null)
+                {
+                    var progressItems = await data.ProgressTask;
+                    if (string.Equals(_currentChannelId, channelId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        RememberAndApplyWatchedProgress(data.Videos, progressItems);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Channel] Deferred enrichment failed: " + ex.Message);
+            }
+        }
+
         private void ChannelPlaylistCard_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
@@ -303,6 +352,7 @@ namespace YouTube
         {
             _currentChannelId = FirstNonEmpty(info.ChannelId, NormalizeChannelId(_channelParameter));
             ChannelTitle.Text = FirstNonEmpty(info.Title, Localization.GetString("Channel"));
+            YouTube.Discord.DiscordPresenceService.SetChannel(_currentChannelId, ChannelTitle.Text, info.ThumbnailUrl);
             ChannelHandle.Text = FirstNonEmpty(info.Handle, string.Empty);
             ChannelHandle.Visibility = string.IsNullOrWhiteSpace(ChannelHandle.Text) ? Visibility.Collapsed : Visibility.Visible;
 
@@ -311,6 +361,8 @@ namespace YouTube
             ChannelDescription.Text = _fullDescription;
             FullDescriptionText.Text = _fullDescription;
             DescriptionButton.Visibility = string.IsNullOrWhiteSpace(info.Description) ? Visibility.Collapsed : Visibility.Visible;
+            if (DescriptionButton.Visibility == Visibility.Collapsed)
+                ResponsiveLayout.ClearVisibilityOverride(DescriptionButton);
 
             _channelAvatarUrl = info.ThumbnailUrl ?? string.Empty;
             SetImageBrushSource(ChannelIconBrush, info.ThumbnailUrl);
@@ -321,6 +373,8 @@ namespace YouTube
             if (ChannelBannerSection != null)
             {
                 ChannelBannerSection.Visibility = hasBanner ? Visibility.Visible : Visibility.Collapsed;
+                if (!hasBanner)
+                    ResponsiveLayout.ClearVisibilityOverride(ChannelBannerSection);
             }
             if (hasBanner)
             {
@@ -939,20 +993,14 @@ namespace YouTube
             canonicalPayload["context"] = BuildContext();
             canonicalPayload["browseId"] = JsonValue.CreateStringValue(channelId);
 
-            // The Videos response and the canonical channel response are independent. Starting
-            // both together removes one complete network round trip from initial page loading.
             var videosRequest = PostInnertubeAsync("browse", BuildBrowsePayload(channelId));
-            var canonicalRequest = PostInnertubeAsync("browse", canonicalPayload.Stringify());
-            // Public WEB channel renderers frequently omit resume overlays. Ask the signed-in
-            // TV client for the same Videos tab in parallel and merge only the progress field.
-            var tvVideosRequest = Config.GetChannelVideosAsync(channelId);
             var json = await videosRequest;
             if (string.IsNullOrWhiteSpace(json))
             {
                 return null;
             }
 
-            var root = JsonValue.Parse(json).GetObject();
+            var root = await Task.Run(delegate { return JsonValue.Parse(json).GetObject(); });
 
             // The Videos-tab response is useful for the initial video grid, but YouTube.js does
             // not use it as the source of sibling tab endpoints. It first loads the ordinary
@@ -961,21 +1009,12 @@ namespace YouTube
             // Keep the endpoints from this response as a fallback, then refresh them from a
             // canonical browse without params. This is important for Playlists on current WEB.
             ExtractChannelTabEndpoints(root, channelId);
-            try
-            {
-                var canonicalJson = await canonicalRequest;
-                if (!string.IsNullOrWhiteSpace(canonicalJson))
-                {
-                    ApplyCanonicalChannelTabEndpoints(
-                        JsonValue.Parse(canonicalJson).GetObject(),
-                        channelId);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(
-                    "[Channel] Parallel canonical browse failed: " + ex.Message);
-            }
+            // Most current Videos responses already carry the sibling tab endpoints. Only issue
+            // the near-duplicate canonical browse if that information is actually absent, and do
+            // it after the visible grid is ready.
+            Task<string> canonicalRequest = null;
+            if (_tabEndpoints.Count < 2)
+                canonicalRequest = PostInnertubeAsync("browse", canonicalPayload.Stringify());
 
             var info = ExtractChannelInfo(root, channelId);
             var subscriptionState = ExtractSubscriptionStateFromBrowse(root, "public /browse", channelId);
@@ -986,21 +1025,22 @@ namespace YouTube
 
             ExtractVideosRecursively(videosContent ?? root, videos, info.Title, seen, count, ref visited);
             ApplyKnownChannelAvatarToVideos(videos, info.ChannelId, info.ThumbnailUrl);
-            try
-            {
-                RememberAndApplyWatchedProgress(videos, await tvVideosRequest);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("[Channel] TV progress merge failed: " + ex.Message);
-            }
+            // Resume overlays are secondary. Starting the authenticated TV request only after the
+            // public response prevents three browse calls from fighting during first paint.
+            Task<List<VideoCardItem>> tvVideosRequest = null;
+            Config.LoadUserToken();
+            if (!string.IsNullOrWhiteSpace(Config.UserToken)
+                && !ResponsiveLayout.IsPhoneDevice)
+                tvVideosRequest = Config.GetChannelVideosAsync(channelId);
 
             return new ChannelPageData
             {
                 Info = info,
                 Videos = videos,
                 Continuation = ExtractContinuationToken(root),
-                SubscriptionState = subscriptionState
+                SubscriptionState = subscriptionState,
+                CanonicalBrowseTask = canonicalRequest,
+                ProgressTask = tvVideosRequest
             };
         }
 
@@ -1065,7 +1105,7 @@ namespace YouTube
                 return new ChannelTabPage();
             }
 
-            var root = JsonValue.Parse(json).GetObject();
+            var root = await Task.Run(delegate { return JsonValue.Parse(json).GetObject(); });
             System.Diagnostics.Debug.WriteLine(
                 "[Channel] Tab response " + tab + ": bytes=" + json.Length
                 + ", continuationRequest=" + (!string.IsNullOrWhiteSpace(continuation)));
@@ -1078,25 +1118,26 @@ namespace YouTube
                 Posts = new List<ChannelPostItem>(),
                 Continuation = ExtractContinuationToken(root)
             };
+            var tabItemLimit = ResponsiveLayout.IsPhoneDevice ? 16 : 60;
 
             if (tab == ChannelContentTab.Videos)
             {
                 var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 var visited = 0;
                 ExtractVideosRecursively(root, page.Videos, ChannelTitle != null ? ChannelTitle.Text : string.Empty,
-                    seen, 60, ref visited);
+                    seen, tabItemLimit, ref visited);
                 ApplyKnownChannelAvatarToVideos(page.Videos, _currentChannelId, _channelAvatarUrl);
                 ApplyRememberedWatchedProgress(page.Videos);
             }
             else if (tab == ChannelContentTab.Shorts)
             {
-                page.Shorts = ParseChannelShorts(root, 60);
+                page.Shorts = ParseChannelShorts(root, tabItemLimit);
             }
             else if (tab == ChannelContentTab.Playlists)
             {
                 page.Playlists = ParseChannelPlaylists(
                     root,
-                    200,
+                    ResponsiveLayout.IsPhoneDevice ? 20 : 200,
                     ChannelTitle != null ? ChannelTitle.Text : string.Empty);
 
                 // Some YouTube builds accept the tab endpoint but return a shell whose actual
@@ -1369,7 +1410,8 @@ namespace YouTube
                     return;
                 }
 
-                ApplyCanonicalChannelTabEndpoints(JsonValue.Parse(json).GetObject(), channelId);
+                var root = await Task.Run(delegate { return JsonValue.Parse(json).GetObject(); });
+                ApplyCanonicalChannelTabEndpoints(root, channelId);
             }
             catch (Exception ex)
             {
@@ -1566,11 +1608,13 @@ namespace YouTube
                 var seen = new HashSet<string>(_videos.Select(v => v.VideoId), StringComparer.OrdinalIgnoreCase);
                 if (page.Videos != null)
                 {
+                    var pending = new List<VideoCardItem>();
                     foreach (var item in page.Videos)
                     {
                         if (item != null && !string.IsNullOrWhiteSpace(item.VideoId) && seen.Add(item.VideoId))
-                            _videos.Add(item);
+                            pending.Add(item);
                     }
+                    _videos.AddRange(pending);
                 }
             }
             else if (tab == ChannelContentTab.Shorts)
@@ -1579,11 +1623,13 @@ namespace YouTube
                 var seen = new HashSet<string>(_shorts.Select(v => v.VideoId), StringComparer.OrdinalIgnoreCase);
                 if (page.Shorts != null)
                 {
+                    var pending = new List<ShortsVideoItem>();
                     foreach (var item in page.Shorts)
                     {
                         if (item != null && !string.IsNullOrWhiteSpace(item.VideoId) && seen.Add(item.VideoId))
-                            _shorts.Add(item);
+                            pending.Add(item);
                     }
+                    _shorts.AddRange(pending);
                 }
             }
             else if (tab == ChannelContentTab.Playlists)
@@ -1592,11 +1638,13 @@ namespace YouTube
                 var seen = new HashSet<string>(_playlists.Select(v => v.PlaylistId), StringComparer.OrdinalIgnoreCase);
                 if (page.Playlists != null)
                 {
+                    var pending = new List<PlaylistItem>();
                     foreach (var item in page.Playlists)
                     {
                         if (item != null && !string.IsNullOrWhiteSpace(item.PlaylistId) && seen.Add(item.PlaylistId))
-                            _playlists.Add(item);
+                            pending.Add(item);
                     }
+                    _playlists.AddRange(pending);
                 }
             }
             else
@@ -1604,8 +1652,10 @@ namespace YouTube
                 if (replace) _posts.Clear();
                 if (page.Posts != null)
                 {
+                    var pending = new List<ChannelPostItem>();
                     foreach (var item in page.Posts)
-                        if (item != null) _posts.Add(item);
+                        if (item != null) pending.Add(item);
+                    _posts.AddRange(pending);
                 }
             }
         }
@@ -2496,7 +2546,7 @@ namespace YouTube
 
             try
             {
-                var root = JsonValue.Parse(json).GetObject();
+                var root = await Task.Run(delegate { return JsonValue.Parse(json).GetObject(); });
                 var endpoint = GetObject(root, "endpoint");
                 var browseEndpoint = GetObject(endpoint, "browseEndpoint");
                 return GetString(browseEndpoint, "browseId");
@@ -2509,7 +2559,32 @@ namespace YouTube
 
         private async Task<string> PostInnertubeAsync(string endpoint, string payload)
         {
-            var url = "https://www.youtube.com/youtubei/v1/" + endpoint + "?key=" + InnertubeApiKey;
+            var isContinuation = !string.IsNullOrWhiteSpace(payload)
+                && payload.IndexOf("\"continuation\"", StringComparison.Ordinal) >= 0;
+            var maxAge = string.Equals(endpoint, "navigation/resolve_url", StringComparison.Ordinal)
+                ? TimeSpan.FromMinutes(10)
+                : (isContinuation ? TimeSpan.FromSeconds(30) : TimeSpan.FromMinutes(2));
+            var key = "channel:" + endpoint + ":" + Config.Hl + ":" + Config.Gl + ":"
+                + (payload == null ? 0 : payload.Length) + ":" + GetRequestFingerprint(payload);
+            try
+            {
+                var response = await InnertubeRequestCoordinator.GetJsonAsync(
+                    key,
+                    delegate { return PostInnertubeCoreAsync(endpoint, payload); },
+                    maxAge);
+                return response.Text;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Channel] Coordinated " + endpoint + " failed: " + ex.Message);
+                return string.Empty;
+            }
+        }
+
+        private async Task<string> PostInnertubeCoreAsync(string endpoint, string payload)
+        {
+            var url = InnertubeEndpoints.Build(endpoint);
             using (var request = new HttpRequestMessage(HttpMethod.Post, url))
             {
                 request.Headers.TryAddWithoutValidation("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36");
@@ -2526,6 +2601,21 @@ namespace YouTube
                 }
 
                 return await response.Content.ReadAsStringAsync();
+            }
+        }
+
+        private static string GetRequestFingerprint(string value)
+        {
+            unchecked
+            {
+                uint hash = 2166136261;
+                value = value ?? string.Empty;
+                for (var i = 0; i < value.Length; i++)
+                {
+                    hash ^= value[i];
+                    hash *= 16777619;
+                }
+                return hash.ToString("x8", CultureInfo.InvariantCulture);
             }
         }
 
@@ -3394,12 +3484,20 @@ namespace YouTube
 
         private void Window_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
         {
-            UpdateResponsiveCardLayouts();
+            ScheduleResponsiveCardLayoutUpdate();
         }
 
         private void VideosItemsControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            UpdateResponsiveCardLayouts();
+            ScheduleResponsiveCardLayoutUpdate();
+        }
+
+        private async void ScheduleResponsiveCardLayoutUpdate()
+        {
+            var generation = ++_responsiveLayoutGeneration;
+            await Task.Delay(ResponsiveLayout.IsPhoneDevice ? 16 : 8);
+            if (generation == _responsiveLayoutGeneration)
+                UpdateResponsiveCardLayouts();
         }
 
         // Decoded at card width with a maxres->API-thumbnail fallback; see ThumbnailImageLoader
@@ -3532,6 +3630,9 @@ namespace YouTube
         private void UpdateResponsiveCardLayouts()
         {
             bool isPortrait = IsPortraitOrientation();
+            var showSecondaryHeader = !ResponsiveLayout.IsCompactLandscape;
+            ResponsiveLayout.ShowInRegularLayout(ChannelBannerSection, showSecondaryHeader);
+            ResponsiveLayout.ShowInRegularLayout(DescriptionButton, showSecondaryHeader);
 
             if (VideosItemsControl != null)
             {
@@ -3675,13 +3776,13 @@ namespace YouTube
 
             if (show)
             {
-                animation.From = 410;
+                animation.From = DescriptionBottomSheetPanel.DismissDistance;
                 animation.To = 0;
             }
             else
             {
                 animation.From = DescriptionBottomSheetTransform.Y;
-                animation.To = 410;
+                animation.To = DescriptionBottomSheetPanel.DismissDistance;
                 storyboard.Completed += (s, e) =>
                 {
                     DescriptionBottomSheetPanel.Visibility = Visibility.Collapsed;
@@ -3745,7 +3846,7 @@ namespace YouTube
             var currentY = e.GetCurrentPoint(element).Position.Y;
             var deltaY = currentY - _descriptionInitialY;
             var newY = Math.Max(0, _descriptionInitialTransformY + deltaY);
-            DescriptionBottomSheetTransform.Y = newY;
+            DescriptionBottomSheetTransform.Y = DescriptionBottomSheetPanel.ClampDragOffset(newY);
             e.Handled = true;
         }
 
@@ -3763,7 +3864,7 @@ namespace YouTube
                 element.ReleasePointerCapture(e.Pointer);
             }
 
-            if (DescriptionBottomSheetTransform.Y > 205)
+            if (DescriptionBottomSheetTransform.Y > DescriptionBottomSheetPanel.DragDismissThreshold)
             {
                 AnimateDescriptionBottomSheet(false);
             }
@@ -3778,6 +3879,8 @@ namespace YouTube
 
         private async void SubscribeButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!_hasSignedInAccount) return;
+
             if (_currentSubscriptionState == ChannelSubscriptionState.Subscribed)
             {
                 ShowSubscriptionMenuBottomSheet();
@@ -3982,6 +4085,7 @@ namespace YouTube
 
         private async void NotificationAllOptionButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!_hasSignedInAccount) return;
             if (_currentNotificationState == ChannelNotificationState.All)
             {
                 AnimateSubscriptionMenuBottomSheet(false);
@@ -3993,6 +4097,7 @@ namespace YouTube
 
         private async void NotificationPersonalizedOptionButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!_hasSignedInAccount) return;
             if (_currentNotificationState == ChannelNotificationState.Default || _currentNotificationState == ChannelNotificationState.Unknown)
             {
                 AnimateSubscriptionMenuBottomSheet(false);
@@ -4004,6 +4109,7 @@ namespace YouTube
 
         private async void NotificationNoneOptionButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!_hasSignedInAccount) return;
             if (_currentNotificationState == ChannelNotificationState.None)
             {
                 AnimateSubscriptionMenuBottomSheet(false);
@@ -4015,6 +4121,7 @@ namespace YouTube
 
         private async void NotificationUnsubscribeOptionButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!_hasSignedInAccount) return;
             await SetChannelSubscriptionStateAsync(false);
         }
 
@@ -4109,7 +4216,8 @@ namespace YouTube
 
             try
             {
-                var url = "https://www.googleapis.com/youtube/v3/subscriptions?part=id&mine=true&forChannelId=" + Uri.EscapeDataString(channelId);
+                var url = InnertubeEndpoints.BuildDataApi(
+                    "subscriptions?part=id&mine=true&forChannelId=" + Uri.EscapeDataString(channelId));
                 using (var request = new HttpRequestMessage(HttpMethod.Get, url))
                 {
                     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
@@ -4269,9 +4377,23 @@ namespace YouTube
         {
             var isSubscribed = _currentSubscriptionState == ChannelSubscriptionState.Subscribed;
 
+            if (SubscribeButtonContainer != null)
+            {
+                SubscribeButtonContainer.Visibility = _hasSignedInAccount
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            }
+
+            if (!_hasSignedInAccount && SubscriptionMenuBottomSheetPanel != null)
+            {
+                _isSubscriptionMenuOpen = false;
+                SubscriptionMenuBottomSheetPanel.Visibility = Visibility.Collapsed;
+            }
+
             if (SubscribeButton != null)
             {
-                SubscribeButton.IsEnabled = !string.IsNullOrWhiteSpace(_currentChannelId);
+                SubscribeButton.IsEnabled = _hasSignedInAccount
+                    && !string.IsNullOrWhiteSpace(_currentChannelId);
                 SubscribeButton.Background = new SolidColorBrush(Windows.UI.Colors.Transparent);
                 SubscribeButton.Opacity = 1.0;
                 SubscribeButton.Padding = isSubscribed ? new Thickness(0) : new Thickness(0);
@@ -4356,6 +4478,8 @@ namespace YouTube
 
         private void ShowSubscriptionMenuBottomSheet()
         {
+            if (!_hasSignedInAccount) return;
+
             if (_currentSubscriptionState != ChannelSubscriptionState.Subscribed)
             {
                 return;
@@ -4391,13 +4515,13 @@ namespace YouTube
 
             if (show)
             {
-                animation.From = 280;
+                animation.From = SubscriptionMenuBottomSheetPanel.DismissDistance;
                 animation.To = 0;
             }
             else
             {
                 animation.From = SubscriptionMenuBottomSheetTransform.Y;
-                animation.To = 280;
+                animation.To = SubscriptionMenuBottomSheetPanel.DismissDistance;
                 storyboard.Completed += (s, e) =>
                 {
                     SubscriptionMenuBottomSheetPanel.Visibility = Visibility.Collapsed;
@@ -4447,7 +4571,7 @@ namespace YouTube
             var currentY = e.GetCurrentPoint(element).Position.Y;
             var deltaY = currentY - _subscriptionMenuInitialY;
             var newY = Math.Max(0, _subscriptionMenuInitialTransformY + deltaY);
-            if (newY <= 280)
+            if (newY <= SubscriptionMenuBottomSheetPanel.DismissDistance)
             {
                 SubscriptionMenuBottomSheetTransform.Y = newY;
             }
@@ -4468,7 +4592,7 @@ namespace YouTube
                 element.ReleasePointerCapture(e.Pointer);
             }
 
-            if (SubscriptionMenuBottomSheetTransform.Y > 140)
+            if (SubscriptionMenuBottomSheetTransform.Y > SubscriptionMenuBottomSheetPanel.DragDismissThreshold)
             {
                 AnimateSubscriptionMenuBottomSheet(false);
             }
@@ -4482,7 +4606,7 @@ namespace YouTube
 
         private static string BuildInnertubeUrl(string endpoint)
         {
-            return "https://www.youtube.com/youtubei/v1/" + endpoint + "?key=" + InnertubeApiKey;
+            return InnertubeEndpoints.Build(endpoint);
         }
 
         private static string BuildAuthenticatedBrowsePayload(string channelId, bool mobileWebClient)
@@ -5752,6 +5876,8 @@ namespace YouTube
             public List<VideoCardItem> Videos { get; set; }
             public string Continuation { get; set; }
             public SubscriptionLoadResult SubscriptionState { get; set; }
+            public Task<string> CanonicalBrowseTask { get; set; }
+            public Task<List<VideoCardItem>> ProgressTask { get; set; }
         }
 
         private sealed class SubscriptionLoadResult

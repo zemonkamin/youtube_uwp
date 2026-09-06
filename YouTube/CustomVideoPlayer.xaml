@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="#0f0f0f">
+    Background="Transparent">
     
     <UserControl.Resources>
         <Style x:Key="CircularButtonStyle" TargetType="Button">
@@ -149,16 +149,23 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid x:Name="PlayerGrid" Background="#0f0f0f" DoubleTapped="MediaPlayer_DoubleTapped"
+    <Grid x:Name="PlayerGrid" Background="Transparent" DoubleTapped="MediaPlayer_DoubleTapped"
+          SizeChanged="PlayerGrid_SizeChanged"
           PointerPressed="PlayerGrid_PointerPressed"
           PointerMoved="PlayerGrid_PointerMoved"
           PointerReleased="PlayerGrid_PointerReleased"
           PointerCanceled="PlayerGrid_PointerReleased"
           PointerCaptureLost="PlayerGrid_PointerReleased">
+        <!-- A live blurred copy of the active video. MediaPlayer itself still renders only the
+             sharp center image; this layer fills letterbox/pillarbox space with current frames. -->
+        <Grid x:Name="AmbientVideoHost"
+              Background="#0f0f0f"
+              IsHitTestVisible="False" />
+
         <!-- MediaPlayerElement -->
         <MediaPlayerElement x:Name="MediaPlayer" 
                            AreTransportControlsEnabled="False"
-                           Background="#0f0f0f"
+                           Background="Transparent"
                            DoubleTapped="MediaPlayer_DoubleTapped"
                            Tapped="MediaPlayer_Tapped"
                            PointerMoved="MediaPlayer_PointerMoved"
@@ -167,6 +174,30 @@
                            HorizontalAlignment="Stretch"
                            VerticalAlignment="Stretch"
                            Margin="0"/>
+
+        <!-- MediaPlayerElement paints its own letterbox area opaque black on older UWP builds,
+             even with a transparent Background. These four live-video hosts sit only over the
+             calculated bar rectangles, leaving the sharp video itself untouched. -->
+        <Grid x:Name="AmbientTopBarHost"
+              Height="0"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Top"
+              IsHitTestVisible="False" />
+        <Grid x:Name="AmbientBottomBarHost"
+              Height="0"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Bottom"
+              IsHitTestVisible="False" />
+        <Grid x:Name="AmbientLeftBarHost"
+              Width="0"
+              HorizontalAlignment="Left"
+              VerticalAlignment="Stretch"
+              IsHitTestVisible="False" />
+        <Grid x:Name="AmbientRightBarHost"
+              Width="0"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Stretch"
+              IsHitTestVisible="False" />
 
         <!-- Hidden audio player (for separate HLS audio playlists) -->
         <MediaPlayerElement x:Name="AudioPlayer"
@@ -238,12 +269,13 @@
                  belongs to the title, and in mini mode. -->
             <Button x:Name="MinimizeButton"
                     Click="MinimizeButton_Click"
+                    PointerPressed="ControlButton_PointerPressed"
                     Style="{StaticResource ControlButtonStyle}"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    Width="40"
-                    Height="40"
-                    Margin="8,8,0,0"
+                    Width="44"
+                    Height="44"
+                    Margin="6,6,0,0"
                     Opacity="0.8"
                     IsDoubleTapEnabled="False">
                 <Button.Content>
@@ -256,12 +288,13 @@
             <!-- Settings button in top right -->
             <Button x:Name="SettingsButton"
                     Click="SettingsButton_Click"
+                    PointerPressed="ControlButton_PointerPressed"
                     Style="{StaticResource ControlButtonStyle}"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Top"
-                    Width="40"
-                    Height="40"
-                    Margin="0,8,8,0"
+                    Width="44"
+                    Height="44"
+                    Margin="0,6,6,0"
                     Opacity="0.8"
                     IsDoubleTapEnabled="False">
                 <Button.Content>
@@ -368,6 +401,7 @@
                     <Button x:Name="FullscreenButton"
                             Grid.Column="1"
                             Click="FullscreenButton_Click"
+                            PointerPressed="ControlButton_PointerPressed"
                             Style="{StaticResource ControlButtonStyle}"
                             Margin="0,0,16,0"
                             Width="40"
@@ -459,16 +493,20 @@
                 Visibility="Collapsed"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
-                Margin="0,0,0,44"
-                Background="#CC000000"
-                CornerRadius="8"
-                Padding="3"
+                Margin="0,0,0,48"
+                Background="Transparent"
+                Padding="0"
                 IsHitTestVisible="False">
             <Border.RenderTransform>
                 <TranslateTransform x:Name="ScrubPreviewTransform"/>
             </Border.RenderTransform>
-            <StackPanel>
-                <Border x:Name="ScrubPreviewClip" Width="160" Height="90">
+            <StackPanel HorizontalAlignment="Center">
+                <Border x:Name="ScrubPreviewClip"
+                        Width="120"
+                        Height="67.5"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        CornerRadius="6">
                     <Border.Background>
                         <ImageBrush x:Name="ScrubPreviewBrush"
                                     Stretch="None"
@@ -487,9 +525,94 @@
                            Text="0:00"
                            Foreground="White"
                            FontSize="12"
+                           FontWeight="SemiBold"
                            HorizontalAlignment="Center"
-                           Margin="0,3,0,0"/>
+                           Margin="0,6,0,0"/>
             </StackPanel>
         </Border>
+
+        <!-- Fullscreen related videos. Kept inside the player so it follows the same control into
+             the fullscreen Popup. The dim layer and bottom panel are animated independently; the
+             horizontal ScrollViewer remains the only scrolling surface inside the panel. -->
+        <Grid x:Name="FullscreenRelatedOverlay"
+              Visibility="Collapsed"
+              Canvas.ZIndex="300">
+            <Grid x:Name="FullscreenRelatedBackdrop"
+                  Background="#B8000000"
+                  Opacity="0"
+                  Tapped="FullscreenRelatedBackdrop_Tapped"/>
+
+            <Border x:Name="FullscreenRelatedPanel"
+                    Height="196"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    Background="Transparent">
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="FullscreenRelatedPanelTransform" Y="196"/>
+                </Border.RenderTransform>
+                    <ScrollViewer
+                                  HorizontalScrollMode="Enabled"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollMode="Disabled"
+                                  VerticalScrollBarVisibility="Disabled"
+                                  ZoomMode="Disabled">
+                        <ItemsControl x:Name="FullscreenRelatedItems">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Width="232"
+                                            Height="184"
+                                            Margin="10,0,2,8"
+                                            Padding="0"
+                                            HorizontalContentAlignment="Stretch"
+                                            VerticalContentAlignment="Stretch"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Click="FullscreenRelatedCard_Click">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="130"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            <Grid Background="#252525">
+                                                <Image Source="{Binding ThumbnailSource}"
+                                                       Stretch="UniformToFill"/>
+                                                <Border HorizontalAlignment="Right"
+                                                        VerticalAlignment="Bottom"
+                                                        Margin="0,0,6,6"
+                                                        Padding="5,2"
+                                                        CornerRadius="3"
+                                                        Background="#CC000000">
+                                                    <TextBlock Text="{Binding Duration}"
+                                                               Foreground="White"
+                                                               FontSize="11"/>
+                                                </Border>
+                                            </Grid>
+                                            <StackPanel Grid.Row="1" Margin="2,7,2,0">
+                                                <TextBlock Text="{Binding Title}"
+                                                           Foreground="White"
+                                                           FontSize="13"
+                                                           FontWeight="SemiBold"
+                                                           TextWrapping="NoWrap"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding Author}"
+                                                           Foreground="#BFFFFFFF"
+                                                           FontSize="11"
+                                                           Margin="0,3,0,0"
+                                                           TextWrapping="NoWrap"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

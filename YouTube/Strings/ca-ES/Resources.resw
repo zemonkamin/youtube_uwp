@@ -981,7 +981,73 @@ Versió {0}</value>
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Esborra</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Esborra</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel·la</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Inici</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Subscripcions</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>S’està cercant...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Baixades</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Historial</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Notificacions</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Configuració</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Compte</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Inicia la sessió per veure l’historial i les llistes de reproducció</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>S’està cercant: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Canal: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Llista de reproducció: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>En pausa</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Cerca a la navegació horitzontal</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Mostra la barra de cerca al centre</value>
   </data>
 </root>

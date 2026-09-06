@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Data.Json;
@@ -11,30 +10,17 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
+using YouTube.Innertube;
 
 namespace YouTube
 {
     public sealed partial class Searching : Page
     {
         private const string SEARCH_HISTORY_SETTING = "SearchHistory";
-        private const int MAX_SEARCH_HISTORY_ITEMS = 200;
+        private const int DesktopMaxSearchHistoryItems = 200;
+        private const int MobileMaxSearchHistoryItems = 30;
         private CancellationTokenSource _suggestionsCancellationTokenSource;
         private List<SearchHistoryItem> _searchHistory;
-
-        // ONE client for the whole app. The suggestions request used to build and dispose an
-        // HttpClient on every keystroke; each one holds its own handler and sockets, and on a
-        // memory-tight phone typing a few characters was enough to take the app down.
-        private static readonly HttpClient SuggestionsHttpClient = CreateSuggestionsClient();
-
-        private static HttpClient CreateSuggestionsClient()
-        {
-            var client = new HttpClient();
-            client.Timeout = TimeSpan.FromSeconds(10);
-            client.DefaultRequestHeaders.TryAddWithoutValidation(
-                "User-Agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
-            return client;
-        }
 
         public class SearchHistoryItem
         {
@@ -48,11 +34,15 @@ namespace YouTube
             this.Loaded += Searching_Loaded;
             this.Unloaded += Searching_Unloaded;
             _searchHistory = LoadSearchHistory();
+            var savedQuery = SearchQueryStateController.CurrentQuery;
+            if (!string.IsNullOrEmpty(savedQuery))
+                SearchInput.Text = savedQuery;
             UpdateSearchHistoryVisibility();
         }
 
         private void Searching_Loaded(object sender, RoutedEventArgs e)
         {
+            WarmSearchAuthenticationAsync();
             FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
             FluentGlassEffectHelper.EnabledChanged += GlassEffect_EnabledChanged;
 
@@ -64,8 +54,23 @@ namespace YouTube
             }
         }
 
+        private async void WarmSearchAuthenticationAsync()
+        {
+            try
+            {
+                Config.LoadUserToken();
+                if (!string.IsNullOrWhiteSpace(Config.UserToken))
+                    await Config.RefreshAccessTokenAsync(Config.UserToken);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[Search] Authentication warmup failed: " + ex.Message);
+            }
+        }
+
         private void Searching_Unloaded(object sender, RoutedEventArgs e)
         {
+            CancelSuggestionRequest();
             FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
             if (SearchNavbarGlassHost != null)
                 SearchNavbarGlassHost.SizeChanged -= SearchNavbarGlassHost_SizeChanged;
@@ -85,6 +90,12 @@ namespace YouTube
 
         private void ApplySearchNavbarGlass()
         {
+            if (ResponsiveLayout.IsPhoneDevice)
+            {
+                FluentGlassEffectHelper.Detach(SearchNavbarGlassHost);
+                return;
+            }
+
             if (SearchNavbarGlassHost == null ||
                 SearchNavbarGlassHost.ActualWidth <= 1.0 ||
                 SearchNavbarGlassHost.ActualHeight <= 1.0)
@@ -131,9 +142,12 @@ namespace YouTube
                         }
                     }
                     
-                    if (history.Count > MAX_SEARCH_HISTORY_ITEMS)
+                    var maxItems = ResponsiveLayout.IsPhoneDevice
+                        ? MobileMaxSearchHistoryItems
+                        : DesktopMaxSearchHistoryItems;
+                    if (history.Count > maxItems)
                     {
-                        history = history.Take(MAX_SEARCH_HISTORY_ITEMS).ToList();
+                        history = history.Take(maxItems).ToList();
                     }
 
                     return history;
@@ -148,10 +162,15 @@ namespace YouTube
 
         private void SaveSearchHistory()
         {
+            SaveSearchHistory(new List<SearchHistoryItem>(_searchHistory));
+        }
+
+        private static void SaveSearchHistory(IList<SearchHistoryItem> history)
+        {
             var localSettings = ApplicationData.Current.LocalSettings;
             var jsonArray = new JsonArray();
-            
-            foreach (var item in _searchHistory)
+
+            foreach (var item in history)
             {
                 var obj = new JsonObject();
                 obj["SearchText"] = JsonValue.CreateStringValue(item.SearchText);
@@ -160,6 +179,22 @@ namespace YouTube
             }
             
             localSettings.Values[SEARCH_HISTORY_SETTING] = jsonArray.Stringify();
+        }
+
+        private void SaveSearchHistoryDeferred()
+        {
+            var snapshot = new List<SearchHistoryItem>(_searchHistory);
+            Task.Run(delegate
+            {
+                try
+                {
+                    SaveSearchHistory(snapshot);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("[Search] Deferred history save failed: " + ex.Message);
+                }
+            });
         }
 
         private void AddToSearchHistory(string searchText)
@@ -173,12 +208,13 @@ namespace YouTube
                 Timestamp = DateTime.Now
             });
 
-            if (_searchHistory.Count > MAX_SEARCH_HISTORY_ITEMS)
+            var maxItems = ResponsiveLayout.IsPhoneDevice
+                ? MobileMaxSearchHistoryItems
+                : DesktopMaxSearchHistoryItems;
+            if (_searchHistory.Count > maxItems)
             {
-                _searchHistory = _searchHistory.Take(MAX_SEARCH_HISTORY_ITEMS).ToList();
+                _searchHistory = _searchHistory.Take(maxItems).ToList();
             }
-
-            SaveSearchHistory();
         }
 
         private void RemoveHistoryItem_Click(object sender, RoutedEventArgs e)
@@ -267,6 +303,14 @@ namespace YouTube
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            var query = e.Parameter as string;
+            if (string.IsNullOrWhiteSpace(query))
+                query = SearchQueryStateController.CurrentQuery;
+            if (SearchInput != null
+                && !string.Equals(SearchInput.Text, query, StringComparison.Ordinal))
+            {
+                SearchInput.Text = query ?? string.Empty;
+            }
             SystemNavigationManager.GetForCurrentView().BackRequested -= OnBackRequested;
             SystemNavigationManager.GetForCurrentView().BackRequested += OnBackRequested;
             UpdateBackButtonVisibility();
@@ -275,6 +319,7 @@ namespace YouTube
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            CancelSuggestionRequest();
             SystemNavigationManager.GetForCurrentView().BackRequested -= OnBackRequested;
             base.OnNavigatedFrom(e);
         }
@@ -309,6 +354,7 @@ namespace YouTube
             try
             {
                 var searchText = SearchInput != null ? SearchInput.Text : null;
+                SearchQueryStateController.SetCurrentQuery(searchText);
                 if (ClearButton != null)
                 {
                     ClearButton.Visibility = string.IsNullOrEmpty(searchText)
@@ -346,11 +392,11 @@ namespace YouTube
             try
             {
                 // Небольшая задержка для предотвращения слишком частых запросов
-                await Task.Delay(300, cancellationToken);
+                await Task.Delay(140, cancellationToken);
 
                 if (cancellationToken.IsCancellationRequested) return;
 
-                var suggestionsList = await FetchSearchSuggestionsAsync(query);
+                var suggestionsList = await FetchSearchSuggestionsAsync(query, cancellationToken);
 
                 if (cancellationToken.IsCancellationRequested) return;
 
@@ -407,64 +453,21 @@ namespace YouTube
         /// Fetches search suggestions from YouTube's autocomplete API
         /// This is the same endpoint used by yt-api-legacy-main
         /// </summary>
-        private async Task<List<string>> FetchSearchSuggestionsAsync(string query)
+        private async Task<List<string>> FetchSearchSuggestionsAsync(
+            string query,
+            CancellationToken cancellationToken)
         {
             try
             {
-                {
-                    var httpClient = SuggestionsHttpClient;
-
-                    var encodedQuery = Uri.EscapeDataString(query);
-                    // hl follows the device language, so suggestions match what the user types.
-                    var url = $"https://clients1.google.com/complete/search?client=youtube&hl={Config.Hl}&gl={Config.Gl}&ds=yt&q={encodedQuery}";
-
-                    var response = await httpClient.GetStringAsync(url);
-
-                    // The response is JSONP: window.google.ac.h([...]) or )]}'[...]
-                    var jsonData = response;
-                    
-                    // Remove JSONP wrapper if present
-                    if (jsonData.StartsWith("window.google.ac.h("))
-                    {
-                        jsonData = jsonData.Substring("window.google.ac.h(".Length);
-                        if (jsonData.EndsWith(")"))
-                        {
-                            jsonData = jsonData.Substring(0, jsonData.Length - 1);
-                        }
-                    }
-                    
-                    // Remove security prefix if present
-                    if (jsonData.StartsWith(")]}'"))
-                    {
-                        jsonData = jsonData.Substring(4);
-                    }
-
-                    // Parse JSON
-                    var jsonArray = JsonArray.Parse(jsonData);
-                    
-                    // The suggestions are in the second element (index 1)
-                    if (jsonArray.Count > 1)
-                    {
-                        var suggestionsArray = jsonArray[1].GetArray();
-                        var suggestions = new List<string>();
-                        
-                        // Take up to 10 suggestions
-                        int count = Math.Min(10, (int)suggestionsArray.Count);
-                        for (int i = 0; i < count; i++)
-                        {
-                            var suggestionItem = suggestionsArray[i].GetArray();
-                            if (suggestionItem.Count > 0)
-                            {
-                                var suggestionText = suggestionItem[0].GetString();
-                                suggestions.Add(suggestionText);
-                            }
-                        }
-                        
-                        return suggestions;
-                    }
-                    
-                    return new List<string>();
-                }
+                return await SearchSuggestionsClient.GetAsync(
+                    query,
+                    Config.Hl,
+                    Config.Gl,
+                    cancellationToken);
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
             }
             catch (Exception ex)
             {
@@ -475,10 +478,7 @@ namespace YouTube
 
         private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
-            if (_suggestionsCancellationTokenSource != null)
-            {
-                try { _suggestionsCancellationTokenSource.Cancel(); } catch { }
-            }
+            CancelSuggestionRequest();
 
             SearchInput.Text = string.Empty;
             SearchInput.Focus(FocusState.Programmatic);
@@ -503,12 +503,28 @@ namespace YouTube
             var searchText = SearchInput.Text;
             if (!string.IsNullOrWhiteSpace(searchText))
             {
+                searchText = searchText.Trim();
+                CancelSuggestionRequest();
+                SearchQueryStateController.SetCurrentQuery(searchText);
                 SuggestionsListView.Visibility = Visibility.Collapsed;
                 AddToSearchHistory(searchText);
 
-                // Navigate to Search page with the query
+                // Navigation starts the result request synchronously up to its first await.
+                // Persist history afterwards so LocalSettings JSON never delays the request.
                 Frame.Navigate(typeof(Search), searchText);
+                SaveSearchHistoryDeferred();
             }
+        }
+
+        private void CancelSuggestionRequest()
+        {
+            var source = _suggestionsCancellationTokenSource;
+            _suggestionsCancellationTokenSource = null;
+            if (source == null)
+                return;
+
+            try { source.Cancel(); } catch { }
+            try { source.Dispose(); } catch { }
         }
 
         private void SuggestionItem_Click(object sender, RoutedEventArgs e)

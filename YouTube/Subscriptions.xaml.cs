@@ -18,13 +18,19 @@ namespace YouTube
         private const double DefaultCardWidth = 360.0;
         private const double VideoThumbnailAspectRatio = 16.0 / 9.0;
         private const string ResponsiveCardTag = "ResponsiveCard";
-        private const int GeneralSubscriptionsFeedCount = 50;
-        private const int SubscriptionsPageSize = 30;
+        private static int GeneralSubscriptionsFeedCount
+        {
+            get { return ResponsiveLayout.IsPhoneDevice ? 16 : 50; }
+        }
+        private static int SubscriptionsPageSize
+        {
+            get { return ResponsiveLayout.IsPhoneDevice ? 14 : 30; }
+        }
         private const int LoadMoreAttemptThrottleMs = 600;
         private static readonly Thickness PortraitCardMargin = new Thickness(0, 0, 0, 16);
         private static readonly Thickness LandscapeCardMargin = new Thickness(8, 0, 8, 16);
 
-        private ObservableCollection<VideoCardItem> subscriptionVideos;
+        private FastObservableCollection<VideoCardItem> subscriptionVideos;
         private List<SubscriptionChannel> subscribedChannels;
         private double _placeholderCardAspectRatio = 0.82;
         private bool _isLoadingMore;
@@ -36,7 +42,7 @@ namespace YouTube
         public Subscriptions()
         {
             this.InitializeComponent();
-            subscriptionVideos = new ObservableCollection<VideoCardItem>();
+            subscriptionVideos = new FastObservableCollection<VideoCardItem>();
             subscribedChannels = new List<SubscriptionChannel>();
 
             InitializePlaceholderCards();
@@ -66,68 +72,11 @@ namespace YouTube
                     return;
                 }
 
-                subscribedChannels = await Config.GetSubscribedChannelsAsync(Config.UserToken);
-
-                if (subscribedChannels != null && subscribedChannels.Count > 0)
-                {
-                    SubscriptionsPanel.Children.Clear();
-
-                    foreach (var channel in subscribedChannels)
-                    {
-                        var subscriptionButton = new Button();
-                        subscriptionButton.Style = (Style)this.Resources["ChannelButtonStyle"];
-                        subscriptionButton.Width = 100;
-                        subscriptionButton.Margin = new Thickness(0, 0, 12, 0);
-
-                        var stackPanel = new StackPanel();
-                        stackPanel.Width = 100;
-                        stackPanel.HorizontalAlignment = HorizontalAlignment.Center;
-
-                        var imageGrid = new Grid();
-                        imageGrid.Width = 80;
-                        imageGrid.Height = 80;
-                        imageGrid.HorizontalAlignment = HorizontalAlignment.Center;
-
-                        var thumbnailImage = new Image();
-                        thumbnailImage.Width = 80;
-                        thumbnailImage.Height = 80;
-                        thumbnailImage.Stretch = Stretch.UniformToFill;
-                        thumbnailImage.Source = new BitmapImage(new Uri(channel.ThumbnailUrl));
-                        imageGrid.Children.Add(thumbnailImage);
-
-                        var roundingOverlay = new Image();
-                        roundingOverlay.Width = 80;
-                        roundingOverlay.Height = 80;
-                        roundingOverlay.Stretch = Stretch.Fill;
-                        App.SetThemeImageSource(roundingOverlay, "Assets/rounding.png");
-                        imageGrid.Children.Add(roundingOverlay);
-
-                        var titleText = new TextBlock();
-                        titleText.Text = channel.ChannelName;
-                        titleText.Foreground = App.GetThemeBrush("AppPrimaryTextBrush") ?? new SolidColorBrush(Windows.UI.Colors.White);
-                        titleText.FontSize = 12;
-                        titleText.TextWrapping = TextWrapping.NoWrap;
-                        titleText.TextTrimming = TextTrimming.CharacterEllipsis;
-                        titleText.TextAlignment = TextAlignment.Center;
-                        titleText.MaxLines = 1;
-                        titleText.Margin = new Thickness(0, 8, 0, 0);
-
-                        stackPanel.Children.Add(imageGrid);
-                        stackPanel.Children.Add(titleText);
-                        subscriptionButton.Content = stackPanel;
-
-                        subscriptionButton.Tag = channel;
-                        subscriptionButton.Click += SubscriptionButton_Click;
-
-                        SubscriptionsPanel.Children.Add(subscriptionButton);
-                    }
-
-                    await LoadAllSubscriptionsVideosAsync();
-                }
-                else
-                {
-                    VideosItemsControl.ItemsSource = new ObservableCollection<VideoCardItem>();
-                }
+                // The general feed is the visible critical path. The old sequence waited for
+                // FEchannels (plus avatar parsing) before it even requested FEsubscriptions.
+                // Show videos first and fill the channel strip progressively afterwards.
+                await LoadAllSubscriptionsVideosAsync();
+                LoadSubscriptionChannelsDeferred();
             }
             catch (Exception ex)
             {
@@ -137,6 +86,31 @@ namespace YouTube
             {
                 LoadingRing.IsActive = false;
                 LoadingRing.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private async void LoadSubscriptionChannelsDeferred()
+        {
+            try
+            {
+                if (ResponsiveLayout.IsPhoneDevice)
+                    await Task.Delay(800);
+
+                var channels = await Config.GetSubscribedChannelsAsync(Config.UserToken);
+                subscribedChannels = channels ?? new List<SubscriptionChannel>();
+                SubscriptionsList.ItemsSource = subscribedChannels.Count > 0
+                    ? subscribedChannels
+                    : null;
+
+                if (subscriptionVideos.Count > 0 && subscribedChannels.Count > 0)
+                {
+                    ApplySubscribedChannelAvatars(new List<VideoCardItem>(subscriptionVideos));
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Subscriptions] Deferred channel strip failed: " + ex.Message);
             }
         }
 
@@ -166,6 +140,7 @@ namespace YouTube
 
                 ApplySubscribedChannelAvatars(videos);
                 SetVideosSource(videos);
+                BeginSubscriptionsEnrichment(page);
                 System.Diagnostics.Debug.WriteLine($"[Subscriptions] General feed ItemsSource set with {subscriptionVideos.Count} items");
             }
             catch (Exception ex)
@@ -188,6 +163,40 @@ namespace YouTube
             {
                 await LoadChannelVideosAsync(channel);
             }
+        }
+
+        private void SubscriptionChannelIcon_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadSubscriptionChannelIcon(sender as Image);
+        }
+
+        private void SubscriptionChannelIcon_DataContextChanged(
+            FrameworkElement sender,
+            DataContextChangedEventArgs args)
+        {
+            var image = sender as Image;
+            if (image == null)
+            {
+                return;
+            }
+
+            // A virtualized ListView container can be reused for another channel.
+            image.Source = null;
+            LoadSubscriptionChannelIcon(image);
+        }
+
+        private static void LoadSubscriptionChannelIcon(Image image)
+        {
+            if (image == null)
+            {
+                return;
+            }
+
+            var channel = image.DataContext as SubscriptionChannel;
+            ChannelIconController.AssignAlways(
+                image,
+                channel != null ? channel.ThumbnailUrl : string.Empty,
+                ChannelIconController.SubscriptionStripDecodeSize);
         }
 
         private async Task LoadChannelVideosAsync(SubscriptionChannel channel)
@@ -288,6 +297,7 @@ namespace YouTube
                 var moreVideos = page != null ? page.Videos : null;
                 ApplySubscribedChannelAvatars(moreVideos);
                 var added = AppendUniqueSubscriptionVideos(moreVideos);
+                BeginSubscriptionsEnrichment(page);
 
                 System.Diagnostics.Debug.WriteLine(
                     "[Subscriptions] Continuation page added " + added
@@ -308,6 +318,22 @@ namespace YouTube
             }
         }
 
+        private async void BeginSubscriptionsEnrichment(Config.SubscriptionsFeedPage page)
+        {
+            if (page == null || page.DeferredEnrichment == null)
+                return;
+
+            try
+            {
+                await page.DeferredEnrichment;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Subscriptions] Deferred enrichment failed: " + ex.Message);
+            }
+        }
+
         private int AppendUniqueSubscriptionVideos(IEnumerable<VideoCardItem> videos)
         {
             if (videos == null)
@@ -324,7 +350,7 @@ namespace YouTube
                 }
             }
 
-            var added = 0;
+            var pending = new List<VideoCardItem>();
             foreach (var video in videos)
             {
                 if (video == null || string.IsNullOrWhiteSpace(video.VideoId))
@@ -334,12 +360,12 @@ namespace YouTube
 
                 if (existingIds.Add(video.VideoId))
                 {
-                    subscriptionVideos.Add(video);
-                    added++;
+                    pending.Add(video);
                 }
             }
 
-            return added;
+            subscriptionVideos.AddRange(pending);
+            return pending.Count;
         }
 
         private void ShowBottomLoadingIndicator()
@@ -423,23 +449,24 @@ namespace YouTube
 
         private void SetVideosSource(List<VideoCardItem> videos)
         {
-            subscriptionVideos.Clear();
-
-            if (videos != null && videos.Count > 0)
+            var validVideos = new List<VideoCardItem>();
+            if (videos != null)
             {
                 foreach (var video in videos)
                 {
                     if (video != null)
                     {
-                        subscriptionVideos.Add(video);
+                        validVideos.Add(video);
                     }
                 }
-
-                System.Diagnostics.Debug.WriteLine($"[Subscriptions] Added {subscriptionVideos.Count} videos to collection");
             }
 
-            VideosItemsControl.ItemsSource = null;
-            VideosItemsControl.ItemsSource = subscriptionVideos;
+            subscriptionVideos.ReplaceAll(validVideos);
+            if (!ReferenceEquals(VideosItemsControl.ItemsSource, subscriptionVideos))
+            {
+                VideosItemsControl.ItemsSource = subscriptionVideos;
+            }
+            System.Diagnostics.Debug.WriteLine($"[Subscriptions] Added {subscriptionVideos.Count} videos to collection");
             ScheduleResponsiveCardLayoutUpdate();
         }
 
@@ -688,6 +715,9 @@ namespace YouTube
 
         private void UpdateResponsiveCardLayouts()
         {
+            ResponsiveLayout.ShowInRegularLayout(
+                SubscriptionsList,
+                !ResponsiveLayout.IsCompactLandscape);
             UpdateItemsWrapGrid(VideosItemsControl);
             UpdateItemsWrapGrid(VideosSkeletonCardsList);
             UpdateResponsiveCardMargins(VideosItemsControl);

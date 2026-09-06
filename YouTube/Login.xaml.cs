@@ -12,6 +12,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using YouTube.Innertube;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -22,14 +23,9 @@ namespace YouTube
     /// </summary>
     public sealed partial class Login : Page
     {
-        private const string OAuthClientId = "861556708454-d6dlm3lh05idd8npek18k6be8ba3oc68.apps.googleusercontent.com";
-        private const string OAuthClientSecret = "SboVhoG9s0rNafixCSGGKXAT";
-        private const string InnertubeApiKey = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
         private const string DeviceCodeScope = "http://gdata.youtube.com https://www.googleapis.com/auth/youtube-paid-content";
         private const string DeviceModel = "ytlr:samsung:smarttv";
-        private const string TvUserAgent = "Mozilla/5.0 (SMART-TV; Linux; Tizen 6.0)";
 
-        private readonly HttpClient httpClient = new HttpClient();
         private CancellationTokenSource authCancellation;
 
         public Login()
@@ -160,66 +156,25 @@ namespace YouTube
 
         private async Task<DeviceCodeResponse> GetDeviceCodeAsync(CancellationToken token)
         {
-            var body = new Dictionary<string, string>
+            var response = await OAuthClient.RequestDeviceCodeAsync(
+                DeviceCodeScope,
+                DeviceModel,
+                token);
+            return new DeviceCodeResponse
             {
-                { "client_id", OAuthClientId },
-                { "scope", DeviceCodeScope },
-                { "device_id", Guid.NewGuid().ToString() },
-                { "device_model", DeviceModel }
+                DeviceCode = response.DeviceCode,
+                UserCode = response.UserCode,
+                IntervalSeconds = response.IntervalSeconds
             };
-
-            using (var request = new HttpRequestMessage(HttpMethod.Post, "https://www.youtube.com/o/oauth2/device/code"))
-            {
-                request.Headers.TryAddWithoutValidation("User-Agent", TvUserAgent);
-                request.Content = new FormUrlEncodedContent(body);
-
-                var response = await httpClient.SendAsync(request, token);
-                response.EnsureSuccessStatusCode();
-                var json = await response.Content.ReadAsStringAsync();
-                var root = JsonObject.Parse(json);
-
-                return new DeviceCodeResponse
-                {
-                    DeviceCode = GetJsonString(root, "device_code"),
-                    UserCode = GetJsonString(root, "user_code"),
-                    IntervalSeconds = GetJsonNumberAsInt(root, "interval", 5)
-                };
-            }
         }
 
         private async Task<string> GetTvQrBase64Async(string userCode, CancellationToken token)
         {
-            var payload = "{\"context\":{\"client\":{\"clientName\":\"TVHTML5\",\"clientVersion\":\"7.20251217.19.00\",\"deviceMake\":\"Samsung\",\"deviceModel\":\"SmartTV\",\"platform\":\"TV\",\"hl\":\"ru\",\"gl\":\"RU\"}},\"handoffQrParams\":{\"rapidQrParams\":{\"qrPresetStyle\":\"HANDOFF_QR_LIMITED_PRESET_STYLE_MODERN_BIG_DOTS_INVERT_WITH_YT_LOGO\",\"userCode\":\"" + JsonEscape(userCode) + "\",\"rapidQrFeature\":\"RAPID_QR_FEATURE_DEFAULT\"}}}";
-            var url = "https://www.youtube.com/youtubei/v1/mdx/handoff?key=" + InnertubeApiKey;
-            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
-            {
-                request.Headers.TryAddWithoutValidation("User-Agent", TvUserAgent);
-                request.Content = new StringContent(payload);
-                request.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
-                var response = await httpClient.SendAsync(request, token);
-                response.EnsureSuccessStatusCode();
-                var json = await response.Content.ReadAsStringAsync();
-                var root = JsonObject.Parse(json);
-                var qrUrl = root
-                    .GetNamedObject("rapidQrRenderer")
-                    .GetNamedObject("qrCodeRenderer")
-                    .GetNamedObject("qrCodeImage")
-                    .GetNamedArray("thumbnails")[0]
-                    .GetObject()
-                    .GetNamedString("url");
-                if (string.IsNullOrWhiteSpace(qrUrl))
-                {
-                    throw new InvalidOperationException("YouTube did not return a QR code.");
-                }
-                const string prefix = "base64,";
-                var markerIndex = qrUrl.IndexOf(prefix, StringComparison.OrdinalIgnoreCase);
-                if (markerIndex >= 0)
-                {
-                    return qrUrl.Substring(markerIndex + prefix.Length);
-                }
-                var qrBytes = await httpClient.GetByteArrayAsync(qrUrl);
-                return Convert.ToBase64String(qrBytes);
-            }
+            return await TvSignInClient.GetQrBase64Async(
+                userCode,
+                Config.Hl,
+                Config.Gl,
+                token);
         }
 
         /// <summary>
@@ -254,30 +209,13 @@ namespace YouTube
 
         private async Task<DeviceTokenResponse> CheckDeviceTokenAsync(string deviceCode, CancellationToken token)
         {
-            var body = new Dictionary<string, string>
+            var response = await OAuthClient.PollDeviceTokenAsync(deviceCode, token);
+            return new DeviceTokenResponse
             {
-                { "client_id", OAuthClientId },
-                { "client_secret", OAuthClientSecret },
-                { "code", deviceCode },
-                { "grant_type", "http://oauth.net/grant_type/device/1.0" }
+                AccessToken = response.AccessToken,
+                RefreshToken = response.RefreshToken,
+                Error = response.Error
             };
-
-            using (var request = new HttpRequestMessage(HttpMethod.Post, "https://www.youtube.com/o/oauth2/token"))
-            {
-                request.Headers.TryAddWithoutValidation("User-Agent", TvUserAgent);
-                request.Content = new FormUrlEncodedContent(body);
-
-                var response = await httpClient.SendAsync(request, token);
-                var json = await response.Content.ReadAsStringAsync();
-                var root = JsonObject.Parse(json);
-
-                return new DeviceTokenResponse
-                {
-                    AccessToken = GetJsonString(root, "access_token"),
-                    RefreshToken = GetJsonString(root, "refresh_token"),
-                    Error = GetJsonString(root, "error")
-                };
-            }
         }
 
         private static string GetJsonString(JsonObject obj, string key)

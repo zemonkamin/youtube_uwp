@@ -7,10 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="Transparent">
+    <Grid x:Name="TabbarRoot"
+          Background="Transparent"
+          SizeChanged="TabbarRoot_SizeChanged">
         <Grid.RowDefinitions>
             <RowDefinition Height="2"/>
-            <RowDefinition Height="50"/>
+            <RowDefinition x:Name="TabbarContentRow" Height="50"/>
         </Grid.RowDefinitions>
         <Border x:Name="TabbarGlassHost"
                 Grid.Row="0"
@@ -20,7 +22,12 @@
         <!-- Top dark gray bar -->
         <Border Grid.Row="0" Background="{ThemeResource AppDividerBrush}"/>
         <!-- Bottom TabBar -->
-        <Grid Grid.Row="1" Background="Transparent">
+        <!-- The glass/background remains full width. Only this button host is narrowed in
+             landscape, matching the centered 35% bottom-sheet content width. -->
+        <Grid x:Name="TabbarButtonsHost"
+              Grid.Row="1"
+              HorizontalAlignment="Stretch"
+              Background="Transparent">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="HomeColumn" Width="*"/>
                 <ColumnDefinition x:Name="ShortsColumn" Width="*"/>
@@ -42,7 +49,7 @@
                            Width="24" 
                            Height="24"
                            Stretch="Uniform"/>
-                    <TextBlock x:Uid="Loc_Home_Text" 
+                    <TextBlock x:Uid="Loc_Home_Text" x:Name="HomeLabel"
                                Foreground="{ThemeResource AppPrimaryTextBrush}" 
                                Margin="0,0,0,0"
                                FontSize="12" HorizontalAlignment="Center"/>
@@ -63,7 +70,7 @@
                            Width="24" 
                            Height="24"
                            Stretch="Uniform"/>
-                    <TextBlock x:Uid="Loc_Shorts_Text" 
+                    <TextBlock x:Uid="Loc_Shorts_Text" x:Name="ShortsLabel"
                                Foreground="{ThemeResource AppPrimaryTextBrush}" 
                                 Margin="0,0,0,0"
                               FontSize="12" HorizontalAlignment="Center"/>
@@ -84,7 +91,7 @@
                            Width="24" 
                            Height="24"
                            Stretch="Uniform"/>
-                    <TextBlock x:Uid="Loc_Subscriptions_Text" 
+                    <TextBlock x:Uid="Loc_Subscriptions_Text" x:Name="SubscriptionsLabel"
                                Foreground="{ThemeResource AppPrimaryTextBrush}" 
                                 Margin="0,0,0,0"
                               FontSize="12" HorizontalAlignment="Center"/>
@@ -115,7 +122,7 @@
                                  StrokeThickness="1.5"
                                  Visibility="Collapsed"/>
                     </Grid>
-                    <TextBlock x:Uid="Loc_You_Text" 
+                    <TextBlock x:Uid="Loc_You_Text" x:Name="AccountLabel"
                                Foreground="{ThemeResource AppPrimaryTextBrush}" 
                                Margin="0,0,0,0"
                                FontSize="12" HorizontalAlignment="Center"/>

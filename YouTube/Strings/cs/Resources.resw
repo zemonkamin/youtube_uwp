@@ -981,7 +981,73 @@ Verze {0}</value>
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Vymazat</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Vymazat</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Zrušit</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Domů</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Odběry</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Hledání...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Stažené</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Historie</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Oznámení</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Nastavení</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Účet</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Přihlaste se a zobrazte historii a playlisty</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Hledání: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Kanál: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Playlist: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>Pozastaveno</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Vyhledávání ve vodorovné navigaci</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Zobrazit vyhledávací panel uprostřed</value>
   </data>
 </root>

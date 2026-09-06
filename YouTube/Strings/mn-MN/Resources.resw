@@ -981,7 +981,73 @@ YouTube API Legacy дэмжлэгтэй.
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Цэвэрлэх</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Цэвэрлэх</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Цуцлах</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Нүүр</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Захиалгууд</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Хайж байна...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Татсан зүйлс</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Түүх</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Мэдэгдэл</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Тохиргоо</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>Бүртгэл</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Түүх болон тоглуулах жагсаалтаа харахын тулд нэвтэрнэ үү</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Хайж байна: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Суваг: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Тоглуулах жагсаалт: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>Түр зогсоосон</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Хэвтээ навигац дахь хайлт</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Хайлтын мөрийг голд харуулах</value>
   </data>
 </root>

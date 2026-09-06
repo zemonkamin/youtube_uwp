@@ -4,6 +4,8 @@ using System.Linq;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Input;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
@@ -17,6 +19,8 @@ namespace YouTube
         private static readonly Thickness PortraitCardMargin = new Thickness(0, 0, 0, 16);
         private static readonly Thickness LandscapeCardMargin = new Thickness(8, 0, 8, 16);
         private IList<DownloadedVideoItem> _visibleItems = new List<DownloadedVideoItem>();
+        private DownloadedVideoItem _selectedActionItem;
+        private DateTime _suppressCardClickUntil = DateTime.MinValue;
 
         public Downloads()
         {
@@ -26,6 +30,7 @@ namespace YouTube
             PageTitleText.Text = Localization.GetString("Downloads");
             EmptyTitleText.Text = Localization.GetString("DownloadsEmptyTitle");
             EmptyDescriptionText.Text = Localization.GetString("DownloadsEmptyDescription");
+            DeleteDownloadText.Text = Localization.GetString("DeleteDownloadedVideoAction");
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -262,6 +267,14 @@ namespace YouTube
 
         private void UpdateResponsiveCardLayouts()
         {
+            var compact = ResponsiveLayout.IsCompactLandscape;
+            ResponsiveLayout.ShowInRegularLayout(PageTitleText, !compact);
+            ResponsiveLayout.ShowInRegularLayout(EmptyIllustration, !compact);
+            if (EmptyState != null)
+                EmptyState.Margin = compact
+                    ? new Thickness(12, 8, 12, 0)
+                    : new Thickness(12, 42, 12, 0);
+
             if (DownloadsList == null) return;
             var portrait = IsPortraitOrientation();
             DownloadsList.Padding = portrait
@@ -308,14 +321,74 @@ namespace YouTube
 
         private void DownloadCard_Click(object sender, RoutedEventArgs e)
         {
+            if (DateTime.UtcNow <= _suppressCardClickUntil)
+            {
+                return;
+            }
             var button = sender as Button;
             var item = button == null ? null : button.DataContext as DownloadedVideoItem;
             if (item != null && item.IsComplete)
                 Frame.Navigate(typeof(Video), new OfflineVideoNavigationArgs { Item = item });
         }
 
+        private void DownloadCard_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            if (e.HoldingState != HoldingState.Started) return;
+            if (!OpenDownloadActions(sender as FrameworkElement)) return;
+            e.Handled = true;
+        }
+
+        private void DownloadCard_RightTapped(object sender, RightTappedRoutedEventArgs e)
+        {
+            if (!OpenDownloadActions(sender as FrameworkElement)) return;
+            e.Handled = true;
+        }
+
+        private bool OpenDownloadActions(FrameworkElement card)
+        {
+            var item = card == null ? null : card.DataContext as DownloadedVideoItem;
+            if (item == null || DownloadActionsSheet == null) return false;
+
+            _selectedActionItem = item;
+            // A completed hold/right tap can be followed by Button.Click on older UWP
+            // builds. Suppress that click so the app keeps the action sheet open.
+            _suppressCardClickUntil = DateTime.UtcNow.AddMilliseconds(900);
+            DownloadActionsSheet.Open();
+            return true;
+        }
+
+        private void DownloadActionsOverlay_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            DownloadActionsSheet.Close();
+            e.Handled = true;
+        }
+
+        private async void DeleteDownloadButton_Click(object sender, RoutedEventArgs e)
+        {
+            var item = _selectedActionItem;
+            if (item == null) return;
+            DeleteDownloadButton.IsEnabled = false;
+            DownloadActionsSheet.Close();
+            try
+            {
+                await DownloadManager.CancelAsync(item);
+                _selectedActionItem = null;
+                await RefreshAsync();
+            }
+            finally
+            {
+                DeleteDownloadButton.IsEnabled = true;
+            }
+        }
+
         private void Downloads_BackRequested(object sender, BackRequestedEventArgs e)
         {
+            if (DownloadActionsSheet != null && DownloadActionsSheet.Visibility == Visibility.Visible)
+            {
+                e.Handled = true;
+                DownloadActionsSheet.Close();
+                return;
+            }
             if (Frame != null && Frame.CanGoBack)
             {
                 e.Handled = true;

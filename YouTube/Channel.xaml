@@ -1,4 +1,4 @@
-﻿<Page
+<Page
     x:Class="YouTube.Channel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -157,7 +157,8 @@
                         BorderThickness="1"
                         CornerRadius="20"
                         Height="40"
-                        HorizontalAlignment="Stretch">
+                        HorizontalAlignment="Stretch"
+                        Visibility="Collapsed">
                     <Button x:Name="SubscribeButton"
                             Style="{StaticResource SubscriptionIconButtonStyle}"
                             Background="Transparent"
@@ -305,7 +306,7 @@
                                 <StackPanel Orientation="Vertical" Background="{ThemeResource AppBackgroundBrush}"
                                             HorizontalAlignment="Stretch">
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged" Tag="VideoCardThumbnailChrome">
-                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" />
+                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource VideoPlaceholderBrush}" />
                                         <Border Tag="VideoCardThumbnailChrome">
                                             <Grid>
                                                 <Image DataContextChanged="CardThumbnail_DataContextChanged"
@@ -375,7 +376,8 @@
                                         <Border CornerRadius="8">
                                             <Border.Background>
                                                 <ImageBrush
-                                                    ImageSource="{Binding ThumbnailUrl}"
+                                                    local:ThumbnailImageLoader.SourceUrl="{Binding ThumbnailUrl}"
+                                                    local:ThumbnailImageLoader.DecodeWidth="240"
                                                     Stretch="UniformToFill" />
                                             </Border.Background>
                                         </Border>
@@ -424,9 +426,11 @@
                                     Click="ChannelPlaylistCard_Click">
                                 <StackPanel>
                                     <Grid SizeChanged="VideoThumbnailHost_SizeChanged" Tag="VideoCardThumbnailChrome">
-                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource AppSurfaceAltBrush}" />
+                                        <Border Tag="VideoCardThumbnailChrome" Background="{ThemeResource VideoPlaceholderBrush}" />
                                         <Border Tag="VideoCardThumbnailChrome">
-                                            <Image Source="{Binding ThumbnailUrl}" Stretch="UniformToFill" />
+                                            <Image local:ThumbnailImageLoader.SourceUrl="{Binding ThumbnailUrl}"
+                                                   local:ThumbnailImageLoader.DecodeWidth="360"
+                                                   Stretch="UniformToFill" />
                                         </Border>
                                         <Border Margin="0,0,8,8"
                                                 Padding="6,2"
@@ -562,46 +566,21 @@
               Visibility="Collapsed"
               Tapped="OverlayGrid_Tapped" />
 
-        <Border x:Name="DescriptionBottomSheetPanel"
+        <local:BottomSheet x:Name="DescriptionBottomSheetPanel"
                 Grid.Row="0"
                 Grid.RowSpan="3"
                 Canvas.ZIndex="101"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Stretch"
-                Background="{ThemeResource AppSurfaceAltBrush}"
-                CornerRadius="15"
-                Height="400"
+                MaxHeight="400"
                 Margin="10,0,10,10"
-                Visibility="Collapsed">
-            <Border.RenderTransform>
+                Visibility="Collapsed" HandleHeight="36" HandleTapped="DescriptionDragArea_Tapped" HandlePointerPressed="DescriptionDragArea_PointerPressed" HandlePointerMoved="DescriptionDragArea_PointerMoved" HandlePointerReleased="DescriptionDragArea_PointerReleased">
+            <local:BottomSheet.RenderTransform>
                 <TranslateTransform x:Name="DescriptionBottomSheetTransform" Y="410" />
-            </Border.RenderTransform>
+            </local:BottomSheet.RenderTransform>
 
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Grid x:Name="DescriptionDragArea"
-                      Grid.Row="0"
-                      Background="Transparent"
-                      Height="40"
-                      Tapped="DescriptionDragArea_Tapped"
-                      PointerPressed="DescriptionDragArea_PointerPressed"
-                      PointerMoved="DescriptionDragArea_PointerMoved"
-                      PointerReleased="DescriptionDragArea_PointerReleased"
-                      PointerCaptureLost="DescriptionDragArea_PointerReleased">
-                    <Rectangle Width="40"
-                               Height="4"
-                               Fill="Gray"
-                               RadiusX="2"
-                               RadiusY="2"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
-                </Grid>
-
-                <Grid Grid.Row="1" Margin="20,0,20,20">
+                <Grid Margin="20,0,20,20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
@@ -621,48 +600,23 @@
                     </ScrollViewer>
                 </Grid>
             </Grid>
-        </Border>
+        </local:BottomSheet>
 
-        <Border x:Name="SubscriptionMenuBottomSheetPanel"
+        <local:BottomSheet x:Name="SubscriptionMenuBottomSheetPanel"
                 Grid.Row="0"
                 Grid.RowSpan="3"
                 Canvas.ZIndex="101"
                 VerticalAlignment="Bottom"
                 HorizontalAlignment="Stretch"
-                Background="{ThemeResource AppDividerBrush}"
-                CornerRadius="15"
-                Height="300"
+                MaxHeight="300"
                 Margin="10,0,10,10"
-                Visibility="Collapsed">
-            <Border.RenderTransform>
+                Visibility="Collapsed" HandleHeight="36" HandleTapped="SubscriptionMenuDragArea_Tapped" HandlePointerPressed="SubscriptionMenuDragArea_PointerPressed" HandlePointerMoved="SubscriptionMenuDragArea_PointerMoved" HandlePointerReleased="SubscriptionMenuDragArea_PointerReleased">
+            <local:BottomSheet.RenderTransform>
                 <TranslateTransform x:Name="SubscriptionMenuBottomSheetTransform" Y="280" />
-            </Border.RenderTransform>
+            </local:BottomSheet.RenderTransform>
 
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-
-                <Grid x:Name="SubscriptionMenuDragArea"
-                      Grid.Row="0"
-                      Background="Transparent"
-                      Height="40"
-                      Tapped="SubscriptionMenuDragArea_Tapped"
-                      PointerPressed="SubscriptionMenuDragArea_PointerPressed"
-                      PointerMoved="SubscriptionMenuDragArea_PointerMoved"
-                      PointerReleased="SubscriptionMenuDragArea_PointerReleased"
-                      PointerCaptureLost="SubscriptionMenuDragArea_PointerReleased">
-                    <Rectangle Width="40"
-                               Height="4"
-                               Fill="Gray"
-                               RadiusX="2"
-                               RadiusY="2"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
-                </Grid>
-
-                <Grid Grid.Row="1" Margin="20,0,20,20">
+                <Grid Margin="20,0,20,20">
                     <StackPanel>
                         <TextBlock x:Uid="Loc_Notifications_Text"
                                    Foreground="{ThemeResource AppPrimaryTextBrush}"
@@ -754,7 +708,7 @@
                     </StackPanel>
                 </Grid>
             </Grid>
-        </Border>
+        </local:BottomSheet>
 
         <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20" />
     </Grid>

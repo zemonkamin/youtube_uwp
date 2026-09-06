@@ -981,7 +981,73 @@ Inguqulo {0}</value>
   <data name="ClearDownloadedVideosAction" xml:space="preserve">
     <value>Sula</value>
   </data>
+  <data name="DeleteDownloadedVideoAction" xml:space="preserve">
+    <value>Sula</value>
+  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Khansela</value>
+  </data>
+  <data name="VideoAmbientEffect" xml:space="preserve">
+    <value>Ambient video lighting</value>
+  </data>
+  <data name="VideoAmbientEffectDescription" xml:space="preserve">
+    <value>Blur current video colors around the player</value>
+  </data>
+  <data name="DiscordPresence" xml:space="preserve">
+    <value>Discord</value>
+  </data>
+  <data name="DiscordPresenceDescription" xml:space="preserve">
+    <value>Rich Presence</value>
+  </data>
+  <data name="DiscordPresenceUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile</value>
+  </data>
+  <data name="DiscordStatusHome" xml:space="preserve">
+    <value>Ikhaya</value>
+  </data>
+  <data name="DiscordStatusSubscriptions" xml:space="preserve">
+    <value>Okubhaliselwe</value>
+  </data>
+  <data name="DiscordStatusSearch" xml:space="preserve">
+    <value>Kuyaseshwa...</value>
+  </data>
+  <data name="DiscordStatusDownloads" xml:space="preserve">
+    <value>Okulandiwe</value>
+  </data>
+  <data name="DiscordStatusHistory" xml:space="preserve">
+    <value>Umlando</value>
+  </data>
+  <data name="DiscordStatusNotifications" xml:space="preserve">
+    <value>Izaziso</value>
+  </data>
+  <data name="DiscordStatusSettings" xml:space="preserve">
+    <value>Izilungiselelo</value>
+  </data>
+  <data name="DiscordStatusProfile" xml:space="preserve">
+    <value>I-akhawunti</value>
+  </data>
+  <data name="DiscordStatusLogin" xml:space="preserve">
+    <value>Ngena ngemvume ukuze ubone umlando nezinhlu zakho zokudlalayo</value>
+  </data>
+  <data name="DiscordStatusSearchFormat" xml:space="preserve">
+    <value>Kuyaseshwa: {0}</value>
+  </data>
+  <data name="DiscordStatusChannelFormat" xml:space="preserve">
+    <value>Isiteshi: {0}</value>
+  </data>
+  <data name="DiscordStatusPlaylistFormat" xml:space="preserve">
+    <value>Uhlu lokudlalayo: {0}</value>
+  </data>
+  <data name="DiscordStatusShortsFormat" xml:space="preserve">
+    <value>Shorts: {0}</value>
+  </data>
+  <data name="DiscordStatusPaused" xml:space="preserve">
+    <value>Kumisiwe</value>
+  </data>
+  <data name="LandscapeNavbarSearchMode" xml:space="preserve">
+    <value>Ukusesha ekuzulazuleni okuvundlile</value>
+  </data>
+  <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
+    <value>Bonisa ibha yokusesha phakathi</value>
   </data>
 </root>
