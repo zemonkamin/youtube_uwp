@@ -1050,4 +1050,91 @@ YouTube API Legacy に対応しています。
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>検索バーを中央に表示</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>ミニプレーヤーを常に手前に表示</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>ミニプレーヤーを常に手前に表示される別ウィンドウで開く</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile では利用できません</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Visual Studio 2017 ビルド (SDK 15063+) でのみ利用できます</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Windows 10 バージョン 1703 以降が必要です</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>ブラウザでログイン</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>このアカウントで再生する</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>ログイン済み · ログアウト</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Google のページでログインし、YouTube に戻って OK を押してください。</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>先に Google へのログインを完了してください。</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>ログインを完了できませんでした。もう一度お試しください。</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>コメントを追加...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>投稿</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>コメントを投稿できませんでした。</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube はこの動画へのコメントを許可していません。</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>コメントを投稿するにはブラウザでログインしてください。</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>あなた</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>ライブチャット</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>チャットの上位表示</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>すべてのメッセージ</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>メッセージはまだありません</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>チャットに再接続しています…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>配信を待っています…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>配信は終了しました</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>ライブに戻る</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>低評価の数を表示</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike による推定値</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>タブバーを左側に表示</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>デスクトップ版WindowsとContinuumの横向き表示で使用</value>
+  </data>
 </root>

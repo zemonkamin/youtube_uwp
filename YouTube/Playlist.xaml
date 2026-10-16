@@ -9,6 +9,10 @@
     Background="{ThemeResource AppBackgroundBrush}">
 
     <Grid Background="{ThemeResource AppBackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="SideTabbarColumn" Width="0" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="56" />
             <RowDefinition Height="*" />
@@ -16,7 +20,7 @@
         </Grid.RowDefinitions>
 
         <!-- The system back button is the only back navigation on this page. -->
-        <Grid Grid.Row="0" Background="{ThemeResource AppBackgroundBrush}" Padding="8,0,8,0">
+        <Grid Canvas.ZIndex="30" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Background="{ThemeResource AppBackgroundBrush}" Padding="8,0,8,0">
             <TextBlock x:Uid="Loc_Playlist_Text"
                        x:Name="PlaylistBarTitleText"
                        Foreground="{ThemeResource AppPrimaryTextBrush}"
@@ -27,7 +31,7 @@
                        Margin="8,0" />
         </Grid>
 
-        <Grid x:Name="LoadingGrid" Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}" Visibility="Visible">
+        <Grid Grid.Column="1" x:Name="LoadingGrid" Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}" Visibility="Visible">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <local:AndroidLoadingRing x:Name="LoadingRing" Width="48" Height="48" IsActive="True" />
                 <TextBlock x:Uid="Loc_LoadingPlaylist_Text"
@@ -38,7 +42,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid x:Name="ErrorPanel" Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}" Visibility="Collapsed">
+        <Grid Grid.Column="1" x:Name="ErrorPanel" Grid.Row="1" Background="{ThemeResource AppBackgroundBrush}" Visibility="Collapsed">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24">
                 <FontIcon Glyph="&#xE783;" FontFamily="Segoe MDL2 Assets" Foreground="{ThemeResource AppSecondaryTextBrush}" FontSize="42" />
                 <TextBlock x:Uid="Loc_CouldNotLoadPlaylist_Text" x:Name="ErrorText"
@@ -61,7 +65,7 @@
             </StackPanel>
         </Grid>
 
-        <ScrollViewer x:Name="MainContent"
+        <ScrollViewer Grid.Column="1" x:Name="MainContent"
                       Grid.Row="1"
                       Grid.RowSpan="2"
                       Background="{ThemeResource AppBackgroundBrush}"
@@ -71,7 +75,7 @@
                       HorizontalScrollBarVisibility="Disabled"
                       VerticalScrollBarVisibility="Auto"
                       ViewChanged="MainContent_ViewChanged">
-            <StackPanel Background="{ThemeResource AppBackgroundBrush}" Padding="0,8,0,76">
+            <StackPanel Background="{ThemeResource AppBackgroundBrush}" local:SideTabbarController.BottomInset="52" Padding="0,8,0,76">
 
                 <!-- Header ported from youtube-ios/YTPlaylistView. -->
                 <Grid Margin="16,0,16,0">
@@ -230,6 +234,6 @@
             </StackPanel>
         </ScrollViewer>
 
-        <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20" />
+        <local:Tabbar Grid.Column="0" Grid.ColumnSpan="2" x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20" />
     </Grid>
 </Page>

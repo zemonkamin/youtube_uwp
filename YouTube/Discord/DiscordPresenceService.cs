@@ -37,6 +37,7 @@ namespace YouTube.Discord
         };
         private static CancellationTokenSource _publishCancellation;
         private static DateTime _lastProgressPublishUtc = DateTime.MinValue;
+        private static string _videoChannelName = Config.ProductName;
 
         public static void SetPage(string pageName)
         {
@@ -94,12 +95,9 @@ namespace YouTube.Discord
 
                 position = position < TimeSpan.Zero ? TimeSpan.Zero : position;
                 duration = duration < TimeSpan.Zero ? TimeSpan.Zero : duration;
-                var progress = FormatTime(position);
-                if (duration > TimeSpan.Zero)
-                    progress += " / " + FormatTime(duration);
-
-                var channel = RemoveProgressSuffix(_current.State);
-                _current.State = channel + " • " + (isPlaying ? progress : Localization.GetString("DiscordStatusPaused") + " • " + progress);
+                _current.State = isPlaying
+                    ? _videoChannelName
+                    : _videoChannelName + " • " + Localization.GetString("DiscordStatusPaused");
                 _current.StartTimestamp = 0;
                 _current.EndTimestamp = 0;
 
@@ -178,6 +176,8 @@ namespace YouTube.Discord
             DiscordPresenceState snapshot;
             lock (Sync)
             {
+                if (kind == "video")
+                    _videoChannelName = state;
                 _current = new DiscordPresenceState
                 {
                     Kind = kind,
@@ -229,14 +229,6 @@ namespace YouTube.Discord
                 : (!string.IsNullOrWhiteSpace(fallback) ? fallback.Trim() : Config.ProductName);
         }
 
-        private static string RemoveProgressSuffix(string value)
-        {
-            if (string.IsNullOrWhiteSpace(value))
-                return Config.ProductName;
-            var separator = value.IndexOf(" • ", StringComparison.Ordinal);
-            return separator > 0 ? value.Substring(0, separator) : value;
-        }
-
         private static string NormalizeRemoteImageUrl(string value)
         {
             if (string.IsNullOrWhiteSpace(value))
@@ -276,13 +268,6 @@ namespace YouTube.Discord
             if (equals > clean.LastIndexOf('/'))
                 clean = clean.Substring(0, equals);
             return clean + "=s1024-c-k-c0x00ffffff-no-rj";
-        }
-
-        private static string FormatTime(TimeSpan value)
-        {
-            if (value.TotalHours >= 1)
-                return ((int)value.TotalHours) + ":" + value.Minutes.ToString("00") + ":" + value.Seconds.ToString("00");
-            return ((int)value.TotalMinutes) + ":" + value.Seconds.ToString("00");
         }
 
         private static long ToUnixSeconds(DateTime utc)

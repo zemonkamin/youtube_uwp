@@ -1050,4 +1050,91 @@ YouTube API Legacy මඟින් සහාය දක්වයි.
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>සෙවුම් තීරුව මැද පෙන්වන්න</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>බ්‍රවුසරයේ පුරනය වීම</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>වාදනය සඳහා මෙම ගිණුම භාවිතා කරන්න</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>පුරනය වී ඇත · පිටවන්න</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Google පිටුවේ පුරනය වී, YouTube වෙත ආපසු පැමිණ OK ඔබන්න.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>පළමුව Google පුරනය සම්පූර්ණ කරන්න.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>පුරනය සම්පූර්ණ කළ නොහැකි විය. නැවත උත්සාහ කරන්න.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>අදහසක් එක් කරන්න...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>යවන්න</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>අදහස යැවිය නොහැකි විය.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>මෙම වීඩියෝවට අදහස් දැක්වීමට YouTube අවසර දී නැත.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>අදහස් යැවීමට බ්‍රවුසරයේ පුරන්න.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>ඔබ</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>සජීවී කතාබස්</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>ප්‍රධාන කතාබස්</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>සියලු පණිවිඩ</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>තවම පණිවිඩ නැත</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>කතාබසට නැවත සම්බන්ධ වෙමින්…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>විකාශනය බලාපොරොත්තුවෙන්…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>විකාශනය අවසන් විය</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>සජීවී විකාශනයට යන්න</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>අකමැති ගණන පෙන්වන්න</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike වෙතින් ඇස්තමේන්තුව</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>වම්පස ටැබ් තීරුව</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>ඩෙස්ක්ටොප් Windows සහ Continuum හි තිරස් ආකාරයෙන්</value>
+  </data>
 </root>

@@ -1050,4 +1050,91 @@ Versiya {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Qidiruv panelini markazda ko&apos;rsatish</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini pleyer doimo tepada</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Mini pleyerni alohida, doimo tepada turadigan oynada ochish</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile’da mavjud emas</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Faqat Visual Studio 2017 buildlarida mavjud (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Windows 10 1703 yoki yangiroq versiyasi talab qilinadi</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Brauzerda kirish</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Ijro uchun shu hisobdan foydalanish</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Kirilgan · Chiqish</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Google sahifasida kiring, YouTube&apos;ga qayting va OK tugmasini bosing.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Avval Google hisobiga kirishni yakunlang.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Kirishni yakunlab bo‘lmadi. Qayta urinib ko‘ring.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Fikr qo‘shing...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Yuborish</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Fikrni yuborib bo‘lmadi.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube bu videoga fikr yozishga ruxsat bermadi.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Fikr yozish uchun brauzerda kiring.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Siz</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Jonli chat</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Asosiy chat</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Barcha xabarlar</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Hozircha xabarlar yo‘q</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Chatga qayta ulanmoqda…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Efir kutilmoqda…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Efir tugadi</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Jonli efirga o‘tish</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Yoqtirmasliklar sonini ko‘rsatish</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike bergan taxminiy son</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Chap tomonda tablar paneli</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Windows kompyuterida va Continuum’da gorizontal rejimda</value>
+  </data>
 </root>

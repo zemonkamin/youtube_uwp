@@ -1050,4 +1050,91 @@ Versjon {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Vis søkefeltet i midten</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Minispiller alltid øverst</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Åpne minispilleren i et separat vindu som alltid ligger øverst</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Ikke tilgjengelig på Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Bare tilgjengelig i Visual Studio 2017-bygg (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Krever Windows 10 versjon 1703 eller nyere</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Pålogging i nettleseren</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Bruk denne kontoen til avspilling</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Pålogget · Logg av</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Logg på Google-siden, gå tilbake til YouTube og trykk OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Fullfør først påloggingen til Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Kunne ikke fullføre påloggingen. Prøv igjen.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Legg til en kommentar...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Send</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Kunne ikke sende kommentaren.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube tillater ikke kommentarer på denne videoen.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Logg inn i nettleseren for å skrive kommentarer.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Du</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Direktechat</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Toppchat</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Alle meldinger</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Ingen meldinger ennå</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Kobler til chatten igjen…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Venter på sendingen…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Sendingen er avsluttet</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Gå til direktesendingen</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Vis antall mislikinger</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Anslag fra Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Fanefelt til venstre</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>I liggende visning på Windows-PC og Continuum</value>
+  </data>
 </root>

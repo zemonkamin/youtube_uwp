@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using YouTube.Innertube;
 
 namespace YouTube
 {
@@ -57,6 +58,7 @@ namespace YouTube
         private Storyboard _shortsFeatureToggleStoryboard;
         private Storyboard _discordPresenceToggleStoryboard;
 
+        private Storyboard _desktopMiniPlayerWindowToggleStoryboard;
         public Settings()
         {
             this.InitializeComponent();
@@ -64,7 +66,7 @@ namespace YouTube
             this.Unloaded += Settings_Unloaded;
         }
 
-        private void Settings_Loaded(object sender, RoutedEventArgs e)
+        private async void Settings_Loaded(object sender, RoutedEventArgs e)
         {
             SystemNavigationManager.GetForCurrentView().BackRequested -= Settings_BackRequested;
             SystemNavigationManager.GetForCurrentView().BackRequested += Settings_BackRequested;
@@ -101,6 +103,7 @@ namespace YouTube
             UpdateAppearanceTexts();
             UpdateThemeText();
             BuildThemeOptions();
+            UpdateSideTabbarToggleVisual(SideTabbarController.IsEnabled(), false);
             UpdateGlassEffectToggleVisual(FluentGlassEffectHelper.IsEnabled(), false);
             LandscapeNavbarSearchModeController.EnsureDefault();
             UpdateLandscapeNavbarSearchModeToggleVisual(
@@ -109,6 +112,7 @@ namespace YouTube
             VideoAmbientEffectController.EnsureDefault();
             UpdateVideoAmbientEffectToggleVisual(VideoAmbientEffectController.IsEnabled(), false);
             UpdateShortsFeatureToggleVisual(ShortsFeatureController.IsEnabled(), false);
+            UpdateShowDislikesToggleVisual(DislikeCountService.IsEnabled(), false);
             var discordAvailable = YouTube.Discord.DiscordPresenceService.IsAvailable();
             if (DiscordPresenceToggleButton != null)
             {
@@ -117,6 +121,38 @@ namespace YouTube
             }
             UpdateDiscordPresenceToggleVisual(YouTube.Discord.DiscordPresenceService.IsEnabled(), false);
             UpdateLiveTileToggleVisual(App.IsLiveTileEnabled(), false);
+            UpdateDesktopMiniPlayerWindowSettingState();
+            await WebAccountSession.InitializeAsync();
+            UpdateWebAccountText();
+        }
+
+        private void UpdateWebAccountText()
+        {
+            WebAccountLabelText.Text = Localization.GetString("WebAccountSignIn");
+            WebAccountDescriptionText.Text = Localization.GetString("WebAccountSignInDescription");
+            WebAccountValueText.Text = Localization.GetString(WebAccountSession.IsSignedIn
+                ? "WebAccountSignedIn" : "NotSignedIn");
+            if (tabbar != null) tabbar.UpdateShortsButtonState();
+        }
+
+        private async void WebAccountButton_Click(object sender, RoutedEventArgs e)
+        {
+            WebAccountButton.IsEnabled = false;
+            try
+            {
+                await WebAccountSession.InitializeAsync();
+                if (WebAccountSession.IsSignedIn)
+                {
+                    await WebAccountSession.SignOutAsync();
+                    UpdateWebAccountText();
+                }
+                else if (Frame != null) Frame.Navigate(typeof(GoogleSignIn));
+            }
+            catch (Exception)
+            {
+                WebAccountValueText.Text = Localization.GetString("WebAccountSignInFailed");
+            }
+            finally { WebAccountButton.IsEnabled = true; }
         }
 
         private void UpdateLanguageText()
@@ -249,6 +285,8 @@ namespace YouTube
                 GlassEffectDescriptionText.Text = Localization.GetString("GlassEffectDescription");
             if (LandscapeNavbarSearchModeLabelText != null)
                 LandscapeNavbarSearchModeLabelText.Text = Localization.GetString("LandscapeNavbarSearchMode");
+            SideTabbarLabelText.Text = Localization.GetString("LandscapeSideTabbar");
+            SideTabbarDescriptionText.Text = Localization.GetString("LandscapeSideTabbarDescription");
             if (LandscapeNavbarSearchModeDescriptionText != null)
                 LandscapeNavbarSearchModeDescriptionText.Text = Localization.GetString(
                     "LandscapeNavbarSearchModeDescription");
@@ -260,6 +298,10 @@ namespace YouTube
                 ShortsFeatureLabelText.Text = Localization.GetString("ShortsFeature");
             if (ShortsFeatureDescriptionText != null)
                 ShortsFeatureDescriptionText.Text = Localization.GetString("ShortsFeatureDescription");
+            if (ShowDislikesLabelText != null)
+                ShowDislikesLabelText.Text = Localization.GetString("ShowDislikeCount");
+            if (ShowDislikesDescriptionText != null)
+                ShowDislikesDescriptionText.Text = Localization.GetString("ShowDislikeCountDescription");
             if (DiscordPresenceLabelText != null)
                 DiscordPresenceLabelText.Text = Localization.GetString("DiscordPresence");
             if (DiscordPresenceDescriptionText != null)
@@ -293,6 +335,7 @@ namespace YouTube
                     ? "Show colored SponsorBlock ranges"
                     : text;
             }
+            UpdateDesktopMiniPlayerWindowTexts();
         }
 
         private void UpdateDownloadFolderText()
@@ -876,6 +919,8 @@ namespace YouTube
 
         private void Settings_Unloaded(object sender, RoutedEventArgs e)
         {
+            if (_sideTabbarToggleStoryboard != null) _sideTabbarToggleStoryboard.Stop();
+            if (_showDislikesToggleStoryboard != null) _showDislikesToggleStoryboard.Stop();
             SystemNavigationManager.GetForCurrentView().BackRequested -= Settings_BackRequested;
         }
 
@@ -932,6 +977,7 @@ namespace YouTube
         {
             try
             {
+                await WebAccountSession.SignOutAsync();
                 ApplicationData.Current.LocalSettings.Values.Clear();
                 await ApplicationData.Current.ClearAsync();
             }
@@ -2278,5 +2324,91 @@ namespace YouTube
                 e.Handled = true;
             }
         }
+        private void DesktopMiniPlayerWindowToggleButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!DesktopMiniPlayerSetting.IsAvailable())
+                return;
+            var enabled = !DesktopMiniPlayerSetting.IsEnabled();
+            DesktopMiniPlayerSetting.SetEnabled(enabled);
+            UpdateDesktopMiniPlayerWindowToggleVisual(enabled, true);
+            UpdateDesktopMiniPlayerWindowTexts();
+        }
+
+        private void UpdateDesktopMiniPlayerWindowSettingState()
+        {
+            DesktopMiniPlayerSetting.EnsureDefault();
+            var available = DesktopMiniPlayerSetting.IsAvailable();
+            if (DesktopMiniPlayerWindowToggleButton != null)
+            {
+                DesktopMiniPlayerWindowToggleButton.IsEnabled = available;
+                DesktopMiniPlayerWindowToggleButton.Opacity = available ? 1.0 : 0.45;
+            }
+            UpdateDesktopMiniPlayerWindowToggleVisual(DesktopMiniPlayerSetting.IsEnabled(), false);
+            UpdateDesktopMiniPlayerWindowTexts();
+        }
+
+        private void UpdateDesktopMiniPlayerWindowTexts()
+        {
+            if (DesktopMiniPlayerWindowLabelText != null)
+                DesktopMiniPlayerWindowLabelText.Text = Localization.GetString("DesktopMiniPlayerWindow");
+            if (DesktopMiniPlayerWindowDescriptionText != null)
+                DesktopMiniPlayerWindowDescriptionText.Text = Localization.GetString(
+                    DesktopMiniPlayerSetting.GetDescriptionResourceKey());
+        }
+
+        private void UpdateDesktopMiniPlayerWindowToggleVisual(bool isOn, bool animate)
+        {
+            if (DesktopMiniPlayerWindowToggleTrack == null
+                || DesktopMiniPlayerWindowToggleThumbTransform == null)
+                return;
+
+            if (_desktopMiniPlayerWindowToggleStoryboard != null)
+            {
+                _desktopMiniPlayerWindowToggleStoryboard.Stop();
+                _desktopMiniPlayerWindowToggleStoryboard = null;
+            }
+
+            var onColor = App.GetThemeColor("AppPrimaryTextBrush", Colors.White);
+            var offColor = App.GetThemeColor(
+                "AppMutedTextBrush",
+                Color.FromArgb(255, 155, 155, 155));
+            var brush = DesktopMiniPlayerWindowToggleTrack.Background as SolidColorBrush;
+            if (brush == null)
+            {
+                brush = new SolidColorBrush(isOn ? onColor : offColor);
+                DesktopMiniPlayerWindowToggleTrack.Background = brush;
+            }
+
+            const double OnOffset = 20.0;
+            if (!animate)
+            {
+                brush.Color = isOn ? onColor : offColor;
+                DesktopMiniPlayerWindowToggleThumbTransform.X = isOn ? OnOffset : 0;
+                return;
+            }
+
+            var thumbAnimation = new DoubleAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? OnOffset : 0,
+                EnableDependentAnimation = true
+            };
+            var colorAnimation = new ColorAnimation
+            {
+                Duration = TimeSpan.FromMilliseconds(180),
+                To = isOn ? onColor : offColor
+            };
+
+            Storyboard.SetTarget(thumbAnimation, DesktopMiniPlayerWindowToggleThumbTransform);
+            Storyboard.SetTargetProperty(thumbAnimation, "X");
+            Storyboard.SetTarget(colorAnimation, brush);
+            Storyboard.SetTargetProperty(colorAnimation, "Color");
+
+            _desktopMiniPlayerWindowToggleStoryboard = new Storyboard();
+            _desktopMiniPlayerWindowToggleStoryboard.Children.Add(thumbAnimation);
+            _desktopMiniPlayerWindowToggleStoryboard.Children.Add(colorAnimation);
+            _desktopMiniPlayerWindowToggleStoryboard.Begin();
+        }
+
     }
 }

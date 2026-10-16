@@ -1050,4 +1050,91 @@ Versio {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Näytä hakupalkki keskellä</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Minisoitin aina päällimmäisenä</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Avaa minisoitin erilliseen aina päällimmäisenä olevaan ikkunaan</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Ei käytettävissä Windows 10 Mobilessa</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Käytettävissä vain Visual Studio 2017 -koontiversioissa (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Vaatii Windows 10 version 1703 tai uudemman</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Kirjautuminen selaimessa</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Käytä tätä tiliä toistoon</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Kirjautunut · Kirjaudu ulos</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Kirjaudu Googlen sivulla, palaa YouTubeen ja paina OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Viimeistele ensin Googleen kirjautuminen.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Kirjautumista ei voitu viimeistellä. Yritä uudelleen.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Lisää kommentti...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Lähetä</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Kommenttia ei voitu lähettää.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube ei salli tämän videon kommentointia.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Kirjaudu sisään selaimessa, jotta voit kommentoida.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Sinä</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Livechat</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Suosituimmat viestit</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Kaikki viestit</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Ei vielä viestejä</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Yhdistetään chatiin uudelleen…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Odotetaan lähetystä…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Lähetys päättyi</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Siirry suoraan lähetykseen</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Näytä ei-tykkäysten määrä</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike -palvelun arvio</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Välilehtipalkki vasemmalla</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Vaakatilassa Windows-tietokoneella ja Continuumissa</value>
+  </data>
 </root>

@@ -126,13 +126,15 @@ namespace YouTube
                 if (value.ValueType == JsonValueType.Object)
                 {
                     var obj = value.GetObject();
+                    var isRatingState = IsVideoRatingStateObject(path);
                     foreach (var pair in obj)
                     {
                         var key = pair.Key ?? string.Empty;
                         var lowerKey = key.ToLowerInvariant();
+                        if (IsIgnoredRatingBranch(lowerKey)) continue;
                         var nextPath = string.IsNullOrEmpty(path) ? lowerKey : path + "." + lowerKey;
 
-                        if (pair.Value != null && pair.Value.ValueType == JsonValueType.String && IsDirectRatingStatusKey(lowerKey))
+                        if (isRatingState && pair.Value != null && pair.Value.ValueType == JsonValueType.String && IsDirectRatingStatusKey(lowerKey))
                         {
                             bool parsed;
                             var rating = ParseDirectRatingStatus(pair.Value.GetString(), out parsed);
@@ -143,7 +145,7 @@ namespace YouTube
                             }
                         }
 
-                        if (pair.Value != null && pair.Value.ValueType == JsonValueType.Boolean)
+                        if (isRatingState && pair.Value != null && pair.Value.ValueType == JsonValueType.Boolean)
                         {
                             var boolValue = pair.Value.GetBoolean();
                             if (boolValue && IsLikeBooleanKey(lowerKey))
@@ -189,6 +191,48 @@ namespace YouTube
             }
 
             return UserVideoRating.None;
+        }
+
+        private static bool IsIgnoredRatingBranch(string key)
+        {
+            // Endpoint/command status describes the action to send, not the viewer's vote.
+            // Comments, recommendations and playlist items have their own reaction state.
+            return key.EndsWith("endpoint", StringComparison.Ordinal)
+                || key.EndsWith("command", StringComparison.Ordinal)
+                || key.Contains("comment")
+                || key == "secondaryresults"
+                || key == "playlist"
+                || key == "videorenderer"
+                || key == "compactvideorenderer"
+                || key == "playlistpanelvideorenderer"
+                || key == "reelitemrenderer";
+        }
+
+        private static bool IsVideoRatingStateObject(string path)
+        {
+            var separator = path.LastIndexOf('.');
+            var key = separator < 0 ? path : path.Substring(separator + 1);
+            return key == "likebuttonrenderer"
+                || key == "dislikebuttonrenderer"
+                || key == "likebuttonviewmodel"
+                || key == "dislikebuttonviewmodel"
+                || key == "segmentedlikedislikebuttonrenderer"
+                || key == "segmentedlikedislikebuttonviewmodel"
+                || key == "likestatusentity";
+        }
+
+        private static bool IsVideoRatingTogglePath(string path)
+        {
+            foreach (var key in path.Split('.'))
+            {
+                if (IsVideoRatingStateObject(key)
+                    || key == "videoprimaryinforenderer"
+                    || key == "videometadatarenderer"
+                    || key == "videoactions"
+                    || key == "slimvideoactionbarrenderer"
+                    || key == "videoactionbarrenderer") return true;
+            }
+            return false;
         }
 
         private static bool IsDirectRatingStatusKey(string lowerKey)
@@ -261,7 +305,9 @@ namespace YouTube
                 if (value.ValueType == JsonValueType.Object)
                 {
                     var obj = value.GetObject();
-                    if (obj.ContainsKey("isToggled"))
+                    if (obj.ContainsKey("isToggled")
+                        && obj.GetNamedValue("isToggled").ValueType == JsonValueType.Boolean
+                        && IsVideoRatingTogglePath(path))
                     {
                         var rating = DetermineRatingKindForToggleObject(obj, path);
                         if (rating != UserVideoRating.None)
@@ -292,6 +338,7 @@ namespace YouTube
                     foreach (var pair in obj)
                     {
                         var key = pair.Key ?? string.Empty;
+                        if (IsIgnoredRatingBranch(key.ToLowerInvariant())) continue;
                         var nextPath = string.IsNullOrEmpty(path)
                             ? key.ToLowerInvariant()
                             : path + "." + key.ToLowerInvariant();
@@ -314,15 +361,16 @@ namespace YouTube
 
         private static UserVideoRating DetermineRatingKindForToggleObject(JsonObject obj, string path)
         {
-            var lowerPath = (path ?? string.Empty).ToLowerInvariant();
-            if (lowerPath.Contains("dislike"))
+            // Check the nearest concrete button. The shared segmentedLikeDislike parent
+            // contains "dislike" too, but is not itself the dislike button.
+            var branches = (path ?? string.Empty).ToLowerInvariant().Split('.');
+            for (var i = branches.Length - 1; i >= 0; i--)
             {
-                return UserVideoRating.Dislike;
-            }
-
-            if (lowerPath.Contains("likebutton") || lowerPath.Contains("like_button") || lowerPath.Contains("segmentedlikedislike"))
-            {
-                return UserVideoRating.Like;
+                var key = branches[i];
+                if (key == "dislikebutton" || key == "dislikebuttonrenderer" || key == "dislikebuttonviewmodel")
+                    return UserVideoRating.Dislike;
+                if (key == "likebutton" || key == "likebuttonrenderer" || key == "likebuttonviewmodel")
+                    return UserVideoRating.Like;
             }
 
             bool foundIcon;
@@ -594,9 +642,9 @@ namespace YouTube
                         : (App.GetThemeBrush("PrimaryActionBackgroundBrush") ?? new SolidColorBrush(Windows.UI.Color.FromArgb(255, 241, 241, 241)));
                 }
                 var ambientBorder = Resources["VideoAmbientPillBorderBrush"] as Brush;
-                var ambientGradient = Resources["VideoAmbientPillGradientBrush"] as LinearGradientBrush;
-                SubscribeButtonContainer.Background = ambientEnabled && ambientGradient != null
-                    ? (Brush)ambientGradient
+                var ambientFill = Resources["VideoAmbientPillFillBrush"] as Brush;
+                SubscribeButtonContainer.Background = ambientEnabled && ambientFill != null
+                    ? (Brush)ambientFill
                     : containerBrush;
                 SubscribeButtonContainer.BorderBrush = ambientEnabled && ambientBorder != null
                     ? (Brush)ambientBorder
@@ -695,18 +743,7 @@ namespace YouTube
             global::Config.LoadUserToken();
             _hasSignedInAccount = !string.IsNullOrWhiteSpace(global::Config.UserToken);
 
-            if (SaveActionContainer != null)
-            {
-                SaveActionContainer.Visibility = _hasSignedInAccount && !_offlineMode
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
-            }
-            if (DownloadActionContainer != null)
-            {
-                DownloadActionContainer.Visibility = _hasSignedInAccount && !_offlineMode
-                    ? Visibility.Visible
-                    : Visibility.Collapsed;
-            }
+            RefreshVideoActionVisibility();
 
             if (!_hasSignedInAccount)
             {
@@ -718,6 +755,36 @@ namespace YouTube
 
             UpdateSubscriptionVisualState();
             UpdateRatingVisualState();
+        }
+
+        private void RefreshVideoActionVisibility()
+        {
+            var live = IsLivePage;
+            var showSavedActions = _hasSignedInAccount && !_offlineMode && !live;
+
+            if (LiveChatActionContainer != null)
+                LiveChatActionContainer.Visibility = live ? Visibility.Visible : Visibility.Collapsed;
+
+            if (SaveActionContainer != null)
+            {
+                SaveActionContainer.Visibility = showSavedActions
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            }
+            if (DownloadActionContainer != null)
+            {
+                DownloadActionContainer.Visibility = showSavedActions
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+            }
+
+            // The live chat replaces Save/Download, so cached landscape widths
+            // must be measured again after changing the visible actions.
+            _actionsWidthAllLabels = double.NaN;
+            _actionsWidthWithoutDownloadLabel = double.NaN;
+            _actionsWidthWithoutSaveLabel = double.NaN;
+            _actionsWidthIconsOnly = double.NaN;
+            ScheduleLandscapeActionLabelUpdate();
         }
 
         private void ResetRatingUiForNewVideo()

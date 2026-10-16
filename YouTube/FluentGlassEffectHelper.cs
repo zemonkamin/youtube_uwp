@@ -62,14 +62,14 @@ namespace YouTube
                 EnabledChanged(null, EventArgs.Empty);
         }
 
-        public static void AttachTopBar(FrameworkElement target, Brush baseBrush)
+        public static void AttachTopBar(FrameworkElement target, Brush baseBrush, bool usePageAmbientBackground = false)
         {
-            Apply(target, TopBlurAmount, ResolveBrushColor(baseBrush, GetDefaultTopBarColor()), baseBrush, null);
+            Apply(target, TopBlurAmount, ResolveBrushColor(baseBrush, GetDefaultTopBarColor()), baseBrush, null, usePageAmbientBackground);
         }
 
-        public static void AttachBottomBar(FrameworkElement target, Brush baseBrush)
+        public static void AttachBottomBar(FrameworkElement target, Brush baseBrush, bool usePageAmbientBackground = false)
         {
-            Apply(target, BottomBlurAmount, ResolveBrushColor(baseBrush, GetDefaultBottomBarColor()), baseBrush, null);
+            Apply(target, BottomBlurAmount, ResolveBrushColor(baseBrush, GetDefaultBottomBarColor()), baseBrush, null, usePageAmbientBackground);
         }
 
         public static void AttachSearchBar(FrameworkElement target, Brush baseBrush)
@@ -96,9 +96,20 @@ namespace YouTube
             }
         }
 
-        private static void Apply(FrameworkElement target, float blurAmount, Color tintColor, Brush baseBrush, float? tintOpacity)
+        private static void Apply(FrameworkElement target, float blurAmount, Color tintColor, Brush baseBrush, float? tintOpacity, bool usePageAmbientBackground = false)
         {
             if (target == null) return;
+
+            // Video already renders its blurred background once across the full page. Another
+            // backdrop blur/tint here would darken only the chrome (twice at navbar/sidebar
+            // intersections). The shared ambient layer also works in compact layouts and when
+            // the independent glass setting is disabled.
+            if (usePageAmbientBackground && VideoAmbientEffectController.IsEnabled())
+            {
+                Detach(target);
+                SetBackground(target, new SolidColorBrush(Colors.Transparent));
+                return;
+            }
 
             // Backdrop blur is one of the most expensive always-on effects on Lumia-era
             // GPUs. A solid themed surface is visually cleaner and much cheaper when the

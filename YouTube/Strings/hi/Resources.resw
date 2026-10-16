@@ -1050,4 +1050,91 @@ YouTube API Legacy द्वारा समर्थित।
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>खोज बार को बीच में दिखाएँ</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>ब्राउज़र में साइन इन</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>प्लेबैक के लिए इस खाते का उपयोग करें</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>साइन इन है · साइन आउट</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Google पेज पर साइन इन करें, YouTube पर लौटें और OK दबाएँ।</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>पहले Google में साइन इन पूरा करें।</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>साइन इन पूरा नहीं हो सका। फिर से कोशिश करें।</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>टिप्पणी जोड़ें...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>भेजें</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>टिप्पणी नहीं भेजी जा सकी।</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube ने इस वीडियो पर टिप्पणी की अनुमति नहीं दी है।</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>टिप्पणी करने के लिए ब्राउज़र में साइन इन करें।</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>आप</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>लाइव चैट</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>मुख्य चैट</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>सभी संदेश</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>अभी कोई संदेश नहीं है</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>चैट से फिर जुड़ रहा है…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>प्रसारण का इंतज़ार है…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>प्रसारण समाप्त हो गया</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>लाइव पर जाएँ</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>नापसंद की संख्या दिखाएँ</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike का अनुमान</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>बाईं ओर टैब बार</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>डेस्कटॉप Windows और Continuum पर लैंडस्केप मोड में</value>
+  </data>
 </root>

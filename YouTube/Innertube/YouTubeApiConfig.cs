@@ -17,6 +17,7 @@ namespace YouTube.Innertube
         internal const string SuggestionsBaseUrl = "https://clients1.google.com/complete/search";
 
         internal const string TvUserAgent = "Mozilla/5.0 (SMART-TV; Linux; Tizen 6.0)";
+        internal const string TvClientHeaderName = "7";
         internal const string WebUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
         internal const string MobileWebUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1";
     }

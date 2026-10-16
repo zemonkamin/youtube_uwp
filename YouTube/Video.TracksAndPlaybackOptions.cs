@@ -367,7 +367,7 @@ namespace YouTube
                 {
                     resumePosition = CustomVideoPlayer.CurrentPlaybackPosition;
                     CustomVideoPlayer.CurrentQuality = string.IsNullOrWhiteSpace(currentQualityTag) ? null : currentQualityTag;
-                    CustomVideoPlayer.PrepareResumeAfterSourceReload(resumePosition, true);
+                    if (!IsLivePage) CustomVideoPlayer.PrepareResumeAfterSourceReload(resumePosition, true);
                     // Spinner + no play/seek until the new stream is actually ready.
                     CustomVideoPlayer.BeginSourceLoading();
                 }
@@ -404,6 +404,8 @@ namespace YouTube
 
             // Arm the rate up front so it is applied whether or not the source is swapped below.
             CustomVideoPlayer.SetPlaybackRate(speed);
+
+            if (IsLivePage) return;
 
             if (_qualityChangeInProgress)
             {

@@ -209,6 +209,7 @@ namespace YouTube
                 || (SaveBottomSheetPanel != null && SaveBottomSheetPanel.Visibility == Visibility.Visible)
                 || (ShareBottomSheetPanel != null && ShareBottomSheetPanel.Visibility == Visibility.Visible)
                 || (CommentsBottomSheetPanel != null && CommentsBottomSheetPanel.Visibility == Visibility.Visible)
+                || (LiveChatWindow != null && LiveChatWindow.Visibility == Visibility.Visible)
                 || (SettingsBottomSheetPanel != null && SettingsBottomSheetPanel.Visibility == Visibility.Visible)
                 || (SubscriptionMenuBottomSheetPanel != null && SubscriptionMenuBottomSheetPanel.Visibility == Visibility.Visible);
 

@@ -1050,4 +1050,91 @@
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Показване на лентата за търсене в центъра</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Вход в браузъра</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Използване на този профил за възпроизвеждане</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Влезли сте · Изход</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Влезте на страницата на Google, върнете се в YouTube и натиснете OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Първо завършете влизането в Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Влизането не можа да бъде завършено. Опитайте отново.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Добавете коментар…</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Публикувай</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Коментарът не можа да бъде публикуван.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube не разрешава коментари за този видеоклип.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Влезте в браузъра, за да публикувате коментари.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Вие</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Чат на живо</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Водещ чат</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Всички съобщения</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Все още няма съобщения</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Повторно свързване с чата…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Изчакване на излъчването…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Излъчването приключи</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Към предаването на живо</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Показване на броя нехаресвания</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Оценка от Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Лента с раздели отляво</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>В хоризонтален режим на настолен Windows и Continuum</value>
+  </data>
 </root>

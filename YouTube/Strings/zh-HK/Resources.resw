@@ -1050,4 +1050,91 @@
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>在中央顯示搜尋列</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>迷你播放器永遠置頂</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>在獨立且永遠置頂的視窗中開啟迷你播放器</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile 無法使用</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>僅適用於 Visual Studio 2017 組建（SDK 15063+）</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>需要 Windows 10 版本 1703 或更新版本</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>在瀏覽器中登入</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>使用此帳戶播放</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>已登入 · 登出</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>在 Google 網頁上登入，返回 YouTube 後按「確定」。</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>請先完成 Google 登入。</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>無法完成登入。請再試一次。</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>新增留言…</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>發佈</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>無法發佈留言。</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube 不允許在這段影片下留言。</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>請在瀏覽器中登入以發佈留言。</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>你</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>直播聊天室</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>熱門聊天</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>所有訊息</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>尚無訊息</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>正在重新連線聊天室…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>正在等待直播…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>直播已結束</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>返回直播</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>顯示不喜歡的數量</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>由 Return YouTube Dislike 提供的估計值</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>左側分頁列</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>在桌面版 Windows 和 Continuum 的橫向模式下顯示</value>
+  </data>
 </root>

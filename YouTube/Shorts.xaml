@@ -69,7 +69,7 @@
                                        Margin="8,0,0,0" FontSize="12"
                                        Foreground="{ThemeResource AppMutedTextBrush}"/>
                         </StackPanel>
-                        <RichTextBlock Margin="0,4,0,0" FontSize="14"
+                        <RichTextBlock Margin="0,4,0,0" FontSize="14" FontFamily="{StaticResource CommentFont}"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        IsTextSelectionEnabled="False"
                                        Loaded="CommentTextRichTextBlock_Loaded"
@@ -135,7 +135,7 @@
                                                    Margin="8,0,0,0" FontSize="12"
                                                    Foreground="{ThemeResource AppMutedTextBrush}"/>
                                     </StackPanel>
-                                    <RichTextBlock Margin="0,4,0,0" FontSize="14"
+                                    <RichTextBlock Margin="0,4,0,0" FontSize="14" FontFamily="{StaticResource CommentFont}"
                                                    Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                    IsTextSelectionEnabled="False"
                                                    Loaded="CommentTextRichTextBlock_Loaded"
@@ -161,15 +161,19 @@
     </Page.Resources>
 
     <Grid Background="#0F0F0F">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="SideTabbarColumn" Width="0" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="0"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="52"/>
         </Grid.RowDefinitions>
 
-        <local:Navbar x:Name="navbar" Grid.Row="0" Visibility="Collapsed"/>
+        <local:Navbar Canvas.ZIndex="30" Grid.Column="0" Grid.ColumnSpan="2" x:Name="navbar" Grid.Row="0" Visibility="Collapsed"/>
 
-        <Grid x:Name="ShortsRoot"
+        <Grid Grid.Column="1" x:Name="ShortsRoot"
               Grid.Row="1"
               Background="Black"
               SizeChanged="ShortsRoot_SizeChanged">
@@ -330,6 +334,10 @@
                                 Click="DislikeButton_Click">
                             <Image x:Name="DislikeIconImage" local:ThemeAsset.Path="Assets/Dark/player/dislike.png" Width="24" Height="24"/>
                         </Button>
+                        <TextBlock x:Name="DislikeCountText"
+                                   Margin="0,2,0,0" Foreground="White"
+                                   FontSize="11" HorizontalAlignment="Center"
+                                   Visibility="Collapsed" />
                     </StackPanel>
 
                     <StackPanel HorizontalAlignment="Center" Margin="0,14,0,0">
@@ -392,7 +400,7 @@
 
         </Grid>
 
-            <Grid x:Name="ShortsOverlayGrid"
+            <Grid Grid.Column="0" Grid.ColumnSpan="2" x:Name="ShortsOverlayGrid"
                   Grid.Row="0"
                   Grid.RowSpan="3"
                   Canvas.ZIndex="100"
@@ -401,7 +409,7 @@
                   Tapped="ShortsOverlayGrid_Tapped"/>
 
             <!-- Bottom Sheet Panel for Comments -->
-            <local:BottomSheet x:Name="CommentsBottomSheetPanel"
+            <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="CommentsBottomSheetPanel"
                     Grid.Row="0"
                     Grid.RowSpan="3"
                     Canvas.ZIndex="101"
@@ -433,8 +441,12 @@
                                           HorizontalScrollBarVisibility="Disabled"
                                           HorizontalScrollMode="Disabled"
                                           VerticalScrollBarVisibility="Auto">
+                                <StackPanel>
+                                <local:CommentComposer x:Name="ShortCommentComposer"
+                                                       CommentPosted="ShortCommentComposer_CommentPosted"/>
                                 <ItemsControl x:Name="CommentsItemsControl"
                                               ItemTemplate="{StaticResource ShortCommentThreadTemplate}"/>
+                                </StackPanel>
                             </ScrollViewer>
 
                             <Grid x:Name="CommentsLoadingPanel" Background="{ThemeResource AppSurfaceAltBrush}" Visibility="Collapsed">
@@ -467,7 +479,7 @@
             </local:BottomSheet>
 
             <!-- Bottom Sheet Panel for Share -->
-            <local:BottomSheet x:Name="ShareBottomSheetPanel"
+            <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="ShareBottomSheetPanel"
                     Grid.Row="0"
                     Grid.RowSpan="3"
                     Canvas.ZIndex="101"
@@ -615,7 +627,7 @@
                 </Grid>
             </local:BottomSheet>
 
-            <local:BottomSheet x:Name="DescriptionBottomSheetPanel"
+            <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="DescriptionBottomSheetPanel"
                     Grid.Row="0"
                     Grid.RowSpan="3"
                     Canvas.ZIndex="101"
@@ -659,7 +671,7 @@
             </local:BottomSheet>
 
             <!-- Copy-link / QR result sheet. Same bottom-sheet shape and gesture as Share. -->
-            <local:BottomSheet x:Name="ShareResultPopupPanel"
+            <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="ShareResultPopupPanel"
                     Grid.Row="0"
                     Grid.RowSpan="3"
                     Canvas.ZIndex="102"
@@ -712,10 +724,10 @@
                 </Grid>
             </local:BottomSheet>
 
-        <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20"/>
+        <local:Tabbar Grid.Column="0" Grid.ColumnSpan="2" x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20"/>
 
         <!-- Compact Shorts settings bottom sheet (quality / speed / optional audio). -->
-        <Grid x:Name="ShortsSettingsOverlay"
+        <Grid Grid.Column="0" Grid.ColumnSpan="2" x:Name="ShortsSettingsOverlay"
               Grid.Row="0"
               Grid.RowSpan="3"
               Canvas.ZIndex="100"
@@ -725,7 +737,7 @@
 
         <!-- Settings sheet. Same shape as the one on the video page: floating rounded card,
              drag handle, one full-width row per section. -->
-        <local:BottomSheet x:Name="ShortsSettingsSheet"
+        <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="ShortsSettingsSheet"
               Grid.Row="0"
               Grid.RowSpan="3"
               Canvas.ZIndex="101"

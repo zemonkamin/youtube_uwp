@@ -651,6 +651,13 @@ namespace YouTube
         private async Task<List<string>> GetAvailableQualityTagsAsync(string videoId)
         {
             var result = new List<string>();
+            if (IsLivePage && _currentLiveRoot != null)
+            {
+                var liveFormats = new List<PlayerFormatModel>(); CollectLiveFormats(_currentLiveRoot, liveFormats);
+                foreach (var height in liveFormats.Where(f => f.HasVideo && f.QualityTier > 0).Select(f => f.QualityTier).Distinct().OrderBy(h => h))
+                    result.Add(height.ToString(System.Globalization.CultureInfo.InvariantCulture));
+                return result;
+            }
             if (string.IsNullOrWhiteSpace(videoId))
             {
                 return result;

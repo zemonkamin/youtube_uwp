@@ -1050,4 +1050,91 @@ YouTube API Legacy మద్దతు అందిస్తోంది.
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>శోధన పట్టీని మధ్యలో చూపించు</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>బ్రౌజర్‌లో సైన్ ఇన్</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>ప్లేబ్యాక్ కోసం ఈ ఖాతాను ఉపయోగించండి</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>సైన్ ఇన్ అయింది · సైన్ అవుట్</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Google పేజీలో సైన్ ఇన్ చేయండి, YouTube కు తిరిగి వచ్చి OK నొక్కండి.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>ముందుగా Google సైన్ ఇన్ పూర్తి చేయండి.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>సైన్ ఇన్ పూర్తి కాలేదు. మళ్లీ ప్రయత్నించండి.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>వ్యాఖ్యను జోడించండి...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>పంపండి</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>వ్యాఖ్యను పంపడం సాధ్యపడలేదు.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>ఈ వీడియోపై వ్యాఖ్యానించడానికి YouTube అనుమతించలేదు.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>వ్యాఖ్యలను పంపడానికి బ్రౌజర్‌లో సైన్ ఇన్ చేయండి.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>మీరు</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>ప్రత్యక్ష చాట్</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>ముఖ్యమైన చాట్</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>అన్ని సందేశాలు</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>ఇంకా సందేశాలు లేవు</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>చాట్‌కు మళ్లీ కనెక్ట్ అవుతోంది…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>ప్రసారం కోసం వేచి ఉంది…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>ప్రసారం ముగిసింది</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>ప్రత్యక్ష ప్రసారానికి వెళ్లండి</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>అయిష్టాల సంఖ్యను చూపించు</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike అందించే అంచనా</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>ఎడమవైపు ట్యాబ్ బార్</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>డెస్క్‌టాప్ Windows మరియు Continuum లో అడ్డంగా ఉండే మోడ్‌లో</value>
+  </data>
 </root>

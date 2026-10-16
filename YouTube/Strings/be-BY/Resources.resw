@@ -1050,4 +1050,91 @@
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Паказваць панэль пошуку па цэнтры</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Міні-плэер паверх іншых вокнаў</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Адкрываць міні-плэер у асобным акне паверх усіх вокнаў</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Недаступна ў Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Даступна толькі ў зборках Visual Studio 2017 (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Патрабуецца Windows 10 версіі 1703 або навейшая</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Уваход у браўзеры</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Выкарыстоўваць гэты акаўнт для прайгравання</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Уваход выкананы · Выйсці</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Увайдзіце на старонцы Google, вярніцеся на YouTube і націсніце ОК.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Спачатку завяршыце ўваход у Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Не ўдалося выканаць уваход. Паспрабуйце яшчэ раз.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Дадайце каментарый…</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Адправіць</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Не ўдалося адправіць каментарый.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube не дазволіў каментарыі да гэтага відэа.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Каб пісаць каментарыі, увайдзіце праз браўзер.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Вы</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Чат трансляцыі</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Цікавыя паведамленні</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Усе паведамленні</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Паведамленняў пакуль няма</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Паўторнае падключэнне да чата…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Чаканне трансляцыі…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Трансляцыя завершана</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Да прамога эфіру</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Паказваць колькасць дызлайкаў</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Ацэнка ад Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Панэль укладак злева</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>У гарызантальным рэжыме на ПК з Windows і ў Continuum</value>
+  </data>
 </root>

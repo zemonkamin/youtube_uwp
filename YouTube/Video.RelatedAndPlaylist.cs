@@ -378,6 +378,7 @@ namespace YouTube
 
         private async void CustomVideoPlayer_PlaybackRecoveryRequested(object sender, object e)
         {
+            if (IsLivePage) { await RecoverLivePlaybackAsync(); return; }
             if (_offlineMode || _playbackRecoveryInProgress || _qualityChangeInProgress
                 || string.IsNullOrWhiteSpace(currentVideoId) || CustomVideoPlayer == null)
             {
@@ -444,41 +445,46 @@ namespace YouTube
             }
         }
 
-        // Records the video in the account's watch history once per opened video, shortly after
-        // playback actually starts (mirrors what the official clients do with their stats pings).
-        private async Task ReportWatchHistoryAsync(string videoId)
+        private YouTube.Innertube.WatchHistoryReporter _watchHistoryReporter;
+
+        // Track actual playback intervals, including pauses and seeks, rather than recording
+        // only a single point at zero. Tracking requests start after media begins playing.
+        private Task ReportWatchHistoryAsync(string videoId)
         {
-            if (string.IsNullOrWhiteSpace(videoId) || _historyReportedVideoId == videoId)
-            {
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(videoId) || (_watchHistoryReporter != null && _historyReportedVideoId == videoId))
+                return Task.FromResult(false);
+            StopWatchHistoryReporting();
+            Config.LoadUserToken();
+            if (string.IsNullOrWhiteSpace(Config.UserToken) && !YouTube.Innertube.WebAccountSession.IsSignedIn)
+                return Task.FromResult(false);
 
             _historyReportedVideoId = videoId;
-
-            try
+            _watchHistoryReporter = new YouTube.Innertube.WatchHistoryReporter(videoId, () =>
             {
-                Config.LoadUserToken();
-                var refreshToken = Config.UserToken;
-                if (string.IsNullOrWhiteSpace(refreshToken))
+                var element = CustomVideoPlayer != null ? CustomVideoPlayer.GetMediaPlayer() : null;
+                var session = element != null && element.MediaPlayer != null ? element.MediaPlayer.PlaybackSession : null;
+                return new YouTube.Innertube.WatchHistorySample
                 {
-                    return; // Signed out — nothing to attribute the view to.
-                }
+                    Active = !_offlineMode && currentVideoId == videoId && session != null,
+                    Playing = session != null && session.PlaybackState == Windows.Media.Playback.MediaPlaybackState.Playing,
+                    Position = CustomVideoPlayer != null ? CustomVideoPlayer.CurrentPlaybackPosition.TotalSeconds : 0,
+                    Length = CustomVideoPlayer != null ? CustomVideoPlayer.ParsedDuration.TotalSeconds : 0,
+                    Rate = session != null ? session.PlaybackRate : 1
+                };
+            });
+            return Task.FromResult(true);
+        }
 
-                var position = CustomVideoPlayer != null
-                    ? CustomVideoPlayer.CurrentPlaybackPosition.TotalSeconds : 0;
-                var length = CustomVideoPlayer != null
-                    ? CustomVideoPlayer.ParsedDuration.TotalSeconds : 0;
-
-                await Config.ReportWatchHistoryAsync(videoId, refreshToken, position, length);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("[Video] History report failed: " + ex.Message);
-            }
+        private void StopWatchHistoryReporting()
+        {
+            if (_watchHistoryReporter != null) _watchHistoryReporter.Stop();
+            _watchHistoryReporter = null;
+            _historyReportedVideoId = null;
         }
 
         private async void CustomVideoPlayer_VideoEnded(object sender, object e)
         {
+            if (CustomVideoPlayer != null && CustomVideoPlayer.IsLivePlayback) return;
             // MediaEnded is raised directly by MediaPlayer now, so this path continues to work
             // while DispatcherTimer is throttled in the background / mini-player.
             await SwitchPlaylistRelativeAsync(1, "auto-advance");

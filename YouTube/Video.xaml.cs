@@ -71,6 +71,9 @@ namespace YouTube
         private string _lastAndroidPlayerJson = string.Empty;
         private string _lastAndroidPlayerVideoId = string.Empty;
         private readonly object _playerScriptGate = new object();
+        private readonly PlayerNSig _playerNSig = new PlayerNSig();
+        private string _discoveredPlayerScriptUrl;
+        private DateTime _playerScriptDiscoveredAt;
         private Task<string> _playerScriptRequestTask;
         private string _playerScriptRequestUrl = string.Empty;
         private string _lastPlayerScript = string.Empty;
@@ -180,7 +183,7 @@ namespace YouTube
         private const string YouTubeDataApiBaseUrl = YouTubeApiConfig.DataApiBaseUrl;
         private const string InnertubeTvClientName = "TVHTML5";
         private const string InnertubeTvClientVersion = "7.20260429.11.00";
-        private const string InnertubeTvClientHeaderName = "85";
+        private const string InnertubeTvClientHeaderName = YouTubeApiConfig.TvClientHeaderName;
         private const string InnertubeFallbackVisitorData = "CgtjTS00dGRYTXhBOCif8OnOBjIoCgJQTBIiEh4SHAsMDg8QERITFBUWFxgZGhscHR4fICEiIyQlJicgSA%3D%3D";
         private const string InnertubeMwebClientName = "MWEB";
         private const string InnertubeMwebClientVersion = "2.20251222.01.00";
@@ -379,11 +382,9 @@ namespace YouTube
             DownloadUnavailableText.Text = Localization.GetString("DownloadUnavailable");
             SaveSheetTitleText.Text = Localization.GetString("SelectPlaylist");
             SavePlaylistsEmptyText.Text = Localization.GetString("NoData");
-            CustomVideoPlayer.SetAmbientHosts(
-                VideoAmbientGlowHost,
-                VideoAmbientPageHost,
-                VideoNavbarGlassSourceHost,
-                VideoTabbarGlassSourceHost);
+            CustomVideoPlayer.SetAmbientPageBackdropHost(VideoAmbientPageHost);
+            navbar.SetPageAmbientBackground(true);
+            tabbar.SetPageAmbientBackground(true);
             UpdateLandscapeDescriptionExpansionState();
             this.Loaded += Video_Loaded;
             this.Unloaded += Video_Unloaded;

@@ -102,15 +102,19 @@
     </Page.Resources>
 
     <Grid Background="{ThemeResource AppBackgroundBrush}" x:Name="mainGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="SideTabbarColumn" Width="0" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Grid.RowSpan="2">
+        <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
             <ScrollViewer VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled">
-                <StackPanel Padding="0,10,0,76">
+                <StackPanel local:SideTabbarController.BottomInset="52" Padding="0,10,0,76">
                     <!-- Top bar -->
                     <Grid Height="44" Margin="16,0,16,4">
                         <Button x:Name="AccountsButton"
@@ -474,9 +478,9 @@
             </Grid>
         </Grid>
 
-        <local:Tabbar x:Name="tabbar" Grid.Row="1" Canvas.ZIndex="20"/>
+        <local:Tabbar Grid.Column="0" Grid.ColumnSpan="2" x:Name="tabbar" Grid.Row="1" Canvas.ZIndex="20"/>
 
-        <Grid x:Name="AccountsOverlay"
+        <Grid Grid.Column="0" Grid.ColumnSpan="2" x:Name="AccountsOverlay"
               Grid.Row="0"
               Grid.RowSpan="2"
               Canvas.ZIndex="100"
@@ -484,7 +488,7 @@
               Visibility="Collapsed"
               Tapped="AccountsOverlay_Tapped" />
 
-        <local:BottomSheet x:Name="AccountsSheet"
+        <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="AccountsSheet"
                 Grid.Row="0"
                 Grid.RowSpan="2"
                 Canvas.ZIndex="101"

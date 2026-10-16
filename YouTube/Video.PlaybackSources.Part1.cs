@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -35,6 +35,56 @@ namespace YouTube
 {
     public sealed partial class Video
     {
+        private string _activeHlsVideoId = string.Empty;
+        private string _activeHlsMediaUserAgent = string.Empty;
+        private string _failedHlsVideoId = string.Empty;
+        private string _failedHlsMediaUserAgent = string.Empty;
+        private int _hlsRecoveryGeneration;
+
+        private void ResetHlsPlaybackRecovery()
+        {
+            _hlsRecoveryGeneration++;
+            _activeHlsVideoId = string.Empty;
+            _activeHlsMediaUserAgent = string.Empty;
+            _failedHlsVideoId = string.Empty;
+            _failedHlsMediaUserAgent = string.Empty;
+        }
+
+        private bool HasRejectedHlsSource(string videoId)
+        {
+            return !string.IsNullOrWhiteSpace(videoId)
+                && string.Equals(_failedHlsVideoId, videoId, StringComparison.Ordinal);
+        }
+
+        private void RejectHlsSource(string videoId, string mediaUserAgent)
+        {
+            PlaybackResolver.Invalidate(videoId);
+            _failedHlsVideoId = videoId;
+            _failedHlsMediaUserAgent = mediaUserAgent ?? string.Empty;
+            _activeHlsVideoId = string.Empty;
+            _activeHlsMediaUserAgent = string.Empty;
+            lock (_androidPlayerRequestGate)
+            {
+                _lastAndroidPlayerVideoId = string.Empty;
+                _lastAndroidPlayerJson = string.Empty;
+                _androidPlayerRequestVideoId = string.Empty;
+                _androidPlayerRequestTask = null;
+            }
+            System.Diagnostics.Debug.WriteLine("[Video] HLS source rejected; resolving another playback source at the configured quality");
+        }
+
+        private async Task<bool> TryBindHlsSourceAsync(string videoId, string manifestUrl, string mediaUserAgent, string sourceQualityTag, bool autoPlay)
+        {
+            if (CustomVideoPlayer == null || !IsStillCurrentVideo(videoId)) return false;
+            _activeHlsVideoId = videoId;
+            _activeHlsMediaUserAgent = mediaUserAgent;
+            CustomVideoPlayer.MediaRequestUserAgent = mediaUserAgent;
+            if (await CustomVideoPlayer.TrySetSourceFromUriAsync(new Uri(manifestUrl), autoPlay, sourceQualityTag))
+                return true;
+            if (IsStillCurrentVideo(videoId)) RejectHlsSource(videoId, mediaUserAgent);
+            return false;
+        }
+
         private async Task BindPlayerSourceAsync(string playerJson)
         {
             await BindPlayerSourceAsync(playerJson, true);
@@ -44,7 +94,8 @@ namespace YouTube
         {
             var root = ParsePlayerJsonObject(playerJson);
             if (root == null) throw new FormatException("Player returned invalid JSON");
-            await BindPlayerSourceAsync(root, autoPlay);
+            var agent = PlaybackResolver.MediaUserAgent(root);
+            await BindPlayerSourceAsync(root, autoPlay, agent);
         }
 
         private static void LogSelectedPlaybackUrls(
@@ -83,15 +134,35 @@ namespace YouTube
             }
         }
 
-        private async Task BindPlayerSourceAsync(JsonObject rootObject, bool autoPlay)
+        private async Task BindPlayerSourceAsync(JsonObject rootObject, bool autoPlay, string mediaUserAgent = null)
         {
+            var bindingVideoId = currentVideoId;
+            var bindingGeneration = _hlsRecoveryGeneration;
+            _activeHlsVideoId = string.Empty;
+            _activeHlsMediaUserAgent = string.Empty;
+            var rootMediaUserAgent = PlaybackResolver.MediaUserAgent(rootObject);
+            if (string.IsNullOrWhiteSpace(rootMediaUserAgent))
+                rootMediaUserAgent = mediaUserAgent ?? InnertubeIosPlayerUserAgent;
+            _playbackMediaUserAgent = rootMediaUserAgent;
+            if (!IsStillCurrentVideo(bindingVideoId) || bindingGeneration != _hlsRecoveryGeneration) return;
+            if (CustomVideoPlayer != null && (PlaybackResolver.IsLive(rootObject) || IsLivePage))
+            {
+                var liveQuality = GetEffectiveVideoQualityTag();
+                await BindLivePlaybackAsync(rootObject, autoPlay, string.IsNullOrEmpty(liveQuality)
+                    ? GetAutomaticScreenQualityCap().ToString(System.Globalization.CultureInfo.InvariantCulture) : liveQuality);
+                return;
+            }
+            if (CustomVideoPlayer != null) CustomVideoPlayer.SetLivePlayback(false);
             CaptureVisitorData(rootObject);
             availableFormats.Clear();
             CollectFormatsFromStreamingData(rootObject);
+            foreach (var format in availableFormats) format.MediaUserAgent = rootMediaUserAgent;
             _currentH264VideoOnlyItag = -1;
             _readyHeight = 0;
 
             var hlsManifestUrl = ExtractHlsManifestUrl(rootObject);
+            var usesLiveTransport = PlaybackResolver.UsesLiveTransport(rootObject);
+            if (HasRejectedHlsSource(bindingVideoId)) hlsManifestUrl = string.Empty;
             System.Diagnostics.Debug.WriteLine(
                 $"[Video] Total available formats: {availableFormats.Count}"
             );
@@ -103,7 +174,7 @@ namespace YouTube
             if (!isAutomaticQuality)
             {
                 // A user's explicit tier is authoritative even when it exceeds the physical
-                // screen. Screen sizing and the CDN bandwidth probe belong exclusively to Auto.
+                // screen. Screen sizing only caps Auto.
                 System.Diagnostics.Debug.WriteLine(
                     "[Video][Manual] exact requested cap=" + sourceQualityTag
                     + "p; screen/network Auto checks bypassed");
@@ -117,95 +188,39 @@ namespace YouTube
                 CustomVideoPlayer.SetWindowsMobileAudioMode(isWindowsMobile);
                 CustomVideoPlayer.CurrentQuality = string.IsNullOrWhiteSpace(effectiveQualityTag) ? null : effectiveQualityTag;
 
-                // Scrub-preview frames. Present in the primary (IOS) player response; if that one
-                // lacks them, fall back to the ANDROID response the quality list already fetched.
+                // Preview work never triggers another player request before playback.
                 var storyboardSpec = ExtractStoryboardSpec(rootObject);
-                if (string.IsNullOrWhiteSpace(storyboardSpec) && !isWindowsMobile)
-                {
-                    try
-                    {
-                        var androidJson = await PostAndroidPlayerAsync(currentVideoId);
-                        if (!string.IsNullOrWhiteSpace(androidJson))
-                        {
-                            storyboardSpec = ExtractStoryboardSpec(JsonValue.Parse(androidJson).GetObject());
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Diagnostics.Debug.WriteLine("[Video] Storyboard android fallback failed: " + ex.Message);
-                    }
-                }
-
                 System.Diagnostics.Debug.WriteLine("[Video] Storyboard spec length: "
                     + (storyboardSpec == null ? 0 : storyboardSpec.Length));
+                if (!IsStillCurrentVideo(bindingVideoId) || bindingGeneration != _hlsRecoveryGeneration) return;
                 CustomVideoPlayer.SetStoryboardSpec(storyboardSpec);
             }
 
-            // The IOS response normally already contains a native HLS stream. On Windows 10
-            // Mobile it starts much faster than waiting for another ANDROID player request and
-            // constructing a software DASH demux pipeline. Desktop keeps the explicit-quality
-            // path below; the phone uses HLS adaptation and can begin playback immediately.
-            if (isWindowsMobile
-                && !string.IsNullOrWhiteSpace(hlsManifestUrl)
-                && CustomVideoPlayer != null)
+            if (usesLiveTransport && !string.IsNullOrWhiteSpace(hlsManifestUrl) && CustomVideoPlayer != null)
             {
-                _readyHeight = 0;
-                await CustomVideoPlayer.SetSourceFromUriAsync(new Uri(hlsManifestUrl), autoPlay);
-                return;
+                System.Diagnostics.Debug.WriteLine("[Video] Archived broadcast uses HLS before finite MP4 sources");
+                if (await TryBindHlsSourceAsync(bindingVideoId, hlsManifestUrl, rootMediaUserAgent, sourceQualityTag, autoPlay)) return;
+                if (!IsStillCurrentVideo(bindingVideoId) || bindingGeneration != _hlsRecoveryGeneration) return;
+                hlsManifestUrl = string.Empty;
             }
 
-            // Auto follows youtube-ios: best H.264 video-only up to deviceMaxHeight plus AAC
-            // audio-only. An ordinary 360p choice may use itag 18, but an explicitly selected
-            // audio track must stay on the demuxed path so the choice actually takes effect.
-            if (!string.IsNullOrWhiteSpace(effectiveQualityTag))
-            {
-                System.Diagnostics.Debug.WriteLine("[Video] Effective requested quality before source selection: " + effectiveQualityTag + "p");
-            }
-            if (ShouldUseItag18AsMainVideo(effectiveQualityTag))
-            {
-                var itag18 = await GetAndroidItag18FormatAsync(currentVideoId);
-                if (itag18 != null && !string.IsNullOrWhiteSpace(itag18.Url))
-                {
-                    System.Diagnostics.Debug.WriteLine(
-                        "[Video][PlaybackURL] MUXED mode="
-                        + (string.IsNullOrWhiteSpace(effectiveQualityTag) ? "Auto" : effectiveQualityTag + "p")
-                        + " actual=" + itag18.QualityTier + "p"
-                        + " dimensions=" + itag18.Width + "x" + itag18.Height
-                        + " itag=" + itag18.Itag
-                        + " mime=" + itag18.MimeType
-                        + " URL=" + itag18.Url
-                    );
-
-                    SetVideoPlayerAspectRatioFromFormat(itag18);
-                    _readyHeight = itag18.QualityTier;
-                    if (CustomVideoPlayer != null)
-                    {
-                        await CustomVideoPlayer.SetSourceFromUriAsync(new Uri(itag18.Url), autoPlay);
-                    }
-                    return;
-                }
-
-                System.Diagnostics.Debug.WriteLine(
-                    "[Video] WARNING: itag18 was requested but not found; falling back to HLS/progressive selection"
-                );
-            }
-
-            // Requested quality is above 360p. Windows 10 Mobile's AdaptiveMediaSource cannot
-            // render YouTube's on-demand DASH, so we demux the adaptive fMP4 streams ourselves
-            // and feed samples to a MediaStreamSource, then fall back to HLS / muxed.
-
+            // Troubadour tries ready H.264 + AAC before muxed files and IOS HLS.
+            // Auto selects by screen size without a blocking CDN bandwidth probe.
             // 1) On-the-fly DASH demux: H.264 video-only + AAC audio-only fed into a
             //    MediaStreamSource that MediaPlayer decodes and A/V-syncs. This is the real
             //    >360p (up to 1080p) path on Windows 10 Mobile.
-            if (!ShouldUseItag18AsMainVideo(effectiveQualityTag) && CustomVideoPlayer != null)
+            if (CustomVideoPlayer != null && !usesLiveTransport)
             {
                 var demuxVideo = await GetAndroidH264VideoOnlyFormatAsync(
-                    currentVideoId,
+                    bindingVideoId,
                     sourceQualityTag,
                     isAutomaticQuality);
-                var demuxAudio = await GetAndroidAudioOnlyFormatAsync(currentVideoId, _selectedAudioTrackId);
+                if (!IsStillCurrentVideo(bindingVideoId) || bindingGeneration != _hlsRecoveryGeneration) return;
+                var demuxAudio = await GetAndroidAudioOnlyFormatAsync(bindingVideoId, _selectedAudioTrackId);
+                if (!IsStillCurrentVideo(bindingVideoId) || bindingGeneration != _hlsRecoveryGeneration) return;
                 if (demuxVideo != null && demuxAudio != null
-                    && !string.IsNullOrWhiteSpace(demuxVideo.Url) && !string.IsNullOrWhiteSpace(demuxAudio.Url))
+                    && !string.IsNullOrWhiteSpace(demuxVideo.Url) && !string.IsNullOrWhiteSpace(demuxAudio.Url)
+                    && !PlaybackResolver.IsLiveTransportUrl(demuxVideo.Url) && !PlaybackResolver.IsLiveTransportUrl(demuxAudio.Url))
                 {
                     LogSelectedPlaybackUrls(effectiveQualityTag, sourceQualityTag, demuxVideo, demuxAudio);
                     try
@@ -216,6 +231,7 @@ namespace YouTube
                             demuxAudio,
                             _playbackMediaUserAgent
                         );
+                        if (!IsStillCurrentVideo(bindingVideoId) || bindingGeneration != _hlsRecoveryGeneration) return;
                         if (mss != null)
                         {
                             _currentH264VideoOnlyItag = demuxVideo.Itag;
@@ -245,7 +261,36 @@ namespace YouTube
                 }
             }
 
-            // 2) HLS manifest (adaptive, already multiplexes audio). Rare in the SABR era
+            // 2) Best muxed progressive <= requested (single file, no
+            //    separate audio, no crash). Tops out at whatever muxed YouTube offers
+            //    (usually 720p itag22, else 360p itag18) — the reliable fallback.
+            var muxed = await GetAndroidBestMuxedFormatAsync(bindingVideoId, sourceQualityTag);
+            if (!IsStillCurrentVideo(bindingVideoId) || bindingGeneration != _hlsRecoveryGeneration) return;
+            if (muxed == null || string.IsNullOrWhiteSpace(muxed.Url))
+            {
+                muxed = selected;
+            }
+
+            if (muxed != null && !string.IsNullOrWhiteSpace(muxed.Url) && !PlaybackResolver.IsLiveTransportUrl(muxed.Url))
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    $"[Video][PlaybackURL] MUXED mode={(string.IsNullOrWhiteSpace(effectiveQualityTag) ? "Auto" : effectiveQualityTag + "p")} actual={muxed.QualityTier}p dimensions={muxed.Width}x{muxed.Height} itag={muxed.Itag} mime={muxed.MimeType} URL={muxed.Url}"
+                );
+                SetVideoPlayerAspectRatioFromFormat(muxed);
+                _readyHeight = muxed.QualityTier;
+                if (CustomVideoPlayer != null)
+                {
+                    CustomVideoPlayer.MediaRequestUserAgent = string.IsNullOrWhiteSpace(muxed.MediaUserAgent)
+                        ? _playbackMediaUserAgent : muxed.MediaUserAgent;
+                    if (!await CustomVideoPlayer.TrySetSourceFromUriAsync(new Uri(muxed.Url), autoPlay, sourceQualityTag))
+                    {
+                        System.Diagnostics.Debug.WriteLine("[Video] Progressive source rejected; trying HLS");
+                    }
+                    else return;
+                }
+            }
+
+            // 3) HLS manifest (adaptive, already multiplexes audio). Rare in the SABR era
             //    but native on Windows Phone when present.
             if (!string.IsNullOrWhiteSpace(hlsManifestUrl) && CustomVideoPlayer != null)
             {
@@ -255,30 +300,9 @@ namespace YouTube
                     + (string.IsNullOrWhiteSpace(effectiveQualityTag) ? "Auto" : effectiveQualityTag + "p")
                     + " URL=" + hlsManifestUrl
                 );
-                await CustomVideoPlayer.SetSourceFromUriAsync(new Uri(hlsManifestUrl), autoPlay);
-                return;
-            }
-
-            // 3) Best muxed progressive <= requested (single file, always renders, no
-            //    separate audio, no crash). Tops out at whatever muxed YouTube offers
-            //    (usually 720p itag22, else 360p itag18) — the reliable fallback.
-            var muxed = await GetAndroidBestMuxedFormatAsync(currentVideoId, sourceQualityTag);
-            if (muxed == null || string.IsNullOrWhiteSpace(muxed.Url))
-            {
-                muxed = selected;
-            }
-
-            if (muxed != null && !string.IsNullOrWhiteSpace(muxed.Url))
-            {
-                System.Diagnostics.Debug.WriteLine(
-                    $"[Video][PlaybackURL] MUXED mode={(string.IsNullOrWhiteSpace(effectiveQualityTag) ? "Auto" : effectiveQualityTag + "p")} actual={muxed.QualityTier}p dimensions={muxed.Width}x{muxed.Height} itag={muxed.Itag} mime={muxed.MimeType} URL={muxed.Url}"
-                );
-                SetVideoPlayerAspectRatioFromFormat(muxed);
-                _readyHeight = muxed.QualityTier;
-                if (CustomVideoPlayer != null)
-                {
-                    await CustomVideoPlayer.SetSourceFromUriAsync(new Uri(muxed.Url), autoPlay);
-                }
+                if (!await TryBindHlsSourceAsync(bindingVideoId, hlsManifestUrl, rootMediaUserAgent, sourceQualityTag, autoPlay)
+                    && IsStillCurrentVideo(bindingVideoId) && bindingGeneration == _hlsRecoveryGeneration)
+                    await BindPlayerSourceAsync(rootObject, autoPlay);
                 return;
             }
 
@@ -293,6 +317,7 @@ namespace YouTube
             {
                 CustomVideoPlayer.EndSourceLoading();
             }
+            throw new InvalidOperationException(Localization.GetString("PlaybackFailed"));
         }
 
         private async Task<string> GetNativeDashManifestUrlAsync(string videoId, JsonObject primaryRoot)
@@ -351,6 +376,7 @@ namespace YouTube
                 var androidRoot = JsonValue.Parse(androidJson).GetObject();
                 var androidFormats = new List<PlayerFormatModel>();
                 CollectFormatsFromStreamingData(androidRoot, androidFormats);
+                foreach (var format in androidFormats) format.MediaUserAgent = _playbackMediaUserAgent;
                 return SelectMuxedFormatForRequestedHeight(androidFormats, requestedQualityTag);
             }
             catch (Exception ex)
@@ -441,6 +467,16 @@ namespace YouTube
 
             try
             {
+                if (IsLivePage)
+                {
+                    var liveGeneration = _hlsRecoveryGeneration;
+                    var liveOwner = PlaybackResolver.AccountKey;
+                    if (stopBeforeLoad && CustomVideoPlayer != null) CustomVideoPlayer.Stop();
+                    var freshLiveRoot = await PlaybackResolver.GetLivePlayerAsync(reloadVideoId);
+                    if (IsStillCurrentVideo(reloadVideoId) && liveGeneration == _hlsRecoveryGeneration && liveOwner == PlaybackResolver.AccountKey)
+                        await BindLivePlaybackAsync(freshLiveRoot ?? _currentLiveRoot, true, GetEffectiveVideoQualityTag());
+                    return;
+                }
                 if (stopBeforeLoad && CustomVideoPlayer != null)
                 {
                     CustomVideoPlayer.Stop();
@@ -531,6 +567,7 @@ namespace YouTube
                 var androidRoot = JsonValue.Parse(androidPlayerJson).GetObject();
                 var androidFormats = new List<PlayerFormatModel>();
                 CollectFormatsFromStreamingData(androidRoot, androidFormats);
+                foreach (var format in androidFormats) format.MediaUserAgent = _playbackMediaUserAgent;
                 return SelectItag18ProgressiveFormat(androidFormats);
             }
             catch (Exception ex)
@@ -561,13 +598,8 @@ namespace YouTube
                 var androidRoot = JsonValue.Parse(androidPlayerJson).GetObject();
                 var androidFormats = new List<PlayerFormatModel>();
                 CollectFormatsFromStreamingData(androidRoot, androidFormats);
-                if (useAutomaticNetworkSelection)
-                {
-                    return await SelectAutomaticH264VideoOnlyFormatAsync(
-                        androidFormats,
-                        requestedQualityTag,
-                        _excludedH264VideoOnlyItags);
-                }
+                foreach (var format in androidFormats)
+                    format.MediaUserAgent = PlaybackResolver.MediaUserAgent(androidRoot);
                 return SelectPreferredH264VideoOnlyFormat(androidFormats, requestedQualityTag, _excludedH264VideoOnlyItags);
             }
             catch (Exception ex)
@@ -820,32 +852,32 @@ namespace YouTube
                     return string.Empty;
                 }
 
-                var playerScript = await GetPlayerScriptAsync(playerScriptUrl);
-                if (string.IsNullOrWhiteSpace(playerScript))
+                var build = Regex.Match(playerScriptUrl, @"/s/player/(?<id>[0-9a-fA-F]+)/");
+                var tvScriptUrl = build.Success ? "https://www.youtube.com/s/player/"
+                    + build.Groups["id"].Value + "/tv-player-ias.vflset/tv-player-ias.js" : playerScriptUrl;
+                // Same order as YTNSig.obtainScript: lighter TV script, then the
+                // ordinary script from the same player revision if TV fails.
+                foreach (var scriptUrl in new[] { tvScriptUrl, playerScriptUrl })
                 {
-                    return string.Empty;
+                    if (!IsStillCurrentVideo(videoId)) return string.Empty;
+                    string fixedN;
+                    try
+                    {
+                        var playerScript = await GetPlayerScriptAsync(scriptUrl);
+                        if (!IsStillCurrentVideo(videoId)) return string.Empty;
+                        if (string.IsNullOrWhiteSpace(playerScript)) continue;
+                        fixedN = await _playerNSig.TransformAsync(VideoRoot, scriptUrl, playerScript, originalN);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[NSig] Player script unavailable: " + ex.Message);
+                        continue;
+                    }
+                    if (string.IsNullOrWhiteSpace(fixedN) || fixedN == originalN) continue;
+                    System.Diagnostics.Debug.WriteLine("[NSig] n parameter transformed");
+                    return ReplaceQueryParameter(streamUrl, "n", fixedN);
                 }
-
-                var nFunctionExpression = ExtractNFunctionExpression(playerScript);
-                if (string.IsNullOrWhiteSpace(nFunctionExpression))
-                {
-                    System.Diagnostics.Debug.WriteLine("[Video] Could not extract n function name from player script");
-                    return string.Empty;
-                }
-
-                var fixedN = await ExecuteNFunctionInWebViewAsync(playerScript, nFunctionExpression, originalN);
-                if (string.IsNullOrWhiteSpace(fixedN) || string.Equals(fixedN, originalN, StringComparison.Ordinal))
-                {
-                    return string.Empty;
-                }
-
-                System.Diagnostics.Debug.WriteLine(
-                    "[Video] Fixed n parameter using player script: "
-                    + originalN
-                    + " -> "
-                    + fixedN
-                );
-                return ReplaceQueryParameter(streamUrl, "n", fixedN);
+                return string.Empty;
             }
             catch (Exception ex)
             {

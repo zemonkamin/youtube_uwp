@@ -9,17 +9,21 @@
     Background="{ThemeResource AppBackgroundBrush}">
 
     <Grid Background="{ThemeResource AppBackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="SideTabbarColumn" Width="0" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Grid.RowSpan="2">
+        <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
             <ScrollViewer x:Name="HistoryScroll"
                           VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled"
                           ViewChanged="HistoryScroll_ViewChanged">
-                <StackPanel Padding="16,16,16,72">
+                <StackPanel local:SideTabbarController.BottomInset="52" Padding="16,16,16,72">
                     <TextBlock x:Uid="Loc_History_Text"
                                Foreground="{ThemeResource AppPrimaryTextBrush}"
                                FontSize="28"
@@ -206,6 +210,6 @@
             </Grid>
         </Grid>
 
-        <local:Tabbar x:Name="tabbar" Grid.Row="1" Canvas.ZIndex="20"/>
+        <local:Tabbar Grid.Column="0" Grid.ColumnSpan="2" x:Name="tabbar" Grid.Row="1" Canvas.ZIndex="20"/>
     </Grid>
 </Page>

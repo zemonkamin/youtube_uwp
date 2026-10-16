@@ -1050,4 +1050,91 @@ YouTube API Legacy дэмжлэгтэй.
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Хайлтын мөрийг голд харуулах</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Мини тоглуулагч үргэлж дээр</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Мини тоглуулагчийг тусдаа, үргэлж дээр байрлах цонхонд нээх</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Windows 10 Mobile дээр боломжгүй</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Зөвхөн Visual Studio 2017 build-д боломжтой (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Windows 10 хувилбар 1703 эсвэл түүнээс шинэ шаардлагатай</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Хөтөч дээр нэвтрэх</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Тоглуулахад энэ бүртгэлийг ашиглах</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Нэвтэрсэн · Гарах</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Google-ийн хуудсанд нэвтэрч, YouTube рүү буцан OK дарна уу.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Эхлээд Google-д нэвтрэхийг дуусгана уу.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Нэвтрэхийг дуусгаж чадсангүй. Дахин оролдоно уу.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Сэтгэгдэл нэмэх...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Илгээх</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Сэтгэгдлийг илгээж чадсангүй.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube энэ видеонд сэтгэгдэл бичихийг зөвшөөрөөгүй.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Сэтгэгдэл бичихийн тулд хөтөч дээр нэвтэрнэ үү.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Та</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Шууд нэвтрүүлгийн чат</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Шилдэг чат</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Бүх зурвас</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Одоогоор зурвас алга</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Чатад дахин холбогдож байна…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Нэвтрүүлгийг хүлээж байна…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Нэвтрүүлэг дууссан</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Шууд нэвтрүүлэгт очих</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Таалагдаагүй үнэлгээний тоог харуулах</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike-ийн тооцоолол</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Табын мөрийг зүүн талд</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Windows компьютер болон Continuum-д хэвтээ горимд</value>
+  </data>
 </root>

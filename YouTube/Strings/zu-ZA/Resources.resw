@@ -1050,4 +1050,91 @@ Inguqulo {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Bonisa ibha yokusesha phakathi</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Ukungena esipheqululini</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Sebenzisa le akhawunti ukudlala</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Usungenile · Phuma</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Ngena ekhasini le-Google, buyela ku-YouTube bese ucindezela OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Qeda ukungena ku-Google kuqala.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Ukungena akukwazanga ukuqedwa. Zama futhi.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Engeza amazwana...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Thumela</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Amazwana awakwazanga ukuthunyelwa.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>I-YouTube ayivumeli amazwana kule vidiyo.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Ngena esipheqululini ukuze uthumele amazwana.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Wena</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Ingxoxo ebukhoma</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Ingxoxo ephezulu</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Yonke imiyalezo</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Ayikho imiyalezo okwamanje</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Ixhuma kabusha engxoxweni…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Ilinde ukusakazwa…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Ukusakaza kuphelile</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Iya ekusakazeni bukhoma</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Bonisa inani lokungathandi</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Isilinganiso esivela ku-Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Ibha yamathebhu kwesokunxele</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Uma isikrini sivundlile ku-Windows yekhompyutha ne-Continuum</value>
+  </data>
 </root>

@@ -231,6 +231,13 @@
                        MaxLines="3"/>
         </Border>
 
+        <!-- The separate desktop window owns the video surface while the main
+             player stays in place with its usual controls over a black screen. -->
+        <Border x:Name="DesktopMiniPlayerBlackout"
+                Background="Black"
+                Visibility="Collapsed"
+                IsHitTestVisible="False"/>
+
         <!-- Skip overlay for fullscreen mode -->
         <Grid x:Name="SkipOverlayFullscreen" Visibility="Collapsed" Background="Transparent" IsHitTestVisible="False">
             <Border x:Name="SkipOverlayBorderFullscreen" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Transparent" Padding="20" CornerRadius="8" Margin="20,0,0,0">
@@ -387,6 +394,10 @@
                               Margin="16,0,8,0"
                               Background="#80000000"
                               CornerRadius="15">
+                        <StackPanel Orientation="Horizontal">
+                        <Button x:Name="LiveEdgeButton" Visibility="Collapsed" Click="LiveEdgeButton_Click"
+                                Background="Transparent" Foreground="White" BorderThickness="0" Padding="10,5"
+                                FontSize="14" FontWeight="SemiBold"/>
                         <TextBlock x:Name="TimeDisplayText"
                                    Text="0:00 / 0:00"
                                    Foreground="White"
@@ -395,27 +406,45 @@
                                    TextWrapping="NoWrap"
                                    TextTrimming="CharacterEllipsis"
                                    Margin="10,5"/>
+                        </StackPanel>
                     </Border>
                     
-                    <!-- Fullscreen button -->
-                    <Button x:Name="FullscreenButton"
-                            Grid.Column="1"
-                            Click="FullscreenButton_Click"
-                            PointerPressed="ControlButton_PointerPressed"
-                            Style="{StaticResource ControlButtonStyle}"
+                    <!-- Desktop PiP and fullscreen share one control surface. -->
+                    <Border Grid.Column="1"
                             Margin="0,0,16,0"
-                            Width="40"
-                            Height="40"
+                            Background="#66000000"
+                            CornerRadius="20"
                             HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            IsDoubleTapEnabled="False">
-                        <Button.Content>
-                            <Image x:Name="FullscreenIcon" 
-                                   local:ThemeAsset.Path="Assets/Dark/player/fullscreen.png" 
-                                   Width="20" 
-                                   Height="20"/>
-                        </Button.Content>
-                    </Button>
+                            VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="DesktopMiniPlayerButton"
+                                    Visibility="Collapsed"
+                                    Click="DesktopMiniPlayerButton_Click"
+                                    PointerPressed="ControlButton_PointerPressed"
+                                    Style="{StaticResource ControlButtonStyle}"
+                                    Background="Transparent"
+                                    Width="40" Height="40"
+                                    IsDoubleTapEnabled="False">
+                                <Image Width="20" Height="20"
+                                       local:ThemeAsset.Path="Assets/player/mini-player.png"/>
+                            </Button>
+                            <Button x:Name="FullscreenButton"
+                                    Click="FullscreenButton_Click"
+                                    PointerPressed="ControlButton_PointerPressed"
+                                    Style="{StaticResource ControlButtonStyle}"
+                                    Background="Transparent"
+                                    Width="40" Height="40"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    IsDoubleTapEnabled="False">
+                                <Button.Content>
+                                    <Image x:Name="FullscreenIcon"
+                                           local:ThemeAsset.Path="Assets/Dark/player/fullscreen.png"
+                                           Width="20" Height="20"/>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                    </Border>
                 </Grid>
                 
                 <!-- Bottom row: Progress slider on full width -->
@@ -440,7 +469,8 @@
                             HorizontalAlignment="Stretch"
                             IsHitTestVisible="False"/>
 
-                    <!-- Transparent Slider keeps the red thumb/value math. The visible track is SegmentedProgressBar. -->
+                    <!-- Regular videos draw their chapter track in SegmentedProgressBar.
+                         Live playback enables this Slider's plain track and thumb. -->
                     <Slider x:Name="ProgressSlider"
                             Minimum="0"
                             Maximum="100"

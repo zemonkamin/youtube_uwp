@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -132,7 +132,7 @@ namespace YouTube
 
         // Exact screen-tier part of youtube-ios YTSabr.tierForScreen:. UIKit passes the
         // physical short edge (points * scale), not the current video rectangle.
-        private static int GetAutomaticScreenQualityCap()
+        internal static int GetAutomaticScreenQualityCap()
         {
             var tiers = new[] { 144, 240, 360, 480, 720, 1080 };
             double scale = 1.0;
@@ -451,55 +451,51 @@ namespace YouTube
 
         private async Task<string> GetPlayerScriptUrlAsync(string videoId)
         {
-            if (string.IsNullOrWhiteSpace(videoId))
+            if (string.IsNullOrWhiteSpace(videoId)) return string.Empty;
+            lock (_playerScriptGate)
             {
-                return string.Empty;
+                if (!string.IsNullOrEmpty(_discoveredPlayerScriptUrl)
+                    && DateTime.UtcNow - _playerScriptDiscoveredAt < TimeSpan.FromMinutes(5))
+                    return _discoveredPlayerScriptUrl;
             }
-
-            var watchUrl = "https://www.youtube.com/watch?v=" + Uri.EscapeDataString(videoId);
-            using (var request = new HttpRequestMessage(HttpMethod.Get, watchUrl))
+            // YTPlayerJs discovers the player revision on /tv. It is public and
+            // independent of the selected account; the watch page is a fallback.
+            var pages = new[] { "https://www.youtube.com/tv",
+                "https://www.youtube.com/watch?v=" + Uri.EscapeDataString(videoId) };
+            foreach (var page in pages)
             {
-                request.Headers.TryAddWithoutValidation(
-                    "User-Agent",
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"
-                );
-                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
-
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-                response.EnsureSuccessStatusCode();
-                var html = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                var match = Regex.Match(
-                    html,
-                    @"(?<path>(?:https?:)?(?:\\?/\\?/www\.youtube\.com)?\\?/s\\?/player\\?/[0-9a-fA-F]+\\?/[^""']+?base\.js)"
-                );
-                if (!match.Success)
+                try
                 {
-                    match = Regex.Match(
-                        html,
-                        @"(?<path>/s/player/[0-9a-fA-F]+/[^""'\\]+base\.js)"
-                    );
+                    using (var request = new HttpRequestMessage(HttpMethod.Get, page))
+                    using (var timeout = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(10)))
+                    {
+                        request.Headers.TryAddWithoutValidation("User-Agent", page == pages[0]
+                            ? "Mozilla/5.0 (SMART-TV; LINUX; Tizen 5.0) AppleWebKit/537.36 (KHTML, like Gecko) Version/5.0 TV Safari/537.36"
+                            : PlaybackResolver.WebUserAgent);
+                        request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
+                        using (var response = await httpClient.SendAsync(request, timeout.Token).ConfigureAwait(false))
+                        {
+                            if (!response.IsSuccessStatusCode) continue;
+                            var html = (await response.Content.ReadAsStringAsync().ConfigureAwait(false)).Replace("\\/", "/");
+                            var match = Regex.Match(html, @"/s/player/(?<id>[0-9a-fA-F]+)/[^""'<>\\\s]{1,180}\.js");
+                            if (!match.Success) continue;
+                            var scriptUrl = "https://www.youtube.com/s/player/" + match.Groups["id"].Value
+                                + "/player_ias.vflset/en_US/base.js";
+                            lock (_playerScriptGate)
+                            {
+                                _discoveredPlayerScriptUrl = scriptUrl;
+                                _playerScriptDiscoveredAt = DateTime.UtcNow;
+                            }
+                            return scriptUrl;
+                        }
+                    }
                 }
-
-                if (!match.Success)
+                catch (Exception ex)
                 {
-                    return string.Empty;
+                    System.Diagnostics.Debug.WriteLine("[NSig] Player revision lookup failed: " + ex.Message);
                 }
-
-                var playerPath = match.Groups["path"].Value.Replace("\\/", "/");
-                if (playerPath.StartsWith("//", StringComparison.Ordinal))
-                {
-                    return "https:" + playerPath;
-                }
-
-                if (playerPath.StartsWith("http://", StringComparison.OrdinalIgnoreCase)
-                    || playerPath.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-                {
-                    return playerPath;
-                }
-
-                return "https://www.youtube.com" + playerPath;
             }
+            return string.Empty;
         }
 
         private async Task<string> GetPlayerScriptAsync(string playerScriptUrl)
@@ -540,7 +536,7 @@ namespace YouTube
             {
                 lock (_playerScriptGate)
                 {
-                    _playerScriptRequestTask = null;
+                    if (ReferenceEquals(_playerScriptRequestTask, requestTask)) _playerScriptRequestTask = null;
                 }
             }
 
@@ -561,116 +557,14 @@ namespace YouTube
                     "User-Agent",
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"
                 );
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-                response.EnsureSuccessStatusCode();
-                return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                using (var response = await httpClient.SendAsync(request).ConfigureAwait(false))
+                {
+                    response.EnsureSuccessStatusCode();
+                    return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                }
             }
         }
 
-        private async Task<string> ExecuteNFunctionInWebViewAsync(
-            string playerScript,
-            string nFunctionExpression,
-            string nValue
-        )
-        {
-            var tcs = new TaskCompletionSource<string>();
-            var dispatcher = CoreApplication.MainView.CoreWindow.Dispatcher;
-
-            await dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
-            {
-                WebView webView = null;
-                try
-                {
-                    webView = new WebView();
-                    var ready = new TaskCompletionSource<bool>();
-                    Windows.Foundation.TypedEventHandler<WebView, WebViewNavigationCompletedEventArgs> handler = null;
-                    handler = (sender, args) =>
-                    {
-                        webView.NavigationCompleted -= handler;
-                        ready.TrySetResult(true);
-                    };
-                    webView.NavigationCompleted += handler;
-                    webView.NavigateToString("<html><head><meta charset=\"utf-8\" /></head><body></body></html>");
-                    await ready.Task;
-
-                    var scriptToEvaluate = BuildPlayerScriptWithNExport(playerScript, nFunctionExpression);
-                    await webView.InvokeScriptAsync("eval", new[] { scriptToEvaluate });
-
-                    var callScript = "window.__yt_nsig(" + ToJavaScriptStringLiteral(nValue) + ");";
-                    var result = await webView.InvokeScriptAsync("eval", new[] { callScript });
-                    tcs.TrySetResult(result);
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine("[Video] WebView n function failed: " + ex.Message);
-                    tcs.TrySetResult(string.Empty);
-                }
-            });
-
-            return await tcs.Task;
-        }
-
-        private static string BuildPlayerScriptWithNExport(string playerScript, string nFunctionExpression)
-        {
-            var exportScript =
-                ";window.__yt_nsig=function(n){return "
-                + nFunctionExpression
-                + "(n);};";
-            var closingIndex = playerScript.LastIndexOf(";})(_yt_player);", StringComparison.Ordinal);
-            if (closingIndex >= 0)
-            {
-                return playerScript.Insert(closingIndex, exportScript);
-            }
-
-            closingIndex = playerScript.LastIndexOf("})(_yt_player);", StringComparison.Ordinal);
-            if (closingIndex >= 0)
-            {
-                return playerScript.Insert(closingIndex, exportScript);
-            }
-
-            return playerScript + exportScript;
-        }
-
-        private static string ExtractNFunctionExpression(string playerScript)
-        {
-            if (string.IsNullOrWhiteSpace(playerScript))
-            {
-                return string.Empty;
-            }
-
-            var patterns = new[]
-            {
-                @"\.get\(""n""\)\)&&\([a-zA-Z_$][\w$]*=(?<name>[a-zA-Z_$][\w$]*)(?:\[(?<idx>\d+)\])?\([a-zA-Z_$][\w$]*\)",
-                @"[a-zA-Z_$][\w$]*=String\.fromCharCode\(110\),[a-zA-Z_$][\w$]*=[a-zA-Z_$][\w$]*\.get\([a-zA-Z_$][\w$]*\)\)&&\([a-zA-Z_$][\w$]*=(?<name>[a-zA-Z_$][\w$]*)(?:\[(?<idx>\d+)\])?\([a-zA-Z_$][\w$]*\)",
-                @"\b(?<var>[a-zA-Z_$][\w$]*)&&\(\k<var>=(?<name>[a-zA-Z_$][\w$]*)(?:\[(?<idx>\d+)\])?\(\k<var>\)",
-                @"(?<name>[a-zA-Z_$][\w$]*)=function\([a-zA-Z_$][\w$]*\)\{(?=[\s\S]{0,1200}\.split\(""""\))(?=[\s\S]{0,2400}\.join\(""""\))"
-            };
-
-            for (int i = 0; i < patterns.Length; i++)
-            {
-                var match = Regex.Match(playerScript, patterns[i]);
-                if (!match.Success)
-                {
-                    continue;
-                }
-
-                var name = match.Groups["name"].Value;
-                if (string.IsNullOrWhiteSpace(name))
-                {
-                    continue;
-                }
-
-                var indexGroup = match.Groups["idx"];
-                if (indexGroup != null && indexGroup.Success && !string.IsNullOrWhiteSpace(indexGroup.Value))
-                {
-                    return name + "[" + indexGroup.Value + "]";
-                }
-
-                return name;
-            }
-
-            return string.Empty;
-        }
 
         private async Task<PlayerFormatModel> GetAndroidSingleMediaSourceForMobileAsync(string videoId)
         {

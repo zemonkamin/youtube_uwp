@@ -26,13 +26,17 @@
     </Page.Resources>
 
     <Grid Background="{ThemeResource AppBackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="SideTabbarColumn" Width="0" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="64"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="52"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" Background="{ThemeResource AppBackgroundBrush}">
+        <Grid Canvas.ZIndex="30" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0" Background="{ThemeResource AppBackgroundBrush}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -58,7 +62,7 @@
             </Button>
         </Grid>
 
-        <ScrollViewer x:Name="MainScrollViewer"
+        <ScrollViewer Grid.Column="1" x:Name="MainScrollViewer"
                       Grid.Row="1"
                       Grid.RowSpan="2"
                       VerticalScrollMode="Auto"
@@ -67,10 +71,10 @@
                       HorizontalScrollBarVisibility="Disabled"
                       Visibility="Collapsed">
             <StackPanel x:Name="NotificationsPanel"
-                        Padding="0,8,0,68"/>
+                        local:SideTabbarController.BottomInset="52" Padding="0,8,0,68"/>
         </ScrollViewer>
 
-        <StackPanel x:Name="EmptyPanel"
+        <StackPanel Grid.Column="1" x:Name="EmptyPanel"
                     Grid.Row="1"
                     Visibility="Collapsed"
                     HorizontalAlignment="Center"
@@ -89,7 +93,7 @@
                        Margin="0,8,0,0"/>
         </StackPanel>
 
-        <Grid x:Name="LoadingGrid"
+        <Grid Grid.Column="1" x:Name="LoadingGrid"
               Grid.Row="1"
               Visibility="Collapsed">
             <local:AndroidLoadingRing x:Name="LoadingRing"
@@ -100,6 +104,6 @@
                                       VerticalAlignment="Center"/>
         </Grid>
 
-        <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20"/>
+        <local:Tabbar Grid.Column="0" Grid.ColumnSpan="2" x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20"/>
     </Grid>
 </Page>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -42,6 +42,8 @@ namespace YouTube
         private bool _isAnimating;
         // Bumped by every ShowShortAsync call so a slow load can tell it has been superseded.
         private int _showGeneration;
+        private bool _playbackActive;
+        private readonly Dictionary<string, int> _playbackRetries = new Dictionary<string, int>(StringComparer.Ordinal);
         // Serializes the stream-loading half of a transition. Input stays free; this only stops
         // two swipes in quick succession from driving the media player concurrently.
         private readonly SemaphoreSlim _loadGate = new SemaphoreSlim(1, 1);
@@ -65,6 +67,7 @@ namespace YouTube
         private readonly Dictionary<string, bool> _commentsAuthenticatedMwebContext = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, string> _descriptionCache = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         private string _commentsLoadedVideoId = string.Empty;
+        private CommentDraft _shortCommentDraft;
         private bool _commentsIsLoading;
         private string _commentsLoadingVideoId = string.Empty;
         private int _commentsLoadGeneration;
@@ -95,7 +98,7 @@ namespace YouTube
         private const string InnertubeApiKey = YouTubeApiConfig.ApiKey;
         private const string InnertubeTvClientName = "TVHTML5";
         private const string InnertubeTvClientVersion = "7.20260429.11.00";
-        private const string InnertubeTvClientHeaderName = "85";
+        private const string InnertubeTvClientHeaderName = YouTubeApiConfig.TvClientHeaderName;
         private const string InnertubeMwebClientName = "MWEB";
         private const string InnertubeMwebClientVersion = "2.20251222.01.00";
         private const string InnertubeMwebClientHeaderName = "2";
@@ -116,12 +119,14 @@ namespace YouTube
             if (ShortsPlayer != null)
             {
                 ShortsPlayer.PlaybackStarted += ShortsPlayer_PlaybackStarted;
+                ShortsPlayer.PlaybackFailed += ShortsPlayer_PlaybackFailed;
             }
         }
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            _playbackActive = true;
             System.Diagnostics.Debug.WriteLine("[Shorts] OnNavigatedTo entered");
 
             if (tabbar != null)
@@ -170,6 +175,7 @@ namespace YouTube
         {
             try
             {
+                await WebAccountSession.InitializeAsync();
                 ShowMessage(string.Empty);
                 SetLoading(true);
 
@@ -191,56 +197,15 @@ namespace YouTube
                         RatingState = "none"
                     };
 
-                    // A direct-id Short does not come from the Shorts feed, so resolve its
-                    // identity from /player first. Unlike the generic /next walker, videoDetails
-                    // is scoped to this exact video id and cannot accidentally pick text from a
-                    // recommendation, engagement panel or another renderer.
-                    try
-                    {
-                        var directMetadata = await LoadDirectShortMetadataAsync(initialShortVideoId);
-                        if (directMetadata != null)
-                        {
-                            if (!string.IsNullOrWhiteSpace(directMetadata.Title))
-                            {
-                                seedShort.Title = directMetadata.Title;
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(directMetadata.ChannelName))
-                            {
-                                seedShort.ChannelName = directMetadata.ChannelName;
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(directMetadata.ThumbnailUrl))
-                            {
-                                seedShort.ThumbnailUrl = directMetadata.ThumbnailUrl;
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(directMetadata.ChannelThumbnailUrl))
-                            {
-                                seedShort.ChannelThumbnailUrl = directMetadata.ChannelThumbnailUrl;
-                            }
-
-                            System.Diagnostics.Debug.WriteLine(
-                                "[Shorts] Direct-id exact metadata: title=" + seedShort.Title
-                                + ", channel=" + seedShort.ChannelName
-                                + ", avatar=" + (!string.IsNullOrWhiteSpace(seedShort.ChannelThumbnailUrl)));
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // Metadata is supplementary. Playback by id must still work.
-                        System.Diagnostics.Debug.WriteLine(
-                            "[Shorts] Direct-id exact metadata load failed: " + ex.Message);
-                    }
-
                     _seenVideoIds.Add(seedShort.VideoId);
                     _shorts.Add(seedShort);
                     await ShowShortAsync(0, 0);
+                    var ignoredMetadata = RefreshDirectShortMetadataAsync(seedShort);
 
                     // Fill the rest of the Shorts feed in the background so swiping still works.
-                    // Only try to extend the feed when an account token is available.
+                    // Either the browser session or the device token can supply the feed.
                     Config.LoadUserToken();
-                    if (!string.IsNullOrWhiteSpace(Config.UserToken))
+                    if (WebAccountSession.IsSignedIn || !string.IsNullOrWhiteSpace(Config.UserToken))
                     {
                         var ignored = LoadMoreShortsAsync();
                     }
@@ -248,7 +213,7 @@ namespace YouTube
                 }
 
                 Config.LoadUserToken();
-                if (string.IsNullOrWhiteSpace(Config.UserToken))
+                if (!WebAccountSession.IsSignedIn && string.IsNullOrWhiteSpace(Config.UserToken))
                 {
                     SetLoading(false);
                     ShowMessage(Localization.GetString("SignInWatchShorts"));
@@ -354,6 +319,8 @@ namespace YouTube
             // trip, and the user may well swipe again before it finishes — the generation check
             // makes the late arrival drop its result instead of yanking the screen back.
             var generation = ++_showGeneration;
+            StopShortWatchHistoryReporting();
+            ShortsPlayer.CancelPendingSourceSetup();
             System.Diagnostics.Debug.WriteLine(
                 "[Shorts] Transition #" + generation + " -> index " + index + ", direction " + direction);
 
@@ -467,13 +434,13 @@ namespace YouTube
 
                 // No explicit Stop() here: it tears the source down separately, and assigning the
                 // new source already replaces it. One state change instead of two.
-                if (string.IsNullOrWhiteSpace(item.VideoUrl))
+                if (item.PlaybackAccountKey != PlaybackResolver.AccountKey || string.IsNullOrWhiteSpace(item.PlayerJson))
                 {
                     System.Diagnostics.Debug.WriteLine("[Shorts] Resolving stream for " + item.VideoId);
 
                     // Bounded: this call has no timeout of its own, and a hung request here holds
                     // the load gate, which freezes the whole feed — swipes then do nothing.
-                    var urlTask = Config.GetShortPlaybackUrlAsync(item.VideoId);
+                    var urlTask = Config.ResolveShortPlaybackAsync(item);
                     var finished = await Task.WhenAny(urlTask, Task.Delay(TimeSpan.FromSeconds(10)));
                     if (finished != urlTask)
                     {
@@ -483,7 +450,7 @@ namespace YouTube
                         return;
                     }
 
-                    item.VideoUrl = await urlTask;
+                    await urlTask;
                 }
 
                 if (generation != _showGeneration)
@@ -491,27 +458,18 @@ namespace YouTube
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(item.VideoUrl))
-                {
-                    ShowMessage(Localization.GetString("UnablePlayShortPeriod"));
-                    return;
-                }
-
                 System.Diagnostics.Debug.WriteLine("[Shorts] Handing source to player for " + item.VideoId);
+                UpdateMetadata(item);
 
-                // A pinned (non-Auto) Shorts quality means the demuxer, which reaches past the
-                // muxed-progressive ceiling to 1080p. If the adaptive streams can't be fetched or
-                // built, fall through to the muxed URL so the short still plays.
+                // All account modes use the same response and ready H.264 + AAC first,
+                // exactly like Troubadour. A muxed URL is only the fallback.
                 var demuxed = false;
-                // Demux when a height is pinned (per-short menu override, or the Settings default)
-                // or when a specific audio language is chosen — both need the adaptive path.
-                var useMuxer = _shortsQualityOverride > 0
-                    || (_shortsQualityOverride == 0 && Config.IsShortsMuxerPreferred())
-                    || !string.IsNullOrEmpty(_shortsAudioTrackId);
-                if (useMuxer)
+                ShortsPlayer.MediaRequestUserAgent = item.MediaUserAgent;
+                ShortsPlayer.RequestedQualityHeight = _shortsQualityOverride > 0
+                    ? _shortsQualityOverride : Config.GetShortPlaybackQualityHeight();
                 {
                     var formatsTask = Config.GetShortDemuxFormatsAsync(
-                        item.VideoId, _shortsAudioTrackId, _shortsQualityOverride);
+                        item.VideoId, _shortsAudioTrackId, _shortsQualityOverride, item.PlayerJson);
                     var finished = await Task.WhenAny(formatsTask, Task.Delay(TimeSpan.FromSeconds(10)));
                     if (finished == formatsTask && generation == _showGeneration)
                     {
@@ -531,9 +489,19 @@ namespace YouTube
 
                 if (!demuxed)
                 {
+                    if (string.IsNullOrWhiteSpace(item.VideoUrl))
+                    {
+                        ShowMessage(Localization.GetString("UnablePlayShortPeriod"));
+                        return;
+                    }
                     // Muxed progressive carries a single baked-in track — no language choice.
                     _currentShortAudioTracks = new List<Config.AudioTrackInfo>();
-                    await ShortsPlayer.SetSourceFromUriAsync(new Uri(item.VideoUrl), true);
+                    if (!await ShortsPlayer.SetSourceFromUriAsync(new Uri(item.VideoUrl), true))
+                    {
+                        if (generation == _showGeneration && !QueueShortPlaybackRetry())
+                            ShowMessage(Localization.GetString("UnablePlayShortPeriod"));
+                        return;
+                    }
                 }
                 System.Diagnostics.Debug.WriteLine("[Shorts] Source accepted for " + item.VideoId
                     + (demuxed ? " (demuxed)" : " (progressive)"));
@@ -550,9 +518,7 @@ namespace YouTube
                 // The preview stays up until the player reports a frame on screen; SetSource
                 // returning only means the source was handed over, not that anything is visible.
 
-                // Tell the account this short was watched. Fire-and-forget on purpose: it
-                // makes an authenticated /player call, and awaiting it here would put that
-                // round-trip in the way of the next swipe.
+                // Start history sampling without delaying swipes or counting a failed source.
                 var ignoredHistory = ReportShortWatchHistoryAsync(item.VideoId);
 
                 var ignoredPrefetch = PrefetchNeighbourStreamAsync(generation);
@@ -792,6 +758,38 @@ namespace YouTube
             HideCurrentPreview();
         }
 
+        private void ShortsPlayer_PlaybackFailed(object sender, CustomVideoPlayer.CustomVideoPlayerMediaFailedEventArgs e)
+        {
+            if (e.Error == Windows.Media.Playback.MediaPlayerError.NetworkError
+                || e.Error == Windows.Media.Playback.MediaPlayerError.SourceNotSupported)
+                e.Handled = QueueShortPlaybackRetry();
+        }
+
+        private bool QueueShortPlaybackRetry()
+        {
+            if (!_playbackActive || _currentIndex < 0 || _currentIndex >= _shorts.Count) return false;
+            var item = _shorts[_currentIndex];
+            var owner = PlaybackResolver.AccountKey;
+            var key = owner + "|" + item.VideoId;
+            int retries;
+            _playbackRetries.TryGetValue(key, out retries);
+            // Troubadour bounds fresh-URL recovery to three attempts, including the first.
+            if (retries >= 2) return false;
+            _playbackRetries[key] = retries + 1;
+            PlaybackResolver.Invalidate(item.VideoId);
+            item.VideoUrl = string.Empty;
+            item.PlayerJson = string.Empty;
+            var ignoredRetry = RetryShortPlaybackAsync(_currentIndex, _showGeneration, owner);
+            return true;
+        }
+
+        private async Task RetryShortPlaybackAsync(int index, int generation, string owner)
+        {
+            await Task.Delay(1); // Release the current source-loading gate before retrying.
+            if (_playbackActive && generation == _showGeneration && owner == PlaybackResolver.AccountKey)
+                await ShowShortAsync(index, 0);
+        }
+
         // Parks the neighbouring previews one screen above and below, so a drag reveals them
         // without any further work. Setting the source here also warms the image cache while the
         // current short is still playing.
@@ -820,7 +818,7 @@ namespace YouTube
         // Pulls the first chunk of a stream and throws it away. The bytes themselves are not the
         // point — DNS, TLS and the CDN edge are, and they are what the player pays for at swipe
         // time. Deliberately small: this phone has little memory and the data is discarded.
-        private async Task WarmUpStreamAsync(string url, int generation)
+        private async Task WarmUpStreamAsync(string url, string mediaUserAgent, int generation)
         {
             if (string.IsNullOrWhiteSpace(url))
             {
@@ -832,6 +830,8 @@ namespace YouTube
                 using (var request = new HttpRequestMessage(HttpMethod.Get, url))
                 {
                     request.Headers.Range = new RangeHeaderValue(0, 131071); // first 128 KB
+                    request.Headers.TryAddWithoutValidation("User-Agent", mediaUserAgent);
+                    request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/");
 
                     using (var response = await _httpClient.SendAsync(
                         request, HttpCompletionOption.ResponseHeadersRead))
@@ -887,15 +887,14 @@ namespace YouTube
 
                 // The URL may already be known from an earlier pass — in that case skip straight
                 // to opening the stream rather than returning, which would leave it unprepared.
-                if (string.IsNullOrWhiteSpace(next.VideoUrl))
+                if (next.PlaybackAccountKey != PlaybackResolver.AccountKey || string.IsNullOrWhiteSpace(next.PlayerJson))
                 {
-                    var url = await Config.GetShortPlaybackUrlAsync(next.VideoId);
-                    if (generation != _showGeneration || string.IsNullOrWhiteSpace(url))
+                    await Config.ResolveShortPlaybackAsync(next);
+                    if (generation != _showGeneration || string.IsNullOrWhiteSpace(next.PlayerJson))
                     {
                         return;
                     }
 
-                    next.VideoUrl = url;
                     System.Diagnostics.Debug.WriteLine("[Shorts] Prefetched stream for " + next.VideoId);
                 }
 
@@ -905,7 +904,7 @@ namespace YouTube
                 // which the player would otherwise do from cold at swipe time.
                 if (generation == _showGeneration)
                 {
-                    await WarmUpStreamAsync(next.VideoUrl, generation);
+                    await WarmUpStreamAsync(next.VideoUrl, next.MediaUserAgent, generation);
                 }
             }
             catch (Exception ex)
@@ -925,6 +924,7 @@ namespace YouTube
             ChannelNameText.Text = string.IsNullOrWhiteSpace(item.ChannelName) ? "YouTube" : item.ChannelName;
             YouTube.Discord.DiscordPresenceService.SetShort(item.VideoId, ShortTitleText.Text, ChannelNameText.Text, item.ThumbnailUrl);
             LikeCountText.Text = string.IsNullOrWhiteSpace(item.LikeCount) ? Localization.GetString("Like") : item.LikeCount;
+            RefreshShortDislikeCount();
             if (CommentCountText != null)
             {
                 CommentCountText.Text = string.IsNullOrWhiteSpace(item.CommentCount) ? Localization.GetString("Comments") : item.CommentCount;
@@ -2308,39 +2308,34 @@ namespace YouTube
         private string _lastNextLikeCount = string.Empty;
         private string _lastNextChannelAvatar = string.Empty;
 
-        // Records the short in the account's watch history, once per short. Without this the feed
-        // keeps serving the same videos — the server has no idea they were already seen.
+        // Confirm real watched intervals with the same session reporter as regular videos.
         private string _historyReportedVideoId;
+        private YouTube.Innertube.WatchHistoryReporter _shortWatchHistoryReporter;
 
-        private async Task ReportShortWatchHistoryAsync(string videoId)
+        private Task ReportShortWatchHistoryAsync(string videoId)
         {
-            if (string.IsNullOrWhiteSpace(videoId) || _historyReportedVideoId == videoId)
-            {
-                return;
-            }
-
+            if (string.IsNullOrWhiteSpace(videoId) || (_shortWatchHistoryReporter != null && _historyReportedVideoId == videoId))
+                return Task.FromResult(false);
+            StopShortWatchHistoryReporting();
+            Config.LoadUserToken();
+            if (string.IsNullOrWhiteSpace(Config.UserToken) && !YouTube.Innertube.WebAccountSession.IsSignedIn)
+                return Task.FromResult(false);
             _historyReportedVideoId = videoId;
-
-            try
+            _shortWatchHistoryReporter = new YouTube.Innertube.WatchHistoryReporter(videoId, () =>
             {
-                Config.LoadUserToken();
-                var refreshToken = Config.UserToken;
-                if (string.IsNullOrWhiteSpace(refreshToken))
-                {
-                    return; // Signed out — nothing to attribute the view to.
-                }
+                if (!_playbackActive || _currentIndex < 0 || _currentIndex >= _shorts.Count
+                    || _shorts[_currentIndex].VideoId != videoId || ShortsPlayer == null)
+                    return new YouTube.Innertube.WatchHistorySample();
+                return ShortsPlayer.GetHistorySample();
+            });
+            return Task.FromResult(true);
+        }
 
-                // Length is left at 0 on purpose: Config fills it in from the authenticated
-                // player response it already fetches, and the Shorts player exposes no duration.
-                var reported = await Config.ReportWatchHistoryAsync(videoId, refreshToken, 0, 0);
-                System.Diagnostics.Debug.WriteLine(
-                    "[Shorts] History report for " + videoId + ": " + (reported ? "ok" : "failed")
-                );
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("[Shorts] History report failed: " + ex.Message);
-            }
+        private void StopShortWatchHistoryReporting()
+        {
+            if (_shortWatchHistoryReporter != null) _shortWatchHistoryReporter.Stop();
+            _shortWatchHistoryReporter = null;
+            _historyReportedVideoId = null;
         }
 
         private async Task<string> TryLoadShortRatingFromAuthenticatedNextAsync(string videoId, string accessToken)
@@ -2445,8 +2440,10 @@ namespace YouTube
             // requested id and are much safer than recursively walking /next.
             try
             {
+                await WebAccountSession.InitializeAsync();
                 var payload = BuildPlayerPayload(videoId);
-                var accessToken = await GetTvAccessTokenAsync(false);
+                var accessToken = WebAccountSession.IsSignedIn
+                    ? string.Empty : await GetTvAccessTokenAsync(false);
 
                 playerJson = await LoadDirectShortPlayerJsonAsync(payload, accessToken);
                 if (string.IsNullOrWhiteSpace(playerJson))
@@ -2514,39 +2511,30 @@ namespace YouTube
             return metadata;
         }
 
-        private async Task<string> LoadDirectShortPlayerJsonAsync(string payload, string accessToken)
+        private async Task RefreshDirectShortMetadataAsync(ShortsVideoItem item)
         {
             try
             {
-                using (var request = new HttpRequestMessage(HttpMethod.Post, BuildInnertubeUrl("player")))
-                {
-                    request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
-                    AddInnertubeAuthHeadersForClient(
-                        request,
-                        accessToken,
-                        InnertubeWebClientHeaderName,
-                        InnertubeWebClientVersion,
-                        InnertubeWebUserAgent);
-
-                    using (var response = await _httpClient.SendAsync(request))
-                    {
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            System.Diagnostics.Debug.WriteLine(
-                                "[Shorts] Direct-id /player metadata failed: "
-                                + (int)response.StatusCode + " " + response.ReasonPhrase);
-                            return string.Empty;
-                        }
-
-                        return await response.Content.ReadAsStringAsync();
-                    }
-                }
+                var metadata = await LoadDirectShortMetadataAsync(item.VideoId);
+                if (metadata == null || !_playbackActive) return;
+                if (!string.IsNullOrWhiteSpace(metadata.Title)) item.Title = metadata.Title;
+                if (!string.IsNullOrWhiteSpace(metadata.ChannelName)) item.ChannelName = metadata.ChannelName;
+                if (!string.IsNullOrWhiteSpace(metadata.ThumbnailUrl)) item.ThumbnailUrl = metadata.ThumbnailUrl;
+                if (!string.IsNullOrWhiteSpace(metadata.ChannelThumbnailUrl)) item.ChannelThumbnailUrl = metadata.ChannelThumbnailUrl;
+                if (_currentIndex >= 0 && _currentIndex < _shorts.Count && ReferenceEquals(_shorts[_currentIndex], item))
+                    UpdateMetadata(item);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("[Shorts] Direct-id /player request failed: " + ex.Message);
-                return string.Empty;
+                System.Diagnostics.Debug.WriteLine("[Shorts] Deferred metadata failed: " + ex.GetType().Name);
             }
+        }
+
+        private async Task<string> LoadDirectShortPlayerJsonAsync(string payload, string accessToken)
+        {
+            var videoId = JsonObject.Parse(payload).GetNamedString("videoId", string.Empty);
+            var response = await PlaybackResolver.GetAsync(videoId, true);
+            return response == null ? string.Empty : response.Json;
         }
 
         private static string ExtractLargestThumbnailUrl(JsonObject thumbnailObject)
@@ -2597,8 +2585,10 @@ namespace YouTube
                 return string.Empty;
             }
 
+            await WebAccountSession.InitializeAsync();
             var payload = BuildPlayerPayload(videoId);
-            var accessToken = await GetTvAccessTokenAsync(false);
+            var accessToken = WebAccountSession.IsSignedIn
+                ? string.Empty : await GetTvAccessTokenAsync(false);
             var channelId = await TryLoadShortChannelIdFromPlayerClientAsync(payload, accessToken);
             if (!string.IsNullOrWhiteSpace(channelId))
             {
@@ -2612,6 +2602,13 @@ namespace YouTube
         {
             try
             {
+                await WebAccountSession.InitializeAsync();
+                if (WebAccountSession.IsSignedIn)
+                {
+                    var videoId = JsonObject.Parse(payload).GetNamedString("videoId", string.Empty);
+                    return ExtractChannelIdFromPlayerJson(await Config.GetWebAccountShortPlayerAsync(videoId));
+                }
+
                 using (var request = new HttpRequestMessage(HttpMethod.Post, BuildInnertubeUrl("player")))
                 {
                     request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
@@ -2763,7 +2760,7 @@ namespace YouTube
             return context;
         }
 
-        private static string BuildAuthenticatedNextPayload(string videoId, bool mobileWebClient)
+        private static string BuildAuthenticatedNextPayload(string videoId, bool mobileWebClient, bool useSelectedAccount = true)
         {
             var context = new JsonObject();
             var client = new JsonObject();
@@ -2795,7 +2792,7 @@ namespace YouTube
             payload["videoId"] = JsonValue.CreateStringValue(videoId);
             payload["racyCheckOk"] = JsonValue.CreateBooleanValue(true);
             payload["contentCheckOk"] = JsonValue.CreateBooleanValue(true);
-            return Config.ApplySelectedAccountContext(payload.Stringify(), true);
+            return Config.ApplySelectedAccountContext(payload.Stringify(), useSelectedAccount);
         }
 
         private static string BuildShortRatingPayload(string videoId, bool mobileWebClient)
@@ -3657,6 +3654,10 @@ namespace YouTube
                 return;
             }
 
+            if (_shortCommentDraft == null || !string.Equals(_shortCommentDraft.VideoId, item.VideoId, StringComparison.Ordinal))
+                _shortCommentDraft = new CommentDraft(item.VideoId);
+            ShortCommentComposer.BindDraft(_shortCommentDraft);
+
             if (ShortsOverlayGrid != null)
             {
                 ShortsOverlayGrid.Visibility = Visibility.Visible;
@@ -3709,6 +3710,7 @@ namespace YouTube
                 // OAuth tokens used by some installations expose comments only through MWEB.
                 // Retry there only when the normal WEB continuation produced no parsed threads.
                 if ((comments == null || comments.Count == 0)
+                    && !WebAccountSession.IsSignedIn
                     && !string.IsNullOrWhiteSpace(Config.UserToken))
                 {
                     System.Diagnostics.Debug.WriteLine(
@@ -3762,10 +3764,24 @@ namespace YouTube
             }
         }
 
+        private void ShortCommentComposer_CommentPosted(object sender, CommentPostedEventArgs e)
+        {
+            if (e == null || e.Comment == null) return;
+            List<CommentItem> cached;
+            if (!_commentsCache.TryGetValue(e.VideoId, out cached)) cached = new List<CommentItem>();
+            var comments = new List<CommentItem>(cached);
+            comments.Insert(0, e.Comment);
+            _commentsCache[e.VideoId] = comments;
+            var current = CurrentShort;
+            if (current != null && string.Equals(current.VideoId, e.VideoId, StringComparison.Ordinal)
+                && string.Equals(_commentsLoadedVideoId, e.VideoId, StringComparison.Ordinal)) BindComments(e.VideoId, comments);
+        }
+
         private void BindComments(string videoId, List<CommentItem> comments)
         {
             _commentsLoadedVideoId = videoId ?? string.Empty;
             SetCommentsLoading(false);
+            if (ShortCommentComposer != null) ShortCommentComposer.Refresh();
 
             if (CommentsItemsControl != null)
             {
@@ -3802,7 +3818,8 @@ namespace YouTube
                 var replies = await Config.GetCommentsForClientContextAsync(
                     videoId,
                     comment.ReplyContinuationToken,
-                    authenticatedMwebContext);
+                    authenticatedMwebContext,
+                    false);
 
                 // Keep the branch attached to the video whose sheet is still open.
                 if (!string.Equals(videoId, _commentsLoadedVideoId, StringComparison.OrdinalIgnoreCase))
@@ -4340,7 +4357,9 @@ namespace YouTube
             string accessToken = string.Empty;
             try
             {
-                accessToken = await GetTvAccessTokenAsync(false);
+                await WebAccountSession.InitializeAsync();
+                if (!WebAccountSession.IsSignedIn)
+                    accessToken = await GetTvAccessTokenAsync(false);
             }
             catch
             {
@@ -4413,10 +4432,17 @@ namespace YouTube
         {
             try
             {
+                await WebAccountSession.InitializeAsync();
+                var useWebAccount = WebAccountSession.IsSignedIn;
+                if (useWebAccount)
+                {
+                    mobileWebClient = true;
+                    accessToken = string.Empty;
+                }
                 using (var request = new HttpRequestMessage(HttpMethod.Post, BuildInnertubeUrl("next")))
                 {
                     request.Content = new StringContent(
-                        BuildAuthenticatedNextPayload(videoId, mobileWebClient),
+                        BuildAuthenticatedNextPayload(videoId, mobileWebClient, !useWebAccount),
                         Encoding.UTF8,
                         "application/json");
 
@@ -4426,6 +4452,8 @@ namespace YouTube
                         mobileWebClient ? InnertubeMwebClientHeaderName : InnertubeTvClientHeaderName,
                         mobileWebClient ? InnertubeMwebClientVersion : InnertubeTvClientVersion,
                         mobileWebClient ? InnertubeMwebUserAgent : InnertubeTvUserAgent);
+
+                    if (useWebAccount && !WebAccountSession.ApplyHeaders(request)) return string.Empty;
 
                     var response = await _httpClient.SendAsync(request);
                     var json = await response.Content.ReadAsStringAsync();
@@ -5008,6 +5036,10 @@ namespace YouTube
 
         private void Shorts_Loaded(object sender, RoutedEventArgs e)
         {
+            _shortDislikeCountPageLoaded = true;
+            DislikeCountService.EnabledChanged -= ShortDislikeCountSetting_Changed;
+            DislikeCountService.EnabledChanged += ShortDislikeCountSetting_Changed;
+            RefreshShortDislikeCount();
             AttachKeyboardShortcuts();
         }
 
@@ -5221,6 +5253,12 @@ namespace YouTube
 
         private void Shorts_Unloaded(object sender, RoutedEventArgs e)
         {
+            _shortDislikeCountPageLoaded = false;
+            _shortDislikeCountGeneration++;
+            DislikeCountService.EnabledChanged -= ShortDislikeCountSetting_Changed;
+            StopShortWatchHistoryReporting();
+            _playbackActive = false;
+            _showGeneration++;
             DetachKeyboardShortcuts();
 
             if (ShortsPlayer != null)

@@ -87,6 +87,10 @@ namespace YouTube
 
         private void Video_Loaded(object sender, RoutedEventArgs e)
         {
+            _dislikeCountPageLoaded = true;
+            DislikeCountService.EnabledChanged -= DislikeCountSetting_Changed;
+            DislikeCountService.EnabledChanged += DislikeCountSetting_Changed;
+            RefreshDislikeCount();
             DownloadManager.Changed -= DownloadManager_Changed;
             DownloadManager.Changed += DownloadManager_Changed;
             App.ThemeChanged -= App_ThemeChanged;
@@ -120,6 +124,9 @@ namespace YouTube
             ActivateDisplayRequest();
         }
 
+        private int _readyUrlRecoveryAttempts;
+        private bool _readyUrlRecoveryPending;
+
         private void CustomVideoPlayer_MediaFailed(
             object sender,
             YouTube.CustomVideoPlayer.CustomVideoPlayerMediaFailedEventArgs e
@@ -142,6 +149,63 @@ namespace YouTube
                 return;
             }
 
+            if (IsLivePage)
+            {
+                e.Handled = true;
+                // A source can parse correctly but fail when the device opens its decoder.
+                // Use live HLS next, instead of recreating the same rejected SABR source forever.
+                if (CustomVideoPlayer != null && CustomVideoPlayer.IsUsingDemuxer
+                    && (e.Error == Windows.Media.Playback.MediaPlayerError.SourceNotSupported
+                        || e.Error == Windows.Media.Playback.MediaPlayerError.DecodingError)) _livePreferHls = true;
+                // The binding task observes native opening failures and tries HLS itself.
+                // Starting a second binding here would cancel that fallback midway.
+                if (_liveBindingCancel != null) return;
+                var liveRecovery = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () => await RecoverLivePlaybackAsync());
+                return;
+            }
+
+            if ((e.Error == Windows.Media.Playback.MediaPlayerError.SourceNotSupported
+                    || e.Error == Windows.Media.Playback.MediaPlayerError.NetworkError)
+                && string.Equals(_activeHlsVideoId, currentVideoId, StringComparison.Ordinal)
+                && !string.IsNullOrWhiteSpace(_activeHlsVideoId)
+                && !HasRejectedHlsSource(currentVideoId))
+            {
+                var failedVideoId = currentVideoId;
+                var failedAgent = _activeHlsMediaUserAgent;
+                var recoveryGeneration = _hlsRecoveryGeneration;
+                var recoveryAccountKey = GetPlaybackAccountCacheKey();
+                var failureMessage = e.ErrorMessage;
+                e.Handled = true;
+                RejectHlsSource(failedVideoId, failedAgent);
+                var recovery = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                {
+                    if (!IsStillCurrentVideo(failedVideoId) || recoveryGeneration != _hlsRecoveryGeneration)
+                        return;
+                    try
+                    {
+                        var resumePosition = CustomVideoPlayer.CurrentPlaybackPosition;
+                        CustomVideoPlayer.Stop();
+                        CustomVideoPlayer.PrepareResumeAfterSourceReload(resumePosition, true);
+                        var fallbackJson = await PostAndroidPlayerAsync(failedVideoId);
+                        if (!IsStillCurrentVideo(failedVideoId) || recoveryGeneration != _hlsRecoveryGeneration
+                            || !string.Equals(recoveryAccountKey, GetPlaybackAccountCacheKey(), StringComparison.Ordinal))
+                            return;
+                        if (!PlayerJsonHasStreams(fallbackJson))
+                            throw new InvalidOperationException(Localization.Format("FailedPlayVideoFormat", failureMessage));
+                        await BindPlayerSourceAsync(fallbackJson, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (!IsStillCurrentVideo(failedVideoId) || recoveryGeneration != _hlsRecoveryGeneration)
+                            return;
+                        System.Diagnostics.Debug.WriteLine("[Video] HLS playback recovery failed: " + ex.Message);
+                        CustomVideoPlayer.EndSourceLoading();
+                        ShowMediaErrorDialog(ex.Message, Windows.Media.Playback.MediaPlayerError.SourceNotSupported.ToString());
+                    }
+                });
+                return;
+            }
+
             bool shouldReloadSource;
             bool shouldStopPlayback;
             if (TryHandleVideoOnlyDecodeFailure(e.Error, out shouldReloadSource, out shouldStopPlayback))
@@ -158,6 +222,26 @@ namespace YouTube
                 }
 
                 return;
+            }
+
+            if ((e.Error == Windows.Media.Playback.MediaPlayerError.NetworkError
+                    || (e.Error == Windows.Media.Playback.MediaPlayerError.SourceNotSupported
+                        && _currentH264VideoOnlyItag < 0))
+                && !string.IsNullOrWhiteSpace(currentVideoId))
+            {
+                if (_readyUrlRecoveryPending) { e.Handled = true; return; }
+                if (_readyUrlRecoveryAttempts < 2)
+                {
+                    e.Handled = true;
+                    _readyUrlRecoveryAttempts++;
+                    _readyUrlRecoveryPending = true;
+                    var videoId = currentVideoId;
+                    var generation = _hlsRecoveryGeneration;
+                    var owner = GetPlaybackAccountCacheKey();
+                    var recovery = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+                        await RecoverReadyPlaybackUrlsAsync(videoId, generation, owner));
+                    return;
+                }
             }
 
             // Never silently change the user's configured quality after a playback error.
@@ -406,8 +490,40 @@ namespace YouTube
             }
         }
 
+        private async Task RecoverReadyPlaybackUrlsAsync(string videoId, int generation, string owner)
+        {
+            try
+            {
+                if (!IsStillCurrentVideo(videoId) || generation != _hlsRecoveryGeneration
+                    || owner != GetPlaybackAccountCacheKey()) return;
+                var resumePosition = CustomVideoPlayer.CurrentPlaybackPosition;
+                CustomVideoPlayer.Stop();
+                CustomVideoPlayer.PrepareResumeAfterSourceReload(resumePosition, true);
+                InvalidatePlaybackUrlCaches(videoId);
+                var json = await PostAndroidPlayerAsync(videoId);
+                if (!IsStillCurrentVideo(videoId) || generation != _hlsRecoveryGeneration
+                    || owner != GetPlaybackAccountCacheKey()) return;
+                System.Diagnostics.Debug.WriteLine("[Video] Retrying fresh playback URLs, attempt " + (_readyUrlRecoveryAttempts + 1));
+                await BindPlayerSourceAsync(json, true);
+            }
+            catch (Exception ex)
+            {
+                if (!IsStillCurrentVideo(videoId) || generation != _hlsRecoveryGeneration) return;
+                CustomVideoPlayer.EndSourceLoading();
+                System.Diagnostics.Debug.WriteLine("[Video] Fresh playback URL recovery failed: " + ex.GetType().Name);
+                ShowMediaErrorDialog(Localization.GetString("PlaybackFailed"), "NetworkError");
+            }
+            finally
+            {
+                if (generation == _hlsRecoveryGeneration) _readyUrlRecoveryPending = false;
+            }
+        }
+
         private void ResetVideoOnlyDecodeFallbackState()
         {
+            ResetHlsPlaybackRecovery();
+            _readyUrlRecoveryAttempts = 0;
+            _readyUrlRecoveryPending = false;
             _excludedH264VideoOnlyItags.Clear();
             _currentH264VideoOnlyItag = -1;
             _decoderFallbackInProgress = false;
@@ -430,6 +546,15 @@ namespace YouTube
 
         private void Video_Unloaded(object sender, RoutedEventArgs e)
         {
+            _dislikeCountPageLoaded = false;
+            DislikeCountService.EnabledChanged -= DislikeCountSetting_Changed;
+            ClearDislikeCount();
+            CloseLiveChat(true);
+            if (!_minimizedToMiniPlayer)
+            {
+                StopLiveRetry();
+                if (_liveBindingCancel != null) _liveBindingCancel.Cancel();
+            }
             DownloadManager.Changed -= DownloadManager_Changed;
             App.ThemeChanged -= App_ThemeChanged;
             VideoAmbientEffectController.EnabledChanged -= VideoAmbientEffect_EnabledChanged;
@@ -442,6 +567,7 @@ namespace YouTube
             // disposing here would hand the reused page a dead player.
             if (!_minimizedToMiniPlayer && CustomVideoPlayer != null)
             {
+                StopWatchHistoryReporting();
                 try
                 {
                     CustomVideoPlayer.Stop();

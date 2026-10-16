@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Media.Core;
 using Windows.Media.Playback;
@@ -16,6 +18,17 @@ namespace YouTube
         private readonly DispatcherTimer _progressTimer;
         // Raised once per source, when the first frame is genuinely on screen.
         public event EventHandler PlaybackStarted;
+        public event EventHandler<CustomVideoPlayer.CustomVideoPlayerMediaFailedEventArgs> PlaybackFailed;
+        public string MediaRequestUserAgent { get; set; }
+        public int RequestedQualityHeight { get; set; }
+        private int _sourceGeneration;
+        private int _assignedSourceGeneration;
+
+        public void CancelPendingSourceSetup()
+        {
+            Interlocked.Increment(ref _sourceGeneration);
+            _pendingAutoPlay = false;
+        }
         private bool _reportedPlaybackStarted;
         private bool _pendingAutoPlay;
         private bool _isDisposed;
@@ -26,6 +39,19 @@ namespace YouTube
         public bool IsPlaying
         {
             get { return _isPlaying; }
+        }
+
+        internal YouTube.Innertube.WatchHistorySample GetHistorySample()
+        {
+            var player = MediaPlayer != null ? MediaPlayer.MediaPlayer : null;
+            return new YouTube.Innertube.WatchHistorySample
+            {
+                Active = !_isDisposed && player != null && player.Source != null,
+                Playing = player != null && player.CurrentState == MediaPlayerState.Playing,
+                Position = player != null ? player.Position.TotalSeconds : 0,
+                Length = player != null ? player.NaturalDuration.TotalSeconds : 0,
+                Rate = player != null ? player.PlaybackRate : 1
+            };
         }
 
         public CustomShortsPlayer()
@@ -50,7 +76,7 @@ namespace YouTube
             this.Unloaded += CustomShortsPlayer_Unloaded;
         }
 
-        // Shared with the demuxer only; the plain-URL path uses MediaSource.CreateFromUri.
+        // The demuxer and progressive range stream preserve the issuing client's headers.
         private static readonly System.Net.Http.HttpClient _demuxHttp =
             YouTube.Innertube.YouTubeHttpClient.Shared.RawClient;
 
@@ -65,6 +91,7 @@ namespace YouTube
                 return false;
             }
 
+            var generation = Interlocked.Increment(ref _sourceGeneration);
             try
             {
                 ShowLoading(true);
@@ -73,8 +100,8 @@ namespace YouTube
                 ProgressSlider.Value = 0;
                 ProgressSlider.Maximum = 100;
 
-                var mss = await DashDemuxer.CreateAsync(_demuxHttp, video, audio);
-                if (mss == null || _isDisposed)
+                var mss = await DashDemuxer.CreateAsync(_demuxHttp, video, audio, video.MediaUserAgent);
+                if (mss == null || _isDisposed || generation != _sourceGeneration)
                 {
                     return false;
                 }
@@ -91,6 +118,7 @@ namespace YouTube
 
                 MediaPlayer.MediaPlayer.Pause();
                 SetSubtitleCues(null); // captions are per-short; the page re-applies if one is chosen
+                _assignedSourceGeneration = generation;
                 MediaPlayer.MediaPlayer.Source = MediaSource.CreateFromMediaStreamSource(mss);
                 ApplyDesiredRate();
 
@@ -106,13 +134,14 @@ namespace YouTube
             }
         }
 
-        public async Task SetSourceFromUriAsync(Uri uri, bool autoPlay = true)
+        public async Task<bool> SetSourceFromUriAsync(Uri uri, bool autoPlay = true)
         {
             if (uri == null || _isDisposed)
             {
-                return;
+                return false;
             }
 
+            var generation = Interlocked.Increment(ref _sourceGeneration);
             try
             {
                 ShowLoading(true);
@@ -130,23 +159,41 @@ namespace YouTube
                     MediaPlayer.SetMediaPlayer(new Windows.Media.Playback.MediaPlayer());
                 }
 
-                MediaPlayer.MediaPlayer.Pause();
-                SetSubtitleCues(null); // captions are per-short; the page re-applies if one is chosen
-
                 // NOTE: the previous MediaSource is deliberately NOT disposed here. Clearing
                 // Source does not synchronously hand ownership back — the player still holds it
                 // briefly — and disposing it at this point crashed the app after a few swipes.
                 // Letting the GC collect it is the safe behaviour and was the original one.
-                MediaPlayer.MediaPlayer.Source = MediaSource.CreateFromUri(uri);
+                var agent = MediaRequestUserAgent;
+                MediaSource source;
+                if (uri.AbsoluteUri.IndexOf(".m3u8", StringComparison.OrdinalIgnoreCase) >= 0)
+                    source = await CustomVideoPlayer.CreateShortsHlsSourceAsync(uri,
+                        RequestedQualityHeight.ToString(System.Globalization.CultureInfo.InvariantCulture), agent);
+                else if ((uri.Scheme == "http" || uri.Scheme == "https") && !string.IsNullOrWhiteSpace(agent))
+                {
+                    var stream = await Innertube.PlaybackMediaStream.OpenAsync(uri, agent);
+                    source = MediaSource.CreateFromStream(stream.AsRandomAccessStream(), "video/mp4");
+                }
+                else source = MediaSource.CreateFromUri(uri);
+                if (_isDisposed || generation != _sourceGeneration) { source.Dispose(); return false; }
+                MediaPlayer.MediaPlayer.Pause();
+                SetSubtitleCues(null);
+                _pendingAutoPlay = autoPlay;
+                _assignedSourceGeneration = generation;
+                MediaPlayer.MediaPlayer.Source = source;
                 ApplyDesiredRate();
 
                 await Task.Delay(1);
+                return true;
             }
             catch (Exception ex)
             {
-                ShowLoading(false);
-                ShowError(Localization.GetString("PlaybackFailed"));
+                if (!_isDisposed && generation == _sourceGeneration)
+                {
+                    ShowLoading(false);
+                    ShowError(Localization.GetString("PlaybackFailed"));
+                }
                 System.Diagnostics.Debug.WriteLine("CustomShortsPlayer: SetSource error: " + ex.Message);
+                return false;
             }
         }
 
@@ -346,6 +393,7 @@ namespace YouTube
 
         public void Stop()
         {
+            CancelPendingSourceSetup();
             if (_isDisposed || MediaPlayer.MediaPlayer == null)
             {
                 return;
@@ -369,9 +417,10 @@ namespace YouTube
 
         private async void Player_MediaOpened(Windows.Media.Playback.MediaPlayer sender, object args)
         {
+            var generation = _assignedSourceGeneration;
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                if (_isDisposed)
+                if (_isDisposed || generation != _sourceGeneration)
                 {
                     return;
                 }
@@ -411,8 +460,15 @@ namespace YouTube
 
         private async void Player_MediaFailed(Windows.Media.Playback.MediaPlayer sender, MediaPlayerFailedEventArgs args)
         {
+            var generation = _sourceGeneration;
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
+                if (_isDisposed || generation != _sourceGeneration || generation != _assignedSourceGeneration) return;
+                System.Diagnostics.Debug.WriteLine("CustomShortsPlayer: MediaFailed: " + args.Error + " " + args.ErrorMessage);
+                var failure = new CustomVideoPlayer.CustomVideoPlayerMediaFailedEventArgs(args);
+                var handler = PlaybackFailed;
+                if (handler != null) handler(this, failure);
+                if (failure.Handled) return;
                 ShowLoading(false);
                 ShowError(Localization.GetString("UnablePlayShort"));
                 _isPlaying = false;
@@ -423,9 +479,10 @@ namespace YouTube
 
         private async void Player_CurrentStateChanged(Windows.Media.Playback.MediaPlayer sender, object args)
         {
+            var generation = _assignedSourceGeneration;
             await Dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
             {
-                if (_isDisposed || MediaPlayer.MediaPlayer == null)
+                if (_isDisposed || generation != _sourceGeneration || MediaPlayer.MediaPlayer == null)
                 {
                     return;
                 }
@@ -774,6 +831,7 @@ namespace YouTube
             }
 
             _isDisposed = true;
+            CancelPendingSourceSetup();
             _isUserSeeking = false;
             _progressTimer.Stop();
 

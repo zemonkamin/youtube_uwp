@@ -12,9 +12,8 @@
     <Page.Resources>
         <converters:ViewsCountConverter x:Key="ViewsCountConverter" />
         <converters:RelativeDateConverter x:Key="RelativeDateConverter" />
-        <!-- When the ambient video effect is enabled these shared brushes become partly
-             transparent, allowing the single live page backdrop to tint controls very lightly.
-             Keeping one set of brushes avoids creating another MediaPlayer surface per button. -->
+        <!-- A gentle opaque surface gradient keeps the video glow behind the controls.
+             The fine upper rim blends into the fill at the bottom instead of outlining every edge. -->
         <SolidColorBrush x:Key="VideoAmbientSurfaceBrush"
                          Color="{ThemeResource AppSurfaceColor}" />
         <SolidColorBrush x:Key="VideoAmbientPrimaryActionBrush"
@@ -23,17 +22,17 @@
                              StartPoint="0,0"
                              EndPoint="0,1"
                              Opacity="0">
-            <GradientStop Color="#00FFFFFF" Offset="0" />
-            <GradientStop Color="#00FFFFFF" Offset="0.55" />
-            <GradientStop Color="#00FFFFFF" Offset="1" />
+            <GradientStop Color="#464646" Offset="0" />
+            <GradientStop Color="#303030" Offset="0.5" />
+            <GradientStop Color="#282828" Offset="1" />
         </LinearGradientBrush>
-        <LinearGradientBrush x:Key="VideoAmbientPillGradientBrush"
+        <LinearGradientBrush x:Key="VideoAmbientPillFillBrush"
                              StartPoint="0,0"
                              EndPoint="0,1"
                              Opacity="0">
-            <GradientStop Color="#00FFFFFF" Offset="0" />
-            <GradientStop Color="#00FFFFFF" Offset="0.52" />
-            <GradientStop Color="#00FFFFFF" Offset="1" />
+            <GradientStop Color="#323232" Offset="0" />
+            <GradientStop Color="#2D2D2D" Offset="0.5" />
+            <GradientStop Color="#282828" Offset="1" />
         </LinearGradientBrush>
 
         <Style x:Key="RatingIconButtonStyle" TargetType="Button">
@@ -225,7 +224,7 @@
                                        Margin="8,0,0,0" FontSize="12"
                                        Foreground="{ThemeResource AppMutedTextBrush}" />
                         </StackPanel>
-                        <RichTextBlock Margin="0,4,0,0" FontSize="14"
+                        <RichTextBlock Margin="0,4,0,0" FontSize="14" FontFamily="{StaticResource CommentFont}"
                                        Foreground="{ThemeResource AppPrimaryTextBrush}"
                                        IsTextSelectionEnabled="False"
                                        Loaded="CommentTextRichTextBlock_Loaded"
@@ -291,7 +290,7 @@
                                                    Margin="8,0,0,0" FontSize="12"
                                                    Foreground="{ThemeResource AppMutedTextBrush}" />
                                     </StackPanel>
-                                    <RichTextBlock Margin="0,4,0,0" FontSize="14"
+                                    <RichTextBlock Margin="0,4,0,0" FontSize="14" FontFamily="{StaticResource CommentFont}"
                                                    Foreground="{ThemeResource AppPrimaryTextBrush}"
                                                    IsTextSelectionEnabled="False"
                                                    Loaded="CommentTextRichTextBlock_Loaded"
@@ -306,29 +305,24 @@
     </Page.Resources>
 
     <Grid x:Name="VideoRoot" Background="{ThemeResource AppBackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="SideTabbarColumn" Width="0" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition x:Name="VideoNavbarRow" Height="0" />
             <RowDefinition Height="*" />
             <RowDefinition x:Name="VideoTabbarRow" Height="0" />
         </Grid.RowDefinitions>
 
-        <!-- One continuous, low-opacity video surface lives behind the whole page. Keeping this
-             as a single layer prevents darker rectangular patches around related-video text. -->
-        <Grid x:Name="VideoAmbientPageHost"
+        <!-- The background, navbar and either tabbar layout share this one ambient surface.
+             Navigation chrome stays transparent while it is enabled to avoid seams or double tint. -->
+        <Grid Grid.Column="0" Grid.ColumnSpan="2" x:Name="VideoAmbientPageHost"
               Grid.Row="0"
               Grid.RowSpan="3"
               IsHitTestVisible="False" />
-        <!-- These row-local surfaces give the standard Navbar/Tabbar BackdropBrush the same
-             moving material that Home naturally has beneath its navigation rows. Their opacity
-             is balanced against the normal glass tint, so the result matches the page backdrop. -->
-        <Grid x:Name="VideoNavbarGlassSourceHost"
-              Grid.Row="0"
-              IsHitTestVisible="False" />
-        <Grid x:Name="VideoTabbarGlassSourceHost"
-              Grid.Row="2"
-              IsHitTestVisible="False" />
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Column="1" Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="PlayerColumn" Width="*" />
                 <ColumnDefinition x:Name="RelatedColumn" Width="400" />
@@ -361,9 +355,6 @@
                         Grid.Row="0"
                         Background="Transparent"
                         SizeChanged="VideoPlayerContainer_SizeChanged">
-                        <Grid x:Name="VideoAmbientGlowHost"
-                              Margin="-20,-16,-20,20"
-                              IsHitTestVisible="False" />
                         <local:CustomVideoPlayer
                             x:Name="CustomVideoPlayer"
                             Canvas.ZIndex="1"
@@ -372,6 +363,10 @@
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             FullscreenRequested="CustomVideoPlayer_FullscreenRequested" />
+                        <TextBlock x:Name="LivePlaybackNotice" Canvas.ZIndex="4" Visibility="Collapsed"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center" Margin="24"
+                                   TextWrapping="Wrap" Foreground="White" FontFamily="{StaticResource CommentFont}"
+                                   FontSize="14"/>
                         <Grid
                             x:Name="SkipOverlay"
                             Canvas.ZIndex="2"
@@ -586,11 +581,17 @@
                                         Click="DislikeButton_Click"
                                         BorderThickness="0"
                                         Foreground="{ThemeResource AppPrimaryTextBrush}">
-                                        <Image
-                                            x:Name="DislikeIcon"
-                                            Width="20"
-                                            Height="20"
-                                            local:ThemeAsset.Path="Assets/player/dislike.png" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image x:Name="DislikeIcon"
+                                                   Width="20" Height="20"
+                                                   local:ThemeAsset.Path="Assets/player/dislike.png" />
+                                            <TextBlock x:Name="DislikeCountText"
+                                                       Margin="6,0,0,0"
+                                                       VerticalAlignment="Center"
+                                                       FontSize="14"
+                                                       Foreground="{ThemeResource AppPrimaryTextBrush}"
+                                                       Visibility="Collapsed" />
+                                        </StackPanel>
                                     </Button>
                                 </StackPanel>
                             </Border>
@@ -616,6 +617,24 @@
                                             FontSize="14"
                                             Foreground="{ThemeResource AppPrimaryTextBrush}" />
                                     </StackPanel>
+                                </Button>
+                            </Border>
+                            <Border x:Name="LiveChatActionContainer"
+                                    Margin="0,0,8,0"
+                                    Background="{StaticResource VideoAmbientSurfaceBrush}"
+                                    CornerRadius="18"
+                                    Visibility="Collapsed">
+                                <Button x:Name="LiveChatButton"
+                                        Click="LiveChatButton_Click"
+                                        Padding="16,8"
+                                        BorderThickness="0"
+                                        Background="Transparent"
+                                        Foreground="{ThemeResource AppPrimaryTextBrush}">
+                                    <TextBlock x:Name="LiveChatButtonText"
+                                               FontFamily="{Binding FontFamily, ElementName=ShareActionText}"
+                                               FontSize="14"
+                                               FontWeight="{Binding FontWeight, ElementName=ShareActionText}"
+                                               Foreground="{ThemeResource AppPrimaryTextBrush}" />
                                 </Button>
                             </Border>
                             <Border x:Name="SaveActionContainer"
@@ -956,6 +975,9 @@
                                 Grid.Row="6"
                                 Margin="16,0,16,18"
                                 Visibility="Collapsed">
+                        <local:CommentComposer x:Name="LandscapeCommentComposer"
+                                               CommentPosted="CommentComposer_CommentPosted"
+                                               StateChanged="CommentComposer_StateChanged"/>
                         <ItemsControl x:Name="LandscapeCommentsList"
                                       HorizontalAlignment="Stretch"
                                       ItemTemplate="{StaticResource CommentThreadTemplate}">
@@ -1317,7 +1339,7 @@
             </ScrollViewer>
         </Grid>
 
-        <Grid
+        <Grid Grid.Column="1"
             x:Name="SkeletonLoader"
             Grid.Row="1"
             Background="{ThemeResource AppBackgroundBrush}">
@@ -1548,7 +1570,7 @@
             </StackPanel>
         </Grid>
 
-        <Grid
+        <Grid Grid.Column="0" Grid.ColumnSpan="2"
             x:Name="OverlayGrid"
             Grid.Row="0"
             Grid.RowSpan="3"
@@ -1556,7 +1578,7 @@
             Background="#80000000"
             Tapped="OverlayGrid_Tapped"
             Visibility="Collapsed" />
-        <Grid
+        <Grid Grid.Column="0" Grid.ColumnSpan="2"
             x:Name="DescriptionOverlayGrid"
             Grid.Row="0"
             Grid.RowSpan="3"
@@ -1566,7 +1588,7 @@
             Visibility="Collapsed" />
 
         <!-- Bottom Sheet Panel for Description -->
-        <local:BottomSheet x:Name="DescriptionBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
+        <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="DescriptionBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
               Background="{ThemeResource AppSurfaceAltBrush}"
               CornerRadius="0"
               VerticalAlignment="Bottom" 
@@ -1713,8 +1735,25 @@
         
             </Grid></local:BottomSheet>
 
+        <!-- Live chat shares the comments sheet's surface and gestures, with its own updating content. -->
+        <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="LiveChatWindow" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
+                          Background="{ThemeResource AppSurfaceAltBrush}"
+                          VerticalAlignment="Bottom"
+                          HorizontalAlignment="Stretch"
+                          MaxHeight="400"
+                          Margin="10,0,10,6"
+                          Visibility="Collapsed" HandleHeight="36"
+                          Closed="LiveChatWindow_Closed">
+            <local:BottomSheet.RenderTransform>
+                <TranslateTransform Y="410"/>
+            </local:BottomSheet.RenderTransform>
+            <Grid Margin="16,0,16,18">
+                <local:LiveChatView x:Name="LiveChatContent"/>
+            </Grid>
+        </local:BottomSheet>
+
         <!-- Bottom Sheet Panel for Comments -->
-        <local:BottomSheet x:Name="CommentsBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
+        <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="CommentsBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
               Background="{ThemeResource AppSurfaceAltBrush}"
               VerticalAlignment="Bottom" 
               HorizontalAlignment="Stretch"
@@ -1731,6 +1770,10 @@
                     HorizontalScrollBarVisibility="Disabled"
                     HorizontalScrollMode="Disabled"
                     VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                    <local:CommentComposer x:Name="SheetCommentComposer"
+                                           CommentPosted="CommentComposer_CommentPosted"
+                                           StateChanged="CommentComposer_StateChanged"/>
                     <ItemsControl x:Name="CommentsItemsControl" HorizontalAlignment="Stretch"
                                   ItemTemplate="{StaticResource CommentThreadTemplate}">
                         <ItemsControl.ItemContainerStyle>
@@ -1739,13 +1782,14 @@
                             </Style>
                         </ItemsControl.ItemContainerStyle>
                     </ItemsControl>
+                    </StackPanel>
                 </ScrollViewer>
             </Grid>
         
             </Grid></local:BottomSheet>
 
         <!-- Bottom Sheet Panel for Subscription / Notification Menu -->
-        <local:BottomSheet x:Name="SubscriptionMenuBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
+        <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="SubscriptionMenuBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
               VerticalAlignment="Bottom"
               HorizontalAlignment="Stretch"
               MaxHeight="300"
@@ -1850,7 +1894,7 @@
             </Grid></local:BottomSheet>
 
         <!-- Bottom Sheet Panel for Share -->
-        <local:BottomSheet x:Name="ShareBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
+        <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="ShareBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
               VerticalAlignment="Bottom"
               HorizontalAlignment="Stretch"
               MaxHeight="330"
@@ -2010,7 +2054,7 @@
             </Grid></local:BottomSheet>
 
         <!-- Playlist picker for the Save action. It deliberately has no "New" button. -->
-        <local:BottomSheet x:Name="SaveBottomSheetPanel"
+        <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="SaveBottomSheetPanel"
               Grid.Row="0"
               Grid.RowSpan="3"
               Canvas.ZIndex="101"
@@ -2162,7 +2206,7 @@
             </Grid></local:BottomSheet>
 
         <!-- Copy-link / QR result sheet. Uses the same floating bottom-sheet geometry as Share. -->
-        <Grid x:Name="SharePopupOverlay"
+        <Grid Grid.Column="0" Grid.ColumnSpan="2" x:Name="SharePopupOverlay"
               Grid.Row="0"
               Grid.RowSpan="3"
               Canvas.ZIndex="102"
@@ -2221,7 +2265,7 @@
         </Grid>
 
         <!-- Bottom Sheet Panel for Settings -->
-        <local:BottomSheet x:Name="SettingsBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
+        <local:BottomSheet Grid.Column="0" Grid.ColumnSpan="2" x:Name="SettingsBottomSheetPanel" Grid.Row="0" Grid.RowSpan="3" Canvas.ZIndex="101"
               VerticalAlignment="Bottom" 
               HorizontalAlignment="Stretch"
               Height="Auto"
@@ -2405,11 +2449,11 @@
             </Grid></local:BottomSheet>
         <!-- Keep both navigation controls after page content. CompositionBackdropBrush can only
              sample visuals that have already been drawn beneath the navigation chrome. -->
-        <local:Navbar x:Name="navbar"
+        <local:Navbar Grid.Column="0" Grid.ColumnSpan="2" x:Name="navbar"
                       Grid.Row="0"
-                      Canvas.ZIndex="20"
+                      Canvas.ZIndex="30"
                       Visibility="Collapsed" />
-        <local:Tabbar x:Name="tabbar"
+        <local:Tabbar Grid.Column="0" Grid.ColumnSpan="2" x:Name="tabbar"
                       Grid.Row="2"
                       Canvas.ZIndex="20"
                       Visibility="Collapsed" />

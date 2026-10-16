@@ -75,6 +75,10 @@
     </Page.Resources>
 
     <Grid Background="{ThemeResource AppBackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="SideTabbarColumn" Width="0" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="56"/>
             <RowDefinition Height="*"/>
@@ -82,7 +86,7 @@
         </Grid.RowDefinitions>
 
         <!-- Search Suggestions Section -->
-        <Border x:Name="SuggestionsSection"
+        <Border Grid.Column="1" x:Name="SuggestionsSection"
                 Grid.Row="1"
                 VerticalAlignment="Top"
                 Background="{ThemeResource AppBackgroundBrush}"
@@ -135,7 +139,7 @@
         </Border>
 
         <!-- Main content with ScrollViewer -->
-        <ScrollViewer x:Name="MainScrollViewer"
+        <ScrollViewer Grid.Column="1" x:Name="MainScrollViewer"
                       Grid.Row="0"
                       Grid.RowSpan="3"
                       Background="{ThemeResource AppBackgroundBrush}"
@@ -146,7 +150,7 @@
                       ViewChanged="ScrollViewer_ViewChanged">
 
             <StackPanel Background="{ThemeResource AppBackgroundBrush}"
-                        Padding="0,56,0,52">
+                        local:SideTabbarController.BottomInset="52" Padding="0,56,0,52">
 
                 <!-- Home category chips -->
                 <Grid x:Name="CategoriesHost"
@@ -346,7 +350,7 @@
         </ScrollViewer>
 
         <!-- Skeleton Loading Screen -->
-        <Grid x:Name="SkeletonLoader"
+        <Grid Grid.Column="1" x:Name="SkeletonLoader"
               Grid.Row="1"
               Background="{ThemeResource AppBackgroundBrush}"
               Visibility="Collapsed">
@@ -422,7 +426,7 @@
 
 
         <!-- Offline state -->
-        <Grid x:Name="OfflinePanel"
+        <Grid Grid.Column="1" x:Name="OfflinePanel"
               Grid.Row="1"
               Background="{ThemeResource AppBackgroundBrush}"
               Visibility="Collapsed">
@@ -485,7 +489,7 @@
         </Grid>
 
         <!-- Center loading ring used while switching category chips -->
-        <Grid Grid.Row="1"
+        <Grid Grid.Column="1" Grid.Row="1"
               IsHitTestVisible="False">
             <local:AndroidLoadingRing x:Name="HomeLoadingRing"
                                       IsActive="False"
@@ -498,7 +502,7 @@
 
         <!-- Keep navigation chrome last in the visual tree so BackdropBrush always
              samples the scrolling Home content below it. -->
-        <local:Navbar x:Name="navbar" Grid.Row="0" Canvas.ZIndex="20"/>
-        <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20"/>
+        <local:Navbar Grid.Column="0" Grid.ColumnSpan="2" x:Name="navbar" Grid.Row="0" Canvas.ZIndex="30"/>
+        <local:Tabbar Grid.Column="0" Grid.ColumnSpan="2" x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20"/>
     </Grid>
 </Page>

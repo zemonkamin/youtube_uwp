@@ -1050,4 +1050,91 @@ Weergawe {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Wys die soekbalk in die middel</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Aanmelding in die blaaier</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Gebruik hierdie rekening vir afspeel</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Aangemeld · Meld af</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Meld op die Google-bladsy aan, keer terug na YouTube en druk OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Voltooi eers die Google-aanmelding.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Aanmelding kon nie voltooi word nie. Probeer weer.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Voeg &apos;n opmerking by...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Plaas</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Kon nie die opmerking plaas nie.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube laat nie opmerkings op hierdie video toe nie.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Meld in jou blaaier aan om opmerkings te plaas.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Jy</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Regstreekse klets</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Topklets</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Alle klets</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Nog geen boodskappe nie</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Herkoppel aan klets…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Wag vir die uitsending…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Uitsending beëindig</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Gaan na regstreeks</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Wys die aantal afkeure</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Skatting deur Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Oortjiebalk links</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>In landskap op Windows-rekenaars en Continuum</value>
+  </data>
 </root>

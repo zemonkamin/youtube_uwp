@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic; // Added for List<T>
+using System.IO;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using Windows.Media;
@@ -79,6 +80,34 @@ namespace YouTube
         private const string YouTubeReferer = "https://www.youtube.com/";
         private const string RequiredHlsAvcCodec = "avc1.4D401F,mp4a.40.2";
         private static readonly YouTubeHttpClient _hlsHttpClient = YouTubeHttpClient.Shared;
+        private static readonly Dictionary<string, Windows.Web.Http.HttpClient> _adaptiveDownloaders =
+            new Dictionary<string, Windows.Web.Http.HttpClient>(StringComparer.Ordinal);
+        private static readonly object _adaptiveDownloaderGate = new object();
+
+        public string MediaRequestUserAgent { get; set; }
+
+        internal static Windows.Web.Http.HttpClient GetAdaptiveDownloader(string userAgent)
+        {
+            var agent = string.IsNullOrWhiteSpace(userAgent) ? YouTubeIosUserAgent : userAgent;
+            lock (_adaptiveDownloaderGate)
+            {
+                Windows.Web.Http.HttpClient client;
+                if (_adaptiveDownloaders.TryGetValue(agent, out client)) return client;
+
+                // Keep each client's headers immutable while older sources still download
+                // segments. These shared downloaders live as long as the playback clients.
+                var filter = new Windows.Web.Http.Filters.HttpBaseProtocolFilter();
+                filter.AllowUI = false;
+                if (Windows.Foundation.Metadata.ApiInformation.IsPropertyPresent(
+                    "Windows.Web.Http.Filters.HttpBaseProtocolFilter", "CookieUsageBehavior"))
+                    filter.CookieUsageBehavior = Windows.Web.Http.Filters.HttpCookieUsageBehavior.NoCookies;
+                client = new Windows.Web.Http.HttpClient(filter);
+                client.DefaultRequestHeaders.TryAppendWithoutValidation("User-Agent", agent);
+                client.DefaultRequestHeaders.TryAppendWithoutValidation("Referer", YouTubeReferer);
+                _adaptiveDownloaders[agent] = client;
+                return client;
+            }
+        }
         private bool _usingSeparateAudio = false;
         private CancellationTokenSource _audioInitCts;
         private CancellationTokenSource _audioResumeCts;
@@ -187,10 +216,7 @@ namespace YouTube
         private DispatcherTimer _seekDebounceTimer;
         private DispatcherTimer _updateTimer;
         private readonly VideoAmbientRenderer _ambientRenderer = new VideoAmbientRenderer();
-        private FrameworkElement _ambientGlowHost;
         private FrameworkElement _ambientPageBackdropHost;
-        private FrameworkElement _ambientNavbarGlassSourceHost;
-        private FrameworkElement _ambientTabbarGlassSourceHost;
         private int _ambientResizeGeneration;
         private bool _isFullscreen = false;
         private readonly ObservableCollection<FullscreenRelatedVideoItem> _fullscreenRelatedVideos =
@@ -313,20 +339,14 @@ namespace YouTube
         }
 
         private bool _sourceLoading;
+        private int _visibleSourceGeneration;
         private DispatcherTimer _sourceLoadingTimeoutTimer;
 
         public bool IsSourceLoading { get { return _sourceLoading; } }
 
-        public void SetAmbientHosts(
-            FrameworkElement glowHost,
-            FrameworkElement pageBackdropHost,
-            FrameworkElement navbarGlassSourceHost,
-            FrameworkElement tabbarGlassSourceHost)
+        public void SetAmbientPageBackdropHost(FrameworkElement pageBackdropHost)
         {
-            _ambientGlowHost = glowHost;
             _ambientPageBackdropHost = pageBackdropHost;
-            _ambientNavbarGlassSourceHost = navbarGlassSourceHost;
-            _ambientTabbarGlassSourceHost = tabbarGlassSourceHost;
             ConfigureAmbientRendererHosts();
         }
 
@@ -338,10 +358,7 @@ namespace YouTube
                 AmbientBottomBarHost,
                 AmbientLeftBarHost,
                 AmbientRightBarHost,
-                _ambientGlowHost,
-                _ambientPageBackdropHost,
-                _ambientNavbarGlassSourceHost,
-                _ambientTabbarGlassSourceHost);
+                _ambientPageBackdropHost);
         }
 
         // A new quality stream started loading: show the spinner and block play/seek until the
@@ -441,6 +458,7 @@ namespace YouTube
         public CustomVideoPlayer()
         {
             this.InitializeComponent();
+            UpdateDesktopMiniPlayerButton();
             FullscreenRelatedItems.ItemsSource = _fullscreenRelatedVideos;
             InitializePlayer();
             SponsorBlock.TimelineMarkerVisibilityChanged += SponsorBlock_TimelineMarkerVisibilityChanged;
@@ -525,8 +543,6 @@ namespace YouTube
             AttachKeyboardShortcuts();
             VideoAmbientEffectController.EnabledChanged -= VideoAmbientEffect_EnabledChanged;
             VideoAmbientEffectController.EnabledChanged += VideoAmbientEffect_EnabledChanged;
-            FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
-            FluentGlassEffectHelper.EnabledChanged += GlassEffect_EnabledChanged;
             RefreshAmbientVideoEffect();
 
             // Get references to the Image controls directly
@@ -574,7 +590,6 @@ namespace YouTube
 
             DetachKeyboardShortcuts();
             VideoAmbientEffectController.EnabledChanged -= VideoAmbientEffect_EnabledChanged;
-            FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
             // Video pages use NavigationCacheMode.Required and this control is also reparented by
             // the mini-player/fullscreen flows. Unloaded therefore does not mean final teardown.
             // Keep the media surface and child visuals alive; Dispose remains the sole owner of
@@ -586,13 +601,9 @@ namespace YouTube
             RefreshAmbientVideoEffect();
         }
 
-        private void GlassEffect_EnabledChanged(object sender, EventArgs e)
-        {
-            RefreshAmbientVideoEffect();
-        }
-
         private void RefreshAmbientVideoEffect()
         {
+            if (_desktopMiniPlayerActive) return;
             ConfigureAmbientRendererHosts();
             UpdateAmbientBarLayout();
             _ambientRenderer.Refresh(
@@ -917,6 +928,7 @@ namespace YouTube
         // nothing to minimize into.
         private void UpdateMinimizeButtonVisibility()
         {
+            UpdateDesktopMiniPlayerButton();
             if (MinimizeButton == null)
             {
                 return;
@@ -2021,8 +2033,16 @@ namespace YouTube
         // The rotation handler already knows the final window size from SizeChanged. Passing it
         // here avoids opening a portrait-sized popup for one frame while Window.Current.Bounds is
         // still catching up on older Windows 10 Mobile builds.
-        public void ToggleFullscreen(Size? fullscreenSize)
+        public async void ToggleFullscreen(Size? fullscreenSize)
         {
+            if (DesktopMiniPlayerWindow.IsPageWindowFor(this))
+            {
+                if (_desktopMiniTransition) return;
+                _desktopMiniTransition = true;
+                try { await CloseDesktopMiniPlayerAsync(); }
+                finally { _desktopMiniTransition = false; }
+                if (_playbackReleased) return;
+            }
             if (_isFullscreen)
             {
                 ExitFullscreen();
@@ -2838,6 +2858,7 @@ namespace YouTube
 
         private TimeSpan ClampPositionToDuration(TimeSpan position)
         {
+            if (_isLivePlayback && position < GetLiveStart()) return GetLiveStart();
             if (position < TimeSpan.Zero)
             {
                 return TimeSpan.Zero;
@@ -2854,6 +2875,7 @@ namespace YouTube
 
         private TimeSpan GetEffectiveDuration()
         {
+            if (_isLivePlayback) return GetLiveEdge();
             if (_parsedDuration > TimeSpan.Zero)
             {
                 return _parsedDuration;
@@ -3150,6 +3172,11 @@ namespace YouTube
 
         private void ShowScrubPreview(double seconds, double pointerX)
         {
+            if (_isLivePlayback)
+            {
+                HideScrubPreview();
+                return;
+            }
             if (!IsScrubPreviewEnabled())
             {
                 HideScrubPreview();
@@ -3304,6 +3331,7 @@ namespace YouTube
 
         private void UpdateTimer_Tick(object sender, object e)
         {
+            if (_isLivePlayback) { UpdateLivePlayback(); return; }
             System.Diagnostics.Debug.WriteLine("[UpdateTimer] Tick called");
 
             // Measures the speed actually achieved: how much media time passes per second of real
@@ -3517,6 +3545,7 @@ namespace YouTube
 
         private void HandleVideoEnd()
         {
+            if (GuardLiveEnd()) return;
             if (_videoEndHandled)
             {
                 return;
@@ -3592,6 +3621,7 @@ namespace YouTube
         // be told which position to show instead of reading it back.
         private void UpdateTimeDisplayForPosition(TimeSpan position)
         {
+            if (_isLivePlayback) { UpdateLiveTime(position); return; }
             try
             {
                 if (TimeDisplayText == null)
@@ -3615,6 +3645,7 @@ namespace YouTube
 
         private void UpdateTimeDisplay()
         {
+            if (_isLivePlayback) { UpdateLiveTime(CurrentPlaybackPosition); return; }
             try
             {
                 if (MediaPlayer == null || MediaPlayer.MediaPlayer == null || TimeDisplayText == null)
@@ -4420,7 +4451,7 @@ namespace YouTube
         {
             try
             {
-                if (SegmentedProgressBar == null || ProgressSlider == null)
+                if (_isLivePlayback || SegmentedProgressBar == null || ProgressSlider == null)
                 {
                     return;
                 }
@@ -4555,7 +4586,7 @@ namespace YouTube
 
         private void UpdateSegmentedProgressValue()
         {
-            if (ProgressSlider == null || _timelineSegmentVisuals.Count == 0)
+            if (_isLivePlayback || ProgressSlider == null || _timelineSegmentVisuals.Count == 0)
             {
                 return;
             }
@@ -4610,9 +4641,9 @@ namespace YouTube
                 return 0;
             }
 
-            UpdateSegmentMetrics();
+            if (!_isLivePlayback) UpdateSegmentMetrics();
 
-            if (_timelineSegmentVisuals.Count == 0)
+            if (_isLivePlayback || _timelineSegmentVisuals.Count == 0)
             {
                 double width = ProgressSliderHitArea != null ? ProgressSliderHitArea.ActualWidth : ProgressSlider.ActualWidth;
                 if (width <= 0)
@@ -4689,12 +4720,17 @@ namespace YouTube
 
         public async Task SetSourceFromUriAsync(Uri uri)
         {
-            await SetSourceFromUriInternalAsync(uri, null, true, null, true);
+            await SetSourceFromUriInternalAsync(uri, null, true, _currentQuality, true);
         }
 
         public async Task SetSourceFromUriAsync(Uri uri, bool autoPlay)
         {
-            await SetSourceFromUriInternalAsync(uri, null, true, null, autoPlay);
+            await SetSourceFromUriInternalAsync(uri, null, true, _currentQuality, autoPlay);
+        }
+
+        public Task<bool> TrySetSourceFromUriAsync(Uri uri, bool autoPlay, string requestedQualityTag = null)
+        {
+            return SetSourceFromUriInternalAsync(uri, null, true, requestedQualityTag ?? _currentQuality, autoPlay);
         }
 
         public Task SetSourceFromStorageFileAsync(Windows.Storage.StorageFile file, bool autoPlay)
@@ -4743,11 +4779,11 @@ namespace YouTube
                     var contentType = absolute.IndexOf(".m3u8", StringComparison.OrdinalIgnoreCase) >= 0
                         ? "application/vnd.apple.mpegurl"
                         : "application/dash+xml";
-                    result = await AdaptiveMediaSource.CreateFromStreamAsync(manifestStream, uri, contentType);
+                    result = await AdaptiveMediaSource.CreateFromStreamAsync(manifestStream, uri, contentType, GetAdaptiveDownloader(MediaRequestUserAgent));
                 }
                 else
                 {
-                    result = await AdaptiveMediaSource.CreateFromUriAsync(uri);
+                    result = await AdaptiveMediaSource.CreateFromUriAsync(uri, GetAdaptiveDownloader(MediaRequestUserAgent));
                 }
 
                 if (result.Status == AdaptiveMediaSourceCreationStatus.Success && result.MediaSource != null)
@@ -4758,6 +4794,7 @@ namespace YouTube
                     _suppressAutoPlayUntilSeparateAudioReady = false;
                     _pendingAutoPlayAfterSeparateAudioReady = false;
                     _playImmediatelyAfterSeparateAudioOpened = false;
+                    RememberLiveAdaptiveSource(result.MediaSource);
                     SetSource(MediaSource.CreateFromAdaptiveMediaSource(result.MediaSource), autoPlay);
                     return true;
                 }
@@ -4835,7 +4872,7 @@ namespace YouTube
             await SetSourceFromUriInternalAsync(videoUri, audioVideoUri, true, qualityTag, autoPlay);
         }
 
-        private async Task SetSourceFromUriInternalAsync(
+        private async Task<bool> SetSourceFromUriInternalAsync(
             Uri videoUri,
             Uri separateAudioVideoUri,
             bool allowHlsManifestAudio,
@@ -4845,8 +4882,10 @@ namespace YouTube
         {
             if (videoUri == null)
             {
-                return;
+                return false;
             }
+
+            var mediaUserAgent = MediaRequestUserAgent;
 
             // Preserve playback intent before ResetSeparateAudio()/SetSource() clears _isPlaying.
             // This fixes quality switching when the caller passes autoPlay=false while the
@@ -4864,11 +4903,26 @@ namespace YouTube
             var absolute = videoUri.AbsoluteUri ?? string.Empty;
             var isM3u8 = absolute.IndexOf(".m3u8", StringComparison.OrdinalIgnoreCase) >= 0;
 
+            if (isM3u8 && separateAudioVideoUri == null && allowHlsManifestAudio)
+            {
+                try
+                {
+                    // Live and archived-live HLS may have an external audio group.
+                    // Let the native adaptive source open both tracks on one clock.
+                    return await TrySetHlsSourceAsync(videoUri, autoPlay, requestedQualityTag, CancellationToken.None);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Combined HLS source failed: " + ex.Message);
+                    return false;
+                }
+            }
+
             if (isM3u8)
             {
                 try
                 {
-                    var selection = await TryPickHlsVideoAndAudioAsync(videoUri, requestedQualityTag);
+                    var selection = await TryPickHlsVideoAndAudioAsync(videoUri, requestedQualityTag, mediaUserAgent);
                     if (selection != null && selection.VideoPlaylist != null)
                     {
                         var audioUri = separateAudioVideoUri;
@@ -4890,7 +4944,8 @@ namespace YouTube
                             _playImmediatelyAfterSeparateAudioOpened = true;
                             _pendingAutoPlayAfterSeparateAudioReady = true;
                         }
-                        await SetVisibleSourceFromUriAsync(selection.VideoPlaylist, autoPlay);
+                        if (!await SetVisibleSourceFromUriAsync(selection.VideoPlaylist, autoPlay, mediaUserAgent))
+                            return false;
 
                         if (audioUri != null)
                         {
@@ -4903,7 +4958,7 @@ namespace YouTube
                             var shouldStartAfterAudio = autoPlay || _resumePlaybackAfterQualityChange || _pendingAutoPlayAfterSeparateAudioReady;
                             _playImmediatelyAfterSeparateAudioOpened = shouldStartAfterAudio;
 
-                            await SetSeparateAudioSourceFromUriAsync(audioUri);
+                            await SetSeparateAudioSourceFromUriAsync(audioUri, mediaUserAgent);
                             _suppressAutoPlayUntilSeparateAudioReady = false;
 
                             // If the visible player already wanted to autoplay, do it now
@@ -4936,7 +4991,7 @@ namespace YouTube
                             _suppressAutoPlayUntilSeparateAudioReady = false;
                         }
 
-                        return;
+                        return true;
                     }
                 }
                 catch (Exception ex)
@@ -4952,7 +5007,8 @@ namespace YouTube
                 _playImmediatelyAfterSeparateAudioOpened = true;
                 _pendingAutoPlayAfterSeparateAudioReady = true;
             }
-            await SetVisibleSourceFromUriAsync(videoUri, autoPlay);
+            if (!await SetVisibleSourceFromUriAsync(videoUri, autoPlay, mediaUserAgent))
+                return false;
 
             if (separateAudioVideoUri != null)
             {
@@ -4962,7 +5018,7 @@ namespace YouTube
                 var shouldStartAfterAudio = autoPlay || _resumePlaybackAfterQualityChange || _pendingAutoPlayAfterSeparateAudioReady;
                 _playImmediatelyAfterSeparateAudioOpened = shouldStartAfterAudio;
 
-                await SetSeparateAudioSourceFromUriAsync(separateAudioVideoUri);
+                await SetSeparateAudioSourceFromUriAsync(separateAudioVideoUri, mediaUserAgent);
                 _suppressAutoPlayUntilSeparateAudioReady = false;
 
                 shouldStartAfterAudio = shouldStartAfterAudio || _pendingAutoPlayAfterSeparateAudioReady;
@@ -4990,16 +5046,18 @@ namespace YouTube
             {
                 _suppressAutoPlayUntilSeparateAudioReady = false;
             }
+            return true;
         }
 
-        private async Task SetVisibleSourceFromUriAsync(Uri uri, bool autoPlay)
+        private async Task<bool> SetVisibleSourceFromUriAsync(Uri uri, bool autoPlay, string mediaUserAgent)
         {
             if (uri == null)
             {
-                return;
+                return false;
             }
 
             var absolute = uri.AbsoluteUri ?? string.Empty;
+            var generation = _visibleSourceGeneration;
             var isM3u8 = absolute.IndexOf(".m3u8", StringComparison.OrdinalIgnoreCase) >= 0;
             var isMpd = absolute.IndexOf(".mpd", StringComparison.OrdinalIgnoreCase) >= 0;
 
@@ -5024,17 +5082,19 @@ namespace YouTube
                         var manifestFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(uri);
                         var manifestStream = await manifestFile.OpenReadAsync();
                         var contentType = isMpd ? "application/dash+xml" : "application/vnd.apple.mpegurl";
-                        videoResult = await AdaptiveMediaSource.CreateFromStreamAsync(manifestStream, uri, contentType);
+                        videoResult = await AdaptiveMediaSource.CreateFromStreamAsync(manifestStream, uri, contentType, GetAdaptiveDownloader(mediaUserAgent));
                     }
                     else
                     {
-                        videoResult = await AdaptiveMediaSource.CreateFromUriAsync(uri);
+                        videoResult = await AdaptiveMediaSource.CreateFromUriAsync(uri, GetAdaptiveDownloader(mediaUserAgent));
                     }
 
                     if (videoResult.Status == AdaptiveMediaSourceCreationStatus.Success && videoResult.MediaSource != null)
                     {
+                        if (_playbackReleased || generation != _visibleSourceGeneration) return false;
+                        RememberLiveAdaptiveSource(videoResult.MediaSource);
                         SetSource(MediaSource.CreateFromAdaptiveMediaSource(videoResult.MediaSource), autoPlay);
-                        return;
+                        return true;
                     }
 
                     System.Diagnostics.Debug.WriteLine($"CustomVideoPlayer: Video AdaptiveMediaSource failed: {videoResult.Status}");
@@ -5048,10 +5108,25 @@ namespace YouTube
                 // MediaSource.CreateFromUri — playing the .mpd/.m3u8 file itself always yields
                 // SourceNotSupported. Bail so the caller can fall through to its next source.
                 System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Adaptive manifest unusable; not attempting to play it as a plain source");
-                return;
+                return false;
             }
 
-            SetSource(MediaSource.CreateFromUri(uri), autoPlay);
+            try
+            {
+                if ((uri.Scheme == "https" || uri.Scheme == "http") && !string.IsNullOrWhiteSpace(mediaUserAgent))
+                {
+                    var stream = await PlaybackMediaStream.OpenAsync(uri, mediaUserAgent);
+                    if (_playbackReleased || generation != _visibleSourceGeneration) { stream.Dispose(); return false; }
+                    SetSource(MediaSource.CreateFromStream(stream.AsRandomAccessStream(), "video/mp4"), autoPlay);
+                }
+                else SetSource(MediaSource.CreateFromUri(uri), autoPlay);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Progressive source failed: " + ex.GetType().Name);
+                return false;
+            }
         }
 
         private Windows.Media.Playback.MediaPlayer GetOrCreateSeparateAudioPlayer()
@@ -5087,7 +5162,7 @@ namespace YouTube
             return _separateAudioPlayer;
         }
 
-        private async Task SetSeparateAudioSourceFromUriAsync(Uri audioUri)
+        private async Task SetSeparateAudioSourceFromUriAsync(Uri audioUri, string mediaUserAgent)
         {
             if (audioUri == null)
             {
@@ -5159,7 +5234,7 @@ namespace YouTube
                 {
                     try
                     {
-                        var audioResult = await AdaptiveMediaSource.CreateFromUriAsync(audioUri);
+                        var audioResult = await AdaptiveMediaSource.CreateFromUriAsync(audioUri, GetAdaptiveDownloader(mediaUserAgent));
                         if (audioResult.Status == AdaptiveMediaSourceCreationStatus.Success && audioResult.MediaSource != null)
                         {
                             separatePlayer.Source = MediaSource.CreateFromAdaptiveMediaSource(audioResult.MediaSource);
@@ -5218,7 +5293,9 @@ namespace YouTube
                         separatePlayer.MediaEnded -= AudioPlayer_MediaEnded;
                         DetachSeparateAudioPlaybackStateHandler(separatePlayer);
                         separatePlayer.Pause();
+                        var oldSource = separatePlayer.Source as IDisposable;
                         separatePlayer.Source = null; // Detach the source
+                        if (oldSource != null) { try { oldSource.Dispose(); } catch { } }
                     }
                     catch { }
                 }
@@ -5875,6 +5952,9 @@ namespace YouTube
                 }
 
                 var state = player.PlaybackSession.PlaybackState;
+                // A live source can remain Buffering after MediaOpened until Play is
+                // requested. Waiting for Paused first can prevent autoplay altogether.
+                if (_isLivePlayback && mediaOpened && state != MediaPlaybackState.Opening) return true;
                 if (state == MediaPlaybackState.Opening || state == MediaPlaybackState.Buffering)
                 {
                     return false;
@@ -5965,7 +6045,7 @@ namespace YouTube
             return false;
         }
 
-        private async Task<bool> WaitForVisibleVideoOpenedOrUsableAsync(CancellationToken token)
+        private async Task<bool> WaitForVisibleVideoOpenedOrUsableAsync(CancellationToken token, int sourceGeneration)
         {
             var startedUtc = DateTime.UtcNow;
             var timeout = _isWindowsMobileAudioMode ? SeparateAudioMobileReadyTimeout : SeparateAudioDefaultReadyTimeout;
@@ -5973,6 +6053,7 @@ namespace YouTube
 
             while (!token.IsCancellationRequested)
             {
+                if (sourceGeneration != _visibleSourceGeneration) return false;
                 var videoPlayer = MediaPlayer == null ? null : MediaPlayer.MediaPlayer;
                 if (IsReadyForBarrierStart(videoPlayer, _visibleVideoMediaOpened))
                 {
@@ -6397,6 +6478,7 @@ namespace YouTube
             public Uri AudioPlaylist { get; set; }
             public int SelectedQuality { get; set; }
             public string SelectedCodecs { get; set; }
+            public long SelectedBandwidth { get; set; }
         }
 
         private sealed class HlsVariant
@@ -6413,12 +6495,12 @@ namespace YouTube
             public string VideoRange { get; set; }
         }
 
-        private static async Task<HlsSelection> TryPickHlsVideoAndAudioAsync(Uri masterUri, string requestedQualityTag)
+        private static async Task<HlsSelection> TryPickHlsVideoAndAudioAsync(Uri masterUri, string requestedQualityTag, string mediaUserAgent)
         {
             try
             {
                 var req = new HttpRequestMessage(HttpMethod.Get, masterUri);
-                req.Headers.TryAddWithoutValidation("User-Agent", YouTubeIosUserAgent);
+                req.Headers.TryAddWithoutValidation("User-Agent", string.IsNullOrWhiteSpace(mediaUserAgent) ? YouTubeIosUserAgent : mediaUserAgent);
                 req.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                 req.Headers.TryAddWithoutValidation("Referer", YouTubeReferer);
 
@@ -6605,7 +6687,8 @@ namespace YouTube
                         VideoPlaylist = videoUri,
                         AudioPlaylist = audioUri,
                         SelectedQuality = selected.Quality,
-                        SelectedCodecs = selected.Codecs
+                        SelectedCodecs = selected.Codecs,
+                        SelectedBandwidth = selected.Bandwidth
                     };
                 }
 
@@ -6616,6 +6699,49 @@ namespace YouTube
                 System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Variant resolve failed: " + ex.Message);
                 return null;
             }
+        }
+
+        private static async Task<AdaptiveMediaSourceCreationResult> CreateHlsAdaptiveSourceAsync(Uri uri, string qualityTag, string userAgent)
+        {
+            var selected = await TryPickHlsVideoAndAudioAsync(uri, qualityTag, userAgent);
+            AdaptiveMediaSourceCreationResult result;
+            if (selected == null || selected.AudioPlaylist == null)
+                result = await AdaptiveMediaSource.CreateFromUriAsync(
+                    selected == null ? uri : selected.VideoPlaylist, GetAdaptiveDownloader(userAgent));
+            else
+            {
+                // Troubadour hands HLS to one native player. Preserve the selected
+                // codec information and external AAC group in its filtered master.
+                var codecs = (selected.SelectedCodecs ?? string.Empty).Replace("\"", string.Empty)
+                    .Replace("\r", string.Empty).Replace("\n", string.Empty);
+                var master = "#EXTM3U\n#EXT-X-MEDIA:TYPE=AUDIO,GROUP-ID=\"audio\",NAME=\"audio\",DEFAULT=YES,AUTOSELECT=YES,URI=\""
+                    + selected.AudioPlaylist.AbsoluteUri + "\"\n#EXT-X-STREAM-INF:BANDWIDTH="
+                    + Math.Max(1, selected.SelectedBandwidth)
+                    + (string.IsNullOrEmpty(codecs) ? string.Empty : ",CODECS=\"" + codecs + "\"")
+                    + ",AUDIO=\"audio\"\n"
+                    + selected.VideoPlaylist.AbsoluteUri + "\n";
+                using (var stream = new InMemoryRandomAccessStream())
+                {
+                    using (var writer = new DataWriter(stream))
+                    {
+                        writer.WriteString(master);
+                        await writer.StoreAsync();
+                        writer.DetachStream();
+                    }
+                    stream.Seek(0);
+                    result = await AdaptiveMediaSource.CreateFromStreamAsync(stream, uri,
+                        "application/vnd.apple.mpegurl", GetAdaptiveDownloader(userAgent));
+                }
+            }
+            return result;
+        }
+
+        internal static async Task<MediaSource> CreateShortsHlsSourceAsync(Uri uri, string qualityTag, string userAgent)
+        {
+            var result = await CreateHlsAdaptiveSourceAsync(uri, qualityTag, userAgent);
+            if (result.Status != AdaptiveMediaSourceCreationStatus.Success || result.MediaSource == null)
+                throw new InvalidOperationException("HLS source rejected: " + result.Status);
+            return MediaSource.CreateFromAdaptiveMediaSource(result.MediaSource);
         }
 
         private static HlsVariant PickHlsVariant(List<HlsVariant> variants, int requestedQuality)
@@ -7067,6 +7193,11 @@ namespace YouTube
                     return;
                 }
 
+                // Live sources choose their start before decoding: MSS.Starting
+                // selects the SABR row; HLS uses DesiredLiveOffset. A second seek
+                // after opening replays that row and is not a VOD resume operation.
+                if (_isLivePlayback) return;
+
                 if (MediaPlayer != null && MediaPlayer.MediaPlayer != null && MediaPlayer.MediaPlayer.PlaybackSession != null)
                 {
                     var position = _resumePositionAfterQualityChange;
@@ -7103,6 +7234,8 @@ namespace YouTube
                 try { if (source != null) source.Dispose(); } catch { }
                 return;
             }
+
+            var sourceGeneration = Interlocked.Increment(ref _visibleSourceGeneration);
 
             // This is a new source request. Establish its initial intent synchronously;
             // a later user Pause will set the latch again while the source is opening.
@@ -7186,7 +7319,9 @@ namespace YouTube
                 var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
                 try
                 {
-                    await WaitForVisibleVideoOpenedOrUsableAsync(cts.Token);
+                    var opened = await WaitForVisibleVideoOpenedOrUsableAsync(cts.Token, sourceGeneration);
+                    if (sourceGeneration != _visibleSourceGeneration) return;
+                    if (!opened) throw new OperationCanceledException();
 
                     if (_suppressAutoPlayUntilSeparateAudioReady || _playImmediatelyAfterSeparateAudioOpened)
                     {
@@ -7228,6 +7363,7 @@ namespace YouTube
                 }
                 catch (OperationCanceledException)
                 {
+                    if (sourceGeneration != _visibleSourceGeneration) return;
                     EndSourceLoading();
                     System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Timeout waiting for media to load");
                     if (ErrorMessageText != null)
@@ -7243,6 +7379,7 @@ namespace YouTube
             }
             catch (Exception ex)
             {
+                if (sourceGeneration != _visibleSourceGeneration) return;
                 System.Diagnostics.Debug.WriteLine("Error in SetSource: " + ex.Message);
                 if (ErrorMessageText != null)
                 {
@@ -7278,6 +7415,7 @@ namespace YouTube
         public void ResetForReuse()
         {
             _playbackReleased = false;
+            SetDesktopMiniPlayerMode(false);
         }
 
         // Eligible to hand off to the floating mini-player: a video is up, we are not already
@@ -7476,6 +7614,8 @@ namespace YouTube
 
         public void Stop()
         {
+            StopLivePlayback();
+            Interlocked.Increment(ref _visibleSourceGeneration);
             _userPauseRequested = true;
             _isPlaying = false;
             SetPlayPauseIcon(false);
@@ -7526,8 +7666,7 @@ namespace YouTube
 
         private async void MediaPlayer_MediaOpened(MediaPlayer sender, object args)
         {
-            _visibleVideoMediaOpened = true;
-            System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Media opened successfully");
+            var generation = _visibleSourceGeneration;
 
             // MediaPlayer.MediaOpened fires on a background thread. The body below touches
             // XAML UI (ProgressSlider, ReplayButton, PlayPauseButton), which throws a
@@ -7538,11 +7677,11 @@ namespace YouTube
                 var dispatcher = this.Dispatcher;
                 if (dispatcher != null && !dispatcher.HasThreadAccess)
                 {
-                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ApplyVisibleMediaOpened());
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ApplyVisibleMediaOpened(sender, generation));
                 }
                 else
                 {
-                    ApplyVisibleMediaOpened();
+                    ApplyVisibleMediaOpened(sender, generation);
                 }
             }
             catch (Exception ex)
@@ -7551,8 +7690,14 @@ namespace YouTube
             }
         }
 
-        private void ApplyVisibleMediaOpened()
+        private void ApplyVisibleMediaOpened(MediaPlayer sender, int generation)
         {
+            if (_playbackReleased || generation != _visibleSourceGeneration || MediaPlayer == null
+                || !ReferenceEquals(MediaPlayer.MediaPlayer, sender)) return;
+            _visibleVideoMediaOpened = true;
+            if (DesktopMiniPlayerWindow.IsPageWindowFor(this))
+                DesktopMiniPlayerWindow.UpdateAspectRatio(GetDesktopMiniPlayerAspectRatio());
+            System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Media opened successfully");
             // NaturalVideoWidth/Height are reliable only after MediaOpened. Recalculate the four
             // overlay rectangles now so opaque MediaPlayerElement letterboxing is fully covered.
             if (VideoAmbientEffectController.IsEnabled())
@@ -7561,6 +7706,7 @@ namespace YouTube
                 UpdateAmbientBarLayout();
             // The new source is ready — unlock play/seek and hide the spinner.
             EndSourceLoading();
+            if (_isLivePlayback) { _liveAwaitingSource = false; UpdateLivePlayback(); }
 
             // A fresh source resets the rate to 1x. Re-apply the user's chosen speed, but only on
             // a non-demuxed source — the demuxer can't exceed 1x, and SetDemuxedSource already
@@ -7586,7 +7732,7 @@ namespace YouTube
             UpdateTimeDisplay();
             
             // Set slider maximum to video duration in seconds
-            if (MediaPlayer.MediaPlayer != null)
+            if (!_isLivePlayback && MediaPlayer.MediaPlayer != null)
             {
                 // Use parsed duration from API if available, otherwise use MediaPlayer's NaturalDuration
                 TimeSpan duration;
@@ -7629,8 +7775,28 @@ namespace YouTube
             StartAutoHideTimer();
         }
 
-        private void MediaPlayer_MediaFailed(MediaPlayer sender, MediaPlayerFailedEventArgs args)
+        private async void MediaPlayer_MediaFailed(MediaPlayer sender, MediaPlayerFailedEventArgs args)
         {
+            var generation = _visibleSourceGeneration;
+            try
+            {
+                var dispatcher = Dispatcher;
+                if (dispatcher != null && !dispatcher.HasThreadAccess)
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => ApplyVisibleMediaFailed(sender, args, generation));
+                else ApplyVisibleMediaFailed(sender, args, generation);
+            }
+            catch (Exception ex)
+            { System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: MediaFailed handling failed - " + ex.Message); }
+        }
+
+        private void ApplyVisibleMediaFailed(MediaPlayer sender, MediaPlayerFailedEventArgs args, int generation)
+        {
+            if (_playbackReleased || generation != _visibleSourceGeneration || MediaPlayer == null
+                || !ReferenceEquals(MediaPlayer.MediaPlayer, sender)) return;
+            // The failed source's pending autoplay must not start or overwrite the
+            // source that the parent selects during playback recovery.
+            var failedGeneration = Interlocked.Increment(ref _visibleSourceGeneration);
+            _visibleVideoMediaOpened = false;
             var forwardedArgs = new CustomVideoPlayerMediaFailedEventArgs(args);
             try
             {
@@ -7650,19 +7816,13 @@ namespace YouTube
                 System.Diagnostics.Debug.WriteLine("CustomVideoPlayer: Media failure handled by parent.");
                 // The parent takes over (e.g. decoder fallback) — release the loading lock so the
                 // controls do not stay stuck behind the spinner.
-                var unlock = Dispatcher.RunAsync(
-                    Windows.UI.Core.CoreDispatcherPriority.Normal,
-                    () => EndSourceLoading()
-                );
+                if (failedGeneration == _visibleSourceGeneration) EndSourceLoading();
                 return;
             }
 
             var error = args.Error;
             var errorMessage = args.ErrorMessage;
-            var _ = Dispatcher.RunAsync(
-                Windows.UI.Core.CoreDispatcherPriority.Normal,
-                () => HandleUnhandledMediaFailure(error, errorMessage)
-            );
+            if (failedGeneration == _visibleSourceGeneration) HandleUnhandledMediaFailure(error, errorMessage);
         }
 
         private void HandleUnhandledMediaFailure(MediaPlayerError error, string errorMessage)
@@ -7818,6 +7978,7 @@ namespace YouTube
         // IDisposable implementation
         public void Dispose()
         {
+            StopLivePlayback();
             if (_isDisposed)
             {
                 return;
@@ -7829,7 +7990,6 @@ namespace YouTube
             Window.Current.SizeChanged -= Current_SizeChanged;
             SponsorBlock.TimelineMarkerVisibilityChanged -= SponsorBlock_TimelineMarkerVisibilityChanged;
             VideoAmbientEffectController.EnabledChanged -= VideoAmbientEffect_EnabledChanged;
-            FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
             DetachKeyboardShortcuts();
             this.Loaded -= CustomVideoPlayer_Loaded;
             this.Unloaded -= CustomVideoPlayer_Unloaded;
@@ -7922,6 +8082,28 @@ namespace YouTube
         // until the process died with no managed exception.
         private void ReleaseMediaPlayers()
         {
+            _playbackReleased = true;
+            if (DesktopMiniPlayerWindow.IsPageWindowFor(this))
+            {
+                _ambientRenderer.ClearVisuals();
+                var closingPlayer = MediaPlayer == null ? null : MediaPlayer.MediaPlayer;
+                var releaseAfterClose = ReleaseMediaPlayersAfterDesktopCloseAsync(closingPlayer);
+                return;
+            }
+            ReleaseMediaPlayersCore();
+        }
+
+        private async Task ReleaseMediaPlayersAfterDesktopCloseAsync(MediaPlayer closingPlayer)
+        {
+            await CloseDesktopMiniPlayerAsync();
+            // A cached page can be reopened before the window finishes closing.
+            // Its newly bound source must survive the previous navigation's cleanup.
+            if (_playbackReleased && MediaPlayer != null
+                && ReferenceEquals(MediaPlayer.MediaPlayer, closingPlayer)) ReleaseMediaPlayersCore();
+        }
+
+        private void ReleaseMediaPlayersCore()
+        {
             _ambientRenderer.ClearVisuals();
             try
             {
@@ -7929,7 +8111,10 @@ namespace YouTube
                 if (player != null)
                 {
                     try { player.Pause(); } catch { }
+                    try { player.MediaOpened -= MediaPlayer_MediaOpened; } catch { }
+                    try { player.MediaFailed -= MediaPlayer_MediaFailed; } catch { }
                     try { player.MediaEnded -= VisibleVideoPlayer_MediaEnded; } catch { }
+                    try { player.PlaybackSession.PlaybackStateChanged -= VisibleVideoPlaybackStateChanged; } catch { }
 
                     // Disposing the source closes our MediaStreamSource, which stops the
                     // demuxer's background prefetching (see DashMediaSource.OnClosed).

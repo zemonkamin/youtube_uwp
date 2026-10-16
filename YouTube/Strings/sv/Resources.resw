@@ -1050,4 +1050,91 @@ Version {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Visa sökfältet i mitten</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Inloggning i webbläsaren</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Använd det här kontot för uppspelning</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Inloggad · Logga ut</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Logga in på Google-sidan, gå tillbaka till YouTube och tryck på OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Slutför först inloggningen på Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Det gick inte att slutföra inloggningen. Försök igen.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Lägg till en kommentar...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Skicka</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Det gick inte att skicka kommentaren.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube tillåter inte kommentarer på den här videon.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Logga in i webbläsaren för att skriva kommentarer.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Du</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Livechatt</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Toppchatt</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Alla meddelanden</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Inga meddelanden ännu</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Återansluter till chatten…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Väntar på sändningen…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Sändningen har avslutats</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Gå till direktsändningen</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Visa antal ogilla-markeringar</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Uppskattning från Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Flikfält till vänster</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>I liggande läge på Windows-datorer och Continuum</value>
+  </data>
 </root>

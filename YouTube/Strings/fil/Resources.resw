@@ -1050,4 +1050,91 @@ Bersyon {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Ipakita ang search bar sa gitna</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Pag-sign in sa browser</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Gamitin ang account na ito para sa pag-play</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Naka-sign in · Mag-sign out</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Mag-sign in sa pahina ng Google, bumalik sa YouTube at pindutin ang OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Tapusin muna ang pag-sign in sa Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Hindi makumpleto ang pag-sign in. Subukan ulit.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Magdagdag ng komento...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>I-post</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Hindi ma-post ang komento.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>Hindi pinapayagan ng YouTube ang pagkokomento sa video na ito.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Mag-sign in sa browser para mag-post ng mga komento.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Ikaw</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Live chat</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Nangungunang chat</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Lahat ng mensahe</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Wala pang mga mensahe</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Muling kumokonekta sa chat…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Hinihintay ang broadcast…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Natapos na ang broadcast</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Pumunta sa live</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Ipakita ang bilang ng mga dislike</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Tantya mula sa Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Tab bar sa kaliwa</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Sa landscape sa desktop Windows at Continuum</value>
+  </data>
 </root>

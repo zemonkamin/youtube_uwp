@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -21,12 +21,13 @@
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
     <AppxBundleAutoResourcePackageQualifiers>Scale|DXFeatureLevel</AppxBundleAutoResourcePackageQualifiers>
-    <AppxDefaultResourceQualifiers>Language=af-ZA;az-Latn-AZ;id-ID;ms-MY;bs-Latn-BA;ca-ES;cs-CZ;da-DK;de-DE;et-EE;en-IN;en-GB;en-US;es-ES;es-MX;es-US;eu-ES;fil-PH;fr-FR;fr-CA;gl-ES;hr-HR;zu-ZA;is-IS;it-IT;sw-KE;lv-LV;lt-LT;hu-HU;nl-NL;nb-NO;uz-Latn-UZ;pl-PL;pt-PT;pt-BR;ro-RO;sq-AL;sk-SK;sl-SI;sr-Latn-RS;fi-FI;sv-SE;vi-VN;tr-TR;be-BY;bg-BG;ky-KG;kk-KZ;mk-MK;mn-MN;ru-RU;sr-Cyrl-RS;uk-UA;el-GR;hy-AM;ne-NP;mr-IN;hi-IN;as-IN;bn-BD;pa-IN;gu-IN;or-IN;ta-IN;te-IN;kn-IN;ml-IN;si-LK;th-TH;lo-LA;my-MM;ka-GE;am-ET;km-KH;zh-CN;zh-TW;zh-HK;ja-JP;ko-KR|Contrast=standard|Scale=200|HomeRegion=001|TargetSize=256|LayoutDirection=LTR|DXFeatureLevel=DX9|Configuration=|AlternateForm=</AppxDefaultResourceQualifiers>
+    <AppxDefaultResourceQualifiers>Language=en-US|Contrast=standard|Scale=200|HomeRegion=001|TargetSize=256|LayoutDirection=LTR|DXFeatureLevel=DX9|Configuration=|AlternateForm=</AppxDefaultResourceQualifiers>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
     <PackageCertificateThumbprint>309EA63520FF505E4DC02171E6AE1A9102A21C67</PackageCertificateThumbprint>
+    <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -97,6 +98,11 @@
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
   </PropertyGroup>
+  <!-- VS2015 keeps the original 14393 target. VS2017+ opts into Compact Overlay (15063). -->
+  <PropertyGroup Condition="'$(VisualStudioVersion)' &gt;= '15.0'">
+    <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>
+    <DefineConstants>$(DefineConstants);VS2017_DESKTOP_PIP</DefineConstants>
+  </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Content Include="Assets\**\*.*" />
@@ -104,10 +110,19 @@
       <Link>Discord\DiscordBridge.exe</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="project.json" />
     <None Include="YouTube_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DesktopMiniPlayerSetting.cs" />
+    <Compile Include="DislikeCountService.cs" />
+    <Compile Include="Video.Dislikes.cs" />
+    <Compile Include="Shorts.Dislikes.cs" />
+    <Compile Include="Settings.Dislikes.cs" />
+    <Compile Include="Settings.SideTabbar.cs" />
+    <Compile Include="Tabbar.SideLayout.cs" />
+    <Compile Include="SideTabbarController.cs" />
+    <Compile Include="DesktopMiniPlayerWindow.cs" />
+    <Compile Include="CustomVideoPlayer.DesktopMini.cs" />
     <Compile Include="AndroidLoadingRing.xaml.cs">
       <DependentUpon>AndroidLoadingRing.xaml</DependentUpon>
     </Compile>
@@ -124,6 +139,12 @@
     <Compile Include="LandscapeNavbarSearchModeController.cs" />
     <Compile Include="SearchQueryStateController.cs" />
     <Compile Include="DashDemuxer.cs" />
+    <Compile Include="LiveMediaSource.cs" />
+    <Compile Include="CustomVideoPlayer.Live.cs" />
+    <Compile Include="Video.Live.cs" />
+    <Compile Include="LiveChatView.xaml.cs">
+      <DependentUpon>LiveChatView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Discord\Config.cs" />
     <Compile Include="Discord\DiscordPresenceService.cs" />
     <Compile Include="Discord\DiscordRpcClient.cs" />
@@ -145,12 +166,28 @@
     </Compile>
     <Compile Include="Innertube\FastJson.cs" />
     <Compile Include="Innertube\InnertubeRequestCoordinator.cs" />
+    <Compile Include="Innertube\PlaybackResolver.cs" />
+    <Compile Include="Innertube\PlaybackMediaStream.cs" />
+    <Compile Include="Innertube\LiveSabrSession.cs" />
+    <Compile Include="Innertube\LiveTimeline.cs" />
+    <Compile Include="Innertube\LivePoToken.cs" />
+    <Compile Include="Innertube\PlayerNSig.cs" />
+    <Compile Include="Innertube\LiveChatService.cs" />
     <Compile Include="Innertube\Config.cs" />
+    <Compile Include="Innertube\Config.History.cs" />
+    <Compile Include="Innertube\WatchHistoryReporter.cs" />
+    <Compile Include="Innertube\Config.CommentWriting.cs" />
+    <Compile Include="Innertube\Config.Authentication.cs" />
     <Compile Include="Innertube\Config.GuestHome.cs" />
+    <Compile Include="Innertube\Config.LiveHome.cs" />
     <Compile Include="Innertube\Config.Performance.cs" />
     <Compile Include="Innertube\Config.Playlists.cs" />
     <Compile Include="Innertube\InnertubeEndpoints.cs" />
     <Compile Include="Innertube\OAuthClient.cs" />
+    <Compile Include="Innertube\WebAccountSession.cs" />
+    <Compile Include="GoogleSignIn.xaml.cs">
+      <DependentUpon>GoogleSignIn.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Innertube\SearchSuggestionsClient.cs" />
     <Compile Include="Innertube\TvSignInClient.cs" />
     <Compile Include="Innertube\YouTubeApiConfig.cs" />
@@ -201,6 +238,9 @@
     </Compile>
     <Compile Include="Shorts.xaml.cs">
       <DependentUpon>Shorts.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CommentComposer.xaml.cs">
+      <DependentUpon>CommentComposer.xaml</DependentUpon>
     </Compile>
     <Compile Include="Subscriptions.xaml.cs">
       <DependentUpon>Subscriptions.xaml</DependentUpon>
@@ -343,6 +383,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GoogleSignIn.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CustomShortsPlayer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -403,6 +447,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CommentComposer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="LiveChatView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Subscriptions.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -416,16 +468,23 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>5.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Win2D.uwp">
+      <Version>1.21.0</Version>
+    </PackageReference>
+  </ItemGroup>
   <ItemGroup>
     <!-- Needed for Windows.UI.ViewManagement.StatusBar (mobile-only API). Every use of it is
          guarded by ApiInformation, so the app still runs where the type is absent. -->
-    <SDKReference Include="WindowsMobile, Version=10.0.14393.0">
-      <Name>Windows Mobile Extensions for the UWP</Name>
-    </SDKReference>
     <!-- FullTrustProcessLauncher is desktop-only and is guarded by DeviceFamily/ApiInformation. -->
-    <SDKReference Include="WindowsDesktop, Version=10.0.14393.0">
+    <SDKReference Include="WindowsDesktop, Version=$(TargetPlatformVersion)">
       <Name>Windows Desktop Extensions for the UWP</Name>
+    </SDKReference>
+    <SDKReference Include="WindowsMobile, Version=$(TargetPlatformVersion)">
+      <Name>Windows Mobile Extensions for the UWP</Name>
     </SDKReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

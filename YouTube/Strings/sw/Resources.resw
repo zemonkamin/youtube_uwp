@@ -1050,4 +1050,91 @@ Toleo {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Onyesha upau wa utafutaji katikati</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Kuingia kwenye kivinjari</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Tumia akaunti hii kwa uchezaji</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Umeingia · Ondoka</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Ingia kwenye ukurasa wa Google, rudi kwenye YouTube na ubonyeze OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Kamilisha kwanza kuingia kwenye Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Imeshindwa kukamilisha kuingia. Jaribu tena.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Ongeza maoni...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Tuma</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Maoni hayakuweza kutumwa.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube hairuhusu maoni kwenye video hii.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Ingia kwenye kivinjari ili kutuma maoni.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Wewe</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Gumzo la moja kwa moja</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Gumzo kuu</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Ujumbe wote</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Hakuna ujumbe bado</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Inaunganisha tena kwenye gumzo…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Inasubiri matangazo…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Matangazo yameisha</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Nenda kwenye matangazo ya moja kwa moja</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Onyesha idadi ya kutopenda</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Makadirio kutoka Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Upau wa vichupo kushoto</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Katika hali ya mlalo kwenye Windows ya kompyuta na Continuum</value>
+  </data>
 </root>

@@ -44,6 +44,7 @@ namespace YouTube
         private static readonly Thickness LandscapeCardMargin = new Thickness(8, 0, 8, 16);
 
         private bool isLoadingMore = false;
+        private int _homeFeedGeneration;
         private int recommendationRequestCount = RecommendationPageSize;
         private string recommendationsContinuationToken = string.Empty;
         private bool recommendationsReachedEnd = false;
@@ -119,6 +120,8 @@ namespace YouTube
 
         private async Task LoadHomeDataAsync()
         {
+            var generation = ++_homeFeedGeneration;
+            isLoadingMore = true;
             try
             {
                 if (!IsInternetAvailable())
@@ -169,12 +172,14 @@ namespace YouTube
                 // Categories are fixed locally. Render only the initially visible strip now;
                 // append the off-screen chips at low dispatcher priority after cards appear.
                 var categories = await Config.GetHomeCategoriesAsync(Config.UserToken);
+                if (generation != _homeFeedGeneration) return;
                 homeCategories = categories != null ? categories : new List<HomeCategoryItem>();
                 selectedCategory = FindAllCategory(homeCategories);
                 RenderCategoryChips(InitialCategoryChipCount);
 
                 // One request returns both cards and the token for the real next page.
                 var page = await pageTask;
+                if (generation != _homeFeedGeneration) return;
 
                 var recommendations = page != null ? page.Videos : null;
                 recommendationsContinuationToken =
@@ -210,6 +215,7 @@ namespace YouTube
             }
             catch (Exception ex)
             {
+                if (generation != _homeFeedGeneration) return;
                 System.Diagnostics.Debug.WriteLine("[Home] Exception: " + ex.Message);
                 recommendationVideos.Clear();
 
@@ -227,24 +233,20 @@ namespace YouTube
             }
             finally
             {
-                if (SkeletonLoader != null)
-                {
-                    SkeletonLoader.Visibility = Visibility.Collapsed;
-                }
-
-                if (BottomLoadingPanel != null)
-                {
-                    BottomLoadingPanel.Visibility = Visibility.Collapsed;
-                }
-
-                if (BottomLoadingRing != null)
-                {
-                    BottomLoadingRing.IsActive = false;
-                }
-
-                SetHomeLoading(false);
-                ShowInlineCardPlaceholders(false);
+                CompleteHomeFeedLoad(generation);
             }
+        }
+
+        private void CompleteHomeFeedLoad(int generation)
+        {
+            // A slower response from another category must not change the current loader.
+            if (generation != _homeFeedGeneration) return;
+            isLoadingMore = false;
+            if (SkeletonLoader != null) SkeletonLoader.Visibility = Visibility.Collapsed;
+            if (BottomLoadingPanel != null) BottomLoadingPanel.Visibility = Visibility.Collapsed;
+            if (BottomLoadingRing != null) BottomLoadingRing.IsActive = false;
+            SetHomeLoading(false);
+            ShowInlineCardPlaceholders(false);
         }
 
         private async void ScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
@@ -265,10 +267,11 @@ namespace YouTube
         {
             if (isLoadingMore || !IsInternetAvailable()) return;
 
-            // "All" uses a true YouTube continuation. Once the server says there is no next page,
-            // stop hitting the endpoint every time the user reaches the bottom.
+            // Both the main feed and Live follow the server's next-page cursor.
+            var category = selectedCategory;
             bool isAllRecommendations = selectedCategory == null || selectedCategory.IsAll;
-            if (isAllRecommendations && recommendationsReachedEnd)
+            bool isLiveRecommendations = Config.IsLiveHomeCategory(category);
+            if ((isAllRecommendations || isLiveRecommendations) && recommendationsReachedEnd)
             {
                 return;
             }
@@ -283,6 +286,7 @@ namespace YouTube
             lastLoadMoreAttemptUtc = nowUtc;
 
             isLoadingMore = true;
+            var generation = _homeFeedGeneration;
 
             if (BottomLoadingPanel != null)
             {
@@ -298,16 +302,20 @@ namespace YouTube
             {
                 int added;
 
-                if (isAllRecommendations)
+                if (isAllRecommendations || isLiveRecommendations)
                 {
                     var tokenUsed = recommendationsContinuationToken;
-                    var page = await GetAllHomePageAsync(tokenUsed);
+                    var page = isLiveRecommendations
+                        ? await Config.GetLiveHomePageAsync(Config.UserToken, tokenUsed)
+                        : await GetAllHomePageAsync(tokenUsed);
+                    if (generation != _homeFeedGeneration) return;
 
                     var moreRecommendations = page != null ? page.Videos : null;
                     recommendationsContinuationToken =
                         page != null ? (page.ContinuationToken ?? string.Empty) : string.Empty;
                     recommendationsReachedEnd =
-                        string.IsNullOrWhiteSpace(recommendationsContinuationToken);
+                        string.IsNullOrWhiteSpace(recommendationsContinuationToken)
+                        || string.Equals(tokenUsed, recommendationsContinuationToken, StringComparison.Ordinal);
 
                     added = AppendUniqueRecommendations(moreRecommendations);
                     BeginHomePageEnrichment(page);
@@ -319,12 +327,11 @@ namespace YouTube
                 }
                 else
                 {
-                    // Fixed category chips are search-backed and currently do not expose their
-                    // continuation through Config, so retain the old count-growth behavior only
-                    // for those categories. The main Home recommendations no longer use it.
+                    // Search-backed chips retain their existing count-growth behavior.
                     var nextRequestCount = recommendationRequestCount + RecommendationPageSize;
                     var moreRecommendations =
-                        await GetSelectedCategoryVideosAsync(nextRequestCount);
+                        await GetSelectedCategoryVideosAsync(nextRequestCount, category);
+                    if (generation != _homeFeedGeneration) return;
                     added = AppendUniqueRecommendations(moreRecommendations);
                     recommendationRequestCount = nextRequestCount;
                 }
@@ -335,21 +342,12 @@ namespace YouTube
             }
             catch (Exception ex)
             {
+                if (generation != _homeFeedGeneration) return;
                 System.Diagnostics.Debug.WriteLine("[Home] Load more error: " + ex.Message);
             }
             finally
             {
-                isLoadingMore = false;
-
-                if (BottomLoadingPanel != null)
-                {
-                    BottomLoadingPanel.Visibility = Visibility.Collapsed;
-                }
-
-                if (BottomLoadingRing != null)
-                {
-                    BottomLoadingRing.IsActive = false;
-                }
+                CompleteHomeFeedLoad(generation);
             }
         }
 
@@ -408,15 +406,22 @@ namespace YouTube
 
         private async Task LoadSelectedCategoryVideosAsync()
         {
-            if (selectedCategory == null)
+            var category = selectedCategory;
+            if (category == null)
             {
                 return;
             }
 
+            var generation = ++_homeFeedGeneration;
+            if (SkeletonLoader != null) SkeletonLoader.Visibility = Visibility.Collapsed;
+            if (BottomLoadingPanel != null) BottomLoadingPanel.Visibility = Visibility.Collapsed;
+            if (BottomLoadingRing != null) BottomLoadingRing.IsActive = false;
+            ShowCategoryPlaceholders(false);
+
             if (!IsInternetAvailable())
             {
                 recommendationVideos.Clear();
-                ShowInlineCardPlaceholders(false);
+                CompleteHomeFeedLoad(generation);
                 ShowOfflineState(true);
                 return;
             }
@@ -424,11 +429,6 @@ namespace YouTube
             ShowOfflineState(false);
 
             Config.LoadUserToken();
-
-            if (isLoadingMore)
-            {
-                return;
-            }
 
             isLoadingMore = true;
             recommendationRequestCount = RecommendationPageSize;
@@ -441,9 +441,12 @@ namespace YouTube
             try
             {
                 List<VideoCardItem> videos;
-                if (selectedCategory.IsAll)
+                if (category.IsAll || Config.IsLiveHomeCategory(category))
                 {
-                    var page = await GetAllHomePageAsync(null);
+                    var page = Config.IsLiveHomeCategory(category)
+                        ? await Config.GetLiveHomePageAsync(Config.UserToken, null)
+                        : await GetAllHomePageAsync(null);
+                    if (generation != _homeFeedGeneration) return;
                     videos = page != null ? page.Videos : null;
                     recommendationsContinuationToken = page != null
                         ? (page.ContinuationToken ?? string.Empty)
@@ -454,7 +457,8 @@ namespace YouTube
                 }
                 else
                 {
-                    videos = await GetSelectedCategoryVideosAsync(recommendationRequestCount);
+                    videos = await GetSelectedCategoryVideosAsync(recommendationRequestCount, category);
+                    if (generation != _homeFeedGeneration) return;
                 }
                 AppendUniqueRecommendations(videos);
                 UpdateResponsiveCardLayouts();
@@ -466,6 +470,7 @@ namespace YouTube
             }
             catch (Exception ex)
             {
+                if (generation != _homeFeedGeneration) return;
                 System.Diagnostics.Debug.WriteLine("[Home] Category load error: " + ex.Message);
                 if (!IsInternetAvailable() || IsNetworkException(ex))
                 {
@@ -476,9 +481,7 @@ namespace YouTube
             }
             finally
             {
-                isLoadingMore = false;
-                SetHomeLoading(false);
-                ShowInlineCardPlaceholders(false);
+                CompleteHomeFeedLoad(generation);
             }
         }
 
@@ -512,9 +515,9 @@ namespace YouTube
             }
         }
 
-        private async Task<List<VideoCardItem>> GetSelectedCategoryVideosAsync(int count)
+        private async Task<List<VideoCardItem>> GetSelectedCategoryVideosAsync(int count, HomeCategoryItem category)
         {
-            if (selectedCategory == null || selectedCategory.IsAll)
+            if (category == null || category.IsAll)
             {
                 var page = await GetAllHomePageAsync(null);
                 return page != null && page.Videos != null
@@ -522,7 +525,7 @@ namespace YouTube
                     : new List<VideoCardItem>();
             }
 
-            return await Config.GetHomeCategoryVideosAsync(Config.UserToken, selectedCategory, count);
+            return await Config.GetHomeCategoryVideosAsync(Config.UserToken, category, count);
         }
 
         private void RenderCategoryChips(int maxCount = int.MaxValue)
@@ -1180,6 +1183,8 @@ namespace YouTube
 
         private void Page_Unloaded(object sender, RoutedEventArgs e)
         {
+            ++_homeFeedGeneration;
+            isLoadingMore = false;
             Window.Current.SizeChanged -= Window_SizeChanged;
         }
 

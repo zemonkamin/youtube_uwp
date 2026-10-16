@@ -1050,4 +1050,91 @@ Stutt af YouTube API Legacy.
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Sýna leitarstikuna í miðjunni</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Innskráning í vafra</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Nota þennan reikning við spilun</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Innskráð · Skrá út</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Skráðu þig inn á Google-síðunni, farðu aftur á YouTube og ýttu á OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Ljúktu fyrst við innskráningu á Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Ekki tókst að ljúka innskráningu. Reyndu aftur.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Bættu við athugasemd...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Senda</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Ekki tókst að senda athugasemdina.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube leyfir ekki athugasemdir við þetta myndband.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Skráðu þig inn í vafranum til að senda athugasemdir.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Þú</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Spjall í beinni</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Vinsælasta spjallið</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Öll skilaboð</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Engin skilaboð enn</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Tengist spjallinu aftur…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Beðið eftir útsendingu…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Útsendingu lokið</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Fara í beina útsendingu</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Sýna fjölda mislíkunar</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Áætlun frá Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Flipastika vinstra megin</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Í landslagsstillingu á Windows-tölvum og Continuum</value>
+  </data>
 </root>

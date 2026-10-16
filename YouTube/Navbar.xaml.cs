@@ -27,6 +27,7 @@ namespace YouTube
         private bool _horizontalLayoutActive;
         private bool _searchInputSessionActive;
         private bool _searchTextStateReady;
+        private bool _usePageAmbientBackground;
 
         public sealed class SearchHistoryItem
         {
@@ -52,6 +53,12 @@ namespace YouTube
             }
             UpdateAccountButtonsVisibility();
             UpdateLayoutForCurrentWindow();
+        }
+
+        public void SetPageAmbientBackground(bool enabled)
+        {
+            _usePageAmbientBackground = enabled;
+            ApplyGlassEffect();
         }
 
         public void SetHorizontalLayout()
@@ -91,6 +98,10 @@ namespace YouTube
 
             FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
             FluentGlassEffectHelper.EnabledChanged += GlassEffect_EnabledChanged;
+            VideoAmbientEffectController.EnabledChanged -= GlassEffect_EnabledChanged;
+            VideoAmbientEffectController.EnabledChanged += GlassEffect_EnabledChanged;
+            App.ThemeChanged -= GlassEffect_EnabledChanged;
+            App.ThemeChanged += GlassEffect_EnabledChanged;
             if (NavbarGlassHost != null)
             {
                 NavbarGlassHost.SizeChanged -= NavbarGlassHost_SizeChanged;
@@ -105,6 +116,8 @@ namespace YouTube
             Window.Current.SizeChanged -= Window_SizeChanged;
             Window.Current.CoreWindow.PointerPressed -= CoreWindow_PointerPressed;
             FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
+            VideoAmbientEffectController.EnabledChanged -= GlassEffect_EnabledChanged;
+            App.ThemeChanged -= GlassEffect_EnabledChanged;
             if (NavbarGlassHost != null)
                 NavbarGlassHost.SizeChanged -= NavbarGlassHost_SizeChanged;
 
@@ -187,9 +200,10 @@ namespace YouTube
                 return;
 
             // Reserve enough room for the logo on the left and notification controls on the
-            // right, while keeping the search field centered relative to the whole window.
+            // right. The navbar spans the full window above the sidebar.
             var compact = ResponsiveLayout.IsCompactLandscape;
-            var available = Window.Current.Bounds.Width - (compact ? 120.0 : 360.0);
+            var width = ActualWidth > 0 ? ActualWidth : Window.Current.Bounds.Width;
+            var available = width - (compact ? 120.0 : 360.0);
             var minimum = compact ? 240.0 : MinimumCenteredSearchWidth;
             CenteredSearchHost.Width = Math.Max(
                 minimum,
@@ -198,6 +212,7 @@ namespace YouTube
 
         private void NavbarGlassHost_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            UpdateCenteredSearchWidth();
             ApplyGlassEffect();
         }
 
@@ -215,7 +230,8 @@ namespace YouTube
 
             FluentGlassEffectHelper.AttachTopBar(
                 NavbarGlassHost,
-                App.GetThemeBrush("AppBackgroundBrush"));
+                App.GetThemeBrush("AppBackgroundBrush"),
+                _usePageAmbientBackground);
         }
 
         private void UpdateAccountButtonsVisibility()

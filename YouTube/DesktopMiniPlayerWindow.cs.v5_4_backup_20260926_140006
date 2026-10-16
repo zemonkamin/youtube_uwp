@@ -1,0 +1,365 @@
+﻿using System;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation;
+using Windows.Media.Playback;
+using Windows.UI;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+
+namespace YouTube
+{
+    // A true secondary UWP view used by supported VS2017+ desktop builds.
+    // The existing MediaPlayer instance is reused; no second stream/decoder is created.
+    // Unlike the in-app mini-player, Compact Overlay uses native Windows window chrome.
+    internal static class DesktopMiniPlayerWindow
+    {
+        private const double MinimumWidth = 180.0;
+        private const double MinimumHeight = 100.0;
+
+        private static bool _isOpening;
+        private static bool _isActive;
+        private static bool _suppressConsolidatedCallback;
+        private static int _viewId;
+        private static CoreApplicationView _view;
+        private static CoreDispatcher _secondaryDispatcher;
+        private static CoreDispatcher _mainDispatcher;
+        private static MediaPlayerElement _mediaElement;
+        private static MediaPlayer _sharedPlayer;
+        private static Action _restoreRequested;
+        private static Action _closeRequested;
+        private static Action _failed;
+
+        public static bool IsOpening { get { return _isOpening; } }
+        public static bool IsActive { get { return _isActive; } }
+
+        public static bool TryShow(
+            CustomVideoPlayer owner,
+            double videoAspectRatio,
+            Action restoreRequested,
+            Action closeRequested,
+            Action failed)
+        {
+#if VS2017_DESKTOP_PIP
+            if (owner == null || !DesktopMiniPlayerSetting.IsEnabled() || _isOpening || _isActive)
+            {
+                return false;
+            }
+
+            try
+            {
+                var ownerElement = owner.GetMediaPlayer();
+                var shared = ownerElement == null ? null : ownerElement.MediaPlayer;
+                if (shared == null)
+                {
+                    return false;
+                }
+
+                _sharedPlayer = shared;
+                _restoreRequested = restoreRequested;
+                _closeRequested = closeRequested;
+                _failed = failed;
+                _mainDispatcher = Window.Current.Dispatcher;
+                _isOpening = true;
+                ShowAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] TryShow failed: " + ex.Message);
+                ResetState(false);
+                return false;
+            }
+#else
+            return false;
+#endif
+        }
+
+#if VS2017_DESKTOP_PIP
+        private static async void ShowAsync()
+        {
+            try
+            {
+                _view = CoreApplication.CreateNewView();
+                await _view.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    _secondaryDispatcher = Window.Current.Dispatcher;
+                    BuildSecondaryWindow();
+                    var appView = ApplicationView.GetForCurrentView();
+                    _viewId = appView.Id;
+                    appView.Consolidated += SecondaryView_Consolidated;
+                    try
+                    {
+                        appView.SetPreferredMinSize(new Size(MinimumWidth, MinimumHeight));
+                    }
+                    catch
+                    {
+                    }
+                    Window.Current.Activate();
+                });
+
+                // SDK 15063 introduced CompactOverlay. Use the two-argument overload here: it is
+                // enough for a real always-on-top PiP view and avoids depending on optional custom
+                // sizing preferences during view creation. Windows can still let the user resize it.
+                var shown = await ApplicationViewSwitcher.TryShowAsViewModeAsync(
+                    _viewId,
+                    ApplicationViewMode.CompactOverlay);
+
+                if (!shown)
+                {
+                    throw new InvalidOperationException("Windows refused CompactOverlay for the secondary view.");
+                }
+
+                _isOpening = false;
+                _isActive = true;
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Secondary CompactOverlay opened.");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Open failed: " + ex.Message);
+                await CleanupFailedOpenAsync();
+                var failed = _failed;
+                var mainDispatcher = _mainDispatcher;
+                ResetState(false);
+                if (failed != null && mainDispatcher != null)
+                {
+                    await mainDispatcher.RunAsync(CoreDispatcherPriority.Normal, () => failed());
+                }
+            }
+        }
+
+        private static void BuildSecondaryWindow()
+        {
+            // Compact Overlay already has its own system window chrome. Do not imitate the
+            // in-app mini-player here: no rounded Border, no custom play/close buttons and no
+            // resize hit zones. The secondary view is just the live video surface.
+            ConfigureTransparentTitleBar();
+
+            var root = new Grid
+            {
+                Background = new SolidColorBrush(Colors.Black)
+            };
+
+            _mediaElement = new MediaPlayerElement
+            {
+                AreTransportControlsEnabled = false,
+                Stretch = Stretch.Uniform,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
+            _mediaElement.SetMediaPlayer(_sharedPlayer);
+            root.Children.Add(_mediaElement);
+
+            // Keep a completely chrome-free restore gesture. There is no visible app button:
+            // double-click / double-tap the video to return it to the main window.
+            root.DoubleTapped += SecondaryRoot_DoubleTapped;
+
+            Window.Current.Content = root;
+        }
+
+        private static void ConfigureTransparentTitleBar()
+        {
+            try
+            {
+                // A normal ApplicationViewTitleBar background cannot be alpha-transparent.
+                // Extending the XAML content into the title bar is the supported UWP way to
+                // let the video itself paint behind the system caption area.
+                var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+                coreTitleBar.ExtendViewIntoTitleBar = true;
+
+                var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+                titleBar.ButtonBackgroundColor = Colors.Transparent;
+                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+                titleBar.ButtonHoverBackgroundColor = Colors.Transparent;
+                titleBar.ButtonPressedBackgroundColor = Colors.Transparent;
+                titleBar.ButtonForegroundColor = Colors.White;
+                titleBar.ButtonHoverForegroundColor = Colors.White;
+                titleBar.ButtonPressedForegroundColor = Colors.White;
+                titleBar.ButtonInactiveForegroundColor = Color.FromArgb(170, 255, 255, 255);
+
+                // With no custom XAML title element set, Windows retains the standard draggable
+                // caption region and system caption buttons while our video paints underneath.
+                Window.Current.SetTitleBar(null);
+            }
+            catch (Exception ex)
+            {
+                // Title-bar customization is cosmetic. Never make PiP fail because a particular
+                // Windows build/theme refused one of the caption properties.
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Title bar customization failed: " + ex.Message);
+            }
+        }
+
+        private static void SecondaryRoot_DoubleTapped(object sender, Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            var action = _restoreRequested;
+            var dispatcher = _mainDispatcher;
+            if (action == null || dispatcher == null)
+            {
+                return;
+            }
+            dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => action());
+        }
+
+        private static async void SecondaryView_Consolidated(
+            ApplicationView sender,
+            ApplicationViewConsolidatedEventArgs args)
+        {
+            if (_suppressConsolidatedCallback)
+            {
+                return;
+            }
+
+            try
+            {
+                DetachSecondarySurface();
+            }
+            catch
+            {
+            }
+
+            _isActive = false;
+            _isOpening = false;
+            var close = _closeRequested;
+            var dispatcher = _mainDispatcher;
+            ClearSecondaryOnly();
+            if (close != null && dispatcher != null)
+            {
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => close());
+            }
+        }
+
+        private static void DetachSecondarySurface()
+        {
+            try
+            {
+                if (_mediaElement != null)
+                {
+                    _mediaElement.SetMediaPlayer(null);
+                }
+            }
+            catch
+            {
+            }
+            _mediaElement = null;
+        }
+
+        private static async Task CleanupFailedOpenAsync()
+        {
+            var dispatcher = _secondaryDispatcher;
+            if (dispatcher == null)
+            {
+                return;
+            }
+            try
+            {
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    DetachSecondarySurface();
+                    try
+                    {
+                        Window.Current.Content = null;
+                    }
+                    catch
+                    {
+                    }
+                });
+            }
+            catch
+            {
+            }
+        }
+
+        public static async Task<bool> CloseForRestoreAsync()
+        {
+            return await CloseViewAsync();
+        }
+
+        public static async Task<bool> CloseForFinalAsync()
+        {
+            return await CloseViewAsync();
+        }
+
+        private static async Task<bool> CloseViewAsync()
+        {
+            if (!_isActive && !_isOpening)
+            {
+                return true;
+            }
+
+            var dispatcher = _secondaryDispatcher;
+            if (dispatcher == null)
+            {
+                ResetState(false);
+                return true;
+            }
+
+            var completion = new TaskCompletionSource<bool>();
+            try
+            {
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    try
+                    {
+                        _suppressConsolidatedCallback = true;
+                        DetachSecondarySurface();
+                        // CoreWindow.Close exists on the original Windows 10 UWP API surface and
+                        // explicitly closes a secondary window. It is simpler and more compatible
+                        // than TryConsolidateAsync for this dedicated PiP view.
+                        completion.TrySetResult(true);
+                        var coreWindow = CoreWindow.GetForCurrentThread();
+                        if (coreWindow != null)
+                        {
+                            coreWindow.Close();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Consolidate failed: " + ex.Message);
+                        completion.TrySetResult(false);
+                    }
+                });
+                var result = await completion.Task;
+                ResetState(false);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Close failed: " + ex.Message);
+                ResetState(false);
+                return false;
+            }
+        }
+
+        private static void ClearSecondaryOnly()
+        {
+            _viewId = 0;
+            _view = null;
+            _secondaryDispatcher = null;
+            _suppressConsolidatedCallback = false;
+        }
+#endif
+
+        private static void ResetState(bool keepCallbacks)
+        {
+            _isOpening = false;
+            _isActive = false;
+            _viewId = 0;
+            _view = null;
+            _secondaryDispatcher = null;
+            _mediaElement = null;
+            _sharedPlayer = null;
+            _suppressConsolidatedCallback = false;
+            if (!keepCallbacks)
+            {
+                _restoreRequested = null;
+                _closeRequested = null;
+                _failed = null;
+                _mainDispatcher = null;
+            }
+        }
+    }
+}

@@ -1050,4 +1050,91 @@ YouTube API Legacy қолдау көрсетеді.
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Іздеу жолағын ортада көрсету</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Браузерде кіру</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Ойнату үшін осы есептік жазбаны пайдалану</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Кірдіңіз · Шығу</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Google бетінде кіріңіз, YouTube-қа оралып, OK түймесін басыңыз.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Алдымен Google-ға кіруді аяқтаңыз.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Кіруді аяқтау мүмкін болмады. Қайталап көріңіз.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Пікір қосыңыз...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Жіберу</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Пікірді жіберу мүмкін болмады.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube бұл бейнеге пікір жазуға рұқсат бермеді.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Пікір жазу үшін браузерде кіріңіз.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Сіз</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Тікелей эфир чаты</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Негізгі чат</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Барлық хабарлар</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Әзірге хабарлар жоқ</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Чатқа қайта қосылуда…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Трансляция күтілуде…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Трансляция аяқталды</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Тікелей эфирге өту</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Дизлайктар санын көрсету</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike ұсынған болжамды сан</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Қойындылар жолағы сол жақта</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Windows компьютерінде және Continuum-да көлденең режимде</value>
+  </data>
 </root>

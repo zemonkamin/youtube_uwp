@@ -1050,4 +1050,91 @@ YouTube API Legacy မှ ပံ့ပိုးထားသည်။
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>ရှာဖွေရေးဘားကို အလယ်တွင် ပြပါ</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>ဘရောက်ဇာတွင် ဝင်ရောက်ရန်</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>ပြန်ဖွင့်ရန် ဤအကောင့်ကို အသုံးပြုရန်</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>ဝင်ရောက်ပြီး · ထွက်ရန်</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Google စာမျက်နှာတွင် ဝင်ရောက်ပြီး YouTube သို့ ပြန်လာကာ OK ကို နှိပ်ပါ။</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>ဦးစွာ Google သို့ ဝင်ရောက်မှုကို အပြီးသတ်ပါ။</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>ဝင်ရောက်မှုကို မပြီးမြောက်နိုင်ပါ။ ထပ်မံကြိုးစားပါ။</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>မှတ်ချက် ထည့်ပါ...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>ပို့ရန်</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>မှတ်ချက်ကို မပို့နိုင်ပါ။</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>ဤဗီဒီယိုတွင် မှတ်ချက်ရေးရန် YouTube က ခွင့်မပြုပါ။</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>မှတ်ချက်ရေးရန် ဘရောက်ဇာတွင် ဝင်ရောက်ပါ။</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>သင်</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>တိုက်ရိုက်ချတ်</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>ထိပ်တန်းချတ်</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>မက်ဆေ့ချ်အားလုံး</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>မက်ဆေ့ချ် မရှိသေးပါ</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>ချတ်သို့ ပြန်လည်ချိတ်ဆက်နေသည်…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>ထုတ်လွှင့်မှုကို စောင့်နေသည်…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>ထုတ်လွှင့်မှု ပြီးဆုံးသွားပြီ</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>တိုက်ရိုက်ထုတ်လွှင့်မှုသို့ သွားရန်</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>မကြိုက်နှစ်သက်မှု အရေအတွက်ကို ပြရန်</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike မှ ခန့်မှန်းချက်</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>တက်ဘ်ဘားကို ဘယ်ဘက်တွင် ပြရန်</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Desktop Windows နှင့် Continuum တွင် အလျားလိုက်မုဒ်ဖြင့်</value>
+  </data>
 </root>

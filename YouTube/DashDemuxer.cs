@@ -105,7 +105,7 @@ namespace YouTube
         // AAC codec-private for the MF AAC decoder: MF_MT_USER_DATA = the 12-byte tail of
         // HEAACWAVEINFO (wPayloadType=0 => raw AAC as stored in MP4) followed by the
         // AudioSpecificConfig from the esds box.
-        private static void ApplyAacUserData(AudioEncodingProperties props, byte[] audioSpecificConfig)
+        internal static void ApplyAacUserData(AudioEncodingProperties props, byte[] audioSpecificConfig)
         {
             try
             {

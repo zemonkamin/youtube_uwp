@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -130,6 +130,7 @@ public static partial class Config
         if (tokenChanged)
         {
             ClearCachedAccessToken();
+            ClearAccessTokenOwners();
             ApplicationData.Current.LocalSettings.Values.Remove(SelectedYouTubeAccountBrandIdSetting);
             ApplicationData.Current.LocalSettings.Values.Remove(SelectedYouTubeAccountKeySetting);
             ApplicationData.Current.LocalSettings.Values.Remove(SelectedYouTubeAccountInitializedSetting);
@@ -307,6 +308,7 @@ public static partial class Config
         _usertoken = "";
         _userTokenLoaded = true;
         ClearCachedAccessToken();
+        ClearAccessTokenOwners();
         ApplicationData.Current.LocalSettings.Values.Remove("yt_refresh_token");
         ApplicationData.Current.LocalSettings.Values.Remove("AuthToken");
         ApplicationData.Current.LocalSettings.Values.Remove(SelectedYouTubeAccountBrandIdSetting);
@@ -450,7 +452,8 @@ public static partial class Config
             _cachedAccessToken = token.AccessToken;
             _cachedAccessTokenRefreshToken = refreshToken;
             _cachedAccessTokenExpiresUtc = DateTime.UtcNow.AddSeconds(
-                Math.Max(60, token.ExpiresInSeconds - 60));
+                Math.Max(1, token.ExpiresInSeconds - 60));
+            RememberAccessTokenOwner(token.AccessToken, refreshToken);
             PersistCachedAccessToken(refreshToken);
             return token.AccessToken;
         }
@@ -499,6 +502,7 @@ public static partial class Config
             _cachedAccessToken = token;
             _cachedAccessTokenRefreshToken = refreshToken;
             _cachedAccessTokenExpiresUtc = expiresUtc;
+            RememberAccessTokenOwner(token, refreshToken);
         }
         catch
         {
@@ -566,7 +570,7 @@ public static partial class Config
         using (var request = new HttpRequestMessage(HttpMethod.Post, url))
         {
             request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
-            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "85");
+            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", YouTubeApiConfig.TvClientHeaderName);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "7.20250209.19.00");
             request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
             ApplySelectedAccountHeader(request, true);
@@ -637,7 +641,7 @@ public static partial class Config
         using (var request = new HttpRequestMessage(HttpMethod.Post, url))
         {
             request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
-            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "85");
+            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", YouTubeApiConfig.TvClientHeaderName);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "7.20250209.19.00");
             request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
             ApplySelectedAccountHeader(request, true);
@@ -887,6 +891,14 @@ public static partial class Config
             ClientName = "ALL"
         });
 
+        result.Add(new HomeCategoryItem
+        {
+            Title = Localization.GetString("CategoryLive"),
+            CategoryId = "live",
+            BrowseId = "FEtopics_live",
+            ClientName = "LIVE"
+        });
+
         AddFixedHomeCategory(result, "1", Localization.GetString("CategoryFilmAnimation"), "Film & Animation");
         AddFixedHomeCategory(result, "2", Localization.GetString("CategoryAutosVehicles"), "Autos & Vehicles");
         AddFixedHomeCategory(result, "10", Localization.GetString("CategoryMusic"), "Music");
@@ -947,6 +959,8 @@ public static partial class Config
         {
             return GetRecommendationsAsync(refreshToken, count);
         }
+
+        if (IsLiveHomeCategory(category)) return GetLiveHomeVideosAsync(refreshToken);
 
         if (!string.IsNullOrWhiteSpace(category.SearchQuery))
         {
@@ -1009,25 +1023,12 @@ public static partial class Config
         return result;
     }
 
-    // Lightweight signed-in TV history read used to merge resume positions into search.
-    // Unlike GetHistoryAsync it deliberately skips channel-avatar hydration: search needs only
-    // VideoId + percentDurationWatched and should not wait for unrelated image requests.
+    // Lightweight history read used to merge resume positions into search, using the same
+    // account/client as the history screen and without unrelated channel-avatar requests.
     internal static async Task<List<VideoCardItem>> GetHistoryProgressItemsAsync(string refreshToken, int count)
     {
         var result = new List<VideoCardItem>();
-        if (string.IsNullOrWhiteSpace(refreshToken))
-        {
-            return result;
-        }
-
-        var accessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
-        if (string.IsNullOrWhiteSpace(accessToken))
-        {
-            return result;
-        }
-
-        var json = await PostHistoryBrowseAsync(accessToken, null).ConfigureAwait(false);
-        var page = ParseHistoryFeedPage(json, count);
+        var page = await GetHistoryFeedPageAsync(refreshToken, null, count).ConfigureAwait(false);
         if (page == null || page.Groups == null)
         {
             return result;
@@ -1060,45 +1061,36 @@ public static partial class Config
 
     public static async Task<HistoryFeedPage> GetHistoryFeedPageAsync(string refreshToken, string continuationToken, int count)
     {
-        var empty = new HistoryFeedPage();
+        await WebAccountSession.InitializeAsync().ConfigureAwait(false);
+        var useWebAccount = WebAccountSession.IsSignedIn;
+        if (!useWebAccount && string.IsNullOrWhiteSpace(refreshToken)) return new HistoryFeedPage();
 
-        if (string.IsNullOrWhiteSpace(refreshToken))
-        {
-            System.Diagnostics.Debug.WriteLine("[History] RefreshToken is empty");
-            return empty;
-        }
+        var owner = PlaybackResolver.AccountKey;
+        var accessToken = useWebAccount ? string.Empty
+            : await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
+        if (!useWebAccount && string.IsNullOrWhiteSpace(accessToken))
+            throw new InvalidOperationException("History authentication unavailable.");
+        if (owner != PlaybackResolver.AccountKey)
+            throw new OperationCanceledException("History account changed.");
 
-        var accessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
-        if (string.IsNullOrWhiteSpace(accessToken))
-        {
-            System.Diagnostics.Debug.WriteLine("[History] Failed to get access token");
-            return empty;
-        }
-
-        var json = await PostHistoryBrowseAsync(accessToken, continuationToken).ConfigureAwait(false);
+        var json = await PostHistoryBrowseAsync(accessToken, continuationToken, useWebAccount).ConfigureAwait(false);
+        if (owner != PlaybackResolver.AccountKey)
+            throw new OperationCanceledException("History account changed.");
         if (string.IsNullOrWhiteSpace(json))
-        {
-            return empty;
-        }
+            throw new InvalidOperationException("History response unavailable.");
 
-        var page = ParseHistoryFeedPage(json, count);
-        if (page != null && page.Groups != null)
-        {
-            var allVideos = new List<VideoCardItem>();
-            foreach (var group in page.Groups)
-            {
-                if (group != null && group.Videos != null)
-                    allVideos.AddRange(group.Videos);
-            }
-            await HydrateMissingChannelThumbnailsAsync(allVideos, accessToken).ConfigureAwait(false);
-        }
-        return page;
+        // A continuation starts AFTER the entire server page. Truncating that page locally
+        // loses the remaining entries permanently. Preview callers limit the flattened list.
+        // History cards do not display channel avatars, so no extra hydration requests are needed.
+        return ParseHistoryFeedPage(json, 0);
     }
 
-    private static async Task<string> PostHistoryBrowseAsync(string accessToken, string continuationToken)
+    private static async Task<string> PostHistoryBrowseAsync(string accessToken, string continuationToken, bool useWebAccount = false)
     {
-        var clientVersion = "7.20250209.19.00";
-        var clientJson = "\"client\":{\"clientName\":\"TVHTML5\",\"clientVersion\":\"" + clientVersion + "\",\"hl\":\"" + Hl + "\",\"gl\":\"" + Gl + "\",\"platform\":\"TV\",\"deviceMake\":\"Samsung\",\"deviceModel\":\"SmartTV\",\"osName\":\"Tizen\",\"osVersion\":\"5.0\"}";
+        var clientVersion = useWebAccount ? HomeWebClientVersion : TvPlayerClientVersion;
+        var clientJson = useWebAccount
+            ? "\"client\":{\"clientName\":\"WEB\",\"clientVersion\":\"" + clientVersion + "\",\"hl\":\"" + Hl + "\",\"gl\":\"" + Gl + "\",\"platform\":\"DESKTOP\"}"
+            : "\"client\":{\"clientName\":\"TVHTML5\",\"clientVersion\":\"" + clientVersion + "\",\"hl\":\"" + Hl + "\",\"gl\":\"" + Gl + "\",\"platform\":\"TV\",\"deviceMake\":\"Samsung\",\"deviceModel\":\"SmartTV\",\"osName\":\"Tizen\",\"osVersion\":\"5.0\"}";
 
         var payload = string.IsNullOrWhiteSpace(continuationToken)
             ? "{\"context\":{" + clientJson + "},\"browseId\":\"FEhistory\"}"
@@ -1107,27 +1099,24 @@ public static partial class Config
         var url = "https://www.youtube.com/youtubei/v1/browse?key=" + InnertubeApiKey + "&prettyPrint=false";
         using (var request = new HttpRequestMessage(HttpMethod.Post, url))
         {
-            request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
-            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "7");
+            if (!useWebAccount) request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
+            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", useWebAccount ? "1" : "7");
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
-            request.Headers.TryAddWithoutValidation("User-Agent", TvUserAgent);
+            request.Headers.TryAddWithoutValidation("User-Agent", useWebAccount ? WebUserAgent : TvUserAgent);
             request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
-            request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/tv");
-            ApplySelectedAccountHeader(request, true);
-            request.Content = new StringContent(ApplySelectedAccountContext(payload, true), Encoding.UTF8, "application/json");
+            request.Headers.TryAddWithoutValidation("Referer", useWebAccount ? "https://www.youtube.com/feed/history" : "https://www.youtube.com/tv");
+            ApplySelectedAccountHeader(request, !useWebAccount);
+            request.Content = new StringContent(ApplySelectedAccountContext(payload, !useWebAccount), Encoding.UTF8, "application/json");
+            if (useWebAccount && !WebAccountSession.ApplyHeaders(request))
+                throw new InvalidOperationException("History browser session unavailable.");
 
-            var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
-            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            System.Diagnostics.Debug.WriteLine("[History] Browse response: " + response.StatusCode);
-
-            if (!response.IsSuccessStatusCode)
+            using (var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
             {
-                System.Diagnostics.Debug.WriteLine("[History] Error response: " + json);
-                return string.Empty;
+                System.Diagnostics.Debug.WriteLine("[History] Browse " + (useWebAccount ? "WEB" : "TVHTML5") + ": " + response.StatusCode);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
-
-            return json;
         }
     }
 
@@ -1390,7 +1379,7 @@ public static partial class Config
                 request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
             }
             request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
-            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "85");
+            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", YouTubeApiConfig.TvClientHeaderName);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
             request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
             var authenticated = !string.IsNullOrWhiteSpace(accessToken);
@@ -3071,7 +3060,7 @@ public static partial class Config
         if (!string.IsNullOrWhiteSpace(json)
             && json.IndexOf("\"playlistAddToOptionRenderer\"", StringComparison.Ordinal) >= 0)
         {
-            System.Diagnostics.Debug.WriteLine("[SavePlaylist] Membership loaded via TVHTML5/85");
+            System.Diagnostics.Debug.WriteLine("[SavePlaylist] Membership loaded via TVHTML5/7");
         }
         else
         {
@@ -3222,7 +3211,7 @@ public static partial class Config
             request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
             request.Headers.TryAddWithoutValidation("Accept", "application/json");
             request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
-            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "85");
+            request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", YouTubeApiConfig.TvClientHeaderName);
             request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", SavePlaylistTvClientVersion);
             request.Headers.TryAddWithoutValidation("User-Agent", UserAgent);
             ApplySelectedAccountHeader(request, true);
@@ -3328,7 +3317,7 @@ public static partial class Config
             accessToken).ConfigureAwait(false);
         if (!string.IsNullOrWhiteSpace(tvJson))
         {
-            System.Diagnostics.Debug.WriteLine("[SavePlaylist] Updated via TVHTML5/85");
+            System.Diagnostics.Debug.WriteLine("[SavePlaylist] Updated via TVHTML5/7");
             InvalidatePlaylistCaches(normalizedPlaylistId);
             return true;
         }
@@ -3596,7 +3585,7 @@ public static partial class Config
         var useTvClient = !string.IsNullOrWhiteSpace(accessToken);
         var clientName = useTvClient ? "TVHTML5" : "WEB";
         var clientVersion = useTvClient ? "7.20250209.19.00" : "2.20250101";
-        var clientHeaderName = useTvClient ? "85" : "1";
+        var clientHeaderName = useTvClient ? YouTubeApiConfig.TvClientHeaderName : "1";
         var userAgent = useTvClient ? UserAgent : WebUserAgent;
         var platformJson = useTvClient ? ",\"platform\":\"TV\"" : string.Empty;
 
@@ -4240,125 +4229,10 @@ public static partial class Config
     public static async Task<bool> ReportWatchHistoryAsync(
         string videoId, string refreshToken, double positionSeconds, double lengthSeconds)
     {
-        if (string.IsNullOrWhiteSpace(videoId) || string.IsNullOrWhiteSpace(refreshToken))
-        {
-            return false;
-        }
-
         try
         {
-            var accessToken = await RefreshAccessTokenAsync(refreshToken).ConfigureAwait(false);
-            if (string.IsNullOrWhiteSpace(accessToken))
-            {
-                System.Diagnostics.Debug.WriteLine("[History] No access token; skipping");
-                return false;
-            }
-
-            // Authenticated player request purely to obtain this account's tracking URLs.
-            // A stale sts yields "The page needs to be reloaded", so retry once with a fresh one.
-            JsonObject root = null;
-            for (var attempt = 0; attempt < 2; attempt++)
-            {
-                var sts = await GetSignatureTimestampAsync(attempt > 0).ConfigureAwait(false);
-                var payload = "{\"context\":{\"client\":{\"clientName\":\"TVHTML5\",\"clientVersion\":\"" + TvPlayerClientVersion + "\""
-                    + ",\"hl\":\"" + Hl + "\",\"gl\":\"" + Gl + "\",\"platform\":\"TV\""
-                    + ",\"deviceMake\":\"Samsung\",\"deviceModel\":\"SmartTV\",\"osName\":\"Tizen\",\"osVersion\":\"5.0\"}}"
-                    + ",\"videoId\":\"" + JsonEscape(videoId) + "\",\"contentCheckOk\":true,\"racyCheckOk\":true"
-                    + ",\"playbackContext\":{\"contentPlaybackContext\":{\"html5Preference\":\"HTML5_PREF_WANTS\""
-                    + (sts > 0 ? ",\"signatureTimestamp\":" + sts : string.Empty)
-                    + "}}}";
-
-                var json = await PostInnertubeJsonAsync("player", payload, accessToken, "TVHTML5", TvPlayerClientVersion).ConfigureAwait(false);
-                if (string.IsNullOrWhiteSpace(json))
-                {
-                    System.Diagnostics.Debug.WriteLine("[History] Authenticated player request failed");
-                    return false;
-                }
-
-                root = JsonObject.Parse(json);
-                if (root.ContainsKey("playbackTracking"))
-                {
-                    break;
-                }
-
-                var status = root.ContainsKey("playabilityStatus")
-                    ? GetJsonString(root.GetNamedObject("playabilityStatus"), "status") : "?";
-                var reason = root.ContainsKey("playabilityStatus")
-                    ? GetJsonString(root.GetNamedObject("playabilityStatus"), "reason") : string.Empty;
-
-                var stale = reason != null && reason.IndexOf("reload", StringComparison.OrdinalIgnoreCase) >= 0;
-                if (attempt == 0 && stale)
-                {
-                    System.Diagnostics.Debug.WriteLine("[History] sts looks stale; refreshing and retrying");
-                    continue;
-                }
-
-                System.Diagnostics.Debug.WriteLine("[History] No playbackTracking (playability=" + status + " " + reason + ")");
-                return false;
-            }
-
-            if (root == null || !root.ContainsKey("playbackTracking"))
-            {
-                return false;
-            }
-
-            var tracking = root.GetNamedObject("playbackTracking");
-            var playbackUrl = GetTrackingBaseUrl(tracking, "videostatsPlaybackUrl");
-            var watchtimeUrl = GetTrackingBaseUrl(tracking, "videostatsWatchtimeUrl");
-            if (string.IsNullOrWhiteSpace(playbackUrl) && string.IsNullOrWhiteSpace(watchtimeUrl))
-            {
-                return false;
-            }
-
-            if (lengthSeconds <= 0 && root.ContainsKey("videoDetails"))
-            {
-                double parsed;
-                if (double.TryParse(GetJsonString(root.GetNamedObject("videoDetails"), "lengthSeconds"),
-                        System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out parsed))
-                {
-                    lengthSeconds = parsed;
-                }
-            }
-
-            var cpn = GenerateCpn();
-            var position = positionSeconds > 0 ? positionSeconds : 0;
-            var inv = System.Globalization.CultureInfo.InvariantCulture;
-
-            // Shared client identity, mirroring what the TV client reports.
-            var common = "&cpn=" + Uri.EscapeDataString(cpn)
-                + "&ver=2&fs=0&volume=100&muted=0&state=playing"
-                + "&c=TVHTML5&cver=" + TvPlayerClientVersion + "&cplayer=UNIPLAYER&cmodel=SmartTV"
-                + "&cos=Tizen&cosver=5.0&cplatform=TV&ctheme=CLASSIC"
-                + "&hl=" + Uri.EscapeDataString(Hl) + "&cr=" + Uri.EscapeDataString(Gl);
-
-            var ok = false;
-
-            // 1) Playback ping — registers the view.
-            if (!string.IsNullOrWhiteSpace(playbackUrl))
-            {
-                ok |= await SendStatsPingAsync(playbackUrl + common + "&cmt=" + position.ToString("0.###", inv), accessToken).ConfigureAwait(false);
-            }
-
-            // 2) Watchtime ping — reports the watched segment, which is what makes the entry
-            //    show up (and stores the resume position).
-            if (!string.IsNullOrWhiteSpace(watchtimeUrl))
-            {
-                var end = position > 0 ? position : 1;
-                var watchtime = watchtimeUrl + common
-                    + "&cmt=" + position.ToString("0.###", inv)
-                    + "&st=0&et=" + end.ToString("0.###", inv)
-                    + "&rt=" + end.ToString("0.###", inv);
-                if (lengthSeconds > 0)
-                {
-                    watchtime += "&len=" + lengthSeconds.ToString("0.###", inv);
-                }
-
-                ok |= await SendStatsPingAsync(watchtime, accessToken).ConfigureAwait(false);
-            }
-
-            System.Diagnostics.Debug.WriteLine("[History] " + videoId + " reported at "
-                + position.ToString("0.#", inv) + "s, ok=" + ok);
-            return ok;
+            var session = await CreateWatchHistorySessionAsync(videoId, refreshToken).ConfigureAwait(false);
+            return await ReportWatchHistorySessionAsync(session, positionSeconds, lengthSeconds, -1, 0, false).ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -4381,35 +4255,6 @@ public static partial class Config
         catch
         {
             return string.Empty;
-        }
-    }
-
-    private static async Task<bool> SendStatsPingAsync(string url, string accessToken)
-    {
-        try
-        {
-            using (var request = new HttpRequestMessage(HttpMethod.Get, url))
-            {
-                request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + accessToken);
-                request.Headers.TryAddWithoutValidation("User-Agent",
-                    TvUserAgent);
-                request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/tv");
-
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-                if (!response.IsSuccessStatusCode)
-                {
-                    System.Diagnostics.Debug.WriteLine("[History] Ping " + (int)response.StatusCode
-                        + " for " + new Uri(url).AbsolutePath);
-                    return false;
-                }
-
-                return true;
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine("[History] Ping failed: " + ex.Message);
-            return false;
         }
     }
 
@@ -5068,7 +4913,7 @@ public static partial class Config
             return Task.FromResult(new List<CommentItem>());
 
         return GetCommentsCoreAsync(
-            videoId, continuationToken, authenticatedMwebContext);
+            videoId, continuationToken, authenticatedMwebContext, false);
     }
 
     // Shorts can be returned by a different Innertube client than the watch page. Let that page
@@ -5077,16 +4922,18 @@ public static partial class Config
     public static Task<List<CommentItem>> GetCommentsForClientContextAsync(
         string videoId,
         string continuationToken,
-        bool authenticatedMwebContext)
+        bool authenticatedMwebContext,
+        bool captureComposer = true)
     {
         return GetCommentsCoreAsync(
-            videoId, continuationToken, authenticatedMwebContext);
+            videoId, continuationToken, authenticatedMwebContext, captureComposer);
     }
 
     private static async Task<List<CommentItem>> GetCommentsCoreAsync(
         string videoId,
         string continuationToken,
-        bool preferAuthenticatedMweb)
+        bool preferAuthenticatedMweb,
+        bool captureComposer = true)
     {
         if (string.IsNullOrWhiteSpace(videoId))
         {
@@ -5095,8 +4942,11 @@ public static partial class Config
 
         try
         {
+            await WebAccountSession.InitializeAsync();
+            var useWebAccount = WebAccountSession.IsSignedIn;
+            var commentsSessionKey = WebAccountSession.CacheKey;
             LoadUserToken();
-            var commentsAccessToken = !preferAuthenticatedMweb || string.IsNullOrWhiteSpace(UserToken)
+            var commentsAccessToken = useWebAccount || !preferAuthenticatedMweb || string.IsNullOrWhiteSpace(UserToken)
                 ? string.Empty
                 : await RefreshAccessTokenAsync(UserToken).ConfigureAwait(false);
             var authenticatedComments = !string.IsNullOrWhiteSpace(commentsAccessToken);
@@ -5115,6 +4965,12 @@ public static partial class Config
                 + commentsClientName + "\",\"clientVersion\":\""
                 + commentsClientVersion + "\",\"hl\":\"" + Hl
                 + "\",\"gl\":\"" + Gl + "\"" + commentsPlatform + "}}";
+            if (useWebAccount)
+            {
+                var browserContext = BuildBrowserCommentContext("WEB");
+                commentsContext = browserContext.Stringify();
+                commentsClientVersion = GetJsonString(browserContext.GetNamedObject("client"), "clientVersion");
+            }
 
             // Если continuation token не предоставлен, сначала получаем его через /next endpoint
             if (string.IsNullOrEmpty(continuationToken))
@@ -5133,6 +4989,8 @@ public static partial class Config
                     nextRequest.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                     nextRequest.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", commentsClientHeader);
                     nextRequest.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", commentsClientVersion);
+                    if (useWebAccount)
+                        nextRequest.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/watch?v=" + Uri.EscapeDataString(videoId));
                     if (authenticatedComments)
                     {
                         nextRequest.Headers.TryAddWithoutValidation("Authorization", "Bearer " + commentsAccessToken);
@@ -5141,6 +4999,8 @@ public static partial class Config
                         nextRequest.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/");
                         ApplySelectedAccountHeader(nextRequest, true);
                     }
+                    else if (useWebAccount && !WebAccountSession.ApplyHeaders(nextRequest))
+                        return new List<CommentItem>();
                     nextRequest.Content = new StringContent(nextPayload, Encoding.UTF8, "application/json");
 
                     var nextResponse = await httpClient.SendAsync(nextRequest, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -5180,6 +5040,8 @@ public static partial class Config
                 request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", commentsClientHeader);
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", commentsClientVersion);
+                if (useWebAccount)
+                    request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/watch?v=" + Uri.EscapeDataString(videoId));
                 if (authenticatedComments)
                 {
                     request.Headers.TryAddWithoutValidation("Authorization", "Bearer " + commentsAccessToken);
@@ -5188,6 +5050,8 @@ public static partial class Config
                     request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/");
                     ApplySelectedAccountHeader(request, true);
                 }
+                else if (useWebAccount && !WebAccountSession.ApplyHeaders(request))
+                    return new List<CommentItem>();
                 request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
 
                 var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -5201,6 +5065,8 @@ public static partial class Config
 
                 var json = await response.Content.ReadAsStringAsync();
                 System.Diagnostics.Debug.WriteLine($"[Comments] Got response, length: {json.Length}");
+                if (captureComposer)
+                    RememberCommentComposer(videoId, json, continuationToken, commentsSessionKey, commentsClientName);
                 
                 return VideoParser.ParseComments(json);
             }
@@ -5258,6 +5124,19 @@ public static partial class Config
 
     private static string ExtractCommentsContinuationToken(JsonObject root)
     {
+        if (root == null) return null;
+        // Check explicitly marked panels first. New WEB/MWEB watch layouts and the
+        // HTML page use reloadContinuationData as well as continuationCommand.
+        foreach (var container in EnumerateObjects(root, 200000))
+        {
+            var commentsPanel = false;
+            foreach (var field in new[] { "targetId", "panelIdentifier", "sectionIdentifier", "identifier" })
+                if (GetJsonString(container, field).IndexOf("comment", StringComparison.OrdinalIgnoreCase) >= 0)
+                    commentsPanel = true;
+            if (!commentsPanel) continue;
+            var token = FindCommentsPanelToken(container);
+            if (!string.IsNullOrWhiteSpace(token)) return token;
+        }
         try
         {
             if (root == null)
@@ -5300,10 +5179,7 @@ public static partial class Config
                 }
             }
         }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"[Comments] Fixed continuation path unavailable: {ex.Message}");
-        }
+        catch (Exception) { }
 
         // YouTube moves the comment section between watch-next layouts. Fall back to one
         // bounded logical walk of the already parsed tree and only accept continuations inside
@@ -5367,6 +5243,39 @@ public static partial class Config
         return null;
     }
 
+    private static string FindCommentsPanelToken(JsonObject panel)
+    {
+        // Prefer the panel's load item to a reply/sort command elsewhere in its tree.
+        foreach (var obj in EnumerateObjects(panel, 20000))
+        {
+            IJsonValue value;
+            if (!obj.TryGetValue("continuationItemRenderer", out value) || value.ValueType != JsonValueType.Object) continue;
+            var token = FindCommentsContinuationValue(value.GetObject());
+            if (!string.IsNullOrWhiteSpace(token)) return token;
+        }
+        return FindCommentsContinuationValue(panel);
+    }
+
+    private static string FindCommentsContinuationValue(JsonObject panel)
+    {
+        foreach (var obj in EnumerateObjects(panel, 20000))
+        {
+            IJsonValue value;
+            if (obj.TryGetValue("continuationCommand", out value) && value.ValueType == JsonValueType.Object)
+            {
+                var token = GetJsonString(value.GetObject(), "token");
+                if (!string.IsNullOrWhiteSpace(token)) return token;
+            }
+            foreach (var name in new[] { "reloadContinuationData", "nextContinuationData" })
+                if (obj.TryGetValue(name, out value) && value.ValueType == JsonValueType.Object)
+                {
+                    var token = GetJsonString(value.GetObject(), "continuation");
+                    if (!string.IsNullOrWhiteSpace(token)) return token;
+                }
+        }
+        return null;
+    }
+
 
     public static async Task<ShortsFeedResult> GetShortsAsync(string sequenceToken = null)
     {
@@ -5376,18 +5285,23 @@ public static partial class Config
             SequenceToken = string.Empty
         };
 
+        await WebAccountSession.InitializeAsync();
+        var useWebAccount = WebAccountSession.IsSignedIn;
         LoadUserToken();
-        if (string.IsNullOrWhiteSpace(UserToken))
+        var accessToken = string.Empty;
+        if (!useWebAccount)
         {
-            System.Diagnostics.Debug.WriteLine("[Shorts] No refresh token available");
-            return result;
-        }
-
-        var accessToken = await RefreshAccessTokenAsync(UserToken);
-        if (string.IsNullOrWhiteSpace(accessToken))
-        {
-            System.Diagnostics.Debug.WriteLine("[Shorts] Failed to get access token");
-            return result;
+            if (string.IsNullOrWhiteSpace(UserToken))
+            {
+                System.Diagnostics.Debug.WriteLine("[Shorts] No refresh token available");
+                return result;
+            }
+            accessToken = await RefreshAccessTokenAsync(UserToken);
+            if (string.IsNullOrWhiteSpace(accessToken))
+            {
+                System.Diagnostics.Debug.WriteLine("[Shorts] Failed to get access token");
+                return result;
+            }
         }
 
         var endpoint = string.IsNullOrWhiteSpace(sequenceToken)
@@ -5415,22 +5329,21 @@ public static partial class Config
             var variant = seedVariants[i];
             var quiet = endpoint == "reel/reel_watch_sequence" || endpoint == "reel/reel_item_watch";
 
-            // Whether the Shorts feed is personalized hinges on one unknown: which client, if any,
-            // these endpoints accept our OAuth bearer from. The bearer is minted for the TV client,
-            // and a body/header client mismatch is what makes them answer 400 — so each client is
-            // tried with a matching body, best candidate first, and every outcome is logged.
+            // Browser sessions use matching WEB/MWEB clients and cookie signatures.
+            // Without one, keep the original TV OAuth client order and fallback.
             string json = null;
             var authorizedClient = string.Empty;
+            var clients = useWebAccount ? new[] { "WEB", "MWEB" } : ShortsAuthClients;
 
-            for (var c = 0; c < ShortsAuthClients.Length; c++)
+            for (var c = 0; c < clients.Length; c++)
             {
-                var client = ShortsAuthClients[c];
+                var client = clients[c];
                 var attemptPayload = string.IsNullOrWhiteSpace(sequenceToken)
                     ? BuildSeedlessShortsPayload(client, variant.Key, variant.Value)
                     : BuildShortsSequencePayload(client, sequenceToken);
 
                 var attempt = await PostInnertubeJsonAsync(
-                    endpoint, attemptPayload, accessToken, client, ShortsClientVersion(client), quiet
+                    endpoint, attemptPayload, accessToken, client, ShortsClientVersion(client), quiet, useWebAccount
                 );
 
                 if (!string.IsNullOrWhiteSpace(attempt))
@@ -5450,7 +5363,7 @@ public static partial class Config
             }
 
             var authorized = !string.IsNullOrWhiteSpace(json);
-            if (!authorized)
+            if (!authorized && !useWebAccount)
             {
                 System.Diagnostics.Debug.WriteLine(
                     "[Shorts][Auth] REJECTED by every client; retrying anonymously — this feed will NOT be personalized"
@@ -5500,14 +5413,8 @@ public static partial class Config
 
     public static async Task<string> GetShortPlaybackUrlAsync(string videoId)
     {
-        LoadUserToken();
-        var accessToken = string.IsNullOrWhiteSpace(UserToken)
-            ? string.Empty
-            : await RefreshAccessTokenAsync(UserToken);
-
-        return await GetShortPlaybackUrlAsync(videoId, accessToken);
+        return await GetShortPlaybackUrlAsync(videoId, string.Empty);
     }
-
     public static async Task<bool> RateVideoAsync(string videoId, string rating)
     {
         return await SetVideoRatingAsync(videoId, rating);
@@ -5629,40 +5536,8 @@ public static partial class Config
                 result.Add(item);
             }
 
-            // The per-item player request is a network round trip, and the TV feed omits enough
-            // that nearly every item needs one. Running them one after another meant the user
-            // waited out eight sequential requests before the feed could be swiped at all. They
-            // are independent of each other, so run them together — capped, so a phone is not
-            // firing an unbounded number of requests at once.
-            var pending = new List<ShortsVideoItem>();
-            for (var i = 0; i < result.Count; i++)
-            {
-                var candidate = result[i];
-                if (string.IsNullOrWhiteSpace(candidate.VideoUrl)
-                    || candidate.Title == "Shorts"
-                    || string.IsNullOrWhiteSpace(candidate.ChannelName))
-                {
-                    pending.Add(candidate);
-                }
-            }
-
-            // Only the first Short is visible on a phone. Resolving every item before returning
-            // made initial navigation wait for several player requests; the Shorts page already
-            // resolves an item's URL lazily when the user swipes to it.
-            if (global::YouTube.ResponsiveLayout.IsPhoneDevice && pending.Count > 1)
-                pending.RemoveRange(1, pending.Count - 1);
-
-            const int MaxParallelShortLookups = 4;
-            for (var start = 0; start < pending.Count; start += MaxParallelShortLookups)
-            {
-                var batch = new List<Task>();
-                for (var i = start; i < pending.Count && i < start + MaxParallelShortLookups; i++)
-                {
-                    batch.Add(PopulateShortPlaybackInfoAsync(pending[i], accessToken));
-                }
-
-                await Task.WhenAll(batch);
-            }
+            // As in Troubadour, loading the feed does not wait for /player requests.
+            // ShowShortAsync resolves the visible item and prefetches its next neighbour.
 
             for (var i = 0; i < result.Count; i++)
             {
@@ -6685,73 +6560,34 @@ public static partial class Config
 
     private static async Task<string> GetShortPlaybackUrlAsync(string videoId, string accessToken)
     {
-        if (string.IsNullOrWhiteSpace(videoId))
-        {
-            return string.Empty;
-        }
-
-        // IMPORTANT: /player is intentionally requested without OAuth first.
-        // The reel endpoints require the signed-in gate in our UI, but YouTube's
-        // ANDROID player endpoint often rejects Bearer tokens with 400 INVALID_ARGUMENT.
-        var androidPayload = "{\"context\":{" + BuildAndroidClientJson() + "},\"videoId\":\"" + JsonEscape(videoId) + "\",\"contentCheckOk\":true,\"racyCheckOk\":true}";
-        var json = await PostInnertubeJsonAsync("player", androidPayload, string.Empty, "ANDROID", "20.10.38");
-        var videoUrl = ExtractPlaybackUrlFromPlayerJson(videoId, json, "ANDROID anonymous");
-        if (!string.IsNullOrWhiteSpace(videoUrl))
-        {
-            return videoUrl;
-        }
-
-        // Web fallback. This commonly returns an HLS manifest, which CustomShortsPlayer can play.
-        var webPayload = "{\"context\":{" + BuildShortsWebClientJson() + "},\"videoId\":\"" + JsonEscape(videoId) + "\",\"contentCheckOk\":true,\"racyCheckOk\":true,\"playbackContext\":{\"contentPlaybackContext\":{\"html5Preference\":\"HTML5_PREF_WANTS\"}}}";
-        json = await PostInnertubeJsonAsync("player", webPayload, string.Empty, "WEB", ShortsWebClientVersion);
-        videoUrl = ExtractPlaybackUrlFromPlayerJson(videoId, json, "WEB anonymous");
-        if (!string.IsNullOrWhiteSpace(videoUrl))
-        {
-            return videoUrl;
-        }
-
-        // Last resort: try the signed WEB player. Some account/region states need it.
-        if (!string.IsNullOrWhiteSpace(accessToken))
-        {
-            json = await PostInnertubeJsonAsync("player", webPayload, accessToken, "WEB", ShortsWebClientVersion);
-            videoUrl = ExtractPlaybackUrlFromPlayerJson(videoId, json, "WEB authorized");
-            if (!string.IsNullOrWhiteSpace(videoUrl))
-            {
-                return videoUrl;
-            }
-        }
-
-        return string.Empty;
+        var response = await PlaybackResolver.GetAsync(videoId, true);
+        return response == null ? string.Empty
+            : ExtractPlaybackUrlFromPlayerJson(videoId, response.Json, "Troubadour");
     }
 
-    private static async Task PopulateShortPlaybackInfoAsync(ShortsVideoItem item, string accessToken)
+
+    internal static async Task ResolveShortPlaybackAsync(ShortsVideoItem item)
     {
-        if (item == null || string.IsNullOrWhiteSpace(item.VideoId))
-        {
-            return;
-        }
-
-        var androidPayload = "{\"context\":{" + BuildAndroidClientJson() + "},\"videoId\":\"" + JsonEscape(item.VideoId) + "\",\"contentCheckOk\":true,\"racyCheckOk\":true}";
-        var json = await PostInnertubeJsonAsync("player", androidPayload, string.Empty, "ANDROID", "20.10.38");
-        if (ApplyPlayerJsonToShort(item, json, "ANDROID anonymous"))
-        {
-            return;
-        }
-
-        var webPayload = "{\"context\":{" + BuildShortsWebClientJson() + "},\"videoId\":\"" + JsonEscape(item.VideoId) + "\",\"contentCheckOk\":true,\"racyCheckOk\":true,\"playbackContext\":{\"contentPlaybackContext\":{\"html5Preference\":\"HTML5_PREF_WANTS\"}}}";
-        json = await PostInnertubeJsonAsync("player", webPayload, string.Empty, "WEB", ShortsWebClientVersion);
-        if (ApplyPlayerJsonToShort(item, json, "WEB anonymous"))
-        {
-            return;
-        }
-
-        if (!string.IsNullOrWhiteSpace(accessToken))
-        {
-            json = await PostInnertubeJsonAsync("player", webPayload, accessToken, "WEB", ShortsWebClientVersion);
-            ApplyPlayerJsonToShort(item, json, "WEB authorized");
-        }
+        if (item == null || string.IsNullOrWhiteSpace(item.VideoId)) return;
+        var response = await PlaybackResolver.GetAsync(item.VideoId, true);
+        item.VideoUrl = string.Empty;
+        item.MediaUserAgent = string.Empty;
+        item.PlaybackAccountKey = string.Empty;
+        item.PlayerJson = string.Empty;
+        if (response == null) return;
+        ApplyPlayerResponseToShort(item, response.Root);
+        item.MediaUserAgent = response.UserAgent;
+        item.PlaybackAccountKey = PlaybackResolver.AccountKey;
+        item.PlayerJson = response.Json;
     }
 
+    internal static async Task<string> GetWebAccountShortPlayerAsync(string videoId)
+    {
+        await WebAccountSession.InitializeAsync();
+        if (!WebAccountSession.IsSignedIn) return string.Empty;
+        var response = await PlaybackResolver.GetAsync(videoId, true);
+        return response == null ? string.Empty : response.Json;
+    }
     private static bool ApplyPlayerJsonToShort(ShortsVideoItem item, string json, string sourceName)
     {
         if (item == null || string.IsNullOrWhiteSpace(json))
@@ -6816,8 +6652,9 @@ public static partial class Config
         return string.Empty;
     }
 
-    private static async Task<string> PostInnertubeJsonAsync(string endpoint, string payload, string accessToken, string clientName, string clientVersion, bool quietFailure = false)
+    private static async Task<string> PostInnertubeJsonAsync(string endpoint, string payload, string accessToken, string clientName, string clientVersion, bool quietFailure = false, bool requireWebSession = false)
     {
+        await WebAccountSession.InitializeAsync();
         var url = "https://www.youtube.com/youtubei/v1/" + endpoint + "?key=" + InnertubeApiKey;
         using (var request = new HttpRequestMessage(HttpMethod.Post, url))
         {
@@ -6852,6 +6689,13 @@ public static partial class Config
                 request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
                 request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/tv");
             }
+            else if (clientName == "IOS")
+            {
+                request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "5");
+                request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
+                request.Headers.TryAddWithoutValidation("User-Agent", "com.google.ios.youtube/" + clientVersion + " (iPhone16,2; U; CPU iOS 18_0 like Mac OS X)");
+                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
+            }
             else if (clientName == "MWEB" || clientName == "WEB_MOBILE")
             {
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "2");
@@ -6871,6 +6715,15 @@ public static partial class Config
                 request.Headers.TryAddWithoutValidation("X-Goog-Visitor-Id", ShortsVisitorId);
                 request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
                 request.Headers.TryAddWithoutValidation("Referer", "https://www.youtube.com/shorts/");
+            }
+
+            if (requireWebSession)
+            {
+                if (!WebAccountSession.ApplyHeaders(request)) return string.Empty;
+            }
+            else if (string.IsNullOrWhiteSpace(accessToken) && clientName != "ANDROID" && clientName != "TVHTML5")
+            {
+                WebAccountSession.ApplyHeaders(request);
             }
 
             var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false);
@@ -7311,7 +7164,7 @@ public static partial class Config
     // so the DASH demuxer can play it up to 1080p. Returns null when adaptive streams are
     // unavailable, in which case the caller keeps the muxed-progressive URL path.
     public static async Task<ShortDemuxFormats> GetShortDemuxFormatsAsync(
-        string videoId, string preferredAudioTrackId = null, int overrideHeight = 0)
+        string videoId, string preferredAudioTrackId = null, int overrideHeight = 0, string playerJson = null)
     {
         if (string.IsNullOrWhiteSpace(videoId))
         {
@@ -7320,11 +7173,7 @@ public static partial class Config
 
         try
         {
-            // ANDROID hands back plain (unciphered) URLs for adaptiveFormats, same as the Shorts
-            // muxed path already relies on.
-            var androidPayload = "{\"context\":{" + BuildAndroidClientJson() + "},\"videoId\":\""
-                + JsonEscape(videoId) + "\",\"contentCheckOk\":true,\"racyCheckOk\":true}";
-            var json = await PostInnertubeJsonAsync("player", androidPayload, string.Empty, "ANDROID", "20.10.38");
+            var json = playerJson ?? await GetShortFormatPlayerAsync(videoId);
 
             var formats = ParseAdaptiveFormatsForDemux(json);
             if (formats.Count == 0)
@@ -7333,7 +7182,7 @@ public static partial class Config
             }
 
             // A per-short menu choice overrides the Settings default.
-            var preferred = overrideHeight > 0 ? overrideHeight : GetPreferredShortsQualityHeight();
+            var preferred = overrideHeight > 0 ? overrideHeight : GetShortPlaybackQualityHeight();
 
             PlayerFormatModel video = null;
             PlayerFormatModel audio = null;
@@ -7421,9 +7270,7 @@ public static partial class Config
         }
         try
         {
-            var androidPayload = "{\"context\":{" + BuildAndroidClientJson() + "},\"videoId\":\""
-                + JsonEscape(videoId) + "\",\"contentCheckOk\":true,\"racyCheckOk\":true}";
-            var json = await PostInnertubeJsonAsync("player", androidPayload, string.Empty, "ANDROID", "20.10.38");
+            var json = await GetShortFormatPlayerAsync(videoId);
             var formats = ParseAdaptiveFormatsForDemux(json);
             var tiers = new SortedSet<int>();
             foreach (var f in formats)
@@ -7450,6 +7297,11 @@ public static partial class Config
         return result;
     }
 
+    private static async Task<string> GetShortFormatPlayerAsync(string videoId)
+    {
+        var response = await PlaybackResolver.GetAsync(videoId, true);
+        return response == null ? string.Empty : response.Json;
+    }
     // Caption tracks (+ translation languages) a short offers, for its subtitles menu.
     public static async Task<Subtitles.TrackList> GetShortSubtitleTracksAsync(string videoId)
     {
@@ -7533,6 +7385,7 @@ public static partial class Config
                     HasVideo = mimeLower.IndexOf("video", StringComparison.Ordinal) >= 0
                         || format.ContainsKey("width"),
                     IsAdaptive = true,
+                    MediaUserAgent = PlaybackResolver.MediaUserAgent(root),
                     AudioTrackId = GetAudioTrackField(format, "id"),
                     AudioTrackName = GetAudioTrackField(format, "displayName"),
                     AudioIsDefault = GetAudioTrackIsDefault(format)
@@ -7634,6 +7487,23 @@ public static partial class Config
         return 0;
     }
 
+    internal static int GetShortPlaybackQualityHeight()
+    {
+        var height = GetPreferredShortsQualityHeight();
+        if (height > 0) return height;
+        try
+        {
+            object value;
+            if (ApplicationData.Current.LocalSettings.Values.TryGetValue("PreferredVideoQuality", out value))
+            {
+                var text = (value as string ?? string.Empty).Trim().TrimEnd('p', 'P');
+                if (int.TryParse(text, out height) && height > 0) return height;
+            }
+        }
+        catch { }
+        // The same screen cap used for Auto on the video page.
+        return global::YouTube.Video.GetAutomaticScreenQualityCap();
+    }
     private static string SelectPlayableShortUrl(JsonObject playerResponse)
     {
         if (playerResponse == null || !playerResponse.ContainsKey("streamingData"))
@@ -8539,14 +8409,15 @@ public static partial class Config
 
         try
         {
-            var root = JsonValue.Parse(json);
-            page.ContinuationToken = ExtractHistoryContinuationToken(root);
+            var root = GetHistoryFeedContents(JsonValue.Parse(json));
+            page.ContinuationToken = ExtractHistoryPageContinuation(root);
 
-            var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var seen = new HashSet<string>(StringComparer.Ordinal);
             var added = 0;
             CollectHistorySections(root, page.Groups, seen, count, ref added);
 
-            if (page.Groups.Count == 0)
+            // Continuation pages can contain both dated sections and undated entries.
+            // Keep the latter too; the shared seen set excludes entries already grouped.
             {
                 var fallback = new HistoryDateGroup { DateTitle = Localization.GetString("Older") };
                 ExtractHistoryItemsFromValue(root, seen, fallback.Videos, fallback.Shorts, ref added, count);
@@ -8571,6 +8442,7 @@ public static partial class Config
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine("[History] Parse error: " + ex.Message);
+            throw;
         }
 
         return page;
@@ -11875,6 +11747,9 @@ public sealed class ShortsVideoItem
     public string ThumbnailUrl { get; set; }
     public string ViewCount { get; set; }
     public string VideoUrl { get; set; }
+    public string MediaUserAgent { get; set; }
+    internal string PlaybackAccountKey { get; set; }
+    internal string PlayerJson { get; set; }
     public string LikeCount { get; set; }
     public string CommentCount { get; set; }
     public bool IsLiked { get; set; }

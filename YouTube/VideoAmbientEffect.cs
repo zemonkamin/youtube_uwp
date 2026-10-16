@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using Microsoft.Graphics.Canvas.Effects;
 using Windows.Foundation.Metadata;
 using Windows.Media.Playback;
@@ -105,10 +104,7 @@ namespace YouTube
         private FrameworkElement _bottomBarHost;
         private FrameworkElement _leftBarHost;
         private FrameworkElement _rightBarHost;
-        private FrameworkElement _playerGlowHost;
         private FrameworkElement _pageBackdropHost;
-        private FrameworkElement _navbarGlassSourceHost;
-        private FrameworkElement _tabbarGlassSourceHost;
         private MediaPlayer _player;
         private MediaPlayerSurface _sharedSurface;
         private Compositor _sharedSurfaceCompositor;
@@ -119,20 +115,14 @@ namespace YouTube
             FrameworkElement bottomBarHost,
             FrameworkElement leftBarHost,
             FrameworkElement rightBarHost,
-            FrameworkElement playerGlowHost,
-            FrameworkElement pageBackdropHost,
-            FrameworkElement navbarGlassSourceHost,
-            FrameworkElement tabbarGlassSourceHost)
+            FrameworkElement pageBackdropHost)
         {
             _playerBackgroundHost = playerBackgroundHost;
             _topBarHost = topBarHost;
             _bottomBarHost = bottomBarHost;
             _leftBarHost = leftBarHost;
             _rightBarHost = rightBarHost;
-            _playerGlowHost = playerGlowHost;
             _pageBackdropHost = pageBackdropHost;
-            _navbarGlassSourceHost = navbarGlassSourceHost;
-            _tabbarGlassSourceHost = tabbarGlassSourceHost;
         }
 
         public void Refresh(MediaPlayer player, bool isFullscreen)
@@ -152,10 +142,10 @@ namespace YouTube
             {
                 var mobile = ResponsiveLayout.IsPhoneDevice;
                 // MediaPlayerElement paints opaque bars on W10M, so the full duplicate directly
-                // behind it cannot be seen there. The bar/glow/page surfaces below provide the
+                // behind it cannot be seen there. The bar/page surfaces below provide the
                 // same visible result without spending another continuously rendered effect.
                 if (!mobile)
-                    Attach(_playerBackgroundHost, 26.0f, 0.92f, false);
+                    Attach(_playerBackgroundHost, 26.0f, 0.92f);
                 // Fullscreen gets a deliberately much darker cinematic fill. 184 is exactly four
                 // times the previous fullscreen blur (46); the lower opacity blends that surface
                 // with MediaPlayerElement's black bars instead of producing a bright color wash.
@@ -163,25 +153,14 @@ namespace YouTube
                     ? (isFullscreen ? 64.0f : 28.0f)
                     : (isFullscreen ? 184.0f : 46.0f);
                 var barOpacity = isFullscreen ? 0.26f : 0.68f;
-                Attach(_topBarHost, barBlur, barOpacity, false);
-                Attach(_bottomBarHost, barBlur, barOpacity, false);
-                Attach(_leftBarHost, barBlur, barOpacity, false);
-                Attach(_rightBarHost, barBlur, barOpacity, false);
-                // Keep one continuous ambient surface behind the whole page. Navigation bars use
-                // their normal backdrop glass and do not receive a separate, stronger video copy.
-                Attach(_playerGlowHost, mobile ? 22.0f : 34.0f, 0.30f, true);
-                Attach(_pageBackdropHost, mobile ? 30.0f : 52.0f, 0.13f, false);
-            }
-
-            if (VideoAmbientEffectController.IsEnabled()
-                && FluentGlassEffectHelper.IsEnabled()
-                && !ResponsiveLayout.IsCompactLandscape)
-            {
-                // Normal dark glass keeps roughly 16% of what is below it. 0.82 * 0.16 ~= 0.13,
-                // which makes the navigation result as strong as the page ambient layer instead
-                // of the overpowering dedicated strips used by the previous implementation.
-                Attach(_navbarGlassSourceHost, 22.0f, 0.82f, false);
-                Attach(_tabbarGlassSourceHost, 22.0f, 0.82f, false);
+                Attach(_topBarHost, barBlur, barOpacity);
+                Attach(_bottomBarHost, barBlur, barOpacity);
+                Attach(_leftBarHost, barBlur, barOpacity);
+                Attach(_rightBarHost, barBlur, barOpacity);
+                // One crop, blur and opacity cover the entire page, including both navigation
+                // bars. Transparent navigation chrome exposes this same surface without a second
+                // tint or blur. Local glow/strip copies caused visible seams at their boundaries.
+                Attach(_pageBackdropHost, mobile ? 30.0f : 52.0f, 0.13f);
             }
         }
 
@@ -207,7 +186,7 @@ namespace YouTube
             }
         }
 
-        private void Attach(FrameworkElement host, float blurAmount, float opacity, bool overscan)
+        private void Attach(FrameworkElement host, float blurAmount, float opacity)
         {
             // Collapsed and zero-sized hosts used to allocate a MediaPlayerSurface, effect brush
             // and animation despite producing no pixels. On the phone this was a major source of
@@ -261,13 +240,9 @@ namespace YouTube
                 visual.Brush = effectBrush;
                 visual.Opacity = 0;
 
-                var sizeExpression = compositor.CreateExpressionAnimation(
-                    overscan ? "Vector2(target.Size.X + 40, target.Size.Y + 40)" : "target.Size");
+                var sizeExpression = compositor.CreateExpressionAnimation("target.Size");
                 sizeExpression.SetReferenceParameter("target", targetVisual);
                 visual.StartAnimation("Size", sizeExpression);
-                if (overscan)
-                    visual.Offset = new Vector3(-20, -20, 0);
-
                 var fade = compositor.CreateScalarKeyFrameAnimation();
                 fade.Duration = TimeSpan.FromMilliseconds(520);
                 fade.InsertKeyFrame(1.0f, opacity);
@@ -314,10 +289,7 @@ namespace YouTube
             _bottomBarHost = null;
             _leftBarHost = null;
             _rightBarHost = null;
-            _playerGlowHost = null;
             _pageBackdropHost = null;
-            _navbarGlassSourceHost = null;
-            _tabbarGlassSourceHost = null;
         }
     }
 }

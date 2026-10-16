@@ -1050,4 +1050,91 @@ YouTube API Legacy를 지원합니다.
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>검색창을 가운데에 표시</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>브라우저에서 로그인</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>이 계정으로 재생</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>로그인됨 · 로그아웃</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Google 페이지에서 로그인한 뒤 YouTube로 돌아와 OK를 누르세요.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>먼저 Google 로그인을 완료하세요.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>로그인을 완료할 수 없습니다. 다시 시도하세요.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>댓글 추가...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>게시</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>댓글을 게시할 수 없습니다.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube에서 이 동영상에 대한 댓글을 허용하지 않습니다.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>댓글을 게시하려면 브라우저에서 로그인하세요.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>나</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>실시간 채팅</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>주요 채팅</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>모든 메시지</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>아직 메시지가 없습니다</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>채팅에 다시 연결 중…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>방송 대기 중…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>방송이 종료되었습니다</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>실시간으로 이동</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>싫어요 수 표시</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike의 추정치</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>왼쪽에 탭 표시줄</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>데스크톱 Windows와 Continuum의 가로 모드에서 사용</value>
+  </data>
 </root>

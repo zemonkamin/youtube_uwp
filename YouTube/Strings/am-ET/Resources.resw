@@ -1050,4 +1050,91 @@
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>የፍለጋ አሞሌውን መሃል ላይ አሳይ</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>በአሳሽ ውስጥ መግባት</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>ይህን መለያ ለማጫወት ተጠቀም</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>ገብተዋል · ውጣ</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>በGoogle ገጽ ላይ ግባ፣ ወደ YouTube ተመለስ እና እሺን ተጫን።</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>መጀመሪያ ወደ Google መግባትን ጨርስ።</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>መግባትን ማጠናቀቅ አልተቻለም። እንደገና ሞክር።</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>አስተያየት ያክሉ...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>ላክ</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>አስተያየቱን መላክ አልተቻለም።</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube በዚህ ቪዲዮ ላይ አስተያየት መስጠት አልፈቀደም።</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>አስተያየት ለመስጠት በአሳሽዎ ውስጥ ይግቡ።</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>እርስዎ</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>የቀጥታ ስርጭት ውይይት</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>ዋና ውይይት</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>ሁሉም ውይይቶች</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>እስካሁን መልዕክቶች የሉም</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>ከውይይቱ ጋር እንደገና በመገናኘት ላይ…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>ስርጭቱን በመጠባበቅ ላይ…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>ስርጭቱ ተጠናቋል</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>ወደ ቀጥታ ስርጭት ሂድ</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>የአልወደድኩም ብዛት አሳይ</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>ከReturn YouTube Dislike የተገኘ ግምት</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>የትር አሞሌ በግራ</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>በWindows ኮምፒውተር እና Continuum በአግድም ሁኔታ</value>
+  </data>
 </root>

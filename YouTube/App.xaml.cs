@@ -1352,6 +1352,7 @@ namespace YouTube
                 // running after suspension/termination. Persist the latest index snapshot so the
                 // next process can reattach and finish post-processing.
                 await DownloadManager.SaveStateAsync();
+                await YouTube.Innertube.WebAccountSession.SaveAsync();
             }
             catch (Exception ex)
             {

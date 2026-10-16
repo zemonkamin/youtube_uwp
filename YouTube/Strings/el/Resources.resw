@@ -1050,4 +1050,91 @@
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Εμφάνιση της γραμμής αναζήτησης στο κέντρο</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Σύνδεση στο πρόγραμμα περιήγησης</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Χρήση αυτού του λογαριασμού για αναπαραγωγή</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Συνδεθήκατε · Αποσύνδεση</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Συνδεθείτε στη σελίδα του Google, επιστρέψτε στο YouTube και πατήστε OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Ολοκληρώστε πρώτα τη σύνδεση στο Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η ολοκλήρωση της σύνδεσης. Δοκιμάστε ξανά.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Προσθέστε ένα σχόλιο...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Δημοσίευση</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η δημοσίευση του σχολίου.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>Το YouTube δεν επιτρέπει σχόλια σε αυτό το βίντεο.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Συνδεθείτε στο πρόγραμμα περιήγησης για να δημοσιεύσετε σχόλια.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Εσείς</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Ζωντανή συζήτηση</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Κορυφαία συζήτηση</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Όλα τα μηνύματα</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Δεν υπάρχουν ακόμα μηνύματα</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Επανασύνδεση στη συζήτηση…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Αναμονή για τη μετάδοση…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Η μετάδοση ολοκληρώθηκε</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Μετάβαση στη ζωντανή μετάδοση</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Εμφάνιση αριθμού «Δεν μου αρέσει»</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Εκτίμηση από το Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Γραμμή καρτελών αριστερά</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Σε οριζόντια προβολή σε Windows υπολογιστή και Continuum</value>
+  </data>
 </root>

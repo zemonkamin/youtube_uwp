@@ -1050,4 +1050,91 @@ Različica {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Prikaži iskalno vrstico na sredini</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Prijava v brskalniku</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Uporabi ta račun za predvajanje</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Prijavljeni · Odjava</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Prijavite se na Googlovi strani, vrnite se na YouTube in pritisnite OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Najprej dokončajte prijavo v Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Prijave ni bilo mogoče dokončati. Poskusite znova.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Dodajte komentar...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Objavi</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Komentarja ni bilo mogoče objaviti.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube ne dovoljuje komentiranja tega videoposnetka.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Za objavo komentarjev se prijavite v brskalniku.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Vi</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Klepet v živo</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Najboljši klepet</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Vsa sporočila</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Sporočil še ni</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Ponovno povezovanje s klepetom…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Čakanje na prenos…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Prenos se je končal</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Pojdi na prenos v živo</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Prikaži število nevšečkov</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Ocena storitve Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Vrstica zavihkov na levi</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>V ležečem načinu v namiznem Windowsu in Continuumu</value>
+  </data>
 </root>

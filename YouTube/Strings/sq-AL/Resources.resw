@@ -1050,4 +1050,91 @@ Versioni {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Shfaq shiritin e kërkimit në qendër</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Hyrje në shfletues</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Përdor këtë llogari për riprodhim</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Hyrja u krye · Dil</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Hyr në faqen e Google, kthehu në YouTube dhe shtyp OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Së pari përfundo hyrjen në Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Hyrja nuk mund të përfundohej. Provo përsëri.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Shto një koment...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Publiko</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Komenti nuk mund të publikohej.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube nuk lejon komente në këtë video.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Hyr në shfletues për të publikuar komente.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Ti</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Bisedë drejtpërdrejt</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Biseda kryesore</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Të gjitha mesazhet</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Ende nuk ka mesazhe</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Po rilidhet me bisedën…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Në pritje të transmetimit…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Transmetimi përfundoi</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Shko te transmetimi drejtpërdrejt</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Shfaq numrin e mospëlqimeve</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Vlerësim nga Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Shiriti i skedave majtas</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Në pamje horizontale në Windows për kompjuter dhe Continuum</value>
+  </data>
 </root>

@@ -35,6 +35,34 @@ namespace YouTube
 {
     public sealed partial class Video
     {
+        private CommentDraft _commentDraft;
+        private readonly List<CommentItem> _postedComments = new List<CommentItem>();
+
+        private void BindCommentComposers(string videoId)
+        {
+            videoId = videoId ?? string.Empty;
+            if (_commentDraft == null || _commentDraft.VideoId != videoId)
+            {
+                _commentDraft = new CommentDraft(videoId);
+                _postedComments.Clear();
+            }
+            if (LandscapeCommentComposer != null) LandscapeCommentComposer.BindDraft(_commentDraft);
+            if (SheetCommentComposer != null) SheetCommentComposer.BindDraft(_commentDraft);
+        }
+
+        private void CommentComposer_StateChanged(object sender, EventArgs e)
+        {
+            UpdateLandscapeDetailsVisibility(IsCurrentViewPortrait());
+        }
+
+        private void CommentComposer_CommentPosted(object sender, CommentPostedEventArgs e)
+        {
+            if (e == null || e.Comment == null || _offlineMode || !IsStillCurrentVideo(e.VideoId)) return;
+            _postedComments.Insert(0, e.Comment);
+            var comments = new List<CommentItem>(_currentComments ?? new List<CommentItem>());
+            comments.Insert(0, e.Comment);
+            ApplyComments(comments);
+        }
         private void ShowDescriptionButton_Click(object sender, RoutedEventArgs e)
         {
             ShowDescriptionBottomSheet();
@@ -361,7 +389,7 @@ namespace YouTube
                 var segments = await SponsorBlock.GetSegmentsAsync(videoId);
 
                 // The user may have moved on to another video while the request was in flight.
-                if (CustomVideoPlayer == null
+                if (CustomVideoPlayer == null || CustomVideoPlayer.IsLivePlayback
                     || !string.Equals(currentVideoId, videoId, StringComparison.Ordinal))
                 {
                     return;
@@ -418,7 +446,7 @@ namespace YouTube
 
             if (CustomVideoPlayer != null)
             {
-                CustomVideoPlayer.SetChapters(_descriptionChapterMarkers);
+                CustomVideoPlayer.SetChapters(CustomVideoPlayer.IsLivePlayback ? null : _descriptionChapterMarkers);
             }
         }
 
@@ -696,6 +724,7 @@ namespace YouTube
 
         private void ShowCommentsBottomSheet()
         {
+            if (SheetCommentComposer != null) SheetCommentComposer.Refresh();
             System.Diagnostics.Debug.WriteLine("[Comments] ShowCommentsBottomSheet called");
 
             // Materialize the modal list only while it is open. Keeping a third comment visual

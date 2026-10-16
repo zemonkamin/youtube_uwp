@@ -1050,4 +1050,91 @@ Versija {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Rādīt meklēšanas joslu centrā</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini atskaņotājs vienmēr virspusē</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Atvērt mini atskaņotāju atsevišķā vienmēr virspusē esošā logā</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Nav pieejams Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Pieejams tikai Visual Studio 2017 būvējumos (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Nepieciešama Windows 10 versija 1703 vai jaunāka</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Pierakstīšanās pārlūkā</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Izmantot šo kontu atskaņošanai</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Pierakstīts · Izrakstīties</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Pierakstieties Google lapā, atgriezieties YouTube un nospiediet OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Vispirms pabeidziet pierakstīšanos Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Neizdevās pabeigt pierakstīšanos. Mēģiniet vēlreiz.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Pievienojiet komentāru...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Publicēt</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Neizdevās publicēt komentāru.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube neatļauj komentēt šo videoklipu.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Lai publicētu komentārus, pierakstieties pārlūkā.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Jūs</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Tiešraides tērzēšana</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Populārākā tērzēšana</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Visi ziņojumi</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Vēl nav ziņojumu</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Atkārtoti savienojas ar tērzēšanu…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Gaida pārraidi…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Pārraide beigusies</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Pāriet uz tiešraidi</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Rādīt nepatīk atzīmju skaitu</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike aplēse</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Ciļņu josla kreisajā pusē</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Ainavas režīmā Windows datorā un Continuum</value>
+  </data>
 </root>

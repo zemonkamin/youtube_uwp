@@ -1050,4 +1050,91 @@ YouTube API Legacy പിന്തുണയ്ക്കുന്നു.
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>തിരയൽ ബാർ മധ്യത്തിൽ കാണിക്കുക</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>ബ്രൗസറിൽ സൈൻ ഇൻ</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>പ്ലേബാക്കിനായി ഈ അക്കൗണ്ട് ഉപയോഗിക്കുക</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>സൈൻ ഇൻ ചെയ്തു · സൈൻ ഔട്ട്</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Google പേജിൽ സൈൻ ഇൻ ചെയ്യുക, YouTube-ലേക്ക് മടങ്ങി OK അമർത്തുക.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>ആദ്യം Google സൈൻ ഇൻ പൂർത്തിയാക്കുക.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>സൈൻ ഇൻ പൂർത്തിയാക്കാനായില്ല. വീണ്ടും ശ്രമിക്കുക.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>അഭിപ്രായം ചേർക്കുക...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>അയയ്ക്കുക</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>അഭിപ്രായം അയയ്ക്കാനായില്ല.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>ഈ വീഡിയോയിൽ അഭിപ്രായം എഴുതാൻ YouTube അനുവദിച്ചിട്ടില്ല.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>അഭിപ്രായങ്ങൾ അയയ്ക്കാൻ ബ്രൗസറിൽ സൈൻ ഇൻ ചെയ്യുക.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>നിങ്ങൾ</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>തത്സമയ ചാറ്റ്</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>പ്രധാന ചാറ്റ്</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>എല്ലാ സന്ദേശങ്ങളും</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>ഇതുവരെ സന്ദേശങ്ങളില്ല</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>ചാറ്റിലേക്ക് വീണ്ടും ബന്ധിപ്പിക്കുന്നു…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>സംപ്രേഷണത്തിനായി കാത്തിരിക്കുന്നു…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>സംപ്രേഷണം അവസാനിച്ചു</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>തത്സമയത്തിലേക്ക് പോകുക</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>ഡിസ്‌ലൈക്കുകളുടെ എണ്ണം കാണിക്കുക</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike നൽകുന്ന ഏകദേശ കണക്ക്</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>ഇടതുവശത്ത് ടാബ് ബാർ</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>ഡെസ്‌ക്‌ടോപ്പ് Windows, Continuum എന്നിവയിൽ തിരശ്ചീന മോഡിൽ</value>
+  </data>
 </root>

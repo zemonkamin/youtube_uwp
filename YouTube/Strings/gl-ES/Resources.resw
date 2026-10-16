@@ -1050,4 +1050,91 @@ Versión {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Mostrar a barra de busca no centro</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Minirreprodutor sempre visible</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Abrir o minirreprodutor nunha xanela separada sempre visible</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Non dispoñible en Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Dispoñible só en compilacións de Visual Studio 2017 (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Require Windows 10 versión 1703 ou posterior</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Inicio de sesión no navegador</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Usar esta conta para a reprodución</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Sesión iniciada · Saír</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Inicia sesión na páxina de Google, volve a YouTube e preme OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Primeiro completa o inicio de sesión en Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Non se puido completar o inicio de sesión. Téntao de novo.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Engade un comentario...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Publicar</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Non se puido publicar o comentario.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube non permite comentar este vídeo.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Inicia sesión no navegador para publicar comentarios.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Ti</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Chat en directo</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Chat destacado</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Todas as mensaxes</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Aínda non hai mensaxes</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Reconectando ao chat…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Agardando a emisión…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>A emisión rematou</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Ir ao directo</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Mostrar o número de «Non me gusta»</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Estimación de Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Barra de pestanas á esquerda</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>En horizontal en Windows de escritorio e Continuum</value>
+  </data>
 </root>

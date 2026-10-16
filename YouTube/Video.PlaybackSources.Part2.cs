@@ -133,6 +133,8 @@ namespace YouTube
                 var androidRoot = JsonValue.Parse(androidJson).GetObject();
                 var androidFormats = new List<PlayerFormatModel>();
                 CollectFormatsFromStreamingData(androidRoot, androidFormats);
+                foreach (var format in androidFormats)
+                    format.MediaUserAgent = YouTube.Innertube.PlaybackResolver.MediaUserAgent(androidRoot);
 
                 // Remember what languages this video offers so the settings menu can list them.
                 _availableAudioTracks = Config.EnumerateAudioTracks(androidFormats);

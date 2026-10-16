@@ -7,11 +7,44 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <Style x:Key="TabbarButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="FontFamily" Value="{StaticResource RobotoFont}" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="SideButtonBackground" CornerRadius="10"
+                                Background="{TemplateBinding Background}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="PointerOver" />
+                                    <VisualState x:Name="Pressed" />
+                                    <VisualState x:Name="Disabled" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
     <Grid x:Name="TabbarRoot"
           Background="Transparent"
           SizeChanged="TabbarRoot_SizeChanged">
         <Grid.RowDefinitions>
-            <RowDefinition Height="2"/>
+            <RowDefinition x:Name="TabbarDividerRow" Height="2"/>
             <RowDefinition x:Name="TabbarContentRow" Height="50"/>
         </Grid.RowDefinitions>
         <Border x:Name="TabbarGlassHost"
@@ -20,12 +53,16 @@
                 Background="Transparent"
                 IsHitTestVisible="False" />
         <!-- Top dark gray bar -->
-        <Border Grid.Row="0" Background="{ThemeResource AppDividerBrush}"/>
+        <Border x:Name="TabbarDivider" Grid.Row="0" Background="{ThemeResource AppDividerBrush}"/>
         <!-- Bottom TabBar -->
         <!-- The glass/background remains full width. Only this button host is narrowed in
              landscape, matching the centered 35% bottom-sheet content width. -->
+        <ScrollViewer x:Name="TabbarButtonsScrollViewer" Grid.Row="1"
+                      HorizontalScrollMode="Disabled" HorizontalScrollBarVisibility="Disabled"
+                      VerticalScrollMode="Disabled" VerticalScrollBarVisibility="Disabled"
+                      HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
+                      ZoomMode="Disabled">
         <Grid x:Name="TabbarButtonsHost"
-              Grid.Row="1"
               HorizontalAlignment="Stretch"
               Background="Transparent">
             <Grid.ColumnDefinitions>
@@ -37,6 +74,7 @@
 
             <!-- Home -->
             <Button x:Name="HomeButton" Grid.Column="0" 
+                    Style="{StaticResource TabbarButtonStyle}"
                     Background="Transparent" 
                     BorderThickness="0"
                     HorizontalAlignment="Stretch"
@@ -58,6 +96,7 @@
 
             <!-- Shorts -->
             <Button x:Name="ShortsButton" Grid.Column="1" 
+                    Style="{StaticResource TabbarButtonStyle}"
                     Background="Transparent" 
                     BorderThickness="0"
                     HorizontalAlignment="Stretch"
@@ -79,6 +118,7 @@
 
             <!-- Subscriptions -->
             <Button x:Name="SubscriptionsButton" Grid.Column="2" 
+                    Style="{StaticResource TabbarButtonStyle}"
                     Background="Transparent" 
                     BorderThickness="0"
                     HorizontalAlignment="Stretch"
@@ -100,6 +140,7 @@
 
             <!-- Account -->
             <Button x:Name="AccountButton" Grid.Column="3" 
+                    Style="{StaticResource TabbarButtonStyle}"
                     Background="Transparent" 
                     BorderThickness="0"
                     HorizontalAlignment="Stretch"
@@ -129,5 +170,6 @@
                 </StackPanel>
             </Button>
         </Grid>
+        </ScrollViewer>
     </Grid>
 </Page>

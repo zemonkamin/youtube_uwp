@@ -1050,4 +1050,91 @@ Versi {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Tampilkan bilah pencarian di tengah</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Login di browser</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Gunakan akun ini untuk pemutaran</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Sudah login · Logout</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Login di halaman Google, kembali ke YouTube, lalu tekan OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Selesaikan login Google terlebih dahulu.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Tidak dapat menyelesaikan login. Coba lagi.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Tambahkan komentar...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Kirim</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Komentar tidak dapat dikirim.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube tidak mengizinkan komentar pada video ini.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Login di browser untuk mengirim komentar.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Anda</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Chat langsung</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Chat teratas</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Semua pesan</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Belum ada pesan</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Menghubungkan kembali ke chat…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Menunggu siaran…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Siaran berakhir</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Kembali ke siaran langsung</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Tampilkan jumlah tidak suka</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Perkiraan dari Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Bilah tab di kiri</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Dalam mode lanskap di Windows desktop dan Continuum</value>
+  </data>
 </root>

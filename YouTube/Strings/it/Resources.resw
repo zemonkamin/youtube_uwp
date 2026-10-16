@@ -1050,4 +1050,91 @@ Versione {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Mostra la barra di ricerca al centro</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Accesso nel browser</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Usa questo account per la riproduzione</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Accesso effettuato · Esci</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Accedi nella pagina Google, torna su YouTube e premi OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Completa prima l&apos;accesso a Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Impossibile completare l&apos;accesso. Riprova.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Aggiungi un commento...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Pubblica</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Impossibile pubblicare il commento.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube non consente commenti su questo video.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Accedi nel browser per pubblicare commenti.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Tu</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Chat dal vivo</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Chat principale</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Tutti i messaggi</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Ancora nessun messaggio</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Riconnessione alla chat…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>In attesa della trasmissione…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Trasmissione terminata</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Vai alla diretta</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Mostra il numero di «Non mi piace»</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Stima di Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Barra delle schede a sinistra</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>In orizzontale su Windows desktop e Continuum</value>
+  </data>
 </root>

@@ -1050,4 +1050,91 @@ Version {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Show the search bar in the center</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Browser sign-in</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Use this account for playback</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Signed in · Sign out</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Sign in on the Google page, return to YouTube and press OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Complete Google sign-in first.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Unable to complete sign-in. Try again.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Add a comment...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Post</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Could not post the comment.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube has not allowed commenting on this video.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Sign in in your browser to post comments.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>You</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Live chat</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Top chat</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>All chat</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>No messages yet</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Reconnecting to chat…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Waiting for the broadcast…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Broadcast ended</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Go to live</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Show dislike counts</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Estimate from Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Tab bar on the left</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>In landscape on desktop Windows and Continuum</value>
+  </data>
 </root>

@@ -37,6 +37,8 @@ namespace YouTube
     {
         private void VideoPage_BackRequested(object sender, BackRequestedEventArgs e)
         {
+            if (LiveChatWindow != null && LiveChatWindow.Visibility == Visibility.Visible)
+            { e.Handled = true; CloseLiveChat(); return; }
             if (!Frame.CanGoBack)
             {
                 return;
@@ -49,8 +51,9 @@ namespace YouTube
             Frame.GoBack();
         }
 
-        private void CustomVideoPlayer_MinimizeRequested(object sender, EventArgs e)
+        private async void CustomVideoPlayer_MinimizeRequested(object sender, EventArgs e)
         {
+            if (CustomVideoPlayer != null) await CustomVideoPlayer.CloseDesktopMiniPlayerAsync();
             MinimizeToMiniPlayer();
         }
 
@@ -325,6 +328,7 @@ namespace YouTube
                 EnsurePlayerAttached();
 
                 _minimizedToMiniPlayer = false;
+                ForceDesktopMiniPlayerRestoreLayout();
                 ActivateDisplayRequest();
                 System.Diagnostics.Debug.WriteLine("[Video] Restored from mini-player");
             }
@@ -340,6 +344,77 @@ namespace YouTube
         // missed and the page keeps the two-column "landscape" layout it picked at 360px wide —
         // the player ends up as a narrow strip. Re-apply the layout a few times while the window
         // settles.
+        // Desktop CompactOverlay uses a different MediaPlayerElement. After that surface is
+        // released, discard every cached mini-player measure and rebuild the normal Video-page
+        // geometry from the current main-window width. This intentionally runs only on restore;
+        // the ordinary in-app MiniPlayer path keeps its existing lightweight layout behavior.
+        private void ForceDesktopMiniPlayerRestoreLayout()
+        {
+            try
+            {
+                _videoLayoutInitialized = false;
+
+                if (CustomVideoPlayer != null)
+                {
+                    CustomVideoPlayer.Width = double.NaN;
+                    CustomVideoPlayer.Height = double.NaN;
+                    CustomVideoPlayer.MinWidth = 0;
+                    CustomVideoPlayer.MinHeight = MinVideoPlayerHeight;
+                    CustomVideoPlayer.HorizontalAlignment = HorizontalAlignment.Stretch;
+                    CustomVideoPlayer.VerticalAlignment = VerticalAlignment.Stretch;
+                    CustomVideoPlayer.Margin = new Thickness(0);
+                    CustomVideoPlayer.InvalidateMeasure();
+                    CustomVideoPlayer.InvalidateArrange();
+                }
+
+                if (VideoPlayerContainer != null)
+                {
+                    // Remove any height calculated while the player was detached. The regular
+                    // aspect-ratio routine below immediately writes the correct full-page height.
+                    VideoPlayerContainer.Height = double.NaN;
+                    VideoPlayerContainer.InvalidateMeasure();
+                    VideoPlayerContainer.InvalidateArrange();
+                }
+
+                UpdateVideoPlayerLayout(false);
+                UpdateVideoPlayerHeight();
+
+                // OnNavigatedTo can run before the Frame has completed its final arrange. Repeat
+                // once at High priority after navigation without using a timing delay.
+                var ignored = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+                {
+                    try
+                    {
+                        _videoLayoutInitialized = false;
+                        UpdateVideoPlayerLayout(false);
+                        UpdateVideoPlayerHeight();
+
+                        if (VideoPlayerContainer != null)
+                        {
+                            VideoPlayerContainer.InvalidateMeasure();
+                            VideoPlayerContainer.InvalidateArrange();
+                            VideoPlayerContainer.UpdateLayout();
+                        }
+                        if (CustomVideoPlayer != null)
+                        {
+                            CustomVideoPlayer.InvalidateMeasure();
+                            CustomVideoPlayer.InvalidateArrange();
+                            CustomVideoPlayer.UpdateLayout();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(
+                            "[Video] Desktop PiP post-restore layout pass failed: " + ex.Message);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(
+                    "[Video] Desktop PiP restore layout reset failed: " + ex.Message);
+            }
+        }
         private void ScheduleLayoutResync()
         {
             try
@@ -453,7 +528,9 @@ namespace YouTube
             // Changing currentVideoId first makes any in-flight work from the previous video bail
             // out at its IsStillCurrentVideo checks. Stopping the player gives a clean hand-off;
             // BindPlayerSourceAsync then replaces the source (same as a quality change does).
+            StopWatchHistoryReporting();
             currentVideoId = videoId;
+            BindCommentComposers(videoId);
             YouTube.Discord.DiscordPresenceService.SetVideo(currentVideoId, string.Empty, string.Empty);
             UpdatePlaylistTransportControls();
 
@@ -469,8 +546,8 @@ namespace YouTube
             {
                 try
                 {
+                    CustomVideoPlayer.StopAndReleasePlayback();
                     CustomVideoPlayer.ResetForReuse();
-                    CustomVideoPlayer.Stop();
                 }
                 catch (Exception ex)
                 { System.Diagnostics.Debug.WriteLine("[Video] Stop before switch failed: " + ex.Message); }
@@ -532,6 +609,7 @@ namespace YouTube
 
             EnsurePlayerAttached();
             ResetSecondaryContentForFastLoad();
+            if (CustomVideoPlayer != null) CustomVideoPlayer.SetLivePlayback(false);
             SetSkeletonVisibility(false);
 
             if (VideoTitleText != null) VideoTitleText.Text = item.Title ?? string.Empty;
@@ -567,6 +645,7 @@ namespace YouTube
 
         private void ApplyOfflineModeVisuals(bool offline)
         {
+            if (offline) BindCommentComposers(null);
             if (VideoActionsScrollViewer != null)
                 VideoActionsScrollViewer.Visibility = offline ? Visibility.Collapsed : Visibility.Visible;
             if (SubscribeButtonContainer != null)
@@ -625,6 +704,10 @@ namespace YouTube
             // transitions can run the SAME full SwitchToVideoAsync path and refresh all metadata.
             if (!_minimizedToMiniPlayer)
             {
+                StopWatchHistoryReporting();
+                ResetLivePage();
+                _playerNSig.Release();
+                _liveProof.Release();
                 currentVideoId = null;
                 DetachPlayerEventHandlers();
 
@@ -632,7 +715,7 @@ namespace YouTube
                 {
                     if (CustomVideoPlayer != null)
                     {
-                        CustomVideoPlayer.Stop();
+                        CustomVideoPlayer.StopAndReleasePlayback();
                         CustomVideoPlayer.SetSystemMediaNavigationEnabled(false, false);
                     }
                 }

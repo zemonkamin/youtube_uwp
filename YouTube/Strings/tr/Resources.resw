@@ -1050,4 +1050,91 @@ Sürüm {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Arama çubuğunu ortada göster</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Tarayıcıda giriş</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Oynatma için bu hesabı kullan</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Giriş yapıldı · Çıkış yap</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Google sayfasında giriş yap, YouTube&apos;a dön ve Tamam&apos;a bas.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Önce Google girişini tamamla.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Giriş tamamlanamadı. Tekrar dene.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Yorum ekleyin...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Gönder</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Yorum gönderilemedi.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube bu videoya yorum yapılmasına izin vermiyor.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Yorum göndermek için tarayıcıda giriş yapın.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Siz</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Canlı sohbet</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>En iyi sohbet</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Tüm mesajlar</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Henüz mesaj yok</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Sohbete yeniden bağlanılıyor…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Yayın bekleniyor…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Yayın sona erdi</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Canlı yayına git</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Beğenmeme sayısını göster</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike tahmini</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Sekme çubuğu solda</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Masaüstü Windows ve Continuum’da yatay modda</value>
+  </data>
 </root>

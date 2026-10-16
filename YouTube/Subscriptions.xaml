@@ -25,6 +25,10 @@
     </Page.Resources>
 
     <Grid Background="{ThemeResource AppBackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="SideTabbarColumn" Width="0" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="56"/>
             <RowDefinition Height="*"/>
@@ -32,10 +36,10 @@
         </Grid.RowDefinitions>
 
         <!-- Navbar at the top -->
-        <local:Navbar x:Name="navbar" Grid.Row="0" Canvas.ZIndex="20"/>
+        <local:Navbar Grid.Column="0" Grid.ColumnSpan="2" x:Name="navbar" Grid.Row="0" Canvas.ZIndex="30"/>
 
         <!-- Content area with both subscriptions and videos -->
-        <ScrollViewer x:Name="MainScrollViewer"
+        <ScrollViewer Grid.Column="1" x:Name="MainScrollViewer"
                       Grid.Row="0"
                       Grid.RowSpan="3"
                       VerticalScrollMode="Auto"
@@ -43,7 +47,7 @@
                       HorizontalScrollMode="Disabled"
                       HorizontalScrollBarVisibility="Disabled"
                       ViewChanged="MainScrollViewer_ViewChanged">
-            <StackPanel Padding="0,56,0,52">
+            <StackPanel local:SideTabbarController.BottomInset="52" Padding="0,56,0,52">
                 <!-- A horizontal virtualized list: channel avatars are requested only when
                      their containers are realized while the user scrolls the strip. -->
                 <ListView x:Name="SubscriptionsList"
@@ -250,10 +254,10 @@
         </ScrollViewer>
 
         <!-- Tabbar at the bottom -->
-        <local:Tabbar x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20"/>
+        <local:Tabbar Grid.Column="0" Grid.ColumnSpan="2" x:Name="tabbar" Grid.Row="2" Canvas.ZIndex="20"/>
         
         <!-- Loading indicator -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Column="1" Grid.Row="1">
             <local:AndroidLoadingRing x:Name="LoadingRing"
                                       IsActive="False"
                                       Visibility="Collapsed"

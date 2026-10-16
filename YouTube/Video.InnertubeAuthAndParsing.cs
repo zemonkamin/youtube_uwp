@@ -295,20 +295,19 @@ namespace YouTube
                 request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "2.20260114.08.00");
                 request.Headers.TryAddWithoutValidation("X-Goog-Visitor-Id", GetFallbackInnertubeVisitorData());
 
-                var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                if (!response.IsSuccessStatusCode)
-                {
-                    System.Diagnostics.Debug.WriteLine(
-                        "[Video] WEB Safari player failed: "
-                        + response.StatusCode
-                        + " "
-                        + json
-                    );
-                    return string.Empty;
-                }
+                await WebAccountSession.InitializeAsync();
+                WebAccountSession.ApplyHeaders(request);
 
-                return json;
+                using (var response = await httpClient.SendAsync(request).ConfigureAwait(false))
+                {
+                    var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        LogPlayerRequestFailure("player (WEB)", response, json);
+                        return string.Empty;
+                    }
+                    return json;
+                }
             }
         }
 
@@ -465,6 +464,19 @@ namespace YouTube
             string videoId,
             string playlistId)
         {
+            await WebAccountSession.InitializeAsync();
+            if (WebAccountSession.IsSignedIn)
+            {
+                var browser = await PostInnertubeJsonAsync(
+                    "next", BuildNextPayload(videoId, playlistId)).ConfigureAwait(false);
+                return new WatchNextResponse
+                {
+                    Response = browser,
+                    AuthenticatedResponse = browser,
+                    PageIsAuthenticatedMweb = false,
+                    IsTvLayout = false
+                };
+            }
             Config.LoadUserToken();
             var refreshToken = Config.UserToken;
             if (!string.IsNullOrWhiteSpace(refreshToken))
@@ -683,7 +695,7 @@ namespace YouTube
         {
             if (string.Equals(endpoint, "player", StringComparison.OrdinalIgnoreCase))
             {
-                return InnertubeEndpoints.BuildWithoutKey("player?noauth=1&prettyPrint=false");
+                return InnertubeEndpoints.BuildWithoutKey("player?prettyPrint=false");
             }
 
             return InnertubeEndpoints.Build(endpoint);

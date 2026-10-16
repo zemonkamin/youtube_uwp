@@ -193,6 +193,12 @@ namespace YouTube
 
         private void OverlayGrid_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            if (LiveChatWindow != null && LiveChatWindow.Visibility == Visibility.Visible)
+            {
+                CloseLiveChat();
+                e.Handled = true;
+                return;
+            }
             HideSharePopup();
             AnimateSaveBottomSheet(false);
             AnimateCommentsBottomSheet(false);

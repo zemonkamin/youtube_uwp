@@ -1,0 +1,1086 @@
+﻿using System;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation;
+using Windows.Media.Playback;
+using Windows.UI;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+
+namespace YouTube
+{
+    // A true secondary UWP view used by supported VS2017+ desktop builds.
+    // The existing MediaPlayer instance is reused; no second stream/decoder is created.
+    internal static class DesktopMiniPlayerWindow
+    {
+        private const double DefaultLongEdge = 360.0;
+        private const double MaximumLongEdge = 520.0;
+        private const double MinimumWidth = 180.0;
+        private const double MinimumHeight = 100.0;
+        private const double DefaultAspectRatio = 16.0 / 9.0;
+
+        private static bool _isOpening;
+        private static bool _isActive;
+        private static bool _suppressConsolidatedCallback;
+        private static bool _restoreInProgress;
+        private static int _viewId;
+        private static int _mainViewId;
+        private static int _aspectResizeVersion;
+        private static double _videoAspectRatio = DefaultAspectRatio;
+        private static CoreApplicationView _view;
+        private static CoreDispatcher _secondaryDispatcher;
+        private static CoreDispatcher _mainDispatcher;
+        private static MediaPlayerElement _mediaElement;
+        private static Grid _controlsOverlay;
+        private static Button _playPauseButton;
+        private static Image _playPauseIcon;
+        private static Slider _progressSlider;
+        private static Border _progressHitArea;
+        private static DispatcherTimer _controlsHideTimer;
+        private static DispatcherTimer _progressTimer;
+        private static bool _progressPointerDown;
+        private static bool _controlsVisible;
+        private static MediaPlayer _sharedPlayer;
+        private static Action _restoreRequested;
+        private static Action _closeRequested;
+        private static Action _failed;
+
+        public static bool IsOpening { get { return _isOpening; } }
+        public static bool IsActive { get { return _isActive; } }
+
+        public static bool TryShow(
+            CustomVideoPlayer owner,
+            double videoAspectRatio,
+            Action restoreRequested,
+            Action closeRequested,
+            Action failed)
+        {
+#if VS2017_DESKTOP_PIP
+            if (owner == null || !DesktopMiniPlayerSetting.IsEnabled() || _isOpening || _isActive)
+            {
+                return false;
+            }
+
+            try
+            {
+                var ownerElement = owner.GetMediaPlayer();
+                var shared = ownerElement == null ? null : ownerElement.MediaPlayer;
+                if (shared == null)
+                {
+                    return false;
+                }
+
+                _sharedPlayer = shared;
+                _videoAspectRatio = NormalizeRatio(videoAspectRatio);
+                _restoreRequested = restoreRequested;
+                _closeRequested = closeRequested;
+                _failed = failed;
+                _mainDispatcher = Window.Current.Dispatcher;
+                _mainViewId = ApplicationView.GetForCurrentView().Id;
+                _restoreInProgress = false;
+                _isOpening = true;
+                ShowAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] TryShow failed: " + ex.Message);
+                ResetState(false);
+                return false;
+            }
+#else
+            return false;
+#endif
+        }
+
+        // The stream can publish a more accurate aspect ratio after the PiP window is already open.
+        // Re-fit only the secondary window; the shared MediaPlayer itself is not recreated.
+        public static void UpdateAspectRatio(double videoAspectRatio)
+        {
+#if VS2017_DESKTOP_PIP
+            _videoAspectRatio = NormalizeRatio(videoAspectRatio);
+            if (_isActive || _isOpening)
+            {
+                FitWindowToAspect(_videoAspectRatio, false);
+            }
+#endif
+        }
+
+#if VS2017_DESKTOP_PIP
+        private static async void ShowAsync()
+        {
+            try
+            {
+                _view = CoreApplication.CreateNewView();
+                await _view.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    _secondaryDispatcher = Window.Current.Dispatcher;
+                    BuildSecondaryWindow();
+                    var appView = ApplicationView.GetForCurrentView();
+                    _viewId = appView.Id;
+                    appView.Consolidated += SecondaryView_Consolidated;
+                    try
+                    {
+                        appView.SetPreferredMinSize(new Size(MinimumWidth, MinimumHeight));
+                    }
+                    catch
+                    {
+                    }
+                    Window.Current.Activate();
+                });
+
+                var shown = await ApplicationViewSwitcher.TryShowAsViewModeAsync(
+                    _viewId,
+                    ApplicationViewMode.CompactOverlay);
+
+                if (!shown)
+                {
+                    throw new InvalidOperationException("Windows refused CompactOverlay for the secondary view.");
+                }
+
+                _isOpening = false;
+                _isActive = true;
+
+                // CompactOverlay can override a size requested before the mode switch. Resize the
+                // already-shown secondary view, then repeat once after the shell has settled. This
+                // keeps 16:9, 4:3, square and portrait videos from opening in a fixed 16:9 box.
+                FitWindowToAspect(_videoAspectRatio, true);
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Secondary CompactOverlay opened.");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Open failed: " + ex.Message);
+                await CleanupFailedOpenAsync();
+                var failed = _failed;
+                var mainDispatcher = _mainDispatcher;
+                ResetState(false);
+                if (failed != null && mainDispatcher != null)
+                {
+                    await mainDispatcher.RunAsync(CoreDispatcherPriority.Normal, () => failed());
+                }
+            }
+        }
+
+        private static double NormalizeRatio(double ratio)
+        {
+            if (ratio <= 0
+                || double.IsNaN(ratio)
+                || double.IsInfinity(ratio)
+                || ratio < 0.45
+                || ratio > 3.5)
+            {
+                return DefaultAspectRatio;
+            }
+            return ratio;
+        }
+
+        private static Size GetPreferredWindowSize(double ratio)
+        {
+            ratio = NormalizeRatio(ratio);
+
+            double width;
+            double height;
+            if (ratio >= 1.0)
+            {
+                width = DefaultLongEdge;
+                height = width / ratio;
+            }
+            else
+            {
+                height = DefaultLongEdge;
+                width = height * ratio;
+            }
+
+            if (width < MinimumWidth)
+            {
+                var scale = MinimumWidth / width;
+                width *= scale;
+                height *= scale;
+            }
+            if (height < MinimumHeight)
+            {
+                var scale = MinimumHeight / height;
+                width *= scale;
+                height *= scale;
+            }
+
+            var longEdge = Math.Max(width, height);
+            if (longEdge > MaximumLongEdge)
+            {
+                var scale = MaximumLongEdge / longEdge;
+                width *= scale;
+                height *= scale;
+            }
+
+            return new Size(Math.Round(width), Math.Round(height));
+        }
+
+        private static async void FitWindowToAspect(double ratio, bool settleAfterModeSwitch)
+        {
+            var dispatcher = _secondaryDispatcher;
+            if (dispatcher == null)
+            {
+                return;
+            }
+
+            var version = ++_aspectResizeVersion;
+            var requestedSize = GetPreferredWindowSize(ratio);
+
+            try
+            {
+                await ResizeSecondaryViewOnce(dispatcher, requestedSize, version);
+                if (!settleAfterModeSwitch)
+                {
+                    return;
+                }
+
+                // A short second pass is intentional: CompactOverlay may apply its own initial
+                // bounds just after TryShowAsViewModeAsync completes. Two lightweight size requests
+                // are cheaper and more reliable than continuously resizing on every SizeChanged.
+                await Task.Delay(180);
+                await ResizeSecondaryViewOnce(dispatcher, requestedSize, version);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Aspect resize failed: " + ex.Message);
+            }
+        }
+
+        private static async Task ResizeSecondaryViewOnce(
+            CoreDispatcher dispatcher,
+            Size requestedSize,
+            int version)
+        {
+            if (dispatcher == null || version != _aspectResizeVersion)
+            {
+                return;
+            }
+
+            await dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+            {
+                if (version != _aspectResizeVersion)
+                {
+                    return;
+                }
+
+                try
+                {
+                    var resized = ApplicationView.GetForCurrentView().TryResizeView(requestedSize);
+                    System.Diagnostics.Debug.WriteLine(
+                        "[DesktopMiniPlayer] Aspect resize "
+                        + requestedSize.Width.ToString("0") + "x"
+                        + requestedSize.Height.ToString("0") + ": " + resized);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] TryResizeView failed: " + ex.Message);
+                }
+            });
+        }
+
+        private static void BuildSecondaryWindow()
+        {
+            // CompactOverlay owns the real window chrome. Keep the video rectangular and use only
+            // the system close button. Our controls are an overlay over the live video surface.
+            ConfigureTransparentTitleBar();
+
+            var root = new Grid
+            {
+                Background = new SolidColorBrush(Colors.Black)
+            };
+            root.PointerEntered += SecondaryRoot_PointerActivity;
+            root.PointerMoved += SecondaryRoot_PointerActivity;
+            root.PointerExited += SecondaryRoot_PointerExited;
+
+            _mediaElement = new MediaPlayerElement
+            {
+                AreTransportControlsEnabled = false,
+                Stretch = Stretch.Uniform,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
+            _mediaElement.SetMediaPlayer(_sharedPlayer);
+            root.Children.Add(_mediaElement);
+
+            // Free video area restores the main app. The actual controls are added after this hit
+            // target, so Play/Pause and the seek bar receive the pointer instead of restoring.
+            var restoreHitTarget = new Border
+            {
+                Background = new SolidColorBrush(Colors.Transparent),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch
+            };
+            restoreHitTarget.Tapped += RestoreHitTarget_Tapped;
+            restoreHitTarget.PointerMoved += SecondaryRoot_PointerActivity;
+            root.Children.Add(restoreHitTarget);
+
+            _controlsOverlay = new Grid
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Stretch,
+                Opacity = 1.0,
+                IsHitTestVisible = true
+            };
+
+            _playPauseButton = new Button
+            {
+                Width = 52,
+                Height = 52,
+                Padding = new Thickness(0),
+                Style = (Style)Application.Current.Resources["MiniPlayerControlButtonStyle"],
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            _playPauseIcon = new Image
+            {
+                Width = 26,
+                Height = 26
+            };
+            _playPauseButton.Content = _playPauseIcon;
+            _playPauseButton.Click += PlayPauseButton_Click;
+            _playPauseButton.PointerMoved += SecondaryRoot_PointerActivity;
+            _controlsOverlay.Children.Add(_playPauseButton);
+
+            _progressSlider = new Slider
+            {
+                Minimum = 0,
+                Maximum = 100,
+                Value = 0,
+                Height = 24,
+                Margin = new Thickness(10, 0, 10, 7),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                IsTabStop = false,
+                IsEnabled = false,
+                IsHitTestVisible = false
+            };
+            try
+            {
+                var sliderStyle = Application.Current.Resources["DesktopMiniPlayerSliderStyle"] as Style;
+                if (sliderStyle != null)
+                {
+                    _progressSlider.Style = sliderStyle;
+                }
+            }
+            catch
+            {
+                // The slider still works with the platform default style if the app resource was
+                // not present for some reason.
+            }
+            _controlsOverlay.Children.Add(_progressSlider);
+
+            // Match the normal player's approach: the visible Slider does no pointer work. A
+            // transparent full-height hit area above it gives a much easier mouse/touch target and
+            // maps the pointer to the timeline. The expensive media seek happens only on release.
+            _progressHitArea = new Border
+            {
+                Height = 28,
+                Margin = new Thickness(6, 0, 6, 5),
+                Background = new SolidColorBrush(Colors.Transparent),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                VerticalAlignment = VerticalAlignment.Bottom
+            };
+            _progressHitArea.PointerPressed += ProgressHitArea_PointerPressed;
+            _progressHitArea.PointerMoved += ProgressHitArea_PointerMoved;
+            _progressHitArea.PointerReleased += ProgressHitArea_PointerReleased;
+            _progressHitArea.PointerCanceled += ProgressHitArea_PointerCanceled;
+            _progressHitArea.PointerCaptureLost += ProgressHitArea_PointerCaptureLost;
+            _controlsOverlay.Children.Add(_progressHitArea);
+
+            root.Children.Add(_controlsOverlay);
+
+            Window.Current.Content = root;
+            UpdatePlayPauseIcon();
+            UpdateProgressSlider();
+            StartSecondaryUiTimers();
+
+            try
+            {
+                if (_sharedPlayer != null && _sharedPlayer.PlaybackSession != null)
+                {
+                    _sharedPlayer.PlaybackSession.PlaybackStateChanged -= PlaybackSession_PlaybackStateChanged;
+                    _sharedPlayer.PlaybackSession.PlaybackStateChanged += PlaybackSession_PlaybackStateChanged;
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private static void ConfigureTransparentTitleBar()
+        {
+            try
+            {
+                var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+                coreTitleBar.ExtendViewIntoTitleBar = true;
+
+                var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+                titleBar.ButtonBackgroundColor = Colors.Transparent;
+                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+                titleBar.ButtonHoverBackgroundColor = Colors.Transparent;
+                titleBar.ButtonPressedBackgroundColor = Colors.Transparent;
+                titleBar.ButtonForegroundColor = Colors.White;
+                titleBar.ButtonHoverForegroundColor = Colors.White;
+                titleBar.ButtonPressedForegroundColor = Colors.White;
+                titleBar.ButtonInactiveForegroundColor = Color.FromArgb(170, 255, 255, 255);
+
+                // Leave SetTitleBar(null): Windows keeps its default drag region at the top while
+                // our video is painted underneath it. The system caption buttons stay functional.
+                Window.Current.SetTitleBar(null);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Title bar customization failed: " + ex.Message);
+            }
+        }
+
+        private static void RestoreHitTarget_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            e.Handled = true;
+            RestoreToMainAsync();
+        }
+
+        private static async void RestoreToMainAsync()
+        {
+            if (_restoreInProgress)
+            {
+                return;
+            }
+
+            var action = _restoreRequested;
+            var dispatcher = _mainDispatcher;
+            var mainViewId = _mainViewId;
+            var secondaryViewId = _viewId;
+            if (action == null || dispatcher == null || mainViewId == 0 || secondaryViewId == 0)
+            {
+                return;
+            }
+
+            _restoreInProgress = true;
+            _suppressConsolidatedCallback = true;
+
+            try
+            {
+                // Release the secondary video surface FIRST. The old v5.4 path called the Video
+                // page restore callback while this MediaPlayerElement was still attached. That
+                // let two visual trees race around one MediaPlayer and the restored player could
+                // keep the tiny PiP measure. Normal in-app mini-player restore never has this race.
+                StopSecondaryUiTimers();
+                DetachSecondarySurface();
+
+                // Switch the shell back to the real main view and consolidate this PiP window.
+                // This also brings the application to the foreground if another desktop app was
+                // covering the main window.
+                await ApplicationViewSwitcher.SwitchAsync(
+                    mainViewId,
+                    secondaryViewId,
+                    ApplicationViewSwitchingOptions.ConsolidateViews);
+
+                // Mark the secondary view gone before the Video page callback runs. That prevents
+                // MiniPlayer.ReleasePlayerForRestore from starting a second async close operation.
+                _isActive = false;
+                _isOpening = false;
+
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    try
+                    {
+                        Window.Current.Activate();
+                    }
+                    catch
+                    {
+                    }
+
+                    // The callback belongs to the cached Video page. It navigates the main Frame
+                    // back/forward to that player page and reattaches the exact CustomVideoPlayer.
+                    action();
+                });
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Restore to main view failed: " + ex.Message);
+
+                // Even if shell switching fails, let the page restore its player rather than
+                // leaving playback trapped in a detached secondary surface.
+                _isActive = false;
+                _isOpening = false;
+                try
+                {
+                    await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                    {
+                        try { Window.Current.Activate(); } catch { }
+                        action();
+                    });
+                }
+                catch
+                {
+                }
+            }
+            finally
+            {
+                ResetState(false);
+            }
+        }
+
+        private static void SecondaryRoot_PointerActivity(object sender, PointerRoutedEventArgs e)
+        {
+            ShowControlsAndRestartTimer();
+        }
+
+        private static void SecondaryRoot_PointerExited(object sender, PointerRoutedEventArgs e)
+        {
+            RestartControlsHideTimer();
+        }
+
+        private static void StartSecondaryUiTimers()
+        {
+            StopSecondaryUiTimers();
+
+            _controlsHideTimer = new DispatcherTimer();
+            _controlsHideTimer.Interval = TimeSpan.FromMilliseconds(2200);
+            _controlsHideTimer.Tick += ControlsHideTimer_Tick;
+
+            _progressTimer = new DispatcherTimer();
+            _progressTimer.Interval = TimeSpan.FromMilliseconds(500);
+            _progressTimer.Tick += ProgressTimer_Tick;
+            _progressTimer.Start();
+
+            SetControlsVisible(true);
+            RestartControlsHideTimer();
+        }
+
+        private static void StopSecondaryUiTimers()
+        {
+            if (_controlsHideTimer != null)
+            {
+                _controlsHideTimer.Stop();
+                _controlsHideTimer.Tick -= ControlsHideTimer_Tick;
+                _controlsHideTimer = null;
+            }
+            if (_progressTimer != null)
+            {
+                _progressTimer.Stop();
+                _progressTimer.Tick -= ProgressTimer_Tick;
+                _progressTimer = null;
+            }
+            _progressPointerDown = false;
+        }
+
+        private static void ControlsHideTimer_Tick(object sender, object e)
+        {
+            if (_controlsHideTimer != null)
+            {
+                _controlsHideTimer.Stop();
+            }
+
+            if (_progressPointerDown)
+            {
+                RestartControlsHideTimer();
+                return;
+            }
+
+            SetControlsVisible(false);
+        }
+
+        private static void ProgressTimer_Tick(object sender, object e)
+        {
+            UpdateProgressSlider();
+        }
+
+        private static void ShowControlsAndRestartTimer()
+        {
+            SetControlsVisible(true);
+            RestartControlsHideTimer();
+        }
+
+        private static void RestartControlsHideTimer()
+        {
+            if (_controlsHideTimer == null)
+            {
+                return;
+            }
+            _controlsHideTimer.Stop();
+            _controlsHideTimer.Interval = TimeSpan.FromMilliseconds(2200);
+            _controlsHideTimer.Start();
+        }
+
+        private static void SetControlsVisible(bool visible)
+        {
+            _controlsVisible = visible;
+            if (_controlsOverlay == null)
+            {
+                return;
+            }
+
+            // Opacity is compositor-cheap and avoids rebuilding the visual tree. Disable hit testing
+            // while hidden so a click on the video still restores the main player.
+            _controlsOverlay.Opacity = visible ? 1.0 : 0.0;
+            _controlsOverlay.IsHitTestVisible = visible;
+        }
+
+        private static void UpdateProgressSlider()
+        {
+            if (_progressSlider == null || _progressPointerDown || _sharedPlayer == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var session = _sharedPlayer.PlaybackSession;
+                if (session == null)
+                {
+                    _progressSlider.IsEnabled = false;
+                    return;
+                }
+
+                var duration = session.NaturalDuration;
+                var totalSeconds = duration.TotalSeconds;
+                if (duration <= TimeSpan.Zero
+                    || double.IsNaN(totalSeconds)
+                    || double.IsInfinity(totalSeconds))
+                {
+                    _progressSlider.IsEnabled = false;
+                    return;
+                }
+
+                var position = session.Position.TotalSeconds;
+                if (double.IsNaN(position) || double.IsInfinity(position))
+                {
+                    position = 0;
+                }
+
+                _progressSlider.Maximum = Math.Max(1.0, totalSeconds);
+                _progressSlider.Value = Math.Max(
+                    _progressSlider.Minimum,
+                    Math.Min(position, _progressSlider.Maximum));
+                _progressSlider.IsEnabled = true;
+            }
+            catch
+            {
+                if (_progressSlider != null)
+                {
+                    _progressSlider.IsEnabled = false;
+                }
+            }
+        }
+
+        private static void ProgressHitArea_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            UpdateProgressSlider();
+            if (_progressSlider == null || !_progressSlider.IsEnabled || _progressHitArea == null)
+            {
+                return;
+            }
+
+            _progressPointerDown = true;
+            SetControlsVisible(true);
+            if (_controlsHideTimer != null)
+            {
+                _controlsHideTimer.Stop();
+            }
+
+            try { _progressHitArea.CapturePointer(e.Pointer); } catch { }
+            SetProgressFromPointer(e);
+            e.Handled = true;
+        }
+
+        private static void ProgressHitArea_PointerMoved(object sender, PointerRoutedEventArgs e)
+        {
+            ShowControlsAndRestartTimer();
+            if (!_progressPointerDown)
+            {
+                return;
+            }
+
+            SetProgressFromPointer(e);
+            e.Handled = true;
+        }
+
+        private static void ProgressHitArea_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_progressPointerDown)
+            {
+                return;
+            }
+
+            SetProgressFromPointer(e);
+            try { _progressHitArea.ReleasePointerCapture(e.Pointer); } catch { }
+            CompleteProgressSeek(true);
+            e.Handled = true;
+        }
+
+        private static void ProgressHitArea_PointerCanceled(object sender, PointerRoutedEventArgs e)
+        {
+            if (!_progressPointerDown)
+            {
+                return;
+            }
+
+            try { _progressHitArea.ReleasePointerCapture(e.Pointer); } catch { }
+            CompleteProgressSeek(false);
+            e.Handled = true;
+        }
+
+        private static void ProgressHitArea_PointerCaptureLost(object sender, PointerRoutedEventArgs e)
+        {
+            if (_progressPointerDown)
+            {
+                CompleteProgressSeek(true);
+            }
+        }
+
+        private static void SetProgressFromPointer(PointerRoutedEventArgs e)
+        {
+            if (_progressSlider == null || _progressHitArea == null || e == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var width = _progressHitArea.ActualWidth;
+                if (width <= 1)
+                {
+                    return;
+                }
+
+                var point = e.GetCurrentPoint(_progressHitArea).Position;
+                var ratio = Math.Max(0.0, Math.Min(1.0, point.X / width));
+                _progressSlider.Value = _progressSlider.Minimum
+                    + ((_progressSlider.Maximum - _progressSlider.Minimum) * ratio);
+            }
+            catch
+            {
+            }
+        }
+
+        private static void CompleteProgressSeek(bool commit)
+        {
+            if (!_progressPointerDown)
+            {
+                return;
+            }
+
+            _progressPointerDown = false;
+            if (commit)
+            {
+                CommitProgressSeek();
+            }
+            else
+            {
+                UpdateProgressSlider();
+            }
+            ShowControlsAndRestartTimer();
+        }
+
+        private static void CommitProgressSeek()
+        {
+            if (_progressSlider == null || _sharedPlayer == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var session = _sharedPlayer.PlaybackSession;
+                if (session == null)
+                {
+                    return;
+                }
+
+                var total = session.NaturalDuration;
+                var seconds = _progressSlider.Value;
+                if (seconds < 0)
+                {
+                    seconds = 0;
+                }
+                if (total > TimeSpan.Zero && seconds > total.TotalSeconds)
+                {
+                    seconds = total.TotalSeconds;
+                }
+
+                var wasPlaying = session.PlaybackState == MediaPlaybackState.Playing
+                    || session.PlaybackState == MediaPlaybackState.Buffering;
+
+                // Mini-player handoff is allowed only for the single-player path, so one settled
+                // seek on release is safe and avoids the heavy seek-per-pixel behavior that hurts
+                // demuxed playback on slower PCs.
+                session.Position = TimeSpan.FromSeconds(seconds);
+                if (wasPlaying)
+                {
+                    _sharedPlayer.Play();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Seek failed: " + ex.Message);
+            }
+        }
+
+        private static void PlayPauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            ShowControlsAndRestartTimer();
+            try
+            {
+                if (_sharedPlayer == null || _sharedPlayer.PlaybackSession == null)
+                {
+                    return;
+                }
+
+                var state = _sharedPlayer.PlaybackSession.PlaybackState;
+                if (state == MediaPlaybackState.Playing || state == MediaPlaybackState.Buffering)
+                {
+                    _sharedPlayer.Pause();
+                }
+                else
+                {
+                    _sharedPlayer.Play();
+                }
+                UpdatePlayPauseIcon();
+                UpdateProgressSlider();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Play/Pause failed: " + ex.Message);
+            }
+        }
+
+        private static void PlaybackSession_PlaybackStateChanged(MediaPlaybackSession sender, object args)
+        {
+            var dispatcher = _secondaryDispatcher;
+            if (dispatcher == null)
+            {
+                return;
+            }
+            dispatcher.RunAsync(CoreDispatcherPriority.Low, () =>
+            {
+                UpdatePlayPauseIcon();
+                UpdateProgressSlider();
+            });
+        }
+
+        private static void UpdatePlayPauseIcon()
+        {
+            if (_playPauseIcon == null || _sharedPlayer == null || _sharedPlayer.PlaybackSession == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var state = _sharedPlayer.PlaybackSession.PlaybackState;
+                var path = state == MediaPlaybackState.Playing || state == MediaPlaybackState.Buffering
+                    ? "Assets/Dark/player/pause.png"
+                    : "Assets/Dark/player/play.png";
+                App.SetThemeImageSource(_playPauseIcon, path);
+            }
+            catch
+            {
+            }
+        }
+
+        private static async void SecondaryView_Consolidated(
+            ApplicationView sender,
+            ApplicationViewConsolidatedEventArgs args)
+        {
+            if (_suppressConsolidatedCallback)
+            {
+                return;
+            }
+
+            try
+            {
+                DetachSecondarySurface();
+            }
+            catch
+            {
+            }
+
+            _isActive = false;
+            _isOpening = false;
+            var close = _closeRequested;
+            var dispatcher = _mainDispatcher;
+            ClearSecondaryOnly();
+            if (close != null && dispatcher != null)
+            {
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => close());
+            }
+        }
+
+        private static void DetachSecondarySurface()
+        {
+            StopSecondaryUiTimers();
+
+            try
+            {
+                if (_sharedPlayer != null && _sharedPlayer.PlaybackSession != null)
+                {
+                    _sharedPlayer.PlaybackSession.PlaybackStateChanged -= PlaybackSession_PlaybackStateChanged;
+                }
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                if (_mediaElement != null)
+                {
+                    _mediaElement.SetMediaPlayer(null);
+                }
+            }
+            catch
+            {
+            }
+
+            _mediaElement = null;
+            _controlsOverlay = null;
+            _playPauseButton = null;
+            _playPauseIcon = null;
+            _progressSlider = null;
+            _progressHitArea = null;
+            _controlsVisible = false;
+            _progressPointerDown = false;
+        }
+
+        private static async Task CleanupFailedOpenAsync()
+        {
+            var dispatcher = _secondaryDispatcher;
+            if (dispatcher == null)
+            {
+                return;
+            }
+            try
+            {
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    DetachSecondarySurface();
+                    try
+                    {
+                        Window.Current.Content = null;
+                    }
+                    catch
+                    {
+                    }
+                });
+            }
+            catch
+            {
+            }
+        }
+
+        public static async Task<bool> CloseForRestoreAsync()
+        {
+            return await CloseViewAsync();
+        }
+
+        public static async Task<bool> CloseForFinalAsync()
+        {
+            return await CloseViewAsync();
+        }
+
+        private static async Task<bool> CloseViewAsync()
+        {
+            if (!_isActive && !_isOpening)
+            {
+                return true;
+            }
+
+            var dispatcher = _secondaryDispatcher;
+            if (dispatcher == null)
+            {
+                ResetState(false);
+                return true;
+            }
+
+            var completion = new TaskCompletionSource<bool>();
+            try
+            {
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    try
+                    {
+                        _suppressConsolidatedCallback = true;
+                        DetachSecondarySurface();
+                        completion.TrySetResult(true);
+                        var coreWindow = CoreWindow.GetForCurrentThread();
+                        if (coreWindow != null)
+                        {
+                            coreWindow.Close();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Close failed inside secondary view: " + ex.Message);
+                        completion.TrySetResult(false);
+                    }
+                });
+                var result = await completion.Task;
+                ResetState(false);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("[DesktopMiniPlayer] Close failed: " + ex.Message);
+                ResetState(false);
+                return false;
+            }
+        }
+
+        private static void ClearSecondaryOnly()
+        {
+            _viewId = 0;
+            _view = null;
+            _secondaryDispatcher = null;
+            _suppressConsolidatedCallback = false;
+            _restoreInProgress = false;
+            _controlsOverlay = null;
+            _playPauseButton = null;
+            _playPauseIcon = null;
+            _progressSlider = null;
+            _progressHitArea = null;
+            _controlsHideTimer = null;
+            _progressTimer = null;
+            _progressPointerDown = false;
+            _controlsVisible = false;
+        }
+#endif
+
+        private static void ResetState(bool keepCallbacks)
+        {
+            _isOpening = false;
+            _isActive = false;
+            _viewId = 0;
+            _mainViewId = 0;
+            _view = null;
+            _secondaryDispatcher = null;
+            _mediaElement = null;
+            _controlsOverlay = null;
+            _playPauseButton = null;
+            _playPauseIcon = null;
+            _progressSlider = null;
+            _progressHitArea = null;
+            _controlsHideTimer = null;
+            _progressTimer = null;
+            _progressPointerDown = false;
+            _controlsVisible = false;
+            _sharedPlayer = null;
+            _suppressConsolidatedCallback = false;
+            _restoreInProgress = false;
+            _aspectResizeVersion++;
+            _videoAspectRatio = DefaultAspectRatio;
+            if (!keepCallbacks)
+            {
+                _restoreRequested = null;
+                _closeRequested = null;
+                _failed = null;
+                _mainDispatcher = null;
+            }
+        }
+    }
+}

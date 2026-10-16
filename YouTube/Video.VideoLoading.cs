@@ -73,14 +73,23 @@ namespace YouTube
                     return;
                 }
 
-                // Seed the session visitorData from the primary player response BEFORE the
-                // ANDROID_VR stream calls fire, so they clear the anti-bot wall on the first try
-                // (see GetSessionVisitorDataAsync).
+                // PlaybackResolver has already seeded IOS visitorData and selected delivery.
+                // Keep that same response for metadata, quality choices and playback.
                 CaptureVisitorData(playerRoot);
                 ApplyPlayerMetadata(playerRoot);
 
-                // The stream URLs are fetched inside BindPlayerSourceAsync (ANDROID_VR). This is
-                // the request that matters most, so nothing else competes with it yet.
+                var live = PlaybackResolver.IsLive(playerRoot);
+                if (live)
+                {
+                    // A broadcast's proof, prefill or native decoder can take time or fail.
+                    // Its page metadata and chat must load independently of that work.
+                    if (_liveVideoId != videoId) { _liveVideoId = videoId; _liveWatchedFrom = DateTime.UtcNow; }
+                    SetSkeletonVisibility(false);
+                    nextTask = GetWatchNextResponseAsync(videoId, currentPlaylistId);
+                    sideDataTask = LoadSideDataAsync(videoId, nextTask);
+                }
+
+                // For finite videos, keep source delivery ahead of optional metadata.
                 await BindPlayerSourceAsync(playerRoot, true);
 
                 if (!IsStillCurrentVideo(videoId))
@@ -92,16 +101,16 @@ namespace YouTube
                 SetSkeletonVisibility(false);
 
                 // Only now start the secondary requests, so the earlier burst is smaller.
-                nextTask = GetWatchNextResponseAsync(videoId, currentPlaylistId);
+                if (nextTask == null) nextTask = GetWatchNextResponseAsync(videoId, currentPlaylistId);
                 // The Android response is only a quality-menu warmup. On a phone it consumed a
                 // full extra request immediately after playback became ready; fetch it lazily if
                 // the user actually opens quality settings.
-                warmupAndroidPlayerTask = ResponsiveLayout.IsPhoneDevice
+                warmupAndroidPlayerTask = ResponsiveLayout.IsPhoneDevice || IsLivePage
                     ? null
                     : WarmUpAndroidPlayerAsync(videoId);
-                sideDataTask = LoadSideDataAsync(videoId, nextTask);
+                if (sideDataTask == null) sideDataTask = LoadSideDataAsync(videoId, nextTask);
 
-                // Record the view in the account's watch history (fire-and-forget).
+                // Start watch-history sampling; it reports only once playback advances.
                 var historyTask = ReportWatchHistoryAsync(videoId);
 
                 await ObserveBackgroundTaskAsync(sideDataTask, "side video data");
@@ -145,6 +154,7 @@ namespace YouTube
                 }
 
                 ApplyNextMetadata(nextRoot);
+                ConfigureLiveChatFromNext(personalizedNextRoot);
 
                 // Related cards are already in this parsed /next. Start their CPU extraction and
                 // binding before comments open a large continuation response or a playlist asks
@@ -352,6 +362,8 @@ namespace YouTube
 
         private void ResetSecondaryContentForFastLoad()
         {
+            ClearDislikeCount();
+            ResetLivePage();
             if (CustomVideoPlayer != null)
                 CustomVideoPlayer.SetRelatedVideos(null);
 
@@ -418,14 +430,14 @@ namespace YouTube
                 // Title
                 if (VideoTitleText != null && videoDetails.ContainsKey("title"))
                 {
-                    VideoTitleText.Text = videoDetails.GetNamedString("title");
+                    VideoTitleText.Text = ReadPlayerMetadataText(videoDetails, "title");
                     System.Diagnostics.Debug.WriteLine("[Video] Title: " + VideoTitleText.Text);
                 }
 
                 // Author/Channel
                 if (videoDetails.ContainsKey("author"))
                 {
-                    currentChannelName = videoDetails.GetNamedString("author");
+                    currentChannelName = ReadPlayerMetadataText(videoDetails, "author");
                     if (VideoAuthorText != null)
                     {
                         VideoAuthorText.Text = currentChannelName;
@@ -444,7 +456,7 @@ namespace YouTube
                 // View count
                 if (videoDetails.ContainsKey("viewCount"))
                 {
-                    var viewCount = videoDetails.GetNamedString("viewCount");
+                    var viewCount = ReadPlayerMetadataText(videoDetails, "viewCount");
                     if (VideoViewsText != null)
                     {
                         VideoViewsText.Text = FormatCount(viewCount);
@@ -469,10 +481,11 @@ namespace YouTube
                 // Duration
                 if (CustomVideoPlayer != null)
                 {
-                    if (videoDetails.ContainsKey("lengthSeconds"))
+                    if (PlaybackResolver.IsLive(playerRoot)) CustomVideoPlayer.ParsedDuration = TimeSpan.Zero;
+                    else if (videoDetails.ContainsKey("lengthSeconds"))
                     {
                         long lengthSeconds;
-                        if (long.TryParse(videoDetails.GetNamedString("lengthSeconds"), out lengthSeconds) && lengthSeconds > 0)
+                        if (long.TryParse(ReadPlayerMetadataText(videoDetails, "lengthSeconds"), out lengthSeconds) && lengthSeconds > 0)
                         {
                             CustomVideoPlayer.ParsedDuration = TimeSpan.FromSeconds(lengthSeconds);
                             System.Diagnostics.Debug.WriteLine("[Video] Duration seconds: " + lengthSeconds);
@@ -491,7 +504,7 @@ namespace YouTube
                 // Description
                 if (videoDetails.ContainsKey("shortDescription"))
                 {
-                    _currentVideoDescription = videoDetails.GetNamedString("shortDescription");
+                    _currentVideoDescription = ReadPlayerMetadataText(videoDetails, "shortDescription");
                     System.Diagnostics.Debug.WriteLine("[Video] Description length: " + _currentVideoDescription.Length);
                 }
                 else
@@ -503,6 +516,7 @@ namespace YouTube
                 UpdateLandscapeDescriptionText();
                 var ignoredDownloadState = UpdateDownloadButtonAsync();
                 LoadSponsorBlockSegments(currentVideoId);
+                RefreshDislikeCount();
                 LoadSubtitleTracks(playerRoot);
 
                 // Audio-track choice does not carry across videos.
@@ -531,7 +545,7 @@ namespace YouTube
                 // Channel thumbnail from player response (fallback)
                 if (videoDetails.ContainsKey("channelId"))
                 {
-                    currentChannelId = videoDetails.GetNamedString("channelId");
+                    currentChannelId = ReadPlayerMetadataText(videoDetails, "channelId");
                     System.Diagnostics.Debug.WriteLine("[Video] Channel ID: " + currentChannelId);
                 }
 
@@ -541,6 +555,16 @@ namespace YouTube
             {
                 System.Diagnostics.Debug.WriteLine("[Video] WARNING: No videoDetails in player response");
             }
+        }
+
+        private static string ReadPlayerMetadataText(JsonObject details, string key)
+        {
+            IJsonValue value;
+            if (details == null || !details.TryGetValue(key, out value)) return string.Empty;
+            if (value.ValueType == JsonValueType.String) return value.GetString();
+            // TV responses can encode live counters as numbers instead of WEB's strings.
+            return value.ValueType == JsonValueType.Number
+                ? value.GetNumber().ToString(CultureInfo.InvariantCulture) : string.Empty;
         }
 
         private void ApplyNextMetadata(JsonObject nextRoot)
@@ -645,8 +669,20 @@ namespace YouTube
 
         private void ApplyComments(List<CommentItem> comments)
         {
-            comments = comments ?? new List<CommentItem>();
+            comments = new List<CommentItem>(comments ?? new List<CommentItem>());
+            // A slower initial load must not erase a comment that was just posted.
+            for (var i = _postedComments.Count - 1; i >= 0; i--)
+            {
+                var own = _postedComments[i];
+                if (!comments.Any(item => ReferenceEquals(item, own)
+                    || (!string.IsNullOrEmpty(own.ToolbarStateKey) && item.ToolbarStateKey == own.ToolbarStateKey)
+                    || (item.Author == own.Author && item.Text == own.Text))) comments.Insert(0, own);
+            }
             _currentComments = comments;
+            if (LandscapeCommentComposer != null) LandscapeCommentComposer.Refresh();
+            if (SheetCommentComposer != null) SheetCommentComposer.Refresh();
+            if (CommentsItemsControl != null && CommentsBottomSheetPanel != null
+                && CommentsBottomSheetPanel.Visibility == Visibility.Visible) CommentsItemsControl.ItemsSource = comments;
             System.Diagnostics.Debug.WriteLine("[Video] Loaded " + comments.Count + " comments");
 
             // Show last comment preview if comments exist

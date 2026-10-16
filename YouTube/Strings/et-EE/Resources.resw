@@ -1050,4 +1050,91 @@ Versioon {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Kuva otsinguriba keskel</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Minipleier alati peal</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Ava minipleier eraldi alati peal olevas aknas</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Pole Windows 10 Mobile’is saadaval</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Saadaval ainult Visual Studio 2017 järgus (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Nõuab Windows 10 versiooni 1703 või uuemat</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Sisselogimine brauseris</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Kasuta seda kontot esitamiseks</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Sisse logitud · Logi välja</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Logi Google&apos;i lehel sisse, naase YouTube&apos;i ja vajuta OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Lõpeta esmalt Google&apos;isse sisselogimine.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Sisselogimist ei saanud lõpule viia. Proovi uuesti.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Lisa kommentaar...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Postita</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Kommentaari ei saanud postitada.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube ei luba seda videot kommenteerida.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Kommentaaride postitamiseks logi brauseris sisse.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Sina</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Otsevestlus</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Populaarseim vestlus</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Kõik sõnumid</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Sõnumeid pole veel</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Vestlusega ühendatakse uuesti…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Ülekande ootel…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Ülekanne lõppes</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Mine otseülekandesse</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Näita mittemeeldimiste arvu</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike&apos;i hinnang</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Vahekaardiriba vasakul</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Rõhtpaigutuses Windowsi arvutis ja Continuumis</value>
+  </data>
 </root>

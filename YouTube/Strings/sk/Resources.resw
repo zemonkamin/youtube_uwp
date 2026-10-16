@@ -1050,4 +1050,91 @@ Verzia {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Zobraziť panel vyhľadávania uprostred</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Prihlásenie v prehliadači</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Použiť tento účet na prehrávanie</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Prihlásené · Odhlásiť</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Prihláste sa na stránke Googlu, vráťte sa na YouTube a stlačte OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Najprv dokončite prihlásenie do Googlu.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Prihlásenie sa nepodarilo dokončiť. Skúste to znova.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Pridajte komentár...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Odoslať</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Komentár sa nepodarilo odoslať.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube nepovolil komentovanie tohto videa.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Ak chcete písať komentáre, prihláste sa v prehliadači.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Vy</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Živý čet</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Najlepší čet</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Všetky správy</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Zatiaľ žiadne správy</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Opätovné pripájanie k četu…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Čakanie na vysielanie…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Vysielanie sa skončilo</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Prejsť na živé vysielanie</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Zobrazovať počet nepáči sa</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Odhad služby Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Panel kariet vľavo</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Na šírku v počítačovom Windowse a v Continuum</value>
+  </data>
 </root>

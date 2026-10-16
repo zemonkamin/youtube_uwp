@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Media.Imaging;
+using YouTube.Innertube;
 
 namespace YouTube
 {
@@ -37,6 +38,13 @@ namespace YouTube
         }
 
         private ActiveTab _currentActiveTab = ActiveTab.None;
+        private bool _usePageAmbientBackground;
+
+        public void SetPageAmbientBackground(bool enabled)
+        {
+            _usePageAmbientBackground = enabled;
+            ApplyGlassEffect();
+        }
 
         public Tabbar()
         {
@@ -83,12 +91,17 @@ namespace YouTube
             EnsureAccountIconCachedAsync();
         }
 
-        private void Tabbar_Loaded(object sender, RoutedEventArgs e)
+        private async void Tabbar_Loaded(object sender, RoutedEventArgs e)
         {
             FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
             FluentGlassEffectHelper.EnabledChanged += GlassEffect_EnabledChanged;
+            VideoAmbientEffectController.EnabledChanged -= GlassEffect_EnabledChanged;
+            VideoAmbientEffectController.EnabledChanged += GlassEffect_EnabledChanged;
+            App.ThemeChanged -= GlassEffect_EnabledChanged;
+            App.ThemeChanged += GlassEffect_EnabledChanged;
             ShortsFeatureController.EnabledChanged -= ShortsFeature_EnabledChanged;
             ShortsFeatureController.EnabledChanged += ShortsFeature_EnabledChanged;
+            StartResponsivePlacement();
             UpdateShortsButtonState();
             UpdateButtonHostWidth(TabbarRoot == null ? 0 : TabbarRoot.ActualWidth);
             UpdateCompactOrientationLayout();
@@ -107,11 +120,16 @@ namespace YouTube
                 SynchronizeWithPage(frame.Content);
                 UpdateDiscordPagePresence(frame.Content);
             }
+            await WebAccountSession.InitializeAsync();
+            UpdateShortsButtonState();
         }
 
         private void Tabbar_Unloaded(object sender, RoutedEventArgs e)
         {
+            StopResponsivePlacement();
             FluentGlassEffectHelper.EnabledChanged -= GlassEffect_EnabledChanged;
+            VideoAmbientEffectController.EnabledChanged -= GlassEffect_EnabledChanged;
+            App.ThemeChanged -= GlassEffect_EnabledChanged;
             ShortsFeatureController.EnabledChanged -= ShortsFeature_EnabledChanged;
             if (TabbarGlassHost != null)
                 TabbarGlassHost.SizeChanged -= TabbarGlassHost_SizeChanged;
@@ -132,6 +150,7 @@ namespace YouTube
 
         private void TabbarRoot_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            UpdateResponsivePlacement();
             UpdateButtonHostWidth(e.NewSize.Width);
             UpdateCompactOrientationLayout();
             ApplyGlassEffect();
@@ -139,7 +158,7 @@ namespace YouTube
 
         private void UpdateCompactOrientationLayout()
         {
-            var compact = ResponsiveLayout.IsCompactLandscape;
+            var compact = !_isSideLayout && ResponsiveLayout.IsCompactLandscape;
             var labelVisibility = compact ? Visibility.Collapsed : Visibility.Visible;
 
             if (HomeLabel != null) HomeLabel.Visibility = labelVisibility;
@@ -147,7 +166,7 @@ namespace YouTube
             if (SubscriptionsLabel != null) SubscriptionsLabel.Visibility = labelVisibility;
             if (AccountLabel != null) AccountLabel.Visibility = labelVisibility;
             if (TabbarContentRow != null)
-                TabbarContentRow.Height = new GridLength(compact ? 40.0 : 50.0);
+                TabbarContentRow.Height = _isSideLayout ? new GridLength(1, GridUnitType.Star) : new GridLength(compact ? 40.0 : 50.0);
 
             // The containing page keeps its safe-area row. Only the rendered chrome is
             // shortened, so pages with custom player rows are never overwritten.
@@ -168,8 +187,8 @@ namespace YouTube
 
             if (IsLandscapeLayout())
             {
-                TabbarButtonsHost.HorizontalAlignment = HorizontalAlignment.Center;
-                TabbarButtonsHost.Width = availableWidth * 0.35;
+                TabbarButtonsHost.HorizontalAlignment = _isSideLayout ? HorizontalAlignment.Stretch : HorizontalAlignment.Center;
+                TabbarButtonsHost.Width = _isSideLayout ? double.NaN : availableWidth * 0.35;
             }
             else
             {
@@ -180,25 +199,8 @@ namespace YouTube
 
         private static bool IsLandscapeLayout()
         {
-            try
-            {
-                var view = ApplicationView.GetForCurrentView();
-                if (view != null)
-                    return view.Orientation == ApplicationViewOrientation.Landscape;
-            }
-            catch
-            {
-            }
-
-            try
-            {
-                var bounds = Window.Current.Bounds;
-                return bounds.Width >= bounds.Height;
-            }
-            catch
-            {
-                return false;
-            }
+            // ApplicationView.Orientation can lag behind a phone/Continuum SizeChanged.
+            return ResponsiveLayout.IsLandscape;
         }
 
         private void GlassEffect_EnabledChanged(object sender, EventArgs e)
@@ -215,12 +217,18 @@ namespace YouTube
 
         private void ApplyGlassEffect()
         {
+            if (TabbarDivider != null)
+                TabbarDivider.Visibility = _isSideLayout
+                    || (_usePageAmbientBackground && VideoAmbientEffectController.IsEnabled())
+                    ? Visibility.Collapsed : Visibility.Visible;
+
             if (TabbarGlassHost == null ||
                 TabbarGlassHost.ActualWidth <= 1.0 ||
                 TabbarGlassHost.ActualHeight <= 1.0)
                 return;
 
-            FluentGlassEffectHelper.AttachBottomBar(TabbarGlassHost, App.GetThemeBrush("AppBackgroundBrush"));
+            FluentGlassEffectHelper.AttachBottomBar(TabbarGlassHost, App.GetThemeBrush("AppBackgroundBrush"),
+                _usePageAmbientBackground);
         }
 
         private void RootFrame_Navigated(object sender, NavigationEventArgs e)
@@ -376,15 +384,16 @@ namespace YouTube
         {
             var featureEnabled = ShortsFeatureController.IsEnabled();
             if (ShortsColumn != null)
-                ShortsColumn.Width = featureEnabled ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
+                ShortsColumn.Width = featureEnabled && !_isSideLayout ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
             if (ShortsButton != null)
                 ShortsButton.Visibility = featureEnabled ? Visibility.Visible : Visibility.Collapsed;
+            UpdateResponsivePlacement();
 
             if (!featureEnabled)
                 return;
 
             Config.LoadUserToken();
-            bool isAuthenticated = !string.IsNullOrEmpty(Config.UserToken);
+            bool isAuthenticated = WebAccountSession.IsSignedIn || !string.IsNullOrEmpty(Config.UserToken);
 
             if (isAuthenticated)
             {
@@ -684,7 +693,7 @@ namespace YouTube
                 return;
 
             Config.LoadUserToken();
-            if (string.IsNullOrEmpty(Config.UserToken))
+            if (!WebAccountSession.IsSignedIn && string.IsNullOrEmpty(Config.UserToken))
             {
                 SetButtonDisabled(ShortsButton);
                 return;

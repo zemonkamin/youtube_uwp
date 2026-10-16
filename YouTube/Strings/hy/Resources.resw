@@ -1050,4 +1050,91 @@
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Ցույց տալ որոնման տողը կենտրոնում</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Մուտք դիտարկիչում</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Օգտագործել այս հաշիվը նվագարկման համար</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Մուտք գործած · Դուրս գալ</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Մուտք գործեք Google-ի էջում, վերադարձեք YouTube և սեղմեք OK։</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Նախ ավարտեք մուտքը Google։</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Չհաջողվեց ավարտել մուտքը։ Փորձեք կրկին։</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Ավելացրեք մեկնաբանություն...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Ուղարկել</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Չհաջողվեց ուղարկել մեկնաբանությունը։</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube-ը չի թույլատրել մեկնաբանել այս տեսանյութը։</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Մեկնաբանություններ գրելու համար մուտք գործեք դիտարկիչում։</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Դուք</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Ուղիղ եթերի զրույց</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Լավագույն զրույց</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Բոլոր հաղորդագրությունները</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Դեռ հաղորդագրություններ չկան</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Կրկին միանում է զրույցին…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Սպասում է հեռարձակմանը…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Հեռարձակումն ավարտվել է</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Անցնել ուղիղ եթեր</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Ցուցադրել չհավանումների քանակը</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike-ի գնահատականը</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Ներդիրների գոտին ձախ կողմում</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Հորիզոնական ռեժիմում՝ Windows համակարգչում և Continuum-ում</value>
+  </data>
 </root>

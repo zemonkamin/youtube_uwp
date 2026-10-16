@@ -1050,4 +1050,91 @@ Versie {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Zoekbalk in het midden weergeven</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Inloggen in de browser</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Dit account gebruiken voor afspelen</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Ingelogd · Uitloggen</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Log in op de Google-pagina, ga terug naar YouTube en druk op OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Voltooi eerst het inloggen bij Google.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Het inloggen kon niet worden voltooid. Probeer het opnieuw.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Voeg een reactie toe...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Plaatsen</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>De reactie kon niet worden geplaatst.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube staat geen reacties op deze video toe.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Log in via je browser om reacties te plaatsen.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Jij</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Livechat</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Topchat</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Alle berichten</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Nog geen berichten</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Opnieuw verbinden met de chat…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Wachten op de uitzending…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Uitzending afgelopen</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Ga naar live</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Aantal dislikes tonen</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Schatting van Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Tabbalk links</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>In liggende weergave op Windows-pc’s en Continuum</value>
+  </data>
 </root>

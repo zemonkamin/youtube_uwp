@@ -25,6 +25,7 @@ namespace YouTube
             new ObservableCollection<YouTubeAccountItem>();
         private Frame _frame;
         private string _channelTarget = string.Empty;
+        private string _historyAccountKey = string.Empty;
         private bool _accountsSheetOpen;
         private bool _accountsSheetIsDragging;
         private double _accountsSheetInitialY;
@@ -60,8 +61,15 @@ namespace YouTube
 
             try
             {
+                await YouTube.Innertube.WebAccountSession.InitializeAsync();
                 Config.LoadUserToken();
                 var refreshToken = Config.UserToken;
+                var historyOwner = YouTube.Innertube.PlaybackResolver.AccountKey;
+                if (_historyAccountKey != historyOwner)
+                {
+                    _historyAccountKey = historyOwner;
+                    _historyItems.Clear();
+                }
 
                 if (string.IsNullOrWhiteSpace(refreshToken))
                 {
@@ -110,7 +118,7 @@ namespace YouTube
 
                 ApplyProfile(profile);
                 await UpdateCachedProfileImageAsync(refreshToken, profile);
-                ApplyHistory(history);
+                if (historyOwner == YouTube.Innertube.PlaybackResolver.AccountKey) ApplyHistory(history);
                 ApplyPlaylists(playlists);
 
                 if (_historyItems.Count == 0 && _playlistItems.Count == 0)
@@ -218,10 +226,10 @@ namespace YouTube
 
         private void ApplyHistory(List<VideoCardItem> history)
         {
-            _historyItems.Clear();
-
             if (history == null)
                 return;
+
+            _historyItems.Clear();
 
             foreach (var item in history)
             {

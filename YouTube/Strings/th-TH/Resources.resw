@@ -1050,4 +1050,91 @@
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>แสดงแถบค้นหาตรงกลาง</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>มินิเพลเยอร์อยู่ด้านบนเสมอ</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>เปิดมินิเพลเยอร์ในหน้าต่างแยกที่อยู่ด้านบนเสมอ</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>ไม่พร้อมใช้งานบน Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>พร้อมใช้งานเฉพาะบิลด์ Visual Studio 2017 (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>ต้องใช้ Windows 10 เวอร์ชัน 1703 หรือใหม่กว่า</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>ลงชื่อเข้าใช้ในเบราว์เซอร์</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>ใช้บัญชีนี้สำหรับการเล่น</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>ลงชื่อเข้าใช้แล้ว · ออกจากระบบ</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>ลงชื่อเข้าใช้ในหน้า Google กลับไปที่ YouTube แล้วกด OK</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>ทำการลงชื่อเข้าใช้ Google ให้เสร็จก่อน</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>ไม่สามารถลงชื่อเข้าใช้ให้เสร็จได้ ลองอีกครั้ง</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>เพิ่มความคิดเห็น...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>ส่ง</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>ไม่สามารถส่งความคิดเห็นได้</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube ไม่อนุญาตให้แสดงความคิดเห็นในวิดีโอนี้</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>ลงชื่อเข้าใช้ในเบราว์เซอร์เพื่อแสดงความคิดเห็น</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>คุณ</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>แชทสด</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>แชทยอดนิยม</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>ข้อความทั้งหมด</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>ยังไม่มีข้อความ</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>กำลังเชื่อมต่อแชทอีกครั้ง…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>กำลังรอการถ่ายทอดสด…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>การถ่ายทอดสดสิ้นสุดแล้ว</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>ไปยังการถ่ายทอดสด</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>แสดงจำนวนไม่ชอบ</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>ค่าประมาณจาก Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>แถบแท็บทางซ้าย</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>ในโหมดแนวนอนบน Windows เดสก์ท็อปและ Continuum</value>
+  </data>
 </root>

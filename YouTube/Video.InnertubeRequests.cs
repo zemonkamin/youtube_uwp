@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -35,21 +35,57 @@ namespace YouTube
 {
     public sealed partial class Video
     {
+        private const string InnertubeWebSafariUserAgent =
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15,gzip(gfe)";
+        private string _playbackAccountCacheKey;
+
+        private void SynchronizePlaybackAccount(string videoId)
+        {
+            var key = GetPlaybackAccountCacheKey();
+            if (string.Equals(_playbackAccountCacheKey, key, StringComparison.Ordinal)) return;
+            var hadPreviousAccount = !string.IsNullOrEmpty(_playbackAccountCacheKey);
+            _playbackAccountCacheKey = key;
+            if (!hadPreviousAccount) return;
+            InvalidatePlaybackUrlCaches(videoId);
+            lock (_androidPlayerRequestGate)
+            {
+                _lastAndroidPlayerVideoId = string.Empty;
+                _lastAndroidPlayerJson = string.Empty;
+                _androidPlayerRequestVideoId = string.Empty;
+                _androidPlayerRequestTask = null;
+            }
+            ResetHlsPlaybackRecovery();
+            InvalidateSessionVisitorData();
+        }
+
+        private static string GetPlaybackAccountCacheKey()
+        {
+            if (WebAccountSession.IsSignedIn) return WebAccountSession.CacheKey;
+            Config.LoadUserToken();
+            return WebAccountSession.CacheKey + "|"
+                + (string.IsNullOrWhiteSpace(Config.UserToken) ? "guest"
+                    : "qr:" + GetRequestTokenFingerprint(Config.UserToken)
+                        + ":" + Config.SelectedYouTubeAccountBrandId);
+        }
+
         private async Task<string> PostInnertubeAsync(string endpoint, string payload)
         {
             var response = await PostInnertubeJsonAsync(endpoint, payload).ConfigureAwait(false);
             return response.Text;
         }
 
-        private Task<InnertubeRequestCoordinator.JsonResponse> PostInnertubeJsonAsync(
+        private async Task<InnertubeRequestCoordinator.JsonResponse> PostInnertubeJsonAsync(
             string endpoint,
             string payload)
         {
+            await WebAccountSession.InitializeAsync();
+            if (string.Equals(endpoint, "player", StringComparison.OrdinalIgnoreCase))
+                SynchronizePlaybackAccount(currentVideoId);
             var cacheAge = string.Equals(endpoint, "player", StringComparison.OrdinalIgnoreCase)
                 ? TimeSpan.FromMinutes(2)
                 : TimeSpan.FromSeconds(45);
             var key = BuildInnertubeCoordinatorKey(endpoint, payload);
-            return InnertubeRequestCoordinator.GetJsonAsync(
+            return await InnertubeRequestCoordinator.GetJsonAsync(
                 key,
                 delegate { return PostInnertubeCoreAsync(endpoint, payload); },
                 cacheAge);
@@ -57,7 +93,7 @@ namespace YouTube
 
         private static string BuildInnertubeCoordinatorKey(string endpoint, string payload)
         {
-            return "video|anonymous|" + endpoint + "|" + (payload ?? string.Empty);
+            return "video|" + GetPlaybackAccountCacheKey() + "|" + endpoint + "|" + (payload ?? string.Empty);
         }
 
         private void InvalidatePlaybackUrlCaches(string videoId)
@@ -65,6 +101,7 @@ namespace YouTube
             if (string.IsNullOrWhiteSpace(videoId))
                 return;
 
+            PlaybackResolver.Invalidate(videoId);
             InnertubeRequestCoordinator.Invalidate(
                 BuildInnertubeCoordinatorKey("player", BuildPlayerPayload(videoId)));
 
@@ -95,39 +132,30 @@ namespace YouTube
 
         private async Task<string> PostInnertubeCoreAsync(string endpoint, string payload)
         {
-            var url = BuildInnertubeUrl(endpoint);
-            using (var request = new HttpRequestMessage(HttpMethod.Post, url))
+            if (string.Equals(endpoint, "player", StringComparison.OrdinalIgnoreCase))
+            {
+                JsonObject body;
+                if (!JsonObject.TryParse(payload, out body)) throw new FormatException("Invalid player request");
+                return await PostAndroidPlayerAsync(body.GetNamedString("videoId", string.Empty)).ConfigureAwait(false);
+            }
+            using (var request = new HttpRequestMessage(HttpMethod.Post, BuildInnertubeUrl(endpoint)))
             {
                 request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
-                if (endpoint == "player")
+                request.Headers.TryAddWithoutValidation("User-Agent", PlaybackResolver.WebUserAgent);
+                request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
+                request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", "1");
+                request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", "2.20250101");
+                request.Headers.TryAddWithoutValidation("Accept", "application/json");
+                WebAccountSession.ApplyHeaders(request);
+                using (var response = await httpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
                 {
-                    // Exact IOS primary /player request from youtube-ios.
-                    request.Headers.TryAddWithoutValidation("User-Agent", InnertubeIosPlayerUserAgent);
-                    request.Headers.TryAddWithoutValidation("Accept", "application/json");
-                    request.Headers.TryAddWithoutValidation("Accept-Language", Config.Hl);
-                    request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
-                    request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", InnertubeIosPlayerClientHeaderName);
-                    request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", InnertubeIosPlayerClientVersion);
-                }
-                else
-                {
-                    request.Headers.TryAddWithoutValidation(
-                        "User-Agent",
-                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
-                    );
-                    request.Headers.TryAddWithoutValidation("Accept-Language", Localization.AcceptLanguageHeader);
-                }
-
-                using (var response = await httpClient.SendAsync(
-                    request,
-                    HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
-                {
+                    var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    if (!response.IsSuccessStatusCode) LogPlayerRequestFailure(endpoint, response, json);
                     response.EnsureSuccessStatusCode();
-                    return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return json;
                 }
             }
         }
-
         private static string BuildPlayerPayload(string videoId)
         {
             var context = new JsonObject();
@@ -153,6 +181,9 @@ namespace YouTube
 
         private async Task<string> PostAndroidPlayerAsync(string videoId)
         {
+            await WebAccountSession.InitializeAsync();
+            SynchronizePlaybackAccount(videoId);
+            var requestAccountKey = GetPlaybackAccountCacheKey();
             if (string.IsNullOrWhiteSpace(videoId))
             {
                 return string.Empty;
@@ -186,12 +217,15 @@ namespace YouTube
             try
             {
                 json = await requestTask.ConfigureAwait(false);
+                if (!string.Equals(requestAccountKey, GetPlaybackAccountCacheKey(), StringComparison.Ordinal))
+                    return string.Empty;
             }
             catch
             {
                 lock (_androidPlayerRequestGate)
                 {
-                    if (string.Equals(_androidPlayerRequestVideoId, videoId, StringComparison.Ordinal))
+                    if (string.Equals(_androidPlayerRequestVideoId, videoId, StringComparison.Ordinal)
+                        && ReferenceEquals(_androidPlayerRequestTask, requestTask))
                     {
                         _androidPlayerRequestTask = null;
                     }
@@ -201,16 +235,18 @@ namespace YouTube
 
             lock (_androidPlayerRequestGate)
             {
-                if (string.Equals(_androidPlayerRequestVideoId, videoId, StringComparison.Ordinal))
+                if (string.Equals(_androidPlayerRequestVideoId, videoId, StringComparison.Ordinal)
+                    && ReferenceEquals(_androidPlayerRequestTask, requestTask))
                 {
                     // Only cache a response that actually carries streams. A stream-less
                     // (bot-gated / throttled) response must NOT stick, or every later itag18 /
                     // muxed lookup for this video reuses the broken player response.
-                    if (PlayerJsonHasStreams(json))
+                    if (PlayerJsonHasStreams(json) || PlayerJsonHasHlsManifest(json))
                     {
                         _lastAndroidPlayerVideoId = videoId;
                         _lastAndroidPlayerJson = json;
-                        _lastAndroidPlayerUserAgent = _playbackMediaUserAgent;
+                        _lastAndroidPlayerUserAgent = PlaybackResolver.MediaUserAgent(ParsePlayerJsonObject(json));
+                        _playbackMediaUserAgent = _lastAndroidPlayerUserAgent;
                     }
                     else
                     {
@@ -226,336 +262,28 @@ namespace YouTube
 
         private async Task<string> PostAndroidPlayerCoreAsync(string videoId)
         {
-            // Same chain as YTApi.androidVrPlayerResponse:primary:. The IOS response has
-            // already been requested by LoadVideoDetailsFastAsync and is deliberately held
-            // for the last fallback while its responseContext seeds visitorData.
-            var primary = _lastPlayerJson;
-            if (string.IsNullOrWhiteSpace(primary))
-            {
-                primary = await FetchIosPlayerAsync(videoId, null).ConfigureAwait(false);
-            }
-            CaptureVisitorDataFromString(primary);
-
-            // VISIONOS is first: unlike the other anonymous app clients its media session is
-            // not cut off around the first minute.
-            var vision = await FetchVisionPlayerAsync(videoId).ConfigureAwait(false);
-            if (PlayerJsonHasStreams(vision))
-            {
-                _playbackMediaUserAgent = InnertubeVisionUserAgent;
-                System.Diagnostics.Debug.WriteLine("[Video] Playback URLs from VISIONOS");
-                return vision;
-            }
-
-            System.Diagnostics.Debug.WriteLine(
-                "[Video] VISIONOS returned no ready URLs (" + GetPlayabilityReason(vision)
-                + "); trying ANDROID_VR"
-            );
-
-            var json = await FetchAndroidVrPlayerAsync(videoId).ConfigureAwait(false);
-            if (PlayerJsonHasStreams(json))
-            {
-                _playbackMediaUserAgent = InnertubeAndroidVrUserAgent;
-                return json;
-            }
-
-            System.Diagnostics.Debug.WriteLine(
-                "[Video] ANDROID_VR returned no ready URLs (" + GetPlayabilityReason(json)
-                + "); refreshing visitorData and retrying"
-            );
-            InvalidateSessionVisitorData();
-
-            var retryJson = await FetchAndroidVrPlayerAsync(videoId).ConfigureAwait(false);
-            if (PlayerJsonHasStreams(retryJson))
-            {
-                _playbackMediaUserAgent = InnertubeAndroidVrUserAgent;
-                System.Diagnostics.Debug.WriteLine("[Video] ANDROID_VR retry with fresh visitorData succeeded");
-                return retryJson;
-            }
-
-            string progressiveFallback = string.Empty;
-            string progressiveFallbackAgent = string.Empty;
-            var accessToken = await GetTvAccessTokenAsync(false).ConfigureAwait(false);
-            if (!string.IsNullOrWhiteSpace(accessToken))
-            {
-                var tv = await FetchTvPlaybackPlayerAsync(
-                    videoId,
-                    InnertubePlaybackTvClientVersion,
-                    accessToken
-                ).ConfigureAwait(false);
-                CaptureVisitorDataFromString(tv);
-                if (PlayerJsonHasAdaptiveStreams(tv))
-                {
-                    _playbackMediaUserAgent = InnertubePlaybackTvUserAgent;
-                    return tv;
-                }
-                if (PlayerJsonHasStreams(tv))
-                {
-                    progressiveFallback = tv;
-                    progressiveFallbackAgent = InnertubePlaybackTvUserAgent;
-                }
-
-                var legacy = await FetchTvPlaybackPlayerAsync(
-                    videoId,
-                    InnertubePlaybackTvLegacyClientVersion,
-                    accessToken
-                ).ConfigureAwait(false);
-                if (PlayerJsonHasAdaptiveStreams(legacy))
-                {
-                    _playbackMediaUserAgent = InnertubePlaybackTvUserAgent;
-                    return legacy;
-                }
-                if (string.IsNullOrWhiteSpace(progressiveFallback) && PlayerJsonHasStreams(legacy))
-                {
-                    progressiveFallback = legacy;
-                    progressiveFallbackAgent = InnertubePlaybackTvUserAgent;
-                }
-            }
-
-            if (PlayerJsonHasStreams(primary))
-            {
-                _playbackMediaUserAgent = InnertubeIosPlayerUserAgent;
-                return primary;
-            }
-
-            if (!string.IsNullOrWhiteSpace(accessToken))
-            {
-                var signedInIos = await FetchIosPlayerAsync(videoId, accessToken).ConfigureAwait(false);
-                if (PlayerJsonHasStreams(signedInIos))
-                {
-                    _playbackMediaUserAgent = InnertubeIosPlayerUserAgent;
-                    return signedInIos;
-                }
-            }
-
-            if (!string.IsNullOrWhiteSpace(progressiveFallback))
-            {
-                _playbackMediaUserAgent = progressiveFallbackAgent;
-                return progressiveFallback;
-            }
-
-            // youtube-ios keeps the primary IOS response when it at least contains ready HLS.
-            if (PlayerJsonHasHlsManifest(primary))
-            {
-                _playbackMediaUserAgent = InnertubeIosPlayerUserAgent;
-                return primary;
-            }
-
-            return string.IsNullOrWhiteSpace(retryJson) ? json : retryJson;
+            var response = await PlaybackResolver.GetAsync(videoId).ConfigureAwait(false);
+            if (response == null) return string.Empty;
+            if (IsStillCurrentVideo(videoId)) CaptureVisitorData(response.Root);
+            return response.Json;
         }
-
-        private async Task<string> FetchAndroidVrPlayerAsync(string videoId)
+        private static void LogPlayerRequestFailure(string endpoint, HttpResponseMessage response, string json)
         {
-            // Ported from MeeTube (core::fetchPlayer / ContextBuilder): the ANDROID_VR client
-            // WITH the session visitorData is the anonymous default that returns direct,
-            // ready-to-fetch progressive + adaptive URLs (no signature cipher, no &n=, no Po
-            // token). No InnerTube API key is sent — the X-YouTube-Client-* headers identify
-            // the client, exactly as MeeTube's transport does.
-            var visitorData = await GetSessionVisitorDataAsync().ConfigureAwait(false);
-            return await PostDirectPlayerPayloadAsync(
-                BuildAndroidVrPlayerPayload(videoId, visitorData),
-                InnertubeAndroidVrUserAgent,
-                InnertubeAndroidVrClientHeaderName,
-                InnertubeAndroidVrClientVersion,
-                visitorData,
-                null,
-                false
-            ).ConfigureAwait(false);
-        }
-
-        private async Task<string> FetchVisionPlayerAsync(string videoId)
-        {
-            var visitorData = await GetSessionVisitorDataAsync().ConfigureAwait(false);
-            var context = new JsonObject();
-            var client = new JsonObject();
-            client["clientName"] = JsonValue.CreateStringValue(InnertubeVisionClientName);
-            client["clientVersion"] = JsonValue.CreateStringValue(InnertubeVisionClientVersion);
-            client["deviceMake"] = JsonValue.CreateStringValue("Apple");
-            client["deviceModel"] = JsonValue.CreateStringValue("RealityDevice14,1");
-            client["osName"] = JsonValue.CreateStringValue("visionOS");
-            client["osVersion"] = JsonValue.CreateStringValue("1.0.2.21O209");
-            client["userAgent"] = JsonValue.CreateStringValue(InnertubeVisionUserAgent);
-            client["hl"] = JsonValue.CreateStringValue(Config.Hl);
-            client["gl"] = JsonValue.CreateStringValue(Config.Gl);
-            if (!string.IsNullOrWhiteSpace(visitorData))
+            // Only report the server's symbolic status. Response bodies
+            // can contain account data, cookies or signed URLs and must not be logged.
+            var detail = string.Empty;
+            JsonObject root;
+            IJsonValue value;
+            if (JsonObject.TryParse(json ?? string.Empty, out root)
+                && root.TryGetValue("error", out value) && value.ValueType == JsonValueType.Object)
             {
-                client["visitorData"] = JsonValue.CreateStringValue(visitorData);
+                var error = value.GetObject();
+                var status = error.TryGetValue("status", out value) && value.ValueType == JsonValueType.String
+                    ? value.GetString() : string.Empty;
+                if (Regex.IsMatch(status, "^[A-Z_]{1,64}$")) detail = ", server=" + status;
             }
-            context["client"] = client;
-
-            var payload = new JsonObject();
-            payload["context"] = context;
-            payload["videoId"] = JsonValue.CreateStringValue(videoId);
-            payload["contentCheckOk"] = JsonValue.CreateBooleanValue(true);
-            payload["racyCheckOk"] = JsonValue.CreateBooleanValue(true);
-
-            return await PostDirectPlayerPayloadAsync(
-                payload.Stringify(),
-                InnertubeVisionUserAgent,
-                InnertubeVisionClientHeaderName,
-                InnertubeVisionClientVersion,
-                visitorData,
-                null,
-                false
-            ).ConfigureAwait(false);
-        }
-
-        private async Task<string> FetchIosPlayerAsync(string videoId, string accessToken)
-        {
-            var context = new JsonObject();
-            var client = new JsonObject();
-            client["clientName"] = JsonValue.CreateStringValue("IOS");
-            client["clientVersion"] = JsonValue.CreateStringValue(InnertubeIosPlayerClientVersion);
-            client["deviceMake"] = JsonValue.CreateStringValue("Apple");
-            client["deviceModel"] = JsonValue.CreateStringValue("iPhone16,2");
-            client["osName"] = JsonValue.CreateStringValue("iOS");
-            client["osVersion"] = JsonValue.CreateStringValue("18.0");
-            client["hl"] = JsonValue.CreateStringValue(Config.Hl);
-            client["gl"] = JsonValue.CreateStringValue(Config.Gl);
-
-            string visitorData = null;
-            if (!string.IsNullOrWhiteSpace(accessToken))
-            {
-                visitorData = await GetSessionVisitorDataAsync().ConfigureAwait(false);
-                if (!string.IsNullOrWhiteSpace(visitorData))
-                {
-                    client["visitorData"] = JsonValue.CreateStringValue(visitorData);
-                }
-            }
-            context["client"] = client;
-
-            var payload = new JsonObject();
-            payload["context"] = context;
-            payload["videoId"] = JsonValue.CreateStringValue(videoId);
-            payload["contentCheckOk"] = JsonValue.CreateBooleanValue(true);
-            payload["racyCheckOk"] = JsonValue.CreateBooleanValue(true);
-
-            return await PostDirectPlayerPayloadAsync(
-                payload.Stringify(),
-                InnertubeIosPlayerUserAgent,
-                InnertubeIosPlayerClientHeaderName,
-                InnertubeIosPlayerClientVersion,
-                visitorData,
-                accessToken,
-                false
-            ).ConfigureAwait(false);
-        }
-
-        private async Task<string> FetchTvPlaybackPlayerAsync(
-            string videoId,
-            string clientVersion,
-            string accessToken
-        )
-        {
-            var client = new JsonObject();
-            client["clientName"] = JsonValue.CreateStringValue(InnertubeTvClientName);
-            client["clientVersion"] = JsonValue.CreateStringValue(clientVersion);
-            client["hl"] = JsonValue.CreateStringValue(Config.Hl);
-            client["gl"] = JsonValue.CreateStringValue(Config.Gl);
-            client["platform"] = JsonValue.CreateStringValue("TV");
-            client["deviceMake"] = JsonValue.CreateStringValue("Samsung");
-            client["deviceModel"] = JsonValue.CreateStringValue("SmartTV");
-            client["osName"] = JsonValue.CreateStringValue("Tizen");
-            client["osVersion"] = JsonValue.CreateStringValue("5.0");
-
-            var context = new JsonObject();
-            context["client"] = client;
-
-            var contentPlaybackContext = new JsonObject();
-            contentPlaybackContext["html5Preference"] = JsonValue.CreateStringValue("HTML5_PREF_WANTS");
-            var sts = await global::Config.GetSignatureTimestampAsync(false).ConfigureAwait(false);
-            if (sts > 0)
-            {
-                contentPlaybackContext["signatureTimestamp"] = JsonValue.CreateNumberValue(sts);
-            }
-
-            var playbackContext = new JsonObject();
-            playbackContext["contentPlaybackContext"] = contentPlaybackContext;
-
-            var payload = new JsonObject();
-            payload["context"] = context;
-            payload["videoId"] = JsonValue.CreateStringValue(videoId);
-            payload["contentCheckOk"] = JsonValue.CreateBooleanValue(true);
-            payload["racyCheckOk"] = JsonValue.CreateBooleanValue(true);
-            payload["playbackContext"] = playbackContext;
-
-            return await PostDirectPlayerPayloadAsync(
-                payload.Stringify(),
-                InnertubePlaybackTvUserAgent,
-                InnertubeTvClientHeaderName,
-                clientVersion,
-                null,
-                accessToken,
-                true
-            ).ConfigureAwait(false);
-        }
-
-        private async Task<string> PostDirectPlayerPayloadAsync(
-            string payload,
-            string userAgent,
-            string clientName,
-            string clientVersion,
-            string visitorData,
-            string accessToken,
-            bool includeInnertubeKey
-        )
-        {
-            try
-            {
-                var url = InnertubeEndpoints.BuildWithoutKey("player?")
-                    + (includeInnertubeKey ? "key=" + InnertubeApiKey + "&" : string.Empty)
-                    + "prettyPrint=false";
-                using (var request = new HttpRequestMessage(HttpMethod.Post, url))
-                {
-                    request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
-                    request.Headers.TryAddWithoutValidation("User-Agent", userAgent);
-                    if (!includeInnertubeKey)
-                    {
-                        request.Headers.TryAddWithoutValidation("Accept", "application/json");
-                        request.Headers.TryAddWithoutValidation("Accept-Language", Config.Hl);
-                    }
-                    else
-                    {
-                        request.Headers.TryAddWithoutValidation(
-                            "Accept-Language",
-                            Config.Hl + "," + Config.Hl + ";q=0.9"
-                        );
-                    }
-                    request.Headers.TryAddWithoutValidation("X-YouTube-Client-Name", clientName);
-                    request.Headers.TryAddWithoutValidation("X-YouTube-Client-Version", clientVersion);
-                    if (!includeInnertubeKey)
-                    {
-                        request.Headers.TryAddWithoutValidation("Origin", "https://www.youtube.com");
-                    }
-                    if (!string.IsNullOrWhiteSpace(visitorData))
-                    {
-                        request.Headers.TryAddWithoutValidation("X-Goog-Visitor-Id", visitorData);
-                    }
-                    if (!string.IsNullOrWhiteSpace(accessToken))
-                    {
-                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-                    }
-
-                    var response = await httpClient.SendAsync(request).ConfigureAwait(false);
-                    var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        System.Diagnostics.Debug.WriteLine(
-                            "[Video] " + clientName + " /player failed: "
-                            + (int)response.StatusCode + " " + response.ReasonPhrase
-                        );
-                        return string.Empty;
-                    }
-
-                    return json;
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(
-                    "[Video] " + clientName + " /player error: " + ex.Message
-                );
-                return string.Empty;
-            }
+            System.Diagnostics.Debug.WriteLine("[Video] /" + endpoint + " failed: HTTP "
+                + (int)response.StatusCode + detail);
         }
 
     }

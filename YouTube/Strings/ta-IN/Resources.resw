@@ -1050,4 +1050,91 @@ YouTube API Legacy ஆதரிக்கிறது.
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>தேடல் பட்டியை மையத்தில் காட்டு</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>உலாவியில் உள்நுழைவு</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>இயக்குவதற்கு இந்தக் கணக்கைப் பயன்படுத்துக</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>உள்நுழைந்துள்ளது · வெளியேறு</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Google பக்கத்தில் உள்நுழைந்து, YouTube க்குத் திரும்பி OK ஐ அழுத்தவும்.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>முதலில் Google உள்நுழைவை முடிக்கவும்.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>உள்நுழைவை முடிக்க முடியவில்லை. மீண்டும் முயலவும்.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>கருத்தைச் சேர்க்கவும்...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>அனுப்பு</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>கருத்தை அனுப்ப முடியவில்லை.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>இந்த வீடியோவில் கருத்திட YouTube அனுமதிக்கவில்லை.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>கருத்துகளை அனுப்ப உலாவியில் உள்நுழையவும்.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>நீங்கள்</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>நேரலை அரட்டை</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>முக்கிய அரட்டை</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>அனைத்து செய்திகளும்</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>இன்னும் செய்திகள் இல்லை</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>அரட்டையுடன் மீண்டும் இணைகிறது…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>ஒளிபரப்புக்காகக் காத்திருக்கிறது…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>ஒளிபரப்பு முடிந்தது</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>நேரலைக்குச் செல்லவும்</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>விருப்பமின்மைகளின் எண்ணிக்கையைக் காட்டு</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike வழங்கும் மதிப்பீடு</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>இடதுபுறத்தில் தாவல் பட்டை</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>டெஸ்க்டாப் Windows மற்றும் Continuum இல் கிடைமட்ட முறையில்</value>
+  </data>
 </root>

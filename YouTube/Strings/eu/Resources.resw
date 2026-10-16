@@ -1050,4 +1050,91 @@ YouTube API Legacy-k onartua.
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Erakutsi bilaketa-barra erdian</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Saioa hasi arakatzailean</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Erabili kontu hau erreproduzitzeko</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Saioa hasita · Amaitu saioa</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Hasi saioa Google-ren orrian, itzuli YouTube-ra eta sakatu OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Amaitu lehenik Google-n saioa hastea.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Ezin izan da saioa hasi. Saiatu berriro.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Gehitu iruzkin bat...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Argitaratu</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Ezin izan da iruzkina argitaratu.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTubek ez du bideo honetan iruzkinak idaztea baimendu.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Hasi saioa arakatzailean iruzkinak argitaratzeko.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Zu</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Zuzeneko txata</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Txat nabarmena</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Mezu guztiak</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Oraindik ez dago mezurik</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Txatera berriro konektatzen…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Emisioaren zain…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Emisioa amaitu da</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Joan zuzenekora</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Erakutsi ez-gustukoen kopurua</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Return YouTube Dislike-ren estimazioa</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Fitxen barra ezkerrean</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Horizontalean mahaigaineko Windows eta Continuum-en</value>
+  </data>
 </root>

@@ -104,6 +104,9 @@ namespace YouTube.Discord
             var json = "{\"cmd\":\"SET_ACTIVITY\",\"args\":{\"pid\":" + processId
                 + ",\"activity\":{\"type\":3,\"details\":\"" + Escape(details)
                 + "\",\"state\":\"" + Escape(state) + "\"";
+            var videoUrl = BuildVideoUrl(activity);
+            if (!string.IsNullOrEmpty(videoUrl))
+                json += ",\"details_url\":\"" + Escape(videoUrl) + "\"";
 
             if (activity.StartTimestamp > 0 || activity.EndTimestamp > 0)
             {
@@ -126,11 +129,26 @@ namespace YouTube.Discord
                     ? Config.LargeImageText
                     : activity.ImageText;
                 json += ",\"assets\":{\"large_image\":\"" + Escape(largeImage)
-                    + "\",\"large_text\":\"" + Escape(Trim(largeText, 128)) + "\"}";
+                    + "\",\"large_text\":\"" + Escape(Trim(largeText, 128)) + "\"";
+                if (!string.IsNullOrEmpty(videoUrl))
+                    json += ",\"large_url\":\"" + Escape(videoUrl) + "\"";
+                json += "}";
             }
 
             json += "}},\"nonce\":\"" + DateTime.UtcNow.Ticks + "\"}";
             return json;
+        }
+
+        private static string BuildVideoUrl(DiscordPresenceState activity)
+        {
+            if (string.IsNullOrWhiteSpace(activity.ItemId)
+                || (activity.Kind != "video" && activity.Kind != "short"))
+                return string.Empty;
+
+            var videoId = Uri.EscapeDataString(activity.ItemId.Trim());
+            return activity.Kind == "short"
+                ? "https://www.youtube.com/shorts/" + videoId
+                : "https://www.youtube.com/watch?v=" + videoId;
         }
 
         private static string Escape(string value)

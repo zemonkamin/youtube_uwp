@@ -349,7 +349,10 @@ namespace YouTube
                     navbar.SetHorizontalLayout();
             }
             if (tabbar != null)
+            {
                 tabbar.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+                tabbar.UpdateResponsivePlacement();
+            }
         }
 
         private void App_ThemeChanged(object sender, EventArgs e)
@@ -385,89 +388,68 @@ namespace YouTube
         private void UpdateVideoAmbientMaterialBrushes()
         {
             var enabled = VideoAmbientEffectController.IsEnabled();
-            SetPageBrushOpacity("VideoAmbientSurfaceBrush", enabled ? 0.72 : 1.0);
-            SetPageBrushOpacity("VideoAmbientPrimaryActionBrush", enabled ? 0.82 : 1.0);
 
             var pillBorder = ConfigureAmbientPillBorder(enabled);
             var normalSurface = Resources["VideoAmbientSurfaceBrush"] as Brush;
-            var gradient = ConfigureAmbientPillGradient(enabled);
+            var ambientFill = ConfigureAmbientPillFill(enabled);
 
-            SetAmbientPillMaterial(LikeDislikeContainer, normalSurface, gradient, pillBorder, enabled);
-            SetAmbientPillMaterial(ShareActionContainer, normalSurface, gradient, pillBorder, enabled);
-            SetAmbientPillMaterial(SaveActionContainer, normalSurface, gradient, pillBorder, enabled);
-            SetAmbientPillMaterial(DownloadActionContainer, normalSurface, gradient, pillBorder, enabled);
-            SetAmbientPillMaterial(LandscapeDescriptionContainer, normalSurface, gradient, pillBorder, enabled);
-            SetAmbientPillMaterial(PlaylistQueuePanel, normalSurface, gradient, pillBorder, enabled);
-            SetAmbientPillMaterial(LastCommentContainer, normalSurface, gradient, pillBorder, enabled);
+            SetAmbientPillMaterial(LikeDislikeContainer, normalSurface, ambientFill, pillBorder, enabled);
+            SetAmbientPillMaterial(LiveChatActionContainer, normalSurface, ambientFill, pillBorder, enabled);
+            SetAmbientPillMaterial(ShareActionContainer, normalSurface, ambientFill, pillBorder, enabled);
+            SetAmbientPillMaterial(SaveActionContainer, normalSurface, ambientFill, pillBorder, enabled);
+            SetAmbientPillMaterial(DownloadActionContainer, normalSurface, ambientFill, pillBorder, enabled);
+            SetAmbientPillMaterial(LandscapeDescriptionContainer, normalSurface, ambientFill, pillBorder, enabled);
+            SetAmbientPillMaterial(PlaylistQueuePanel, normalSurface, ambientFill, pillBorder, enabled);
+            SetAmbientPillMaterial(LastCommentContainer, normalSurface, ambientFill, pillBorder, enabled);
         }
 
-        private LinearGradientBrush ConfigureAmbientPillGradient(bool enabled)
+        private LinearGradientBrush ConfigureAmbientPillFill(bool enabled)
         {
-            var gradient = Resources["VideoAmbientPillGradientBrush"] as LinearGradientBrush;
-            if (gradient == null || gradient.GradientStops.Count < 3)
-                return gradient;
+            var fill = Resources["VideoAmbientPillFillBrush"] as LinearGradientBrush;
+            if (fill == null || fill.GradientStops.Count < 3)
+                return null;
 
             var isLight = RequestedTheme == ElementTheme.Light;
-            var channel = isLight ? (byte)0 : (byte)255;
-            gradient.GradientStops[0].Color = Windows.UI.Color.FromArgb(
-                enabled ? (byte)(isLight ? 34 : 52) : (byte)0,
-                channel, channel, channel);
-            gradient.GradientStops[1].Color = Windows.UI.Color.FromArgb(
-                enabled ? (byte)(isLight ? 24 : 38) : (byte)0,
-                channel, channel, channel);
-            gradient.GradientStops[2].Color = Windows.UI.Color.FromArgb(
-                enabled ? (byte)(isLight ? 16 : 24) : (byte)0,
-                channel, channel, channel);
-            gradient.Opacity = enabled ? 1.0 : 0.0;
-            return gradient;
+            SetAmbientGradientStop(fill, 0, isLight ? (byte)244 : (byte)50);
+            SetAmbientGradientStop(fill, 1, isLight ? (byte)240 : (byte)45);
+            SetAmbientGradientStop(fill, 2, isLight ? (byte)236 : (byte)40);
+            fill.Opacity = enabled ? 1.0 : 0.0;
+            return fill;
         }
 
         private LinearGradientBrush ConfigureAmbientPillBorder(bool enabled)
         {
             var border = Resources["VideoAmbientPillBorderBrush"] as LinearGradientBrush;
             if (border == null || border.GradientStops.Count < 3)
-                return border;
+                return null;
 
             var isLight = RequestedTheme == ElementTheme.Light;
-            var channel = isLight ? (byte)0 : (byte)255;
-            border.GradientStops[0].Color = Windows.UI.Color.FromArgb(
-                enabled ? (byte)(isLight ? 48 : 72) : (byte)0,
-                channel, channel, channel);
-            border.GradientStops[1].Color = Windows.UI.Color.FromArgb(
-                enabled ? (byte)(isLight ? 20 : 30) : (byte)0,
-                channel, channel, channel);
-            border.GradientStops[2].Color = Windows.UI.Color.FromArgb(
-                0, channel, channel, channel);
+            SetAmbientGradientStop(border, 0, isLight ? (byte)213 : (byte)70);
+            SetAmbientGradientStop(border, 1, isLight ? (byte)232 : (byte)48);
+            // Match the lower fill exactly so there is no visible rim along the bottom.
+            SetAmbientGradientStop(border, 2, isLight ? (byte)236 : (byte)40);
             border.Opacity = enabled ? 1.0 : 0.0;
             return border;
+        }
+
+        private static void SetAmbientGradientStop(LinearGradientBrush brush, int index, byte channel)
+        {
+            brush.GradientStops[index].Color = Windows.UI.Color.FromArgb(255, channel, channel, channel);
         }
 
         private static void SetAmbientPillMaterial(
             Border border,
             Brush normalBackground,
-            Brush ambientGradient,
+            Brush ambientFill,
             Brush borderBrush,
             bool enabled)
         {
             if (border == null)
                 return;
 
-            border.Background = enabled ? ambientGradient : normalBackground;
+            border.Background = enabled ? ambientFill : normalBackground;
             border.BorderBrush = enabled ? borderBrush : null;
             border.BorderThickness = enabled ? new Thickness(1) : new Thickness(0);
-        }
-
-        private void SetPageBrushOpacity(string resourceKey, double opacity)
-        {
-            try
-            {
-                var brush = Resources[resourceKey] as SolidColorBrush;
-                if (brush != null)
-                    brush.Opacity = opacity;
-            }
-            catch
-            {
-            }
         }
 
         private static void RefreshRuntimeOptionPanelTheme(DependencyObject root)
@@ -605,9 +587,11 @@ namespace YouTube
         private void UpdateLandscapeActionLabelVisibility()
         {
             if (_updatingLandscapeActionLabels
+                || LiveChatButtonText == null
                 || ShareActionText == null
                 || SaveActionText == null
                 || DownloadActionText == null
+                || LiveChatButton == null
                 || ShareButton == null
                 || SaveButton == null
                 || DownloadButton == null)
@@ -618,6 +602,8 @@ namespace YouTube
             _updatingLandscapeActionLabels = true;
             try
             {
+                // Chat has a text-only button, so its label must always remain visible.
+                SetActionLabelVisible(LiveChatButtonText, LiveChatButton, true);
                 if (IsCurrentViewPortrait())
                 {
                     SetActionLabelVisible(ShareActionText, ShareButton, true);
@@ -629,7 +615,7 @@ namespace YouTube
                 EnsureLandscapeActionWidthMeasurements();
 
                 // Keep enough room for the avatar plus an ellipsized channel name. The
-                // Subscribe button remains untouched; only Share/Save/Download lose labels.
+                // Subscribe button remains untouched; the action buttons can lose labels.
                 var subscribeWidth = SubscribeButtonContainer != null
                     && SubscribeButtonContainer.Visibility == Visibility.Visible
                     ? Math.Max(SubscribeButtonContainer.ActualWidth,
@@ -667,6 +653,7 @@ namespace YouTube
             if (!double.IsNaN(_actionsWidthAllLabels) || VideoActionsPanel == null)
                 return;
 
+            SetActionLabelVisible(LiveChatButtonText, LiveChatButton, true);
             SetActionLabelVisible(ShareActionText, ShareButton, true);
             SetActionLabelVisible(SaveActionText, SaveButton, true);
             SetActionLabelVisible(DownloadActionText, DownloadButton, true);
@@ -703,6 +690,7 @@ namespace YouTube
         private void UpdateLandscapeDetailsVisibility(bool isPortrait)
         {
             var hasComments = _currentComments != null && _currentComments.Count > 0;
+            var canCompose = !_offlineMode && LandscapeCommentComposer != null && LandscapeCommentComposer.CanCompose;
             if (CommentsList != null)
             {
                 var portraitComments = isPortrait && hasComments ? _currentComments : null;
@@ -718,13 +706,22 @@ namespace YouTube
             if (LandscapeDescriptionContainer != null)
                 LandscapeDescriptionContainer.Visibility = isPortrait ? Visibility.Collapsed : Visibility.Visible;
             if (LandscapeCommentsPanel != null)
-                LandscapeCommentsPanel.Visibility = !isPortrait && hasComments
+                LandscapeCommentsPanel.Visibility = !_offlineMode && !isPortrait && (hasComments || canCompose)
                     ? Visibility.Visible
                     : Visibility.Collapsed;
             if (CommentsContainerButton != null)
-                CommentsContainerButton.Visibility = isPortrait && hasComments
+                CommentsContainerButton.Visibility = !_offlineMode && isPortrait && (hasComments || canCompose)
                     ? Visibility.Visible
                     : Visibility.Collapsed;
+
+            if (!hasComments && canCompose)
+            {
+                if (LastCommentAuthor != null) LastCommentAuthor.Text = string.Empty;
+                if (LastCommentTime != null) LastCommentTime.Text = string.Empty;
+                if (LastCommentText != null) LastCommentText.Text = Localization.GetString("CommentPlaceholder");
+                if (LastCommentAuthorImage != null)
+                    ChannelIconController.AssignAlways(LastCommentAuthorImage.Fill as ImageBrush, string.Empty);
+            }
 
             if (!isPortrait)
             {

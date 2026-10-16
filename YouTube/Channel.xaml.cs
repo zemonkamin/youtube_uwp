@@ -57,7 +57,7 @@ namespace YouTube
         private const string ChannelPostsTabParams = "Egljb21tdW5pdHnyBgQKAkoA";
         private const string TvClientName = "TVHTML5";
         private const string TvClientVersion = "7.20260429.11.00";
-        private const string TvClientHeaderName = "85";
+        private const string TvClientHeaderName = YouTubeApiConfig.TvClientHeaderName;
         private const string TvUserAgent = "Mozilla/5.0 (Web0S; Linux; SmartTV) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.79 Safari/537.36 YouTube/7.20260429.11.00";
         private const string MwebClientName = "MWEB";
         private const string MwebClientVersion = "2.20251222.01.00";

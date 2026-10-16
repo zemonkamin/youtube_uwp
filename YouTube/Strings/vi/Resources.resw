@@ -1050,4 +1050,91 @@ Phiên bản {0}</value>
   <data name="LandscapeNavbarSearchModeDescription" xml:space="preserve">
     <value>Hiển thị thanh tìm kiếm ở giữa</value>
   </data>
+  <data name="DesktopMiniPlayerWindow" xml:space="preserve">
+    <value>Mini player always on top</value>
+  </data>
+  <data name="DesktopMiniPlayerWindowDescription" xml:space="preserve">
+    <value>Open the mini player in a separate always-on-top window</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableMobile" xml:space="preserve">
+    <value>Unavailable on Windows 10 Mobile</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableVS2015" xml:space="preserve">
+    <value>Available only in Visual Studio 2017 builds (SDK 15063+)</value>
+  </data>
+  <data name="DesktopMiniPlayerUnavailableOldWindows" xml:space="preserve">
+    <value>Requires Windows 10 version 1703 or newer</value>
+  </data>
+  <data name="WebAccountSignIn" xml:space="preserve">
+    <value>Đăng nhập trong trình duyệt</value>
+  </data>
+  <data name="WebAccountSignInDescription" xml:space="preserve">
+    <value>Dùng tài khoản này để phát video</value>
+  </data>
+  <data name="WebAccountSignedIn" xml:space="preserve">
+    <value>Đã đăng nhập · Đăng xuất</value>
+  </data>
+  <data name="WebAccountSignInHint" xml:space="preserve">
+    <value>Đăng nhập trên trang Google, quay lại YouTube và nhấn OK.</value>
+  </data>
+  <data name="WebAccountSignInIncomplete" xml:space="preserve">
+    <value>Hãy hoàn tất đăng nhập Google trước.</value>
+  </data>
+  <data name="WebAccountSignInFailed" xml:space="preserve">
+    <value>Không thể hoàn tất đăng nhập. Hãy thử lại.</value>
+  </data>
+  <data name="CommentPlaceholder" xml:space="preserve">
+    <value>Thêm bình luận...</value>
+  </data>
+  <data name="CommentSend" xml:space="preserve">
+    <value>Đăng</value>
+  </data>
+  <data name="CommentSendFailed" xml:space="preserve">
+    <value>Không thể đăng bình luận.</value>
+  </data>
+  <data name="CommentWriteUnavailable" xml:space="preserve">
+    <value>YouTube không cho phép bình luận về video này.</value>
+  </data>
+  <data name="CommentBrowserSignInRequired" xml:space="preserve">
+    <value>Đăng nhập trong trình duyệt để đăng bình luận.</value>
+  </data>
+  <data name="CommentOwnAuthor" xml:space="preserve">
+    <value>Bạn</value>
+  </data>
+  <data name="LiveChatTitle" xml:space="preserve">
+    <value>Trò chuyện trực tiếp</value>
+  </data>
+  <data name="LiveChatTop" xml:space="preserve">
+    <value>Tin nhắn hàng đầu</value>
+  </data>
+  <data name="LiveChatAll" xml:space="preserve">
+    <value>Tất cả tin nhắn</value>
+  </data>
+  <data name="LiveChatEmpty" xml:space="preserve">
+    <value>Chưa có tin nhắn</value>
+  </data>
+  <data name="LiveChatRetry" xml:space="preserve">
+    <value>Đang kết nối lại với cuộc trò chuyện…</value>
+  </data>
+  <data name="LiveWaiting" xml:space="preserve">
+    <value>Đang chờ buổi phát…</value>
+  </data>
+  <data name="LiveEnded" xml:space="preserve">
+    <value>Buổi phát đã kết thúc</value>
+  </data>
+  <data name="LiveGoToEdge" xml:space="preserve">
+    <value>Chuyển đến trực tiếp</value>
+  </data>
+  <data name="ShowDislikeCount" xml:space="preserve">
+    <value>Hiển thị số lượt không thích</value>
+  </data>
+  <data name="ShowDislikeCountDescription" xml:space="preserve">
+    <value>Ước tính từ Return YouTube Dislike</value>
+  </data>
+  <data name="LandscapeSideTabbar" xml:space="preserve">
+    <value>Thanh thẻ bên trái</value>
+  </data>
+  <data name="LandscapeSideTabbarDescription" xml:space="preserve">
+    <value>Ở chế độ ngang trên Windows máy tính và Continuum</value>
+  </data>
 </root>
