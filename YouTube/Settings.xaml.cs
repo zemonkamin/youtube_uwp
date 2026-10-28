@@ -104,6 +104,7 @@ namespace YouTube
             UpdateThemeText();
             BuildThemeOptions();
             UpdateSideTabbarToggleVisual(SideTabbarController.IsEnabled(), false);
+            FluentGlassEffectHelper.EnsureDefault();
             UpdateGlassEffectToggleVisual(FluentGlassEffectHelper.IsEnabled(), false);
             LandscapeNavbarSearchModeController.EnsureDefault();
             UpdateLandscapeNavbarSearchModeToggleVisual(

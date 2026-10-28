@@ -27,23 +27,40 @@ namespace YouTube
 
         public static event EventHandler EnabledChanged;
 
-        public static bool IsEnabled()
+        public static void EnsureDefault()
         {
             try
             {
                 object raw;
+                var values = ApplicationData.Current.LocalSettings.Values;
+                if (!values.TryGetValue(EnabledSettingKey, out raw) || raw == null)
+                    values[EnabledSettingKey] = !ResponsiveLayout.IsPhoneDevice;
+            }
+            catch
+            {
+            }
+        }
+
+        public static bool IsEnabled()
+        {
+            // Keep the same device default in settings and on every glass surface,
+            // including before the settings page has ever been opened.
+            var defaultEnabled = !ResponsiveLayout.IsPhoneDevice;
+            try
+            {
+                object raw;
                 if (!ApplicationData.Current.LocalSettings.Values.TryGetValue(EnabledSettingKey, out raw) || raw == null)
-                    return true;
+                    return defaultEnabled;
 
                 if (raw is bool)
                     return (bool)raw;
 
                 bool parsed;
-                return !bool.TryParse(raw.ToString(), out parsed) || parsed;
+                return bool.TryParse(raw.ToString(), out parsed) ? parsed : defaultEnabled;
             }
             catch
             {
-                return true;
+                return defaultEnabled;
             }
         }
 
